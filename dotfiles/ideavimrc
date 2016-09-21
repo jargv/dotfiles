@@ -1,0 +1,34 @@
+source ~/.vimrc
+
+set norelativenumber
+set number
+
+set noerrorbells
+set visualbell
+set gdefault
+
+map <leader>c :source ~/.ideavimrc<cr>
+map <leader>C :e ~/.ideavimrc<cr>
+
+map <leader>f :action AceJumpAction<cr>
+map <leader>m :action ReBuildArtifact<cr>
+map <leader>;j :!echo
+
+map <leader>i :action GotoImplementation<cr>
+
+
+map <leader>tc :action CloseEditor<cr>o
+
+
+map <leader>m :action Run<cr>
+
+nnoremap <leader>o :action SearchEverywhere<cr>
+
+nnoremap * *N
+
+nnoremap <leader>e :echo "nope"<cr>
+
+nnoremap <leader>n :action GotoNextError<cr>
+nnoremap <leader>p :action GotoPreviousError<cr>
+
+nnoremap <leader>d :action ExternalSystemView.ProjectMenu<cr>

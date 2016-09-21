@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: scope
+# key: scope
+# --
+(function($1){
+  $3
+}(${2:$1}));

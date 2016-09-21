@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+git ls-tree --full-tree --name-only -r HEAD | sed -e '/vendor/d' | xargs wc -l 2>/dev/null | awk -f ~/config/bin/stats-aggregate.awk

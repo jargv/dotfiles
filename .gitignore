@@ -1,0 +1,13 @@
+vim/.netrwhist
+vim/bundle/
+dotemacs.d/auto-save-list
+dotemacs.d/elpa
+*~
+*.elc
+dotfiles/emacs.d/el-get/
+dotfiles/emacs.d/eshell/
+dotfiles/emacs.d/elpa/
+antigen/
+*.pyc
+dotfiles/tmux/resurrect/*
+dotfiles/tmux/plugins/

@@ -1,0 +1,23 @@
+snippet fn "function"
+function$1($2)
+  $3
+end
+endsnippet
+snippet if "conditional" !b
+if ${1:false} then
+$2
+end
+
+endsnippet
+snippet class "Make a class" !b
+local $1 = {}
+$1.__index = $1
+function $1.new($2)
+  local self = setmetatable({}, $1)
+	$0
+	return self
+end
+endsnippet
+snippet r "require something" !b
+local ${1:module} = require "${2:$1}"
+endsnippet

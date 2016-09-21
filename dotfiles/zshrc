@@ -1,0 +1,222 @@
+#export TERM=screen-256color
+export TERM=xterm-256color
+#export TERM=screen-it
+
+#setup nix {{{1
+# export NIX_PATH="~/.nix-defexpr/nixpgks"
+# export nixpkgs="~/.nix-defexpr/nixpgks"
+# . ~/.nix-profile/etc/profile.d/nix.sh
+
+#path {{{1
+export EDITOR="vim"
+export PATH=$PATH:~/.cabal/bin
+export PATH=$PATH:~/config/bin
+export PATH=$PATH:~/bin
+export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/sbin:$PATH
+export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+#brew paths {{{2
+export PATH="$HOME/.linuxbrew/bin:$PATH"
+export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
+export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
+#go paths {{{2
+export GOPATH=~/projects
+export PATH=$PATH:~/projects/bin
+#}}}
+
+#Attach tmux session {{{1
+# Attempt to discover a detached session and attach
+# it, else create a new session
+if [[ "$TERM" != "screen" ]] &&
+   [[ -z "$TMUX" ]] &&
+   [[ "$SSH_CONNECTION" == "" ]]; then
+  mainsession="x"
+  if tmux has-session -t $mainsession 2>/dev/null; then
+    tmux -2 attach-session -t $mainsession
+  else
+    tmux -2 new-session -s $mainsession
+  fi
+fi
+
+#antigen {{{1
+antigenfile=~/config/antigen/antigen.zsh
+if [[ ! -f "$antigenfile" ]]; then
+  git clone "https://github.com/zsh-users/antigen.git" ~/config/antigen
+fi
+
+source $antigenfile
+
+#antigen bundle man
+antigen bundle zsh-users/zsh-syntax-highlighting
+
+antigen bundle autojump
+antigen bundle git
+antigen bundle postgres
+antigen bundle go
+antigen bundle tmux
+antigen apply
+
+#autojump {{{1
+if [[ $(uname) == "Linux" ]]; then
+  . /usr/share/autojump/autojump.zsh
+else
+  [[ -s $(brew --prefix)/etc/autojump.sh ]] && . $(brew --prefix)/etc/autojump.sh
+fi
+
+#{{{1 history
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=1000
+setopt appendhistory inc_append_history share_history hist_ignore_dups
+
+#{{{1 vim
+bindkey -v
+
+#remove all the keymaps that make esc slow
+export KEYTIMEOUT=1
+KEYTIMEOUT=1
+
+#{{{1 keybindings
+#bindkey  push-line-or-edit
+#bindkey -M vicmd  push-line-or-edit
+
+#{{{2 tmux/unified keybindings
+  #{{{3 movement
+  # tmux-widget-up(){ tmux select-pan -U }
+  # tmux-widget-down(){ tmux select-pan -D }
+  # tmux-widget-left(){ tmux select-pan -L }
+  # tmux-widget-right(){ tmux select-pan -R }
+  # zle -N tmux-widget-up
+  # zle -N tmux-widget-down
+  # zle -N tmux-widget-left
+  # zle -N tmux-widget-right
+  # bindkey -M vicmd ' k' tmux-widget-up
+  # bindkey -M vicmd ' j' tmux-widget-down
+  # bindkey -M vicmd ' l' tmux-widget-right
+  # bindkey -M vicmd ' h' tmux-widget-left
+
+  #{{{3 close window
+  # widget-exit(){ exit }
+  # zle -N widget-exit
+  # bindkey -M vicmd ' q' widget-exit
+  #}}}
+#}}}
+
+#{{{1 completion
+autoload -Uz compinit
+compinit
+
+#{{{1 Aliases
+#{{{2 commands that always use sudo
+alias pacman="sudo pacman"
+alias apt-get="sudo apt-get"
+#{{{2 vim command alias
+#none
+#{{{2 git prompt aliases
+if [ -z "$GIT_PROMPT" ]; then
+  GIT_PROMPT=0
+fi
+alias yesgit='GIT_PROMPT=1 exec zsh'
+alias nogit='GIT_PROMPT=0 exec zsh'
+
+#{{{2color aliases
+#todo: make this work on mac and linux
+#alias ls='ls --color=auto'
+alias ls='ls -G'
+autoload -U colors && colors
+
+#{{{2 ls aliases
+alias ll='ls -l'
+alias la='ls -a'
+alias lla='ls -la'
+#{{{2 suffix aliases
+alias -s txt='vim'
+alias -s sh=sh
+alias -s pdf=chrome
+#}}}
+#{{{2 docker aliases
+alias dm docker-machine
+alias dc docker-compose
+alias d docker
+#}}}
+
+
+#{{{1 Command-changing vars
+export LESS=-RXF
+local ack_types="--type-set handlebars=.handlebars"
+local ack_ignore_dirs="--ignore-dir node_modules --ignore-dir components --ignore-dir javascripts-built"
+export ACK_OPTIONS="--pager=less $ack_ignore_dirs $ack_types"
+export MAKEFLAGS="-j4"
+
+#{{{1 auto ls every time I cd
+function chpwd() {
+  emulate -LR zsh
+  #ls -F --color=auto
+  ls -F -G
+}
+
+#{{{1 Prompt
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+setopt transient_rprompt
+setopt PROMPT_SUBST
+
+#colors
+local blue_op="%{$fg_bold[blue]%}"
+local blue_cp="%{$reset_color%}"
+local red_op="%{$fg[red]%}"
+local red_cp="%{$reset_color%}"
+local green_op="%{$fg[green]%}"
+local green_cp="%{$reset_color%}"
+
+#parts
+local path_p="${blue_op}%~${blue_cp}"
+local time="${blue_op}%D{%L:%M}${blue_cp}"
+local date="${blue_op}%w${blue_cp}"
+local smiley="%(?,%{$fg[green]%}:%)%{$reset_color%},%{$fg[red]%}:(%{$reset_color%})"
+local njobs="${green_op}%j${green_cp}"
+local hist="${blue_op}%h${blue_cp}"
+local host="${blue_op}%M${blue_cp}"
+local vim=""
+local cur_cmd="${blue_op}%_${blue_cp}"
+
+#vi mode
+VIMODE='[i]'
+function zle-keymap-select {
+  VIMODE="${${KEYMAP/vicmd/[n]}/(main|viins)/[i]}"
+  zle reset-prompt
+}
+zle -N zle-keymap-select
+
+if [[ -n $VIMRUNTIME ]]; then
+  if [[ -z $VIM_DEPTH ]]; then
+    export VIM_DEPTH=0
+    local vim_depth_string=""
+  else
+    export VIM_DEPTH=$(( $VIM_DEPTH + 1 ))
+    local vim_depth_string="-$VIM_DEPTH"
+  fi
+  vim="${red_op}|VIM$vim_depth_string|${red_cp}"
+fi
+
+local secondLine=$terminfo[cud1]$terminfo[cuu1]$terminfo[sc]$terminfo[cud1]
+local atRight='${host}'
+local line1='${vim}[${njobs}]${path_p}[${vim}${smiley}]$red_op%#$red_cp '
+local line2="\$([ "$GIT_PROMPT" = "1" ] && git status -sb 2>/dev/null)"
+preexec () { print -rn -- $terminfo[ed]; }
+
+PROMPT="%{$secondLine$line2$terminfo[rc]%}${line1}"
+RPROMPT="$atRight"
+PROMPT2="${cur_cmd}> "
+
+#{{{1 Other options
+setopt CORRECT
+setopt extendedglob
+setopt autocd
+setopt cdable_vars
+setopt pushd_ignore_dups
+setopt no_clobber hist_allow_clobber
+setopt csh_null_glob
+unsetopt beep
+zstyle :compinstall filename '/home/jonathan/.zshrc'
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting

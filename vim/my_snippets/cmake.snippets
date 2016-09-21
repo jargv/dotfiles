@@ -1,0 +1,95 @@
+snippet new "new project" !b
+cmake_minimum_required (VERSION 3.0)
+project (${1:`!v expand("%:p:h:t")`})
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor)
+
+set(CMAKE_CXX_COMPILER_ID "Clang")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+
+add_executable($1
+  main.cpp
+)
+add_custom_target(run COMMAND $1
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+endsnippet
+snippet lib "add a library" !b
+add_library(${1:lib}
+  $1.hpp$0
+  $1.cpp$0
+)
+endsnippet
+snippet exe "add an executable" !b
+add_executable(${1:exe}
+  $1.cpp
+)
+add_custom_target(run_$1 COMMAND $1
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+endsnippet
+snippet test "Add tests to the project" !b
+add_executable(${1:app}_test
+  test_main.cpp
+  vendor/catch.hpp
+)
+
+add_custom_target(test_$1 COMMAND $1_test
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+set(CATCH_URL "https://raw.githubusercontent.com/philsquared/Catch/master/single_include/catch.hpp")
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/vendor/catch.hpp
+  COMMAND mkdir -p ${CMAKE_CURRENT_SOURCE_DIR}/vendor && curl ${CATCH_URL} > ${CMAKE_CURRENT_SOURCE_DIR}/vendor/catch.hpp
+)
+endsnippet
+
+snippet ccache "Setup ccache for this project" !b
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
+find_program(ccache_available ccache)
+if(NOT ccache_available MATCHES NOTFOUND)
+  SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+  SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+else()
+  message(STATUS "ccache not found. Install ccache to compile faster.")
+endif()
+endsnippet
+snippet if "conditional" !b
+if($1)
+  $2
+endif()
+endsnippet
+
+snippet set "set variable" !b
+set($1 $2)
+endsnippet
+snippet gl "bring in everything needed for opengl" !b
+include(FindPkgConfig)
+
+#sdl
+PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+PKG_SEARCH_MODULE(SDL2_image REQUIRED SDL2_image)
+INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2_image_INCLUDE_DIRS} )
+TARGET_LINK_LIBRARIES(${1:projectname} ${SDL2_LIBRARIES} ${SDL2_image_LIBRARIES})
+
+#gl
+find_package(OpenGL REQUIRED)
+INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIRS})
+TARGET_LINK_LIBRARIES($1 ${OPENGL_LIBRARIES})
+
+#glm
+include(cmake/FindGLM.cmake)
+include_directories(${glm_include_dir})
+
+endsnippet
+
+snippet curses "include curses library" !b
+#curses
+if(NOT ${CURSES_FOUND})
+  message(FATAL_ERROR "Curses Not Found")
+endif()
+include_directories(${CURSES_INCLUDE_DIRS})
+target_link_libraries(${1:project_name} ${CURSES_LIBRARIES})
+endsnippet

@@ -1,0 +1,280 @@
+extends c
+priority 1
+snippet inc "include the corresponding header" !b
+#include "`!v expand('%:t:r')`.hpp"
+using namespace std;
+endsnippet
+snippet afor "array index for loop" !b
+for (int ${2:i} = 0; $2 < ${1:array}.size(); ++$2){
+  auto& ${3:elem} = $1[$2];
+  ${4:${VISUAL}}
+}
+endsnippet
+snippet class "Make a class" !b
+class ${1:`!v expand('%:t:r')`} final {
+public:
+	$0
+};
+endsnippet
+snippet struct "Make a struct" !b
+struct ${1:`!v expand('%:t:r')`} final {
+	$0
+};
+endsnippet
+snippet ctor "Make a constructor for the current class" !b
+${1:`!v
+  get(matchlist(getline(search('^\s*class\s*\([A-Z]\w*\)', 'bWn')), '\s*class\s*\([A-Z]\w*\)'), 1, '')
+`}(${2})`!p
+
+args = t[2].split(',')
+result = ""
+sep = "\n    : "
+for arg in args:
+  if len(arg) and arg[-1] == '_':
+	  lastSpace = 0
+		i = 0
+	  for char in arg:
+		  if char == ' ':
+        lastSpace=i
+      i += 1
+		lastWord = arg[lastSpace+1:-1]
+		result += sep + lastWord+'('+lastWord+'_)'
+		sep = "\n    , "
+snip.rv = result + ('\n  ' if len(result) else '')
+
+	`{`!p
+snip.rv = "\n    " if len(t[3]) else ""
+`$3`!p
+snip.rv = "\n  " if len(t[3]) else ""
+`}
+`!p
+args = t[2].split(',')
+result = "";
+for arg in args:
+  if len(arg) and arg[-1] == '_':
+		result += arg[:-1] + ";\n "
+snip.rv = result
+	`$0
+endsnippet
+
+snippet copyswap "use the copy and swap idiom for ctors" !b
+${0:(((fields: $1)))}
+${2:`!v
+  get(matchlist(getline(search('^\s*class\s*\([A-Z]\w*\)', 'bWn')), '\s*class\s*\([A-Z]\w*\)'), 1, '')
+`}($2 const& rhs)
+  `!p
+fields = t[1].split(',')
+copies = []
+for field in fields:
+  if len(field):
+		copies.append(field+'('+ 'rhs.'+field+')')
+snip.rv = (': ' if len(copies) else '') + '\n    , '.join(copies)
+	`
+{}
+
+$2($2&& rhs) noexcept
+	: $2()
+{
+	swap(*this, rhs);
+}
+
+$2 const& operator=($2 rhs) noexcept {
+	swap(*this, rhs);
+	return *this;
+}
+
+friend void swap($2& lhs, $2& rhs) noexcept {
+  using std::swap;
+  `!p
+fields = t[1].split(',')
+swaps = []
+for field in fields:
+  if len(field):
+		swaps.append('swap(lhs.'+field+', rhs.'+field+');')
+snip.rv = '\n    '.join(swaps)
+	`
+}
+endsnippet
+
+snippet dtor "Description" !b
+~`!v
+  get(matchlist(getline(search('^\s*class\s*\([A-Z]\w*\)', 'bWn')), '\s*class\s*\([A-Z]\w*\)'), 1, '')
+`(){
+  $1
+}
+
+endsnippet
+
+snippet def "default all the compiler-generated members" !b
+${1:`!v
+	get(matchlist(getline(search('^\s*class\s*\([A-Z]\w*\)', 'bWn')), '\s*class\s*\([A-Z]\w*\)'), 1, '')
+`}() = default;
+$1($1&&) = default;
+$1($1 const&) = default;
+$1& operator= ($1&&) = default;
+$1& operator= ($1 const&) = default;
+~$1() = default;
+endsnippet
+snippet del "delete all the compiler-generated members" !b
+${1:`!v
+	get(matchlist(getline(search('^\s*class\s*\([A-Z]\w*\)', 'bWn')), '\s*class\s*\([A-Z]\w*\)'), 1, '')
+`}() = delete;
+$1($1&&) = delete;
+$1($1 const&) = delete;
+$1& operator= ($1&&) = delete;
+$1& operator= ($1 const&) = delete;
+~$1() = delete;
+endsnippet
+snippet meth "Make a  method" !b
+${3///} ${1///}(${2///}) const;
+${3:return_type} `!v expand('%:t:r')`::${1:meth}(${2}) const {
+  $4
+}
+endsnippet
+
+snippet lm "lambda" w!
+[${2}]($1){
+	$0
+}$3
+endsnippet
+snippet fn "named lambda" !b
+auto ${1:foo} = [$3]($2){
+	$0
+};
+endsnippet
+snippet block "create a lambda-block" !b
+[]($1){
+	${VISUAL}$0
+}(${1/auto&?\ ?//g});
+endsnippet
+snippet tm "template function" !b
+template<`!p
+
+args=t[2].split(', ');
+types = []
+for arg in args:
+  parts = arg.split(' ')
+	type = parts[0] if len(parts) else ''
+  types.append("typename " + type)
+
+snip.rv = ', '.join(types)
+
+`>
+${3:void} $1($2){
+
+}
+endsnippet
+snippet main "quick main function" !b
+#include <iostream>
+using namespace std;
+
+int main(int, char**){
+  cout << "main!" << endl;
+	return 0;
+}
+endsnippet
+snippet prop "make a property" !b
+${1:int} ${2:prop}_ = ${3:0};
+$1 $2(){return $2_;}
+$1 $2($1 val){
+  $2_ = val;
+	return $2_;
+}
+$0
+endsnippet
+
+snippet test_main "make the main file of a catch test" !b
+//todo: move all tests out of this file, leaving only these two lines
+#define CATCH_CONFIG_MAIN
+#include "catch.hpp"
+
+SCENARIO("${1:what's going on}", "[]"){
+  GIVEN("${2:a precondition}"){
+	  WHEN("${3:something happens}"){
+      THEN("${4:it is expected that...}"){
+			  CHECK(${5:false});
+			}
+ 		}
+	}
+}
+endsnippet
+
+snippet scenario "a check scenario" !b
+SCENARIO("${1:what's going on}", "[]"){
+  GIVEN("${2:a precondition}"){
+	  WHEN("${3:something happens}"){
+      THEN("${4:it is expected that...}"){
+			  CHECK(${5:false});
+			}
+ 		}
+	}
+}
+endsnippet
+
+snippet test_case "a test case for catch" !b
+TEST_CASE("$1"){
+	SECTION("$2"){
+		CHECK(${3:false});
+	}
+}
+endsnippet
+
+snippet section "catch section" !b
+SECTION("$1"){
+  CHECK($2);
+}
+endsnippet
+snippet l "log out some variables" !b
+std::cout << "$1: " << ${1/\s*,\s*/\ <<", "<<\ /g} << std::endl;
+endsnippet
+snippet log "Log out text only" !b
+std::cout << "$1" << std::endl;
+endsnippet
+snippet eq "equality operator" !b
+${0:(((fields: $1)))}
+bool operator == (${2:`!v
+	get(matchlist(getline(search('^\s*class\s*\([A-Z]\w*\)', 'bWn')), '\s*class\s*\([A-Z]\w*\)'), 1, '')
+`} const& rhs) const {
+`!p
+fields = t[1].split(',')
+copies = []
+for field in fields:
+  if len(field):
+		copies.append(field+' == '+ 'rhs.'+field)
+snip.rv = ("  return ") + '\n      && '.join(copies) + ";"
+	`
+}
+endsnippet
+snippet lt "less-than operator" !b
+${0:(((fields: $1)))}
+bool operator < (${2:`!v
+	get(matchlist(getline(search('^\s*class\s*\([A-Z]\w*\)', 'bWn')), '\s*class\s*\([A-Z]\w*\)'), 1, '')
+`} const& rhs) const {
+`!p
+fields = t[1].split(',')
+copies = []
+for field in fields:
+  if len(field):
+		copies.append(field+' < '+ 'rhs.'+field)
+snip.rv = ("  return ") + '\n      || '.join(copies) + ";"
+	`
+}
+endsnippet
+snippet << "output operator" !b
+std::ostream& operator << (std::ostream& out, $1){
+  $2
+  return out;
+}
+endsnippet
+snippet be "begin/end construct" w!
+$1.begin(), $1.end()
+endsnippet
+snippet ac "auto const" !b
+auto const
+endsnippet
+snippet ca "const auto" !b
+const auto
+endsnippet
+snippet fwd "forward arguments" !b
+std::forward<decltype(${1:args})>($1)...
+endsnippet

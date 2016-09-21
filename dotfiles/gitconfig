@@ -1,0 +1,55 @@
+[user]
+  name = Jonathan Geddes
+  email = geddes.jonathan@gmail.com
+[credential]
+  helper = cache --timeout=36000
+[core]
+  editor = vim
+  excludesfile = ~/.gitignore
+  attributesfile = ~/.gitattributes
+[merge]
+  tool = vimdiff
+  state = true
+[diff]
+  tool = vimdiff
+  renames = copies
+[diff "image"]
+  command = ~/config/bin/git-imgdiff
+[mergetool]
+  prompt = false
+  trustExitCode = true
+[difftool]
+  prompt = false
+  trustExitCode = true
+[clean]
+  requireForce = true
+[branch]
+  autosetupmerge = true
+[push]
+  default = simple
+[rerere]
+  enabled = true
+  autoupdate = true
+[color]
+  ui = auto
+[apply]
+  whitespace = nowarn
+[instaweb]
+  browser = google-chrome
+[alias]
+  st = status -sb
+  dt = difftool
+  #hist = log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  hist = !tig
+  fshow = ! sh -c 'git show --pretty="format:" --name-only $1 | grep -v "^$" | uniq | sed -e "s#^#`git rev-parse --show-toplevel`/#"' -
+  edit = ! vim -o $(git status --porcelain | cut -d' ' -f 3)
+  fuckit = reset --hard
+[github]
+  user = jargv
+[gui]
+  recentrepo = /Users/jonathangeddes/projects/domo/domoweb
+[tig]
+  main-view-author = abbreviated
+  main-view-date = relative
+  main-view-line-number = yes,interval=1
+  mouse = yes

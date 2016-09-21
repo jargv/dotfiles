@@ -1,0 +1,38 @@
+Author = "HaaTa (Jacob Alexander) 2015";
+Base = "Blank";
+Date = "2015-09-12";
+Generator = "KIICONF 0.2";
+KLL = "0.3c";
+Layout = "Blank";
+Name = "MDErgo1";
+Version = "0.1";
+
+U"5" : U"F5";
+U"4" : U"F4";
+U"3" : U"F3";
+U"2" : U"F2";
+U"1" : U"F1";
+U"EQUALS" : flashMode();
+U"LALT" : None;
+U"LCTRL" : None;
+U"FUNCTION4" : U"FUN4";
+U"FUNCTION3" : U"FUN3";
+U"BACKTICK" : U"FUN2";
+U"6" : U"F6";
+U"7" : U"F7";
+U"8" : U"F8";
+U"9" : U"F9";
+U"0" : U"F10";
+U"MINUS" : flashMode();
+U"H" : U"LEFT";
+U"J" : U"DOWN";
+U"K" : U"UP";
+U"L" : U"RIGHT";
+U"RALT" : CONS"SCANPREVIOUSTRACK";
+U"RCTRL" : CONS"SCANNEXTTRACK";
+U"SLASH" : None;
+U"PAGEUP" : CONS"MUTE";
+U"PAGEDOWN" : CONS"PAUSEPLAY";
+U"ENTER" : CONS"VOLUMEDOWN";
+U"SPACE" : CONS"VOLUMEUP";
+

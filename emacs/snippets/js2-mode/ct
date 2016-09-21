@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: ct
+# key: ct
+# --
+console.table($1);

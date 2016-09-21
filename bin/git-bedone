@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+cd "$(git rev-parse --show-toplevel)"
+
+script=$(git status --porcelain)
+
+#turn the changed files into add commands
+script=$(echo "$script" | sed -e '/^??/s/$/ #new file/')
+script=$(echo "$script" | sed -e 's/^ //')
+script=$(echo "$script" | sed -e 's/^M./ add /')
+script=$(echo "$script" | sed -e 's/^?./ add /')
+script=$(echo "$script" | sed -e 's/^A./ add /')
+script=$(echo "$script" | sed -e 's/^D./ rm /')
+script=$(echo "$script" | sed -e 's/  / /g')
+
+#turn each command into a git command
+script=$(echo "$script" | sed -e's/^/git/')
+
+#add a git commit onto the end of the script
+script="#anything left in this file will be executed
+$script
+git commit #-m'commit message'
+#git push"
+
+#let the user edit the script, then execute it
+script=$(echo "$script" | vipe)
+
+sh -c "$script"

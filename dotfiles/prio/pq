@@ -1,0 +1,29 @@
+28:root index called 'pq' instead of 'prio'
+4:Differentiate modes
+0:Compact layouts
+3:Smarter compaction (Just change cursor if gap has children
+1:Dispaly cwd
+2:merge conflict-robust format
+6:Fix crash when cursor ends up outside of bounds
+7:search
+8:Consider other key bindings besides vim
+9:on 'o' try to use gaps first
+10:Smoother initial project
+11:Description / Details box
+5:Undo
+13:Zero to jump to top (after jumping to beginning of line?)
+14:Compaction on empty crash bug
+15:pure background
+16:optimize out the flicker
+17:Better TUI
+18:viewport
+19:Gather todos from project
+20:'l' movement stay near middle
+21:dd (delete)
+22:cursor position after compaction (BUG)
+23:Store finished items (consider)
+24:config file root at 'pq'
+12:sync with filesystem when directory
+26:Clicking to move cursor
+27:fx (character search)
+25:Consider reading and writing TODOs from READMEs

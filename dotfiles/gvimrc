@@ -1,0 +1,8 @@
+
+set guioptions-=T
+set guioptions-=t 
+set guioptions-=M
+set guioptions-=m
+set vb t_vb=
+
+

@@ -1,0 +1,21 @@
+snippet new "make a new makefile" !b
+CXXFLAGS=--std=c++1y
+CC=clang++
+run: ${1:main}
+	./$1
+$1: $1.cpp
+	${CC} -o $1 $1.cpp
+endsnippet
+snippet erlang "bootstrap an erlang project" !b
+#Makefile
+ERLANG_MK_BUILD_DIR ?= .erlang.mk.build
+run: erlang.mk
+erlang.mk:
+	git clone https://github.com/ninenines/erlang.mk $(ERLANG_MK_BUILD_DIR)
+	cd $(ERLANG_MK_BUILD_DIR) && $(MAKE)
+	cp $(ERLANG_MK_BUILD_DIR)/erlang.mk ./erlang.mk
+	rm -rf $(ERLANG_MK_BUILD_DIR)
+	echo "PROJECT = my_project" >Makefile
+	echo "#DEPS = ???" >Makefile
+	echo "include erlang.mk" >>Makefile
+endsnippet

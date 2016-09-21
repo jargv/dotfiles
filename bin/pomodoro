@@ -1,0 +1,25 @@
+#! /usr/bin/env bash
+
+case "$1" in
+  break)
+    minutes=5
+    ;;
+  *)
+    minutes=25
+    ;;
+esac
+
+go(){
+  time=$1
+  sleep $time
+  echo "done"
+  terminal-notifier -title "pomodoro" -message "complete!"
+  echo 'p' >~/.config/pianobar/ctl &
+}
+
+declare -i seconds
+seconds=minutes*60
+
+
+echo "Pomodoro running for $minutes minutes"
+go $seconds

@@ -1,0 +1,19 @@
+snippet lang "Language Extension" !b
+{-# LANGUAGE $1 #-}
+endsnippet
+snippet test "quick test starter" !b
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE TemplateHaskell #-}
+module Main where
+
+import Test.Tasty.TH
+import Test.Tasty.QuickCheck
+import Test.Tasty.HUnit
+
+import Control.Applicative
+
+import Math.Vec
+
+main :: IO ()
+main = $(defaultMainGenerator)
+endsnippet

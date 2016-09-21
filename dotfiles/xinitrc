@@ -1,0 +1,7 @@
+#exec startxfce4
+xset -b
+xmodmap ~/.Xmodmap
+#xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
+#setxkbmap -option caps:swapescape
+#exec gnome-session-cinnamon
+exec gnome-session

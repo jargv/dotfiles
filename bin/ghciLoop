@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+file=$1
+expr=$2
+first=1
+while true; do
+  if [[ $first ]]; then
+    echo ":set prompt \"\""
+  fi
+  inotifywait -qq -e modify $file
+  echo ":r"
+  echo "$expr"
+done | ghci $file
+

@@ -1,0 +1,13 @@
+#!/usr/bin/osascript
+tell application "Firefox"
+  activate
+  tell application "System Events" to keystroke "r" using {command down}
+end tell
+  activate
+
+tell application "System Events"
+  tell process "finder"
+    activate
+    keystroke tab using {command down}
+  end tell
+end tell

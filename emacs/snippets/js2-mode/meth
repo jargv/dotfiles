@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: meth
+# key: meth
+# --
+${1:Class}.prototype.${2:method} = function($3){
+
+}

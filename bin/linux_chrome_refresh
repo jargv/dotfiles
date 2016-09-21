@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+xdotool windowfocus $1 key F5 windowfocus `xdotool getwindowfocus`

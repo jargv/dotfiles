@@ -1,0 +1,26 @@
+snippet fn
+func! $1($2)
+   ${VISUAL}$0
+endfunc
+endsnippet
+
+snippet if "conditional"
+if ${1:0}
+   ${VISUAL}$2
+endif$0
+endsnippet
+snippet build "set variables for my build stuff" !b
+let g:makeBuildtool = "`!v g:makeBuildtool`"
+let g:makeTarget = "`!v g:makeTarget`"
+let g:runTarget = "`!v g:runTarget`"
+let g:makeDirectory = "`!v g:makeDirectory`"
+
+let g:makeOnSave = `!v g:makeOnSave`
+let g:closeOnCollectErrors = `!v g:closeOnCollectErrors`
+
+let g:browserReloadOnMake = `!v g:browserReloadOnMake`
+let g:browserReloadPort = "`!v g:browserReloadPort`"
+endsnippet
+snippet lvimrc "set this file to be the lvimrc instead of the project root" !b
+let g:lvimrc = g:localvimrc_script
+endsnippet

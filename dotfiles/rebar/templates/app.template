@@ -1,0 +1,8 @@
+{variables, [{appname, "my_app"}]}.
+{template, "appname.app.src"    , "src/{{appname}}.app.src"}.
+{template, "appname.erl"        , "src/{{appname}}.erl"}.
+{template, "appname_handler.erl", "src/{{appname}}_handler.erl"}.
+{template, "appname_sup.erl"    , "src/{{appname}}_sup.erl"}.
+{template, "index.html"         , "frontend/index.html"}.
+{file, "rebar.config"           , "rebar.config"}.
+{file, ".gitignore"             , ".gitignore"}.
