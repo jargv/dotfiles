@@ -12,3 +12,8 @@ antigen/
 *.pyc
 dotfiles/tmux/resurrect/*
 dotfiles/tmux/plugins/
+
+ergodox/kll
+ergodox/log
+ergodox/*.bin
+ergodox/*.kll
