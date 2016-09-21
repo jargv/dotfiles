@@ -24,7 +24,6 @@
    "}}}
 
    Plugin 'cespare/vim-toml'
-   Plugin 'embear/vim-localvimrc'
    Plugin 'pangloss/vim-javascript'
    Plugin 'helino/vim-json'
    Plugin 'Raimondi/delimitMate'
@@ -437,29 +436,13 @@ nnoremap <leader>, :TagbarOpenAutoClose<cr>
   nnoremap <leader>c :call <SID>reloadConfig()<CR><CR>
   nnoremap <leader>C :call <SID>goConfig()<CR><CR>
 
-  func! <SID>getLocalVimrc()
-     if exists("g:lvimrc")
-       return g:lvimrc
-     endif
-     let gitRoot = get(split(system("git rev-parse --show-toplevel"), '\n'), 0, "")
-     if v:shell_error != 0
-        return ""
-     endif
-     return gitRoot."/.lvimrc"
-  endfunc
-
   func! <SID>goConfig()
-    let localVimrc = <sid>getLocalVimrc()
     let ft = &filetype
     tabedit ~/config/dotfiles/vimrc.vim
 
     if !empty(ft)
       exec "vsplit ~/.vim/ftplugin/".ft.".vim"
     endif
-
-    " if len(localVimrc) > 0
-    "   exec "split ".localVimrc
-    " endif
 
     cd ~/config
   endfunc
