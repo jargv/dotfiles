@@ -12,7 +12,6 @@ set nocindent nosmartindent autoindent
 
 "completion {{{1
 inoremap <buffer> . .
-setlocal completeopt=menu,menuone,preview,longest
 
 "intellij integration {{{1
 let s:file = "/tmp/intellij-vim-files"

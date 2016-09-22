@@ -30,7 +30,7 @@
    Plugin 'Raimondi/delimitMate'
    Plugin 'PeterRincker/vim-argumentative'
    Plugin 'JulesWang/css.vim'
-   "Plugin 'artur-shaik/vim-javacomplete2'
+   Plugin 'artur-shaik/vim-javacomplete2'
    Plugin 'evanmiller/nginx-vim-syntax'
    Plugin 'tpope/vim-repeat'
    Plugin 'ekalinin/Dockerfile.vim'
