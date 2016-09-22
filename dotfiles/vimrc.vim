@@ -24,6 +24,7 @@
    "}}}
 
    Plugin 'cespare/vim-toml'
+   Plugin 'trevordmiller/nova-vim'
    Plugin 'pangloss/vim-javascript'
    Plugin 'helino/vim-json'
    Plugin 'Raimondi/delimitMate'
@@ -304,6 +305,7 @@
   set ttyfast
   if g:isMac
     colorscheme atom
+    colorscheme nova
   elseif g:isLinux
     colorscheme atom
   endif
