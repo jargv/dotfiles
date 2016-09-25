@@ -304,10 +304,9 @@
   set t_ut= "fix the weird background erasing crap
   set ttyfast
   if g:isMac
-    colorscheme atom
     colorscheme nova
   elseif g:isLinux
-    colorscheme atom
+    colorscheme oceandeep | set bg=dark
   endif
 
   nnoremap <f3> :NextColorScheme<cr>
@@ -506,6 +505,7 @@ nnoremap <leader>, :TagbarOpenAutoClose<cr>
       echom "Reload on save [ON]"
     else
       echom "Reload on save: [OFF]"
+      let g:browserReloadArgs = ""
     endif
     let g:browserReloadOnMake = !g:browserReloadOnMake
   endfunc

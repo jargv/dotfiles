@@ -1,2 +1,6 @@
-#!/usr/bin/env sh
-xdotool windowfocus $1 key F5 windowfocus `xdotool getwindowfocus`
+#!/usr/bin/env bash
+returnWindow=$(xdotool getwindowfocus)
+echo $returnWindow
+xdotool windowfocus --sync $1
+xdotool key F5
+xdotool windowfocus --sync $returnWindow
