@@ -5,6 +5,7 @@ set -e
 
 if [ $(uname) == "Linux" ]; then
   sudo apt-get install xorg-dev # for x, for clipboard
+  sudo apt-get install python3-dev
 fi
 
 mkdir -p ~/build
