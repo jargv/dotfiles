@@ -317,6 +317,11 @@
 "prototype settings {{{1
 nnoremap <leader>, :TagbarOpenAutoClose<cr>
 
+"Curosr shape in insert mode:
+let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+
 "settings {{{1
   "vim, not vi! {{{2
     set nocompatible
@@ -1166,10 +1171,10 @@ endfunc
    " endif
    ""}}}
    "use the cursorline as mode indicator {{{1
-      autocmd InsertEnter * set cursorline
-      autocmd InsertLeave * set nocursorline
-      highlight CursorLine cterm=none
-      set nocursorline
+      " autocmd InsertEnter * set cursorline
+      " autocmd InsertLeave * set nocursorline
+      " highlight CursorLine cterm=none
+      " set nocursorline
 
    "tabline {{{1
       nnoremap <leader>gt :let g:gitStatusInTablineShown = !g:gitStatusInTablineShown<cr><C-L>

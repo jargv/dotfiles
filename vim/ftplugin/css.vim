@@ -16,7 +16,7 @@ inoremap <buffer> <expr> ; <sid>semicolon()
 func! <sid>semicolon()
    let source = getline('.')
    if match(source, ':') != -1
-      return ";"
+      return ";"
    else
       return ": "
    endif

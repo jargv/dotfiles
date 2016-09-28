@@ -20,3 +20,4 @@ mkdir -p ~/.config/autokey/data
 
 #report completion of install script
 echo config installed
+echo "don't forget tpm ~/config/setup/tmp.sh"
