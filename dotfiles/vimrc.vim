@@ -30,16 +30,16 @@
    Plugin 'Raimondi/delimitMate'
    Plugin 'PeterRincker/vim-argumentative'
    Plugin 'JulesWang/css.vim'
-   Plugin 'artur-shaik/vim-javacomplete2'
+   " Plugin 'artur-shaik/vim-javacomplete2'
    Plugin 'evanmiller/nginx-vim-syntax'
    Plugin 'tpope/vim-repeat'
    Plugin 'ekalinin/Dockerfile.vim'
    Plugin 'rking/ag.vim'
-   Plugin 'diepm/vim-rest-console'
+   " Plugin 'diepm/vim-rest-console'
    Plugin 'tpope/vim-obsession'
    Plugin 'reedes/vim-pencil'
    Plugin 'Wolfy87/vim-enmasse'
-   Plugin 'Wolfy87/vim-expand'
+   " Plugin 'Wolfy87/vim-expand'
    Plugin 'c0r73x/vimdir.vim'
    "Plugin 'chriskempson/base16-vim'
    Plugin 'xolox/vim-misc'
@@ -50,7 +50,7 @@
    "Plugin 'altercation/vim-colors-solarized'
    Plugin 'flazz/vim-colorschemes'
    Plugin 'isRuslan/vim-es6'
-   Plugin 'octol/vim-cpp-enhanced-highlight'
+   " Plugin 'octol/vim-cpp-enhanced-highlight'
    Plugin 'vim-scripts/glsl.vim'
    Plugin 'mattn/emmet-vim'
    "Plugin 'junegunn/vim-easy-align' {{{2
@@ -176,7 +176,7 @@
          autocmd BufReadPost fugitive://* set bufhidden=delete
       augroup END
    "Plugin 'scrooloose/syntastic' {{{2
-   Plugin 'scrooloose/syntastic'
+   "Plugin 'scrooloose/syntastic'
      let g:syntastic_error_symbol='✗'
      let g:syntastic_style_error_symbol='✗'
      let g:syntastic_warning_symbol='⚠'
