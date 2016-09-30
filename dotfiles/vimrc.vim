@@ -1264,11 +1264,12 @@ endfunc
     endfunc
 
     set statusline=
-    set statusline+=\ %y\                    " file relative to current directory
-    set statusline+=%{GetRelativeFilename()} " file relative to current directory
-    "set statusline+=:%l:%c                  " line and column
+    set statusline+=\ %{GetRelativeFilename()} " file relative to current directory
     set statusline+=\ %m                     " modified flag [+]
+    set statusline+=%y                     " filetype
+    "set statusline+=:%l:%c                  " line and column
     set statusline+=%=                       " separator... now start on the right side
+    set statusline+=\ %<                     " where to truncate if the line is too long
     set statusline+=%{GetTerseCwd()}\        "working dir on the right
 "text objects {{{1
    "line (il/al) {{{2
