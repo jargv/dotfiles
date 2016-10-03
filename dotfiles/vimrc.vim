@@ -57,7 +57,7 @@
      Plugin 'junegunn/vim-easy-align'
      vmap ga <Plug>(EasyAlign)
    "Plugin 'majutsushi/tagbar' {{{2
-      Plugin 'majutsushi/tagbar'
+      "Plugin 'majutsushi/tagbar'
       let g:tagbar_left = 0
       "let g:tagbar_vertical = 30
    "Plugin 'guns/vim-sexp' {{{2
