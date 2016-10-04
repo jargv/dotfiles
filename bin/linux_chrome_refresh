@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 returnWindow=$(xdotool getwindowfocus)
 xdotool windowfocus --sync $1
-xdotool key F5
+xdotool key F5 F5 F5 F5
 xdotool windowfocus --sync $returnWindow
