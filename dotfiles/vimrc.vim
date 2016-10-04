@@ -306,7 +306,7 @@
   if g:isMac
     colorscheme nova
   elseif g:isLinux
-    colorscheme oceandeep | set bg=dark
+    colorscheme nova
   endif
 
   nnoremap <f3> :NextColorScheme<cr>
