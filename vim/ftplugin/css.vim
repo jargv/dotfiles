@@ -10,7 +10,7 @@ func! <SID>shift_tab()
 endfunc
 
 inoremap <buffer> @ @
-inoremap <buffer> : : 
+"inoremap <buffer> : : 
 
 inoremap <buffer> <expr> ; <sid>semicolon()
 func! <sid>semicolon()

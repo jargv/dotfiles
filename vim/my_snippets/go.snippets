@@ -132,8 +132,13 @@ cmd := exec.Command(
 endsnippet
 snippet te "error in test" !b
 if err != nil {
-  t.Errorf("e: %#v\n", err)
+  t.Errorf("$1: %v\n", err)
 }$0
+endsnippet
+snippet tne "equality in test" !b
+if $1 != $2 {
+  t.Errorf(\`$1 != $2, $1 == "%v"\`, $1)
+}
 endsnippet
 snippet tl "test log values" !b
 t.Errorf("$1: ${1/[^\,]+/%#v/g}", ${1})
