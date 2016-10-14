@@ -53,6 +53,7 @@
    " Plugin 'octol/vim-cpp-enhanced-highlight'
    Plugin 'vim-scripts/glsl.vim'
    Plugin 'mattn/emmet-vim'
+   Plugin 'ervandew/supertab'
    "Plugin 'junegunn/vim-easy-align' {{{2
      Plugin 'junegunn/vim-easy-align'
      vmap ga <Plug>(EasyAlign)
@@ -72,7 +73,7 @@
    "
      Plugin 'fatih/vim-go'
      let g:go_fmt_command = "goimports"
-     let g:go_fmt_command = "gofmt"
+     "let g:go_fmt_command = "gofmt"
      let g:go_fmt_fail_silently = 1
      let g:go_def_mapping_enabled = 0
 
@@ -526,6 +527,7 @@ let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
 
   func! <SID>DetectBuildTool()
     call <SID>InitMyMake()
+    let g:makeOnSave = 1
     let g:makeDirectory = getcwd()
     if filereadable("Makefile") || filereadable("makefile")
       let g:makeBuildtool = "make"
