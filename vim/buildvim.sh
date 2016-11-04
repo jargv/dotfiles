@@ -4,8 +4,12 @@
 set -e
 
 if [ $(uname) == "Linux" ]; then
-  sudo apt-get install xorg-dev # for x, for clipboard
-  sudo apt-get install python3-dev
+  if [ -x /usr/bin/pacman ]; then
+    sudo pacman -S xorg-server-devel
+  else
+    sudo apt-get install xorg-dev # for x, for clipboard
+    sudo apt-get install python3-dev
+  fi
 fi
 
 mkdir -p ~/build
@@ -28,3 +32,5 @@ make distclean
 
 make
 sudo make install
+
+vim --version | grep clipboard
