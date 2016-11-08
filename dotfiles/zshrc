@@ -23,8 +23,8 @@ export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
 export GOPATH=~/projects
 export PATH=$PATH:~/projects/bin
 if [[ $(uname) == "Linux" ]]; then
-  export GOROOT=/usr/local/go
-  export PATH=$GOROOT/bin:$PATH
+  # export GOROOT=/usr/local/go
+  # export PATH=$GOROOT/bin:$PATH
 fi
 
 #}}}
