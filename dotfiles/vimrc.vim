@@ -558,11 +558,14 @@ endif
       return
     elseif expand('%:e') == "go"
       let gopath = $GOPATH
+      let testExt = "_test.go"
       let file = expand('%:p')
-      if file[0 : len(gopath) - 1] == gopath
+      if file[-len(testExt):] == testExt
+        let g:makeBuildtool = "go test"
+        let g:makeTarget = ""
+      elseif file[0 : len(gopath) - 1] == gopath
         let g:makeBuildtool = "go install"
-        let package = expand('%:p:h')[len($GOPATH . "/src/"):]
-        let g:makeTarget = package
+        let g:makeTarget = expand('%:p:h')[len($GOPATH . "/src/"):]
       else
         let g:makeBuildtool = "go run"
         let g:makeTarget = expand('%')
