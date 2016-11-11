@@ -9,4 +9,4 @@ nnoremap <buffer> <leader>;n :GoRename<cr>
 nnoremap <buffer> <leader>;m :GoMetaLinter<cr>
 nnoremap <buffer> <leader>;I :GoImports<cr>
 
-nmap <buffer> gd <Plug>(go-def)
+nnoremap <buffer> gd :GoDef<cr>

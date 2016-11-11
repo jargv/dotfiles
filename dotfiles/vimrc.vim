@@ -305,7 +305,7 @@
   set t_ut= "fix the weird background erasing crap
   set ttyfast
   if g:isMac
-    colorscheme nova
+    colorscheme Revolution
   elseif g:isLinux
     colorscheme nova
   endif
