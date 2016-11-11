@@ -146,3 +146,26 @@ endsnippet
 snippet tlog "test log message" !b
 t.Errorf("$1")
 endsnippet
+snippet jsonlog "log out some json" !b
+b, err := json.MarshalIndent($1, "  ", "  ")
+if err != nil {
+  return fmt.Errorf("couldn't format json: %v", err)
+}
+log.Printf("string(b: %s", string(b))
+endsnippet
+snippet jsonbody "get json from a response body" !b
+var ${2:body} interface{}
+dec := json.NewDecoder($1.Body)
+err = dec.Decode(&body)
+if err != nil {
+  return fmt.Errorf("couldn't decode result json: %v", err)
+}
+endsnippet
+snippet mysql "mysql table with the standard stuff in it" !b
+CREATE TABLE ${1:foo} (
+    id          BIGINT NOT NULL AUTO_INCREMENT,
+    customer_id TEXT,
+    user_id     TEXT
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_general_ci;
+endsnippet
