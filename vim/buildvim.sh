@@ -3,10 +3,6 @@
 #fail on first error
 #set -e
 
-if [ $(uname) = "Linux" ] ; then
-  sudo apt-get install xorg-dev # for x, for clipboard
-  sudo apt-get install libx11-dev libxtst-dev # for x, for clipboard
-  sudo apt-get install python3-dev
 if [ $(uname) == "Linux" ]; then
   if [ -x /usr/bin/pacman ]; then
     sudo pacman -S xorg-server-devel
