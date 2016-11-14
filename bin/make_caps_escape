@@ -1,0 +1,4 @@
+# make this a startup application in xfce:
+# Main Menu > Settings > Settings Manager > Session and Startup > Application Autostart
+# make sure to use an absolute path to this script
+setxkbmap -option caps:swapescape

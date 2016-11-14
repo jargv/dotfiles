@@ -4,7 +4,7 @@
 # create a cronjob with:
 # crontab -e
 # and add this line:
-# * * * * * /home/jonathan/config/bin/volume down
+# * * * * * /home/j/config/bin/linux_volume_dimmer down
 # the stars mean every interval, so every minute
 
 case $1 in
