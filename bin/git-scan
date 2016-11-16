@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+git log --reverse --oneline -- $1 | cut -f1 -d' ' | while read hash; do
+  git difftool $hash~1 $hash -- $1 </dev/tty
+  if [ $? -ne "0" ]; then
+    exit
+  fi
+done
