@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+if [[ $1 == "" ]]; then
+  if [[ $(uname) == "Linux" ]]; then
+    xclip -sel clipboard <&0
+  else
+    echo "you still need to implement this on mac"
+  fi
+else
+  if [[ $(uname) == "Linux" ]]; then
+    cat $1 | xclip -sel clipboard <&0
+  else
+    echo "you still need to implement this on mac"
+  fi
+fi
