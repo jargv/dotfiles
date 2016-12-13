@@ -10,3 +10,48 @@ nnoremap <buffer> <leader>;m :GoMetaLinter<cr>
 nnoremap <buffer> <leader>;I :GoImports<cr>
 
 nnoremap <buffer> gd :GoDef<cr>
+
+nnoremap <buffer> <leader>;j :call JoinVars()<cr>
+nnoremap <buffer> <leader>;k :call SplitArgs()<cr>
+
+func! JoinVars()
+  let startline = line('.')
+  let line = startline
+  while getline(line) =~ '^\s*var\s\+'
+    let line += 1
+  endwhile
+  let endline = line - 1
+  if endline < startline
+    return
+  endif
+  exec startline.','.endline.'s/\s*var\s*/\t/'
+  call append(endline, ')')
+  call append(startline-1, 'var (')
+endfunc
+
+func! SplitArgs()
+  let cursor = getpos('.')
+  let line = getline('.')
+  let indent = repeat(' ', indent('.'))
+
+  let lineParts = split(line, '(')
+  if len(lineParts) < 2
+    return
+  endif
+  let before = lineParts[0]
+  let line = join(lineParts[1:], '(')
+
+  let lineParts = split(line, ')', 1)
+  if len(lineParts) < 2
+    return
+  endif
+  let after = lineParts[len(lineParts) - 1]
+  let line = join(lineParts[:len(lineParts)-2], ')')
+
+  let args = split(line, ',\s*')
+  let args = map(args, "indent.'  '.v:val.','")
+  let args = add(args, indent.')'.after)
+  call append('.', args)
+  call setline('.', before.'(')
+  call setpos('.', cursor)
+endfunc
