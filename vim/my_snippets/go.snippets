@@ -140,6 +140,13 @@ if $1 != $2 {
   t.Fatalf(\`$1 != $2, $1 == "%v"\`, $1)
 }
 endsnippet
+snippet tde "test deep equal" !b
+if !reflect.DeepEqual($1, $2) {
+  log.Printf("$1:%v\n", $1)
+  log.Printf("$2:%v\n", $2)
+  t.Fatalf("values not deep equal")
+}
+endsnippet
 snippet tl "test log values" !b
 t.Errorf("$1: ${1/[^\,]+/%#v/g}", ${1})
 endsnippet
