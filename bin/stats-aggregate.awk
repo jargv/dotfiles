@@ -1,7 +1,7 @@
 BEGIN {
 }
 
-function extension(str){
+function getExtension(str){
   n = split(str, parts, ".")
   if (n == 1){
     return "<NO EXTENSION>"
@@ -11,7 +11,7 @@ function extension(str){
 }
 
 $2 != "total" {
-  by_type[extension($2)] += $1
+  by_type[getExtension($2)] += $1
 }
 
 $2 ~ "CMakeLists.txt" {
@@ -21,7 +21,7 @@ $2 ~ "CMakeLists.txt" {
 }
 
 $2 ~ "test" {
-  by_type[extension($2)] -= $1
+  by_type[getExtension($2)] -= $1
   by_type["TEST"] += $1
 }
 
@@ -38,7 +38,7 @@ END {
   delete by_type["ttf"]
   delete by_type["pdf"]
 
-  #print each extension, collect the total
+  #print each getExtension, collect the total
   total=0
   for (x in by_type) {
     if (by_type[x] > 0) {
