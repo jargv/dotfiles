@@ -316,26 +316,8 @@
   highlight Comment cterm=italic
 
 "prototype settings {{{1
-nnoremap <leader>, :TagbarOpenAutoClose<cr>
-
-if g:isLinux
-  augroup LinuxCursor
-    au!
-    au VimEnter,InsertLeave * silent execute '!echo -ne "\e[2 q"' | redraw!
-    au InsertEnter,InsertChange *
-          \ if v:insertmode == 'i' |
-          \   silent execute '!echo -ne "\e[6 q"' | redraw! |
-          \ elseif v:insertmode == 'r' |
-          \   silent execute '!echo -ne "\e[4 q"' | redraw! |
-          \ endif
-    au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
-  augroup END
-else
-  "Curosr shape in insert mode:
-  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-  let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
-  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-endif
+  nnoremap <leader>, :TagbarOpenAutoClose<cr>
+  nnoremap <leader>y [sciw<esc>:echo @"<cr>a
 
 "settings {{{1
   "vim, not vi! {{{2
@@ -1189,11 +1171,34 @@ endfunc
    "   highlight Pmenusel ctermbg=13 ctermfg=16
    " endif
    ""}}}
-   "use the cursorline as mode indicator {{{1
+"cursor {{{1
+   "use the cursorline as mode indicator {{{2
       " autocmd InsertEnter * set cursorline
       " autocmd InsertLeave * set nocursorline
       " highlight CursorLine cterm=none
       " set nocursorline
+      "
+   "change cursor shape in the terminal {{{2
+      if g:isLinux
+        augroup LinuxCursor
+          au!
+          au VimEnter,InsertLeave * silent execute '!echo -ne "\e[2 q"' | redraw!
+          au InsertEnter,InsertChange *
+                \ if v:insertmode == 'i' |
+                \   silent execute '!echo -ne "\e[6 q"' | redraw! |
+                \ elseif v:insertmode == 'r' |
+                \   silent execute '!echo -ne "\e[4 q"' | redraw! |
+                \ endif
+          au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
+        augroup END
+      else
+        "Curosr shape in insert mode:
+        let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+        let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+        let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+      endif
+
+   "}}}
 
    "tabline {{{1
       nnoremap <leader>gt :let g:gitStatusInTablineShown = !g:gitStatusInTablineShown<cr><C-L>
@@ -1354,3 +1359,24 @@ if has('nvim')
   tnoremap  <c-\><c-n>
   augroup END
 endif
+
+"embedded languages {{{1
+func! HighlightEmbedded(ft, start, end)
+  highlight clear HighlightEmbeddedSnip
+  "lots of scripts use this variable to bail early
+  if exists('b:current_syntax')
+    let s:current_syntax = b:current_syntax
+    unlet b:current_syntax
+  endif
+
+  exec 'syntax include @'.a:ft.' syntax/'.a:ft.'.vim'
+  exec 'syntax region sqlString matchgroup=HighlightEmbeddedSnip start=+'.a:start.'+ end=+'.a:end.'+ contains=@'.a:ft
+  highlight default HighlightEmbeddedSnip ctermfg=none ctermbg=none
+
+  "reset the value
+  if exists('s:current_syntax')
+    let b:current_syntax=s:current_syntax
+  else
+    unlet b:current_syntax
+  end
+endfunc

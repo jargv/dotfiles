@@ -1,5 +1,7 @@
+" settings {{{1
 setlocal nolist
 
+" key maps {{{1
 inoremap <buffer> . .
 nnoremap <buffer> <leader>;i :GoInfo<cr>
 nnoremap <buffer> <leader>;d :GoDoc<cr>
@@ -8,12 +10,10 @@ nnoremap <buffer> <leader>;l :GoLint<cr>
 nnoremap <buffer> <leader>;n :GoRename<cr>
 nnoremap <buffer> <leader>;m :GoMetaLinter<cr>
 nnoremap <buffer> <leader>;I :GoImports<cr>
-
 nnoremap <buffer> gd :GoDef<cr>
 
+" <leader>;j = JoinVars() {{{1
 nnoremap <buffer> <leader>;j :call JoinVars()<cr>
-nnoremap <buffer> <leader>;k :call SplitArgs()<cr>
-
 func! JoinVars()
   let startline = line('.')
   let line = startline
@@ -29,6 +29,8 @@ func! JoinVars()
   call append(startline-1, 'var (')
 endfunc
 
+" <leader>;k = SplitArgs() {{{1
+nnoremap <buffer> <leader>;k :call SplitArgs()<cr>
 func! SplitArgs()
   let cursor = getpos('.')
   let line = getline('.')
@@ -55,3 +57,7 @@ func! SplitArgs()
   call setline('.', before.'(')
   call setpos('.', cursor)
 endfunc
+
+" <leader>;s[sh] = embedded highlighting {{{1
+nnoremap <buffer> <leader>;ss :call HighlightEmbedded('sql', '`', '`')<cr>
+nnoremap <buffer> <leader>;sh :call HighlightEmbedded('html', '`', '`')<cr>

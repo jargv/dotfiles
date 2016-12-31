@@ -23,6 +23,9 @@ if err != nil {
   panic(err)
 }$0
 endsnippet
+snippet panic "panic with an error" !b
+panic(fmt.Errorf("$1"))
+endsnippet
 snippet fn "function" !w
 func$1($2)$3{
   $4
