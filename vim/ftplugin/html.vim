@@ -25,7 +25,7 @@ endfunc
 "dont do the underlines and bolds for link and strongs, etc. in html {{{1
 let html_no_rendering=1
 
-"remap K to work with long attributes{{{1
+"<leader>;k reformats long attributes{{{1
 map <buffer> <leader>;k :call <sid>splitAttrs()<cr>
 func! <sid>splitAttrs()
   let def = &gdefault

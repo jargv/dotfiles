@@ -1,5 +1,7 @@
 "trial settings {{{1
 
+source ~/config/vim/ftplugin/html.vim
+
 map <leader>i :call <SNR>FoldIndents()<CR>
 func! <SNR>FoldIndents()
     syntax region myFold start=/{/ end=/}/ transparent fold keepend extend
@@ -29,6 +31,7 @@ endfunction
 "inoreab <buffer> fn function(){<CR>}<ESC>==k$hhh
 "noreab <buffer> nfor <ESC>0wifor (var i=0; i<<ESC>A<BS>; i++){<CR>}<ESC>O
 "noreab <buffer> afor <ESC>dBifor (var i=0, len=<ESC>pa.length; i<len; i++){<CR>}<ESC>Ovar = <C-R>"[i];<ESC>0ea
+
 
 "toggle to corresponding css file {{{1
 map <buffer> <leader>a :exec "vsplit ".expand('%:r').".css"<cr>
