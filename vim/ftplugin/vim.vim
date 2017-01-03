@@ -11,3 +11,4 @@ func! <SID>join()
 endfunc
 "}}}
 nnoremap <f7> :source %<cr>
+nnoremap <buffer> <leader><leader> :w<cr>:source %<cr>

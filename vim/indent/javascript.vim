@@ -1,6 +1,11 @@
 "todo: check out searchpair
+
+source ~/config/vim/indent/html.vim
+
 setlocal indentexpr=JonboyJSIndent(v:lnum)
 setlocal indentkeys=o,O,*<Return>,<CR>,{,}
+
+set debug=msg
 
 func! JonboyJSIndent(lnum)
    let ind = 0
@@ -41,5 +46,11 @@ func! JonboyJSIndent(lnum)
       endif
    endif
 
-   return indentAbove + (&sw * ind)
+   let jsIndent = indentAbove + (&sw * ind)
+
+   if jsIndent == indentAbove
+      return HTMLIndentCalc(a:lnum)
+   endif
+
+   return jsIndent
 endfunc
