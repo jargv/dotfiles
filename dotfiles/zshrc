@@ -77,6 +77,9 @@ setopt appendhistory inc_append_history share_history hist_ignore_dups
 #{{{1 vim
 bindkey -v
 
+#don't stop the backspace at the insert point
+bindkey "^?" backward-delete-char
+
 #remove all the keymaps that make esc slow
 export KEYTIMEOUT=1
 KEYTIMEOUT=1
