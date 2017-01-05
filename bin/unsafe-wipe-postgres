@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+dir=/var/lib/postgres/data
+lang=en_US.UTF-8
+
+sudo rm -rf $dir
+sudo mkdir $dir
+sudo chmod 700 $dir
+sudo chown postgres $dir
+
+sudo su - postgres -c "initdb --local $lang -E UTF8 -D $dir"
