@@ -44,7 +44,7 @@
    "Plugin 'chriskempson/base16-vim'
    Plugin 'xolox/vim-misc'
    Plugin 'xolox/vim-colorscheme-switcher'
-   Plugin 'edsono/vim-matchit'
+   "Plugin 'edsono/vim-matchit'
    Plugin 'tpope/vim-surround'
    Plugin 'tpope/vim-commentary'
    "Plugin 'altercation/vim-colors-solarized'
@@ -58,8 +58,8 @@
      Plugin 'junegunn/vim-easy-align'
      vmap ga <Plug>(EasyAlign)
    "Plugin 'majutsushi/tagbar' {{{2
-      "Plugin 'majutsushi/tagbar'
-      let g:tagbar_left = 0
+      Plugin 'majutsushi/tagbar'
+      let g:tagbar_left = 1
       "let g:tagbar_vertical = 30
    "Plugin 'guns/vim-sexp' {{{2
       Plugin 'guns/vim-sexp'
@@ -305,7 +305,9 @@
   set t_ut= "fix the weird background erasing crap
   set ttyfast
   if g:isMac
-    colorscheme Revolution
+    "colorscheme Revolution
+    colorscheme seoul256
+    colorscheme sierra
   elseif g:isLinux
     colorscheme nova
   endif
