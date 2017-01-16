@@ -26,15 +26,20 @@ endfunction
 " setlocal conceallevel=1
 " highlight link ProtoConceal Statement
 
-"inoremap . .
-
 "inoreab <buffer> fn function(){<CR>}<ESC>==k$hhh
 "noreab <buffer> nfor <ESC>0wifor (var i=0; i<<ESC>A<BS>; i++){<CR>}<ESC>O
 "noreab <buffer> afor <ESC>dBifor (var i=0, len=<ESC>pa.length; i<len; i++){<CR>}<ESC>Ovar = <C-R>"[i];<ESC>0ea
 
 
-"toggle to corresponding css file {{{1
-map <buffer> <leader>a :exec "vsplit ".expand('%:r').".css"<cr>
+
+"tern {{{1
+inoremap <buffer> . .
+nnoremap <buffer> gd :TernDef<cr>
+nnoremap <buffer> <leader>;i :TernType<cr>
+nnoremap <buffer> <leader>;n :TernRename<cr>
+
+"toggle to corresponding css file (off) {{{1
+"map <buffer> <leader>a :exec "vsplit ".expand('%:r').".css"<cr>
 
 "utility functions {{{1
 func! <SID>InCode()
@@ -57,7 +62,7 @@ function! s:getVisualSelection()
   return join(lines, "\n")
 endfunction
 
-" abbreviations {{{1
+" abbreviations (off) {{{1
 " inoreabbr <buffer> if <C-R>=<SID>If()<CR>
 "func! <SID>If()
 "   if !<SID>InCode()

@@ -23,6 +23,7 @@
       "}}}
    "}}}
 
+   Plugin 'ternjs/tern_for_vim'
    Plugin 'cespare/vim-toml'
    Plugin 'trevordmiller/nova-vim'
    Plugin 'pangloss/vim-javascript'
@@ -44,7 +45,7 @@
    "Plugin 'chriskempson/base16-vim'
    Plugin 'xolox/vim-misc'
    Plugin 'xolox/vim-colorscheme-switcher'
-   "Plugin 'edsono/vim-matchit'
+   "Plugin 'edsono/vim-matchit' TODO: figure out where this went!
    Plugin 'tpope/vim-surround'
    Plugin 'tpope/vim-commentary'
    "Plugin 'altercation/vim-colors-solarized'
