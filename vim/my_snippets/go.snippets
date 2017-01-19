@@ -23,6 +23,12 @@ if err != nil {
   panic(err)
 }$0
 endsnippet
+snippet httperr "An error in an http handler" !b
+if err != nil {
+  http.Error(${3:res}, fmt.Sprintf("$1: %v", err), http.Status${2:BadRequest})
+  Meturn
+}
+endsnippet
 snippet panic "panic with an error" !b
 panic(fmt.Errorf("$1"))
 endsnippet
@@ -108,31 +114,6 @@ func main(){
 }
 endsnippet
 
-snippet postgrest "run postgrest" !b
-cmd := exec.Command(
-    "postgrest", "postgres://$1:$1@localhost:5432/$1",
-    "--port", "4000",
-    "--anonymous", "$1", //todo: create anonymous role
-    //"--schema", "public", //todo: create api schema
-    //"--jwt-secret", (default "secret") //todo: create jwt secret
-    //"--pool", "200",
-    //"--max-rows", (default unlimited)
-  )
-  cmd.Stdout = os.Stdout
-  cmd.Stderr = os.Stderr
-  err := cmd.Start()
-
-  if err != nil {
-    log.Fatalf("unhandled error: %#v\n", err)
-  }
-
-  u, err := url.Parse("http://localhost:4000")
-  if err != nil {
-    log.Fatal(err)
-  }
-  proxy := httputil.NewSingleHostReverseProxy(u)
-  http.Handle("/data/", http.StripPrefix("/data", proxy))
-endsnippet
 snippet te "error in test" !b
 if err != nil {
   t.Fatalf("$1: %v\n", err)
