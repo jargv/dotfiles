@@ -526,9 +526,7 @@
     call <SID>InitMyMake()
     let g:makeOnSave = 1
     let g:makeDirectory = getcwd()
-    if filereadable("Makefile") || filereadable("makefile")
-      let g:makeBuildtool = "make"
-    elseif filereadable("build.ninja")
+    if filereadable("build.ninja")
       let g:makeBuildtool = "ninja"
     elseif len(glob('*.xcodeproj'))
       let g:makeBuildtool = "xcodebuild"
@@ -571,6 +569,8 @@
     elseif filereadable("build.gradle")
       let g:makeBuildtool = "gradle"
       let g:makeTarget = "build"
+    elseif filereadable("Makefile") || filereadable("makefile")
+      let g:makeBuildtool = "make"
     else
        "just try to execute the file
        let g:makeBuildTool = ""
