@@ -23,6 +23,7 @@
       "}}}
    "}}}
 
+   Plugin 'jargv/vim-go-error-folds'
    Plugin 'ternjs/tern_for_vim'
    Plugin 'cespare/vim-toml'
    Plugin 'trevordmiller/nova-vim'
