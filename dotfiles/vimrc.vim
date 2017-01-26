@@ -23,6 +23,8 @@ let g:isMac = !g:isLinux
       "}}}
    "}}}
 
+   Plugin 'FrigoEU/psc-ide-vim'
+   Plugin 'raichoo/purescript-vim'
    Plugin 'jargv/vim-go-error-folds'
    Plugin 'ternjs/tern_for_vim'
    Plugin 'cespare/vim-toml'
@@ -567,6 +569,8 @@ let g:isMac = !g:isLinux
     elseif expand('%:e') == "ts"
       let g:makeBuildtool = "tsc"
       let g:makeTarget = expand('%')
+    elseif expand('%:e') == "purs"
+      let g:makeBuildtool = "pulp build"
     elseif filereadable("build.gradle")
       let g:makeBuildtool = "gradle"
       let g:makeTarget = "build"
