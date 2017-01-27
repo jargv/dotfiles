@@ -51,6 +51,10 @@
   recentrepo = /Users/jonathangeddes/projects/domo/domoweb
 [tig]
   main-view-author = abbreviated
-  main-view-date = relative
-  main-view-line-number = yes,interval=1
+  main-view-date = relative-compact
+  #main-view-line-number = yes,interval=1
+  main-view-id = yes,width=10
   mouse = yes
+[tig "bind"]
+  main = d !git difftool %(commit)~1 %(commit)
+  status = d !git difftool %(file)

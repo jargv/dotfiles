@@ -1,8 +1,8 @@
 "setup {{{1
-  let mapleader = " "
-  set shortmess+=I
-  let g:isLinux = system('uname') == "Linux\n"
-  let g:isMac = !g:isLinux
+let mapleader = " "
+set shortmess+=I
+let g:isLinux = system('uname') == "Linux\n"
+let g:isMac = !g:isLinux
 
 "plugins {{{1
    "setup Vundle {{{2
@@ -307,7 +307,7 @@
   set t_ut= "fix the weird background erasing crap
   set ttyfast
   if g:isMac
-    colorscheme southwest-fog
+    colorscheme swamplight
   elseif g:isLinux
     colorscheme nova
   endif
@@ -662,7 +662,7 @@ endfunc
     nnoremap <leader>gi :!git rebase -i<CR>
     nnoremap <leader>gl :!git log <CR><CR>
     nnoremap <leader>gh :!git hist --all <CR><CR>
-    nnoremap <leader>gH :!git hist<CR><CR>
+    nnoremap <leader>gH :!git hist --all --since=1.day<CR><CR>
     nnoremap <leader>gb :Gblame w<CR>
     nnoremap <leader>gs :!tig status<CR><CR>
     nnoremap <leader>gg :exec ":!git ".input("git> ")<CR>
