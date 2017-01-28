@@ -55,6 +55,11 @@
   #main-view-line-number = yes,interval=1
   main-view-id = yes,width=10
   mouse = yes
+  line-graphics=utf-8
+  tab-size=2
+  ignore-space=all
 [tig "bind"]
   main = d !git difftool %(commit)~1 %(commit)
+  refs = d !git difftool %(commit)
+  refs = % !git checkout -b %(prompt "branch name")
   status = d !git difftool %(file)
