@@ -58,6 +58,10 @@ let g:isMac = !g:isLinux
    Plugin 'vim-scripts/glsl.vim'
    Plugin 'mattn/emmet-vim'
    Plugin 'ervandew/supertab'
+   "Plugin 'junegunn/fzf' {{{2
+    Plugin 'junegunn/fzf'
+    nnoremap <leader>o :FZF --inline-info<cr>
+
    "Plugin 'junegunn/vim-easy-align' {{{2
      Plugin 'junegunn/vim-easy-align'
      vmap ga <Plug>(EasyAlign)
@@ -309,9 +313,9 @@ let g:isMac = !g:isLinux
   set t_ut= "fix the weird background erasing crap
   set ttyfast
   if g:isMac
-    colorscheme swamplight
+    colorscheme tcsoft
   elseif g:isLinux
-    colorscheme nova
+    colorscheme tcsoft
   endif
 
   nnoremap <f3> :NextColorScheme<cr>
@@ -802,7 +806,7 @@ endfunc
       return "" "'O'
     endfunc
   "my plugins {{{2
-    nmap <leader>o :Fquery<CR>
+    "nmap <leader>o :Fquery<CR>
   " get the styles under the cursor {{{2
     map <leader>S :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
             \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
