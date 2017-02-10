@@ -313,7 +313,7 @@ let g:isMac = !g:isLinux
   set t_ut= "fix the weird background erasing crap
   set ttyfast
   if g:isMac
-    colorscheme tcsoft
+    colorscheme anderson
   elseif g:isLinux
     colorscheme tcsoft
   endif

@@ -25,7 +25,10 @@
 [clean]
   requireForce = true
 [branch]
-  autosetupmerge = true
+  # always set up tracking branch based on the branched-from branch
+  autosetupmerge = always
+  # on pull, always do a rebase instead of a merge
+  autosetuprebase = always
 [push]
   default = simple
 [rerere]
@@ -45,6 +48,7 @@
   fshow = ! sh -c 'git show --pretty="format:" --name-only $1 | grep -v "^$" | uniq | sed -e "s#^#`git rev-parse --show-toplevel`/#"' -
   edit = ! vim -o $(git status --porcelain | cut -d' ' -f 3)
   fuckit = reset --hard
+  pushup = ! git push origin $(git rev-parse --abbrev-ref @)
 [github]
   user = jargv
 [gui]
