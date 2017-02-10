@@ -48,7 +48,7 @@
   fshow = ! sh -c 'git show --pretty="format:" --name-only $1 | grep -v "^$" | uniq | sed -e "s#^#`git rev-parse --show-toplevel`/#"' -
   edit = ! vim -o $(git status --porcelain | cut -d' ' -f 3)
   fuckit = reset --hard
-  pushup = ! git push origin $(git rev-parse --abbrev-ref @)
+  pushup = ! git push --force-with-lease origin $(git rev-parse --abbrev-ref @)
 [github]
   user = jargv
 [gui]
@@ -65,5 +65,5 @@
 [tig "bind"]
   main = d !git difftool %(commit)~1 %(commit)
   refs = d !git difftool %(commit)
-  refs = % !git checkout -b %(prompt "branch name")
   status = d !git difftool %(file)
+  refs = % !git branch %(prompt "branch name") origin/master

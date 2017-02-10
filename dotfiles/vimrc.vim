@@ -666,12 +666,12 @@ endfunc
     nnoremap <leader>gD :!git difftool -w<CR>
     nnoremap <leader>gd :!git difftool -w %<CR><CR>
     nnoremap <leader>gc :!git bedone<CR><CR>
-    nnoremap <leader>gC :!tig refs<cr><cr>
     nnoremap <leader>gi :!git rebase -i<CR>
     nnoremap <leader>gl :!git log <CR><CR>
     nnoremap <leader>gh :!git hist --all <CR><CR>
     nnoremap <leader>gH :!git hist --all --since=1.day<CR><CR>
-    nnoremap <leader>gb :Gblame w<CR>
+    nnoremap <leader>gb :!tig refs<CR><cr>
+    nnoremap <leader>gB :Gblame w<CR>
     nnoremap <leader>gs :!tig status<CR><CR>
     nnoremap <leader>gg :exec ":!git ".input("git> ")<CR>
   "working directory mappings {{{2
