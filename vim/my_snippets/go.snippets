@@ -160,3 +160,6 @@ CREATE TABLE ${1:foo} (
     PRIMARY KEY (id)
 ) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
 endsnippet
+snippet proto "Protocol buffer go:generate" !b
+//go:generate protoc -I ../proto ../proto/$1.proto --go_out=plugins=grpc:$1
+endsnippet

@@ -1,7 +1,7 @@
 module.exports = {
   config: {
     // default font size in pixels for all tabs
-    fontSize: 13,
+    fontSize: 14,
 
     //alt is meta
     modifierKeys: {
@@ -30,7 +30,7 @@ module.exports = {
     termCSS: '',
 
     // custom padding (css format, i.e.: `top right bottom left`)
-    padding: '12px 14px',
+    padding: '0 0',
 
     // some color overrides. see http://bit.ly/29k1iU2 for
     // the full list
@@ -54,13 +54,14 @@ module.exports = {
     ]
   },
 
+
   // a list of plugins to fetch and install from npm
   // format: [@org/]project[#version]
   // examples:
   //   `hyperpower`
   //   `@company/project`
   //   `project#1.0.1`
-  plugins: [],
+  plugins: ['hyper-command-gifs'],
 
   // in development, you can create a directory under
   // `~/.hyperterm_plugins/local/` and include it here
