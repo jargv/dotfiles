@@ -64,6 +64,7 @@
   ignore-space=all
 [tig "bind"]
   main = d !git difftool %(commit)~1 %(commit)
+  main = y !@clip -s %(commit)
   refs = d !git difftool %(commit)
   status = d !git difftool %(file)
   refs = % !git branch %(prompt "branch name") origin/master

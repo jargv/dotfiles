@@ -673,8 +673,8 @@ endfunc
     nnoremap <leader>gl :!git log <CR><CR>
     nnoremap <leader>gh :!git hist --all <CR><CR>
     nnoremap <leader>gH :!git hist --all --since=1.day<CR><CR>
-    nnoremap <leader>gb :!tig refs<CR><cr>
-    nnoremap <leader>gB :Gblame w<CR>
+    nnoremap <leader>gb :Gblame w<CR>
+    nnoremap <leader>gB :!tig refs<CR><cr>
     nnoremap <leader>gs :!tig status<CR><CR>
     nnoremap <leader>gg :exec ":!git ".input("git> ")<CR>
   "working directory mappings {{{2

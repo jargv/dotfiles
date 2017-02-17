@@ -4,12 +4,20 @@ if [[ $1 == "" ]]; then
   if [[ $(uname) == "Linux" ]]; then
     xclip -sel clipboard <&0
   else
-    echo "you still need to implement this on mac"
+    reattach-to-user-namespace pbcopy <&0
+  fi
+elif [[ $1 == "-s" ]]; then
+  if [[ $(uname) == "Linux" ]]; then
+    echo -n $2 | xclip -sel clipboard
+  else
+    reattach-to-user-namespace
+    echo -n $2 | reattach-to-user-namespace pbcopy
   fi
 else
   if [[ $(uname) == "Linux" ]]; then
-    cat $1 | xclip -sel clipboard <&0
+    cat $1 | xclip -sel clipboard
   else
-    echo "you still need to implement this on mac"
+    reattach-to-user-namespace
+    cat $1 | reattach-to-user-namespace pbcopy
   fi
 fi
