@@ -314,9 +314,11 @@ let g:isMac = !g:isLinux
   set ttyfast
   if g:isMac
     colorscheme apprentice
+    colorscheme oceandeep
   elseif g:isLinux
     colorscheme apprentice
     colorscheme desertedoceanburnt
+    colorscheme oceandeep
   endif
 
   nnoremap <f3> :NextColorScheme<cr>
