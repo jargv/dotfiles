@@ -161,5 +161,26 @@ CREATE TABLE ${1:foo} (
 ) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin;
 endsnippet
 snippet proto "Protocol buffer go:generate" !b
-//go:generate protoc -I ../proto ../proto/$1.proto --go_out=plugins=grpc:$1
+//go:generate protoc -I ../proto ../proto/$1.proto --go_out=plugins=grpc:../proto
+endsnippet
+snippet grpc_server "make a grpc server" !b
+server := &Server{}
+g := grpc.NewServer()
+proto.RegisterGameServer(g, server)
+
+lis, err := net.Listen("tcp", ":5000")
+if err != nil {
+  log.Fatal("listening: %v", err)
+}
+
+if err := g.Serve(lis); err != nil {
+  log.Fatal("serving: %v", err)
+}
+endsnippet
+snippet grpc_client "make a grpc client" !b
+conn, err := grpc.Dial($1, grpc.WithInsecure())
+if err != nil {
+  panic(fmt.Errorf("dialing:%v", err))
+}
+client := proto.New$2Client(conn)
 endsnippet
