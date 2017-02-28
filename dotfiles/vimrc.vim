@@ -669,7 +669,7 @@ endfunc
     nnoremap <leader>gi :!git rebase -i<CR>
     nnoremap <leader>gl :!git log <CR><CR>
     nnoremap <leader>gh :!git hist --all <CR><CR>
-    nnoremap <leader>gH :!git hist --all --since=1.day<CR><CR>
+    nnoremap <leader>gH :!git hist --simplify-by-decoration<cr><cr>
     nnoremap <leader>gb :Gblame w<CR>
     nnoremap <leader>gB :!tig refs<CR><cr>
     nnoremap <leader>gs :!tig status<CR><CR>
