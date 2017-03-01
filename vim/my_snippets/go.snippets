@@ -166,7 +166,7 @@ endsnippet
 snippet grpc_server "make a grpc server" !b
 server := &Server{}
 g := grpc.NewServer()
-proto.RegisterGameServer(g, server)
+pb.Register$1Server(g, server)
 
 lis, err := net.Listen("tcp", ":5000")
 if err != nil {
@@ -182,5 +182,5 @@ conn, err := grpc.Dial($1, grpc.WithInsecure())
 if err != nil {
   panic(fmt.Errorf("dialing:%v", err))
 }
-client := proto.New$2Client(conn)
+client := pb.New$2Client(conn)
 endsnippet

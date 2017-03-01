@@ -315,7 +315,7 @@ let g:isMac = !g:isLinux
   if g:isMac
     colorscheme peaksea
   elseif g:isLinux
-    colorscheme oceandeep
+    colorscheme peaksea
   endif
 
   nnoremap <f3> :NextColorScheme<cr>
@@ -406,7 +406,7 @@ let g:isMac = !g:isLinux
     "tab characters {{{3
         set tabstop=2 shiftwidth=2 expandtab smarttab shiftround
     ""highlight trailing whitespace {{{3
-        highlight TrailingWhitespace cterm=underline
+        "highlight TrailingWhitespace cterm=underline
         "match TrailingWhitespace /\s\+\%#\@<!$/
         "match TrailingWhitespace /\s\+$/
     ""blow away trailing whitespace {{{3
