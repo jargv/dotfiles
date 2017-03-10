@@ -18,8 +18,8 @@
             "h": 4,
             "layers": {
                 "0": {
-                    "key": "BACKSLASH",
-                    "label": "\\"
+                    "key": "BACKTICK",
+                    "label": "`"
                 }
             }
         },
@@ -116,8 +116,8 @@
             "h": 4,
             "layers": {
                 "0": {
-                    "key": "BACKTICK",
-                    "label": "`"
+                    "key": "BACKSLASH",
+                    "label": "\\"
                 },
                 "1": {
                     "key": "#:flashMode()",
@@ -211,8 +211,8 @@
             "h": 4,
             "layers": {
                 "0": {
-                    "key": "TAB",
-                    "label": "TAB"
+                    "key": "SLASH",
+                    "label": "\/"
                 }
             }
         },
@@ -289,8 +289,8 @@
             "h": 4,
             "layers": {
                 "0": {
-                    "key": "ESCAPE",
-                    "label": "ESC"
+                    "key": "LSHIFT",
+                    "label": "L\u21d1"
                 }
             }
         },
@@ -418,8 +418,8 @@
             "h": 4,
             "layers": {
                 "0": {
-                    "key": "LSHIFT",
-                    "label": "L\u21d1"
+                    "key": "LCTRL",
+                    "label": "LCTRL"
                 }
             }
         },
@@ -530,8 +530,8 @@
             "h": 4,
             "layers": {
                 "0": {
-                    "key": "LGUI",
-                    "label": "LGUI"
+                    "key": "SPACE",
+                    "label": "[&nbsp;]"
                 },
                 "1": {
                     "key": "FUN2",
@@ -547,8 +547,8 @@
             "h": 4,
             "layers": {
                 "0": {
-                    "key": "LCTRL",
-                    "label": "LCTRL"
+                    "key": "LGUI",
+                    "label": "LGUI"
                 }
             }
         },
@@ -753,7 +753,7 @@
             "h": 4,
             "layers": {
                 "0": {
-                    "key": "EQUALS",
+                    "key": "EQUAL",
                     "label": "="
                 }
             }
@@ -847,8 +847,8 @@
             "h": 4,
             "layers": {
                 "0": {
-                    "key": "QUOTE",
-                    "label": "'"
+                    "key": "RSHIFT",
+                    "label": "R\u21d1"
                 }
             }
         },
@@ -959,8 +959,8 @@
             "h": 4,
             "layers": {
                 "0": {
-                    "key": "SLASH",
-                    "label": "\/"
+                    "key": "QUOTE",
+                    "label": "'"
                 },
                 "1": {
                     "key": "#:None",
@@ -976,8 +976,8 @@
             "h": 4,
             "layers": {
                 "0": {
-                    "key": "RSHIFT",
-                    "label": "R\u21d1"
+                    "key": "RCTRL",
+                    "label": "RCTRL"
                 }
             }
         },
