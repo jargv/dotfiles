@@ -108,12 +108,6 @@ snippet listen "http listen and serve" !b
 log.Println("Listening on port ${1:3000}")
 log.Fatal(http.ListenAndServe(":$1", ${2:nil}))
 endsnippet
-snippet main "main function" !b
-func main(){
-  $1
-}
-endsnippet
-
 snippet te "error in test" !b
 if err != nil {
   t.Fatalf("$1: %v\n", err)

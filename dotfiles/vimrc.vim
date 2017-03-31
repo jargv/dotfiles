@@ -374,7 +374,6 @@ let g:isMac = !g:isLinux
     "}}}
 
   "spell check {{{2
-    nnoremap <silent> <F4> :set spell!<cr>:set spell?<cr>
     set spelllang=en_us nospell
   "buffers{{{2
     set autoread
