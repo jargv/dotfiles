@@ -195,9 +195,7 @@ let g:isMac = !g:isLinux
         \ "active_filetypes": [],
         \ "passive_filetypes": [] }
    "Plugin 'vim-scripts/UltiSnips' {{{2
-   if !has("nvim")
-     Plugin 'vim-scripts/UltiSnips'
-   end
+      Plugin 'vim-scripts/UltiSnips'
       let g:UltiSnipsExpandTrigger="<tab>"
       let g:UltiSnipsJumpForwardTrigger="<tab>"
       let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
@@ -313,7 +311,7 @@ let g:isMac = !g:isLinux
   set t_ut= "fix the weird background erasing crap
   set ttyfast
   if g:isMac
-    colorscheme peaksea
+    colorscheme pyte
   elseif g:isLinux
     colorscheme peaksea
   endif

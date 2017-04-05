@@ -20,7 +20,7 @@ if err != nil {
 endsnippet
 snippet pe "panic if err" !b
 if err != nil {
-  panic(fmt.Errorf("$1:%v", err))
+  panic(fmt.Errorf("$1: %v", err))
 }$0
 endsnippet
 snippet httperr "An error in an http handler" !b
@@ -133,9 +133,9 @@ t.Errorf("$1")
 endsnippet
 snippet jsonlog "log out some json" !b
 if b, err := json.MarshalIndent($1, "  ", "  "); err != nil {
-  return fmt.Errorf("couldn't format json: %v", err)
+  panic(fmt.Errorf("couldn't format json: %v", err))
 } else {
-  log.Printf("string(b: %s", string(b))
+  log.Printf("$1: %s", string(b))
 }
 endsnippet
 snippet jsonbody "get json from a response body" !b
