@@ -160,55 +160,6 @@ var ${1:foo} = require('$2${3:$1}');
 $0
 endsnippet
 
-snippet ngf "angular factory" b
-angular.module('$1').factory('$2', [$3function(${3/"|(,\s*$)//g}){
-  let $2 = {};
-  $0
-  return $2;
-}]);
-endsnippet
-
-snippet ngf "angular filter" b
-angular.module('$1').filter('$2', [$3function(${3/"|(,\s*$)//g}){
-  return function($4){
-    $0
-  };
-}]);
-endsnippet
-
-snippet ngs "angular service" !b
-angular.module('$1').service('$2', [$3function(${3/"|(,\s*$)//g}){
-  this.${4:method} = function($5){
-    $6
-  };
-}]);
-endsnippet
-
-snippet ngc "angular controller" !b
-angular.module('$1').controller('$2', [${3:"$scope", }function(${3/"|(,\s*$)//g}){
-  $0
-}]);
-endsnippet
-
-snippet ngd "angular directive" !b
-angular.module('$1').directive('$2', [$3function(${3/"|(,\s*$)//g}){
-  return {
-    priority: ${4:0},
-    template: '${5:<div></div>}',
-    templateUrl: '${6:}',
-    replace: ${7:false},
-    transclude: ${8:false},
-    restrict: '${9:AECM}',
-    scope: ${10:false},
-    compile: function(elem, attr, transclude){
-      $11
-    },
-    link: function($scope, elem, attrs){
-      $12
-    }
-  };
-}]);
-endsnippet
 snippet ctor "prototype-style constructor" !b
 function ${1:`!v expand('%:t:r')`}($2){${2/\s*([^,\s]+),?/\n  this._$1 = $1;/g}$4
 }
@@ -258,10 +209,11 @@ module.exports = {
     './main'
   ],
   output: {
-    path: "./build",
+    path: __dirname + "/build",
     filename: "bundle.js"
   },
   module:{
+    /*
     "loaders (babel)": [
       {
         test: /\.js$/,
@@ -270,6 +222,8 @@ module.exports = {
         loader: 'babel-loader',
         query:{
           presets: ['es2015', 'stage-0']
+          //todo: npm i babel-preset-react
+          //presets: ['es2015', 'stage-0', 'react']
         }
       },
     ],
@@ -293,15 +247,11 @@ module.exports = {
         //)
       }
     ]
+    */
   },
-  plugins: [
-    //new webpack.ProvidePlugin({
-      //assert: 'src/assert'
-    //})
-  ],
   devtool: "inline-source-map",
   resolve:{
-    extensions: ['','.webpack.js','.ts','.js']
+    extensions: ['.webpack.js','.ts','.js']
   },
   //cache: true,
   devServer:{
@@ -319,57 +269,16 @@ module.exports = {
   }
 };
 endsnippet
-snippet j "el function element" !w
-el('${1:div}', {$2}, [$3])$0
-endsnippet
-snippet J "el function element" !w
-el(${1:div}, {$2}, [$3])$0
-endsnippet
-snippet el "el function element" !w
-el('${1:div}', {$2}, [$3])$0
-endsnippet
-snippet El "el function element" !w
-el(${1:this}, {$2}, [$3])$0
-endsnippet
 snippet m "mithril element" !w
 el('${1:div}', {$2}, [$3])$0
 endsnippet
-snippet elf "Generate a baseline el function" !b
-function el(elem, attrs, children){
-  if (typeof elem == 'string'){
-    elem = document.createElement(elem)
-  }
-
-  for (let name in attrs){
-    if (name == "style" && typeof attrs.style == 'object'){
-      for (style in attrs.style){
-        elem.style[style] = attrs.style[style]
-      }
-    } else {
-      elem[name] = attrs[name]
-    }
-  }
-
-  while (elem.firstChild) {
-    elem.removeChild(elem.firstChild)
-  }
-
-  const addChild = (child)=> {
-    if (typeof child == 'string'){
-      elem.appendChild(document.createTextNode(child))
-    } else if (typeof child == 'number'){
-      elem.appendChild(document.createTextNode(""+child))
-    } else if (Array.isArray(child)) {
-      child.map(addChild)
-    } else {
-      elem.appendChild(child)
-    }
-  }
-
-  children.map(addChild);
-
-  return elem
-}
+snippet < "react tag" !w
+<${1:div}>
+  $0
+</${1/\ .*$//}>
+endsnippet
+snippet </ "self closing tag" !w
+<$1/>
 endsnippet
 snippet import "import" !b
 import ${1:foo} from '${2:./$1}'

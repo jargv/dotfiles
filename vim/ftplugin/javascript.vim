@@ -30,13 +30,24 @@ endfunction
 "noreab <buffer> nfor <ESC>0wifor (var i=0; i<<ESC>A<BS>; i++){<CR>}<ESC>O
 "noreab <buffer> afor <ESC>dBifor (var i=0, len=<ESC>pa.length; i<len; i++){<CR>}<ESC>Ovar = <C-R>"[i];<ESC>0ea
 
-
-
 "tern {{{1
 inoremap <buffer> . .
 nnoremap <buffer> gd :TernDef<cr>
 nnoremap <buffer> <leader>;i :TernType<cr>
 nnoremap <buffer> <leader>;n :TernRename<cr>
+
+"formatting {{{1
+augroup fmt
+  autocmd!
+  autocmd BufWritePre *.js Neoformat
+augroup END
+
+setlocal indentexpr=
+setlocal nosmartindent
+setlocal nocindent
+setlocal noautoindent
+setlocal formatprg=prettier\ --stdin
+setlocal indentkeys=o,O,*<Return>,<CR>,{,}
 
 "toggle to corresponding css file (off) {{{1
 "map <buffer> <leader>a :exec "vsplit ".expand('%:r').".css"<cr>

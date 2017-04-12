@@ -29,35 +29,42 @@ let g:isMac = !g:isLinux
    Plugin 'ternjs/tern_for_vim'
    Plugin 'cespare/vim-toml'
    Plugin 'trevordmiller/nova-vim'
-   Plugin 'pangloss/vim-javascript'
+   Plugin 'jelera/vim-javascript-syntax'
    Plugin 'helino/vim-json'
    Plugin 'Raimondi/delimitMate'
    Plugin 'PeterRincker/vim-argumentative'
    Plugin 'JulesWang/css.vim'
-   " Plugin 'artur-shaik/vim-javacomplete2'
    Plugin 'evanmiller/nginx-vim-syntax'
    Plugin 'tpope/vim-repeat'
    Plugin 'ekalinin/Dockerfile.vim'
    Plugin 'rking/ag.vim'
-   " Plugin 'diepm/vim-rest-console'
    Plugin 'tpope/vim-obsession'
    Plugin 'reedes/vim-pencil'
    Plugin 'Wolfy87/vim-enmasse'
-   " Plugin 'Wolfy87/vim-expand'
    Plugin 'c0r73x/vimdir.vim'
-   "Plugin 'chriskempson/base16-vim'
    Plugin 'xolox/vim-misc'
    Plugin 'xolox/vim-colorscheme-switcher'
-   "Plugin 'edsono/vim-matchit' TODO: figure out where this went!
+   " Plugin 'edsono/vim-matchit' TODO: figure out where this went!
+   " Plugin 'chriskempson/base16-vim'
+   " Plugin 'Wolfy87/vim-expand'
+   " Plugin 'diepm/vim-rest-console'
+   " Plugin 'artur-shaik/vim-javacomplete2'
+   " Plugin 'altercation/vim-colors-solarized'
+   " Plugin 'octol/vim-cpp-enhanced-highlight'
    Plugin 'tpope/vim-surround'
    Plugin 'tpope/vim-commentary'
-   "Plugin 'altercation/vim-colors-solarized'
    Plugin 'flazz/vim-colorschemes'
-   Plugin 'isRuslan/vim-es6'
-   " Plugin 'octol/vim-cpp-enhanced-highlight'
    Plugin 'vim-scripts/glsl.vim'
    Plugin 'mattn/emmet-vim'
    Plugin 'ervandew/supertab'
+   "Plugin 'mxw/vim-jsx' {{{2
+    Plugin 'mxw/vim-jsx'
+    let g:jsx_ext_required = 0
+   "Plugin 'sbdchd/neoformat' {{{2
+    Plugin 'sbdchd/neoformat'
+    let g:neoformat_try_formatprg = 0
+    let g:neoformat_enabled_javascript = ['prettier']
+
    "Plugin 'junegunn/fzf' {{{2
     Plugin 'junegunn/fzf'
     nnoremap <leader>o :FZF --inline-info<cr>
@@ -445,7 +452,9 @@ let g:isMac = !g:isLinux
   nnoremap <leader>C :call <SID>goConfig()<CR><CR>
 
   func! <SID>goConfig()
-    let ft = &filetype
+    let parts = split(&filetype, '\.')
+    let ft = parts[0]
+
     tabedit ~/config/dotfiles/vimrc.vim
 
     if !empty(ft)
@@ -619,9 +628,6 @@ let g:isMac = !g:isLinux
         let g:browserReloadArgs = system("xdotool selectwindow")
       endif
       call system(g:browserReloadCommand . " " . g:browserReloadArgs)
-    endif
-    if !ran
-       echo "no buildtool set up"
     endif
   endfunc
 

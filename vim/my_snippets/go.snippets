@@ -25,8 +25,8 @@ if err != nil {
 endsnippet
 snippet httperr "An error in an http handler" !b
 if err != nil {
-  http.Error(${3:res}, fmt.Sprintf("$1: %v", err), http.Status${2:BadRequest})
-  Meturn
+  http.Error(${3:w}, fmt.Sprintf("$1: %v", err), http.Status${2:InternalServerError})
+  return
 }
 endsnippet
 snippet panic "panic with an error" !b
@@ -99,7 +99,7 @@ snippet append "quick append" !b
 $1 = append($1, $0)
 endsnippet
 snippet http "quick http handler" !b
-http.HandleFunc("/$1", func(res http.ResponseWriter, req *http.Request) {
+http.HandleFunc("/$1", func(w http.ResponseWriter, r *http.Request) {
   fmt.Fprintln(res, "hello")
 })
 $0
