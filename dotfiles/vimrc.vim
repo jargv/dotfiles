@@ -63,7 +63,25 @@ let g:isMac = !g:isLinux
    "Plugin 'sbdchd/neoformat' {{{2
     Plugin 'sbdchd/neoformat'
     let g:neoformat_try_formatprg = 0
-    let g:neoformat_enabled_javascript = ['prettier']
+    let g:neoformat_enabled_javascript = ['standard']
+    let g:neoformat_javascript_standard = {
+          \ 'exe': 'standard',
+          \ 'args': ['--stdin','--fix', '--parser', 'babel-eslint'],
+          \ 'replace': 0,
+          \ 'stdin': 1,
+          \ 'no_append': 1,
+          \ }
+
+  "Plugin 'neomake/neomake' {{{2
+    " Plugin 'neomake/neomake'
+    let g:neomake_verbose = 0
+    let g:neomake_javascript_standardx_maker = {
+          \ 'exe': "standard",
+          \ 'args': ['--parser', 'babel-eslint'],
+          \ 'errorformat': '%W  %f:%l:%c: %m'
+          \ }
+    let g:neomake_javascript_enabled_makers = ['standardx']
+
 
    "Plugin 'junegunn/fzf' {{{2
     Plugin 'junegunn/fzf'
@@ -124,10 +142,6 @@ let g:isMac = !g:isLinux
    "Plugin 'raichoo/haskell-vim' {{{2
       "let g:haskell_indent_in = 0
       "Plugin 'raichoo/haskell-vim'
-   "Plugin 'bitc/vim-hdevtools' {{{2
-     "let g:syntastic_haskell_hdevtools_args = '' "'-g-Wall'
-     "Plugin 'bitc/vim-hdevtools'
- "}}}
    "Plugin 'eagletmt/ghcmod-vim' {{{2
    "Plugin 'eagletmt/ghcmod-vim'
    "Plugin 'eagletmt/neco-ghc'
@@ -192,15 +206,17 @@ let g:isMac = !g:isLinux
          autocmd BufReadPost fugitive://* set bufhidden=delete
       augroup END
    "Plugin 'scrooloose/syntastic' {{{2
-   "Plugin 'scrooloose/syntastic'
+   "Plugin 'vim-syntastic/syntastic'
      let g:syntastic_error_symbol='✗'
      let g:syntastic_style_error_symbol='✗'
      let g:syntastic_warning_symbol='⚠'
      let g:syntastic_style_warning_symbol='⚠'
-     let g:syntastic_mode_map = {
-        \ "mode": "passive",
-        \ "active_filetypes": [],
-        \ "passive_filetypes": [] }
+     " let g:syntastic_mode_map = {
+     "    \ "mode": "passive",
+     "    \ "active_filetypes": [],
+     "    \ "passive_filetypes": []
+     "    \ }
+     let g:syntastic_javascript_checkers = ['standard']
    "Plugin 'vim-scripts/UltiSnips' {{{2
       Plugin 'vim-scripts/UltiSnips'
       let g:UltiSnipsExpandTrigger="<tab>"
@@ -570,9 +586,8 @@ let g:isMac = !g:isLinux
     elseif expand('%:e') == "hs"
       let g:makeBuildtool = "runhaskell"
       let g:makeTarget = expand('%')
-    elseif filereadable("webpack.config.js")
-      let g:makeBuildtool = "webpack"
-      let g:makeTarget = ""
+    elseif expand('%:e') == "js"
+      let g:makeBuildtool = "standard --parser babel-eslint"
     elseif filereadable("project.clj")
       let g:makeBuildtool = "lein"
       let g:makeTarget = "run"

@@ -16,7 +16,7 @@ console.log("$1");
 endsnippet
 
 snippet l "console.log something" !b
-console.log("${VISUAL}$1:", ${VISUAL}${2:$1});
+console.log('${VISUAL}$1:', ${VISUAL}${2:$1});
 endsnippet
 snippet la "Log arguments" !b
 console.log("arguments:", arguments);
@@ -56,9 +56,7 @@ catch(($1)=>{
 })$0
 endsnippet
 snippet map "common lambda" !w
-map(($1)=>{
-  $2
-})$0
+map(($1)=>($2))$0
 endsnippet
 snippet forEach "common lambda" !w
 forEach(($1)=>{
@@ -202,17 +200,18 @@ snippet rel "Remove event listener" !i
 removeEventListener('$1', ${2:handler});
 endsnippet
 snippet webpack "a good starting point for webpack" !b
-//webpack.config.js
+// webpack.config.js
+let path = require('path')
 module.exports = {
   entry: [
-    //'babel-polyfill',
+    // 'babel-polyfill',
     './main'
   ],
   output: {
-    path: __dirname + "/build",
-    filename: "bundle.js"
+    path: path.join(__dirname, '/build'),
+    filename: 'bundle.js'
   },
-  module:{
+  module: {
     /*
     "loaders (babel)": [
       {
@@ -249,35 +248,32 @@ module.exports = {
     ]
     */
   },
-  devtool: "inline-source-map",
-  resolve:{
-    extensions: ['.webpack.js','.ts','.js']
+  devtool: 'inline-source-map',
+  resolve: {
+    extensions: ['.webpack.js', '.ts', '.js']
   },
-  //cache: true,
-  devServer:{
+  // cache: true,
+  devServer: {
     proxy: {
-      "/api" : {
-        target: "http://localhost:3000/",
-      },
-      "/api" : {
-        target: "http://localhost:3000/",
+      '/api': {
+        target: 'http://localhost:3000/',
         pathRewrite: {
-          '^/api' : ''
+          '^/api': ''
         }
       }
     }
   }
-};
+}
 endsnippet
 snippet m "mithril element" !w
 el('${1:div}', {$2}, [$3])$0
 endsnippet
-snippet < "react tag" !w
+snippet < "react tag" !i
 <${1:div}>
   $0
 </${1/\ .*$//}>
 endsnippet
-snippet </ "self closing tag" !w
+snippet </ "self closing tag" !i
 <$1/>
 endsnippet
 snippet import "import" !b

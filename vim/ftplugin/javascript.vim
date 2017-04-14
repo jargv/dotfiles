@@ -36,17 +36,17 @@ nnoremap <buffer> gd :TernDef<cr>
 nnoremap <buffer> <leader>;i :TernType<cr>
 nnoremap <buffer> <leader>;n :TernRename<cr>
 
-"formatting {{{1
-augroup fmt
+"formatting/linting {{{1
+augroup jsfmtlint
   autocmd!
-  autocmd BufWritePre *.js Neoformat
+  autocmd BufWritePre *.js silent Neoformat
 augroup END
 
 setlocal indentexpr=
 setlocal nosmartindent
 setlocal nocindent
 setlocal noautoindent
-setlocal formatprg=prettier\ --stdin
+setlocal formatprg=standard\ --stdin\ --fix
 setlocal indentkeys=o,O,*<Return>,<CR>,{,}
 
 "toggle to corresponding css file (off) {{{1
