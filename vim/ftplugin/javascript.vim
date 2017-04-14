@@ -2,7 +2,6 @@
 
 source ~/config/vim/ftplugin/html.vim
 
-map <leader>i :call <SNR>FoldIndents()<CR>
 func! <SNR>FoldIndents()
     syntax region myFold start=/{/ end=/}/ transparent fold keepend extend
     setlocal foldmethod=syntax
@@ -39,7 +38,7 @@ nnoremap <buffer> <leader>;n :TernRename<cr>
 "formatting/linting {{{1
 augroup jsfmtlint
   autocmd!
-  autocmd BufWritePre *.js silent Neoformat
+  "autocmd BufWritePre *.js silent Neoformat
 augroup END
 
 setlocal indentexpr=

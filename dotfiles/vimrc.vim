@@ -62,6 +62,7 @@ let g:isMac = !g:isLinux
     let g:jsx_ext_required = 0
    "Plugin 'sbdchd/neoformat' {{{2
     Plugin 'sbdchd/neoformat'
+    nnoremap <leader>i :Neoformat<cr>
     let g:neoformat_try_formatprg = 0
     let g:neoformat_enabled_javascript = ['standard']
     let g:neoformat_javascript_standard = {
