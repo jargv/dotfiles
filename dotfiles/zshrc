@@ -235,3 +235,7 @@ unsetopt beep
 zstyle :compinstall filename '/home/jonathan/.zshrc'
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+if [ -f /Users/j/projects/src/www.domo.com/tug/kubernetes-functions.sh ]; then
+  source /Users/j/projects/src/www.domo.com/tug/kubernetes-functions.sh
+fi
