@@ -228,7 +228,7 @@ module.exports = {
     ],
     "loaders (typescript)": [
       {
-        test: /\.ts$/,
+        test: /\.tsx?$/,
         loader: 'ts-loader',
         exclude: /node_modules/
       }
@@ -250,7 +250,7 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   resolve: {
-    extensions: ['.webpack.js', '.ts', '.js']
+    extensions: ['.webpack.js', '.ts', '.tsx', '.js', '.jsx']
   },
   // cache: true,
   devServer: {

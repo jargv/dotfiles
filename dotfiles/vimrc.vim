@@ -23,6 +23,8 @@ let g:isMac = !g:isLinux
       "}}}
    "}}}
 
+   Plugin 'leafgarland/typescript-vim'
+   Plugin 'rust-lang/rust.vim'
    Plugin 'FrigoEU/psc-ide-vim'
    Plugin 'raichoo/purescript-vim'
    Plugin 'jargv/vim-go-error-folds'
@@ -594,6 +596,12 @@ let g:isMac = !g:isLinux
       let g:makeTarget = "run"
     elseif expand('%:e') == "ts"
       let g:makeBuildtool = "tsc"
+      let g:makeTarget = expand('%')
+    elseif filereadable("Cargo.toml")
+      let g:makeBuildtool = "cargo"
+      let g:makeTarget = 'run'
+    elseif expand('%:e') == "rs"
+      let g:makeBuildtool = "rustc"
       let g:makeTarget = expand('%')
     elseif expand('%:e') == "purs"
       let g:makeBuildtool = "pulp build"

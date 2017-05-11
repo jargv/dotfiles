@@ -1,0 +1,11 @@
+snippet log "log text" !w
+println!("$1");
+endsnippet
+snippet l "log variables" !w
+println!("$1: ${1/[^\,]+/{:?}/g}", ${1});
+endsnippet
+snippet fn "function" !b
+fn $1($2)$3{
+    $0
+}
+endsnippet

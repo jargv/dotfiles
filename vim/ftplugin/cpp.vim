@@ -3,8 +3,7 @@ let g:c_no_curly_error = 1
 let g:c_no_bracket_error = 1
 
 "swap header and source {{{1
-nnoremap  <buffer> <F3> :vsplit<cr>:w<CR>:e %:p:s,.hpp$,.X123X,:s,.cpp$,.hpp,:s,.X123X$,.cpp,<CR>
-inoremap  <buffer> <F3> <ESC><F3>
+nnoremap  <buffer> <leader>;h :vsplit<cr>:w<CR>:e %:p:s,.hpp$,.X123X,:s,.cpp$,.hpp,:s,.X123X$,.cpp,<CR>
 
 "general settings {{{1
 set wildignore=*.o
