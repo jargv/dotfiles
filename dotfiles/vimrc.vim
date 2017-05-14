@@ -168,22 +168,23 @@ let g:isMac = !g:isLinux
        "let g:unite_source_grep_recursive_opt = ''
 
    "Plugin 'Valloric/YouCompleteMe' {{{2
-      command! YouCompleteMeInstall :!cd ~/.vim/bundle/YouCompleteMe && git submodule update --init --recursive && ./install.py --gocode-completer
-      "Plugin 'Valloric/YouCompleteMe'
-      let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
+      ""command! YouCompleteMeInstall :!cd ~/.vim/bundle/YouCompleteMe && git submodule update --init --recursive && ./install.py --racer-completer --clang-completer --tern-completer --system-libclang
+      "" Plugin 'Valloric/YouCompleteMe'
+      let g:ycm_rust_src_path = '~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
+      "let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
+      let g:ycm_global_ycm_extra_conf = '~/config/vim/.ycm_extra_conf.py'
       let g:ycm_min_num_identifier_candidate_chars = 2
       "let g:ycm_filetype_whitelist = { 'cpp': 1, 'hpp': 1 }
-      "let g:ycm_global_ycm_extra_conf = '~/config/vim/.ycm_extra_conf.py'
-      let g:ycm_show_diagnostics_ui = 0
+      "let g:ycm_show_diagnostics_ui = 1
       "let g:ycm_autoclose_preview_window_after_completion = 1
-      let g:ycm_autoclose_preview_window_after_insertion = 1
-      let g:ycm_use_ultisnips_completer = 0
-      let g:ycm_key_list_select_completion = ['<C-N>']
-      let g:ycm_key_list_previous_completion = ['<C-P>']
+      "let g:ycm_autoclose_preview_window_after_insertion = 1
+      let g:ycm_use_ultisnips_completer = 1
+      "let g:ycm_key_list_select_completion = ['<C-N>']
+      "let g:ycm_key_list_previous_completion = ['<C-P>']
 
-      let g:ycm_add_preview_to_completeopt = 0
-      let g:ycm_min_num_of_chars_for_completion = 1
-      let g:ycm_auto_trigger = 1
+      "let g:ycm_add_preview_to_completeopt = 0
+      "let g:ycm_min_num_of_chars_for_completion = 1
+      "let g:ycm_auto_trigger = 1
    "Plugin 'tpope/vim-vinegar' {{{2
      nmap - k
      Plugin 'tpope/vim-vinegar'
@@ -208,7 +209,7 @@ let g:isMac = !g:isLinux
          autocmd!
          autocmd BufReadPost fugitive://* set bufhidden=delete
       augroup END
-   "Plugin 'scrooloose/syntastic' {{{2
+   "Plugin 'vim-syntastic/syntastic' {{{2
    "Plugin 'vim-syntastic/syntastic'
      let g:syntastic_error_symbol='✗'
      let g:syntastic_style_error_symbol='✗'
@@ -472,7 +473,7 @@ let g:isMac = !g:isLinux
 
   func! <SID>goConfig()
     let parts = split(&filetype, '\.')
-    let ft = parts[0]
+    let ft = len(parts) > 0 ? parts[0] : ""
 
     tabedit ~/config/dotfiles/vimrc.vim
 
