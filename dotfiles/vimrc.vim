@@ -23,29 +23,91 @@ let g:isMac = !g:isLinux
       "}}}
    "}}}
 
-   Plugin 'leafgarland/typescript-vim'
+   "rust {{{2
    Plugin 'rust-lang/rust.vim'
-   Plugin 'FrigoEU/psc-ide-vim'
-   Plugin 'raichoo/purescript-vim'
+   Plugin 'racer-rust/vim-racer'
+   let g:racer_experimental_completer = 1
+
+   "go {{{2
    Plugin 'jargv/vim-go-error-folds'
-   Plugin 'ternjs/tern_for_vim'
-   Plugin 'cespare/vim-toml'
-   Plugin 'trevordmiller/nova-vim'
+   Plugin 'fatih/vim-go'
+   let g:go_fmt_command = "goimports"
+   "let g:go_fmt_command = "gofmt"
+   let g:go_fmt_fail_silently = 1
+   let g:go_def_mapping_enabled = 0
+
+   "don't do whitespace errors, go fmt will eliminate them
+   let g:go_highlight_trailing_whitespace_error = 0
+   let g:go_highlight_array_whitespace_error = 0
+   let g:go_highlight_chan_whitespace_error = 0
+   let g:go_highlight_space_tab_error = 0
+
+   "highlight a bunch of stuff
+   let g:go_highlight_operators = 1
+   let g:go_highlight_functions = 1
+   let g:go_highlight_methods = 1
+   let g:go_highlight_structs = 1
+   let g:go_highlight_interfaces = 1
+   let g:go_highlight_build_constraints = 1
+   let g:go_auto_type_info = 0
+
+   "I like my own K key, thanks
+   let g:go_doc_keywordprg_enabled = 0
+
+   "I only want my own snippets
+   let g:go_snippet_engine = ""
+
+   "I don't want the templates
+   let g:go_template_autocreate = 0
+
+   " "Scope guru to the whole gopath
+   " let g:go_guru_scope = [""]
+   "javascript {{{2
+   "Plugin 'ternjs/tern_for_vim'
    Plugin 'jelera/vim-javascript-syntax'
    Plugin 'helino/vim-json'
+   Plugin 'mxw/vim-jsx'
+   let g:jsx_ext_required = 0
+   "typescript {{{2
+   "Plugin 'leafgarland/typescript-vim'
+   "Plugin 'FrigoEU/psc-ide-vim'
+
+   "purescript {{{2
+   "Plugin 'raichoo/purescript-vim'
+
+   "css {{{2
+   Plugin 'JulesWang/css.vim'
+
+   "html {{{2
+   Plugin 'mattn/emmet-vim'
+   "toml {{{2
+   Plugin 'cespare/vim-toml'
+   "docker {{{2
+   Plugin 'ekalinin/Dockerfile.vim'
+
+   "glsl {{{2
+   Plugin 'vim-scripts/glsl.vim'
+
+   "colorschems {{{2
+   Plugin 'xolox/vim-misc'
+   Plugin 'xolox/vim-colorscheme-switcher'
+   Plugin 'flazz/vim-colorschemes'
+   Plugin 'trevordmiller/nova-vim'
+   "}}}
+
    Plugin 'Raimondi/delimitMate'
    Plugin 'PeterRincker/vim-argumentative'
-   Plugin 'JulesWang/css.vim'
-   Plugin 'evanmiller/nginx-vim-syntax'
    Plugin 'tpope/vim-repeat'
-   Plugin 'ekalinin/Dockerfile.vim'
    Plugin 'rking/ag.vim'
    Plugin 'tpope/vim-obsession'
    Plugin 'reedes/vim-pencil'
-   Plugin 'Wolfy87/vim-enmasse'
-   Plugin 'c0r73x/vimdir.vim'
-   Plugin 'xolox/vim-misc'
-   Plugin 'xolox/vim-colorscheme-switcher'
+   Plugin 'tpope/vim-surround'
+   Plugin 'tpope/vim-commentary'
+   "Plugin 'ervandew/supertab'
+
+   " unused plugins worth remembering {{{2
+   " Plugin 'Wolfy87/vim-enmasse'
+   " Plugin 'evanmiller/nginx-vim-syntax'
    " Plugin 'edsono/vim-matchit' TODO: figure out where this went!
    " Plugin 'chriskempson/base16-vim'
    " Plugin 'Wolfy87/vim-expand'
@@ -53,15 +115,17 @@ let g:isMac = !g:isLinux
    " Plugin 'artur-shaik/vim-javacomplete2'
    " Plugin 'altercation/vim-colors-solarized'
    " Plugin 'octol/vim-cpp-enhanced-highlight'
-   Plugin 'tpope/vim-surround'
-   Plugin 'tpope/vim-commentary'
-   Plugin 'flazz/vim-colorschemes'
-   Plugin 'vim-scripts/glsl.vim'
-   Plugin 'mattn/emmet-vim'
-   Plugin 'ervandew/supertab'
-   "Plugin 'mxw/vim-jsx' {{{2
-    Plugin 'mxw/vim-jsx'
-    let g:jsx_ext_required = 0
+   " }}}
+
+   "Plugin 'ajh17/VimCompletesMe' {{{2
+    Plugin 'ajh17/VimCompletesMe'
+    let g:vcm_direction = 'p' "n or p like C-N, C-P
+    let g:vcm_s_tab_behavior = 0
+    let g:vcm_default_maps = 1
+   "Plugin 'terryma/vim-expand-region' {{{2
+   Plugin 'terryma/vim-expand-region'
+   vmap v <Plug>(expand_region_expand)
+
    "Plugin 'sbdchd/neoformat' {{{2
     Plugin 'sbdchd/neoformat'
     nnoremap <leader>i :Neoformat<cr>
@@ -75,17 +139,6 @@ let g:isMac = !g:isLinux
           \ 'no_append': 1,
           \ }
 
-  "Plugin 'neomake/neomake' {{{2
-    " Plugin 'neomake/neomake'
-    let g:neomake_verbose = 0
-    let g:neomake_javascript_standardx_maker = {
-          \ 'exe': "standard",
-          \ 'args': ['--parser', 'babel-eslint'],
-          \ 'errorformat': '%W  %f:%l:%c: %m'
-          \ }
-    let g:neomake_javascript_enabled_makers = ['standardx']
-
-
    "Plugin 'junegunn/fzf' {{{2
     Plugin 'junegunn/fzf'
     nnoremap <leader>o :FZF --inline-info<cr>
@@ -97,75 +150,6 @@ let g:isMac = !g:isLinux
       Plugin 'majutsushi/tagbar'
       let g:tagbar_left = 1
       "let g:tagbar_vertical = 30
-   "Plugin 'guns/vim-sexp' {{{2
-      Plugin 'guns/vim-sexp'
-      let g:sexp_mappings = {
-            \ 'sexp_swap_list_backward':        '<C-k>',
-            \ 'sexp_swap_list_forward':         '<C-j>',
-            \ 'sexp_swap_element_backward':     '<C-h>',
-            \ 'sexp_swap_element_forward':      '<C-l>',
-         \ }
-   "Plugin 'fatih/vim-go' {{{2
-   "
-     Plugin 'fatih/vim-go'
-     let g:go_fmt_command = "goimports"
-     "let g:go_fmt_command = "gofmt"
-     let g:go_fmt_fail_silently = 1
-     let g:go_def_mapping_enabled = 0
-
-     "don't do whitespace errors, go fmt will eliminate them
-     let g:go_highlight_trailing_whitespace_error = 0
-     let g:go_highlight_array_whitespace_error = 0
-     let g:go_highlight_chan_whitespace_error = 0
-     let g:go_highlight_space_tab_error = 0
-
-     "highlight a bunch of stuff
-     let g:go_highlight_operators = 1
-     let g:go_highlight_functions = 1
-     let g:go_highlight_methods = 1
-     let g:go_highlight_structs = 1
-     let g:go_highlight_interfaces = 1
-     let g:go_highlight_build_constraints = 1
-     let g:go_auto_type_info = 0
-
-     "I like my own K key, thanks
-     let g:go_doc_keywordprg_enabled = 0
-
-     "I only want my own snippets
-     let g:go_snippet_engine = ""
-
-     "I don't want the templates
-     let g:go_template_autocreate = 0
-
-     " "Scope guru to the whole gopath
-     " let g:go_guru_scope = [""]
-   "Plugin 'jimenezrick/vimerl' {{{2
-      "Plugin 'jimenezrick/vimerl'
-      "let erlang_force_use_vimerl_indent = 1
-   "Plugin 'raichoo/haskell-vim' {{{2
-      "let g:haskell_indent_in = 0
-      "Plugin 'raichoo/haskell-vim'
-   "Plugin 'eagletmt/ghcmod-vim' {{{2
-   "Plugin 'eagletmt/ghcmod-vim'
-   "Plugin 'eagletmt/neco-ghc'
- "}}}
-   "Plugin 'Shougo/unite.vim' {{{2
-      "let g:unite_source_history_yank_enable = 1
-       "Plugin 'Shougo/unite.vim'
-       "Plugin 'Shougo/vimproc.vim'
-       ""todo: try -auto-preview
-       "nmap <leader>o :<C-u>Unite -start-insert -no-split -no-resize -auto-preview -vertical-preview file_rec/git<cr>
-       "nmap <leader>O :<C-u>Unite -start-insert -no-split -no-resize -auto-preview -vertical-preview file_rec/async<cr>
-       "nmap <leader>a :<C-u>Unite -custom-grep-search-word-highlight grep:.<cr>
-       "nmap <leader>b :<C-u>Unite -quick-match buffer<cr>
-       "nmap <leader>y :<C-u>Unite history/yank<cr>
-       "nmap <leader>P :<C-u>Unite process<cr>
-       "nmap <leader>s :<C-u>Unite -start-insert source<cr>
-       "let g:unite_source_grep_command = 'ag'
-       "let g:unite_source_grep_default_opts =
-       "  \ '-i --line-numbers --nocolor --nogroup --hidden --ignore ' .
-       "  \  '''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'''
-       "let g:unite_source_grep_recursive_opt = ''
 
    "Plugin 'Valloric/YouCompleteMe' {{{2
       ""command! YouCompleteMeInstall :!cd ~/.vim/bundle/YouCompleteMe && git submodule update --init --recursive && ./install.py --racer-completer --clang-completer --tern-completer --system-libclang
@@ -190,17 +174,6 @@ let g:isMac = !g:isLinux
      Plugin 'tpope/vim-vinegar'
      nnoremap <leader>d :Explore<cr>
      nnoremap <leader>D :exec ":e ".getcwd()<cr>
-   "Plugin 'jeetsukumaran/vim-filebeagle' {{{2
-      " Plugin 'jeetsukumaran/vim-filebeagle'
-      " nnoremap <leader>d :FileBeagleBufferDir<cr>
-      " nnoremap <leader>D :FileBeagle<cr>
-      " let g:filebeagle_suppress_keymaps = 1
-      " let g:filebeagle_hijack_netrw = 1
-      " nmap <leader>= :vsplit<cr>:FileBeagleBufferDir<cr>
-      " nmap <leader>- :split<cr>:FileBeagleBufferDir<cr>
-
-   "Plugin 'jeetsukumaran/vim-buffersaurus' {{{2
-   Plugin 'jeetsukumaran/vim-buffersaurus'
 
    "Plugin 'tpope/vim-fugitive' {{{2
       Plugin 'tpope/vim-fugitive'
@@ -208,8 +181,7 @@ let g:isMac = !g:isLinux
       augroup Fugitive
          autocmd!
          autocmd BufReadPost fugitive://* set bufhidden=delete
-      augroup END
-   "Plugin 'vim-syntastic/syntastic' {{{2
+
    "Plugin 'vim-syntastic/syntastic'
      let g:syntastic_error_symbol='✗'
      let g:syntastic_style_error_symbol='✗'
@@ -222,10 +194,10 @@ let g:isMac = !g:isLinux
      "    \ }
      let g:syntastic_javascript_checkers = ['standard']
    "Plugin 'vim-scripts/UltiSnips' {{{2
-      Plugin 'vim-scripts/UltiSnips'
-      let g:UltiSnipsExpandTrigger="<tab>"
-      let g:UltiSnipsJumpForwardTrigger="<tab>"
-      let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+      " Plugin 'vim-scripts/UltiSnips'
+      " let g:UltiSnipsExpandTrigger="<tab>"
+      " let g:UltiSnipsJumpForwardTrigger="<tab>"
+      " let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
       let g:UltiSnipsEditSplit = 'vertical'
       let g:UltiSnipsSnippetsDir = '~/config/vim/my_snippets'
@@ -234,10 +206,6 @@ let g:isMac = !g:isLinux
 
       map <leader>s :UltiSnipsEdit<CR>
 
-   "Plugin 'terryma/vim-expand-region' {{{2
-   Plugin 'terryma/vim-expand-region'
-      "todo: add my text objects here
-      vmap v <Plug>(expand_region_expand)
    "Plugin 'Lokaltog/vim-easymotion' {{{2
    Plugin 'easymotion/vim-easymotion'
       let g:EasyMotion_do_mapping = 0
@@ -250,20 +218,6 @@ let g:isMac = !g:isLinux
       Plugin 'benmills/vimux'
       let g:VimuxHeight = 30
       let VimuxUseNearest = 1
-   "Plugin 'godlygeek/tabular' {{{2
-   Plugin 'godlygeek/tabular'
-      "todo: find a new mapping for this shiz
-      "nnoremap <leader>= :Tabular /=/<CR>:echo<CR>
-   "Plugin 'scrooloose/nerdtree' {{{2
-   "Plugin 'scrooloose/nerdtree'
-   "   let NERDTreeDirArrows=1
-   "   let NERDTreeMinimalUI=1
-   "   let NERDTreeCascadeOpenSingleChildDir=1
-   "   let NERDTreeAutoDeleteBuffer=1
-   "   let NERDTreeAutoCenter=1
-   "   let NERDTreeQuitOnOpen=1
-   "   nmap <leader>D :exec "NERDTreeToggle "<CR>
-   "   nmap <leader>d :exec "NERDTreeFind "<CR>
 
    "Plugin 'airblade/vim-gitgutter' {{{2
    let g:gitgutter_sign_added = '+'
@@ -333,7 +287,7 @@ let g:isMac = !g:isLinux
     endif
   "}}}
 
-  "colorschemes {{{1
+  "color settings {{{1
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
