@@ -103,7 +103,6 @@ let g:isMac = !g:isLinux
    Plugin 'reedes/vim-pencil'
    Plugin 'tpope/vim-surround'
    Plugin 'tpope/vim-commentary'
-   "Plugin 'ervandew/supertab'
 
    " unused plugins worth remembering {{{2
    " Plugin 'Wolfy87/vim-enmasse'
@@ -117,8 +116,11 @@ let g:isMac = !g:isLinux
    " Plugin 'octol/vim-cpp-enhanced-highlight'
    " }}}
 
-   "Plugin 'ajh17/VimCompletesMe' {{{2
-    Plugin 'ajh17/VimCompletesMe'
+  "Plugin 'ervandew/supertab' {{{2
+    Plugin 'ervandew/supertab'
+    let g:SuperTabDefaultCompletionType = "context"
+   " Plugin 'ajh17/VimCompletesMe' {{{2
+    "Plugin 'ajh17/VimCompletesMe'
     let g:vcm_direction = 'p' "n or p like C-N, C-P
     let g:vcm_s_tab_behavior = 0
     let g:vcm_default_maps = 1
@@ -194,10 +196,10 @@ let g:isMac = !g:isLinux
      "    \ }
      let g:syntastic_javascript_checkers = ['standard']
    "Plugin 'vim-scripts/UltiSnips' {{{2
-      " Plugin 'vim-scripts/UltiSnips'
-      " let g:UltiSnipsExpandTrigger="<tab>"
-      " let g:UltiSnipsJumpForwardTrigger="<tab>"
-      " let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+       Plugin 'vim-scripts/UltiSnips'
+      let g:UltiSnipsExpandTrigger="<tab>"
+      let g:UltiSnipsJumpForwardTrigger="<tab>"
+      let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
       let g:UltiSnipsEditSplit = 'vertical'
       let g:UltiSnipsSnippetsDir = '~/config/vim/my_snippets'
