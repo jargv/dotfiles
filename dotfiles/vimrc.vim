@@ -88,6 +88,9 @@ let g:isMac = !g:isLinux
    "glsl {{{2
    Plugin 'vim-scripts/glsl.vim'
 
+   "lua {{{2
+    Plugin 'SpaceVim/vim-swig'
+
    "colorschems {{{2
    Plugin 'xolox/vim-misc'
    Plugin 'xolox/vim-colorscheme-switcher'

@@ -4,10 +4,8 @@ project (${1:`!v expand("%:p:h:t")`})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor)
 
-set(CMAKE_CXX_COMPILER_ID "Clang")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wdeprecated")
 
 add_executable($1
   main.cpp
@@ -92,4 +90,27 @@ if(NOT ${CURSES_FOUND})
 endif()
 include_directories(${CURSES_INCLUDE_DIRS})
 target_link_libraries(${1:project_name} ${CURSES_LIBRARIES})
+endsnippet
+snippet lua "include lua" !b
+#NOTE: include "lua.hpp", not "lua.h" or <lua/lua.hpp>
+#      also include "lualib.h"
+find_package(Lua 5.3 REQUIRED)
+message("lua: " ${LUA_LIBRARIES} ", " ${LUA_FOUND})
+target_link_libraries(${1:projectname} ${LUA_LIBRARIES})
+include_directories(${LUA_INCLUDE_DIR})
+endsnippet
+snippet swig "add swig module" !b
+find_package(SWIG REQUIRED)
+include(${SWIG_USE_FILE})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+set(CMAKE_SWIG_FLAGS "-c++")
+
+set_property(SOURCE ${1:interface}.i PROPERTY CPLUSPLUS ON)
+  swig_add_library(
+      $1
+      LANGUAGE lua
+      SOURCES $1.i
+      TYPE STATIC
+    )
+target_link_libraries(${2:projectname} $1)
 endsnippet

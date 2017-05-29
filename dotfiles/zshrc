@@ -94,6 +94,10 @@ bindkey "^?" backward-delete-char
 export KEYTIMEOUT=1
 KEYTIMEOUT=1
 
+#{{{1 clang
+export CC=clang
+export CXX=clang++
+
 #{{{1 keybindings
 #bindkey  push-line-or-edit
 #bindkey -M vicmd  push-line-or-edit
