@@ -12,7 +12,7 @@ set nospell
 "<leader>;t: move out of header {{{1
 if !exists("*MoveOutOfHeader")
    func! MoveOutOfHeader()
-      let pattern = '\s*class\s*\([A-Za-z_][A-Za-z0-9_]*\)'
+      let pattern = '^\(class\|struct\)\s*\([A-Za-z_][A-Za-z0-9_]*\)'
       let pos = getpos('.')
       let col = pos[2]
       let lineNumber = pos[1]
@@ -20,7 +20,7 @@ if !exists("*MoveOutOfHeader")
 
       "get the class name
       let classStartLine = search(pattern, 'bWn')
-      let className = get(matchlist(getline(classStartLine), pattern), 1, '')
+      let className = get(matchlist(getline(classStartLine), pattern), 2, '')
 
       "figure out what the new definition
       if match(line, '^\s*friend') != -1

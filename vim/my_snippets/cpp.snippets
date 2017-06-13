@@ -278,3 +278,9 @@ endsnippet
 snippet fwd "forward arguments" !b
 std::forward<decltype(${1:args})>($1)...
 endsnippet
+snippet ns "make a namespace" !b
+namespace $1 {
+$0
+} // $1 namespace
+
+endsnippet

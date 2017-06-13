@@ -5,27 +5,19 @@ project (${1:`!v expand("%:p:h:t")`})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wdeprecated")
 
 add_executable($1
   main.cpp
 )
-add_custom_target(run COMMAND $1
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-)
+
 endsnippet
+
 snippet lib "add a library" !b
 add_library(${1:lib}
   $1.hpp$0
   $1.cpp$0
-)
-endsnippet
-snippet exe "add an executable" !b
-add_executable(${1:exe}
-  $1.cpp
-)
-add_custom_target(run_$1 COMMAND $1
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 endsnippet
 snippet test "Add tests to the project" !b
@@ -44,16 +36,6 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/vendor/catch.hpp
 )
 endsnippet
 
-snippet ccache "Setup ccache for this project" !b
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
-find_program(ccache_available ccache)
-if(NOT ccache_available MATCHES NOTFOUND)
-  SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-  SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-else()
-  message(STATUS "ccache not found. Install ccache to compile faster.")
-endif()
-endsnippet
 snippet if "conditional" !b
 if($1)
   $2
@@ -81,30 +63,25 @@ TARGET_LINK_LIBRARIES($1 ${OPENGL_LIBRARIES})
 include(cmake/FindGLM.cmake)
 include_directories(${glm_include_dir})
 
+#glad
+# go to http://glad.dav1d.de/ and generate the src
+# todo: add vendor/glad/src/glad.c to the executable
+include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/include)
+target_link_libraries(${1:projectname} dl)
 endsnippet
 
-snippet curses "include curses library" !b
-#curses
-if(NOT ${CURSES_FOUND})
-  message(FATAL_ERROR "Curses Not Found")
-endif()
-include_directories(${CURSES_INCLUDE_DIRS})
-target_link_libraries(${1:project_name} ${CURSES_LIBRARIES})
-endsnippet
 snippet lua "include lua" !b
 #NOTE: include "lua.hpp", not "lua.h" or <lua/lua.hpp>
-#      also include "lualib.h"
 find_package(Lua 5.3 REQUIRED)
-message("lua: " ${LUA_LIBRARIES} ", " ${LUA_FOUND})
 target_link_libraries(${1:projectname} ${LUA_LIBRARIES})
 include_directories(${LUA_INCLUDE_DIR})
 endsnippet
 snippet swig "add swig module" !b
 find_package(SWIG REQUIRED)
 include(${SWIG_USE_FILE})
+# swig will need to include project headers:
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-set(CMAKE_SWIG_FLAGS "-c++")
-
+set(CMAKE_SWIG_FLAGS -c++ -nomoduleglobal)
 set_property(SOURCE ${1:interface}.i PROPERTY CPLUSPLUS ON)
   swig_add_library(
       $1

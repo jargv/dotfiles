@@ -521,15 +521,12 @@ let g:isMac = !g:isLinux
     let g:makeDirectory = getcwd()
     if filereadable("build.ninja")
       let g:makeBuildtool = "ninja"
-    elseif len(glob('*.xcodeproj'))
-      let g:makeBuildtool = "xcodebuild"
-    elseif filereadable("CMakeLists.txt") && isdirectory("build")
-      cd build
-      call <SID>DetectBuildTool()
-      return
     elseif filereadable("CMakeLists.txt")
-      call VimuxRunCommand("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG ..")
-      return
+      if !isdirectory("build")
+        call VimuxRunCommand("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG .. && cd ..")
+      endif
+      let g:makeDirectory .= "/build"
+      let g:makeBuildtool = "make"
     elseif expand('%:e') == "go"
       let gopath = $GOPATH
       let testExt = "_test.go"
@@ -590,7 +587,7 @@ let g:isMac = !g:isLinux
       if len(g:runTarget)
         let cmd = cmd." && ".g:runTarget
       endif
-      call VimuxRunCommand("cd ".g:makeDirectory." && ".cmd)
+      call VimuxRunCommand("(cd ".g:makeDirectory." && ".cmd.")")
       normal 
     endif
     if g:browserReloadPort
