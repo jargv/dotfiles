@@ -403,20 +403,28 @@ let g:isMac = !g:isLinux
         nohlsearch
       endfunc
     "}}}
+  " indentation/wrapping {{{2
+    set wrap
+    set linebreak
+    set breakindent
+    set breakindentopt=shift:0,sbr
+    let &showbreak='> '
+    let &breakat=" 	!@*-+;:,./?(){}[]"
+    "set cpoptions+=n
   "other {{{2
     let g:filetype_pl="prolog"
     set scrolloff=1
     set nofileignorecase
     set virtualedit=block "allow moving onto whitespace during block select
     set noreadonly "I never really care about using readonly
-    set wildmenu autowrite autowriteall
+    set wildmenu wildmode=full
+    set autowrite autowriteall
     set backspace=indent,eol,start
     set switchbuf=useopen,usetab
-    set showbreak=...
     set undofile hidden history=1000 " keep undo history in buffers when not visible/open
     set completeopt=menuone,noinsert
+    set infercase
     set mouse=a
-    set nowrap
     if has("mouse_sgr")
       set ttymouse=sgr
     endif
