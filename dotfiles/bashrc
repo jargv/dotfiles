@@ -1,0 +1,2 @@
+set -o vi
+export PATH=$PATH:~/config/bin
