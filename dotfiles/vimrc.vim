@@ -2,7 +2,8 @@
 let mapleader = " "
 set shortmess+=I
 let g:isLinux = system('uname') == "Linux\n"
-let g:isMac = !g:isLinux
+let g:isGitBash = system('uname')[0:4] == "MINGW"
+let g:isMac = !g:isLinux && !g:isGitBash
 
 "plugins {{{1
    "setup Vundle {{{2
@@ -199,7 +200,9 @@ let g:isMac = !g:isLinux
      "    \ }
      let g:syntastic_javascript_checkers = ['standard']
    "Plugin 'vim-scripts/UltiSnips' {{{2
-       Plugin 'vim-scripts/UltiSnips'
+      if !g:isGitBash
+        Plugin 'vim-scripts/UltiSnips'
+      endif
       let g:UltiSnipsExpandTrigger="<tab>"
       let g:UltiSnipsJumpForwardTrigger="<tab>"
       let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
@@ -299,6 +302,9 @@ let g:isMac = !g:isLinux
     set bg=dark
     colorscheme OceanicNext
   elseif g:isLinux
+    set bg=dark
+    colorscheme OceanicNext
+  elseif g:isGitBash
     set bg=dark
     colorscheme OceanicNext
   endif
@@ -1194,7 +1200,7 @@ endfunc
                 \ endif
           au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
         augroup END
-      else
+      elseif g:isMac
         "Curosr shape in insert mode:
         let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
         let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
