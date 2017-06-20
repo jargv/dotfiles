@@ -785,12 +785,14 @@ endfunc
       let lastChar = line[p-2]
       let restOfLine = (line[p-1:])
       let tab = repeat(' ', &sw)
+      let isLua = &ft == 'lua'
+
       if (len(restOfLine) >= 1)
         let nextToLastChar  = line[p-1]
         let brackets = lastChar == '{' && nextToLastChar == '}'
         let parens   = lastChar == '(' && nextToLastChar == ')'
         let squares  = lastChar == '[' && nextToLastChar == ']'
-        if brackets || parens || squares
+        if brackets || parens || squares || luaDelim
           return 'O'
         else
           return ''
@@ -799,6 +801,7 @@ endfunc
         if     lastChar == '{' | return '}O'
         elseif lastChar == '(' | return ')O'
         elseif lastChar == '[' | return ']O'
+        elseif isLua && (line[-4:] == 'then' || line[-2:] == 'do') | return 'endO'
         else                   | return ''
         endif
       endif
