@@ -792,7 +792,7 @@ endfunc
         let brackets = lastChar == '{' && nextToLastChar == '}'
         let parens   = lastChar == '(' && nextToLastChar == ')'
         let squares  = lastChar == '[' && nextToLastChar == ']'
-        if brackets || parens || squares || luaDelim
+        if brackets || parens || squares
           return 'O'
         else
           return ''

@@ -22,7 +22,7 @@ export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
 #go paths {{{2
 #export GOPATH=~/projects/go
 export GOPATH=~/projects
-export PATH=$PATH:~/projects/go/bin
+export PATH=$PATH:~/projects/bin
 if [[ $(uname) == "Linux" ]]; then
   # export GOROOT=/usr/local/go
   # export PATH=$GOROOT/bin:$PATH
