@@ -561,6 +561,9 @@ let g:isMac = !g:isLinux && !g:isGitBash
     elseif expand('%:e') == "hs"
       let g:makeBuildtool = "runhaskell"
       let g:makeTarget = expand('%')
+    elseif expand('%:e') == "lua"
+      let g:makeBuildtool = "lua"
+      let g:makeTarget = expand('%')
     elseif expand('%:e') == "js"
       let g:makeBuildtool = "standard --parser babel-eslint"
     elseif filereadable("project.clj")
