@@ -2,6 +2,10 @@
 export TERM=xterm-256color
 #export TERM=screen-it
 
+#windows (wsl) {{{1
+if [[ -d "/mnt/c" ]]; then
+  export DISPLAY=:0
+fi
 #setup nix {{{1
 # export NIX_PATH="~/.nix-defexpr/nixpgks"
 # export nixpkgs="~/.nix-defexpr/nixpgks"
