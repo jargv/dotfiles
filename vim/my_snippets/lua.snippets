@@ -21,3 +21,14 @@ endsnippet
 snippet r "require something" !b
 local ${1:module} = require "${2:$1}"
 endsnippet
+snippet for "for loop" !b
+for ${3:i}, ${2:val} in $4pairs($1) do
+  $0
+end
+endsnippet
+snippet l "print variables" !b
+print("$1", ${1})
+endsnippet
+snippet log "print text" !b
+print "$1"
+endsnippet

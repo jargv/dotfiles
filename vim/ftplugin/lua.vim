@@ -14,4 +14,4 @@ func! <SID>opEquals(op)
   return "= ".result." ".a:op
 endfunc
 
-
+inoreab <buffer> != ~=
