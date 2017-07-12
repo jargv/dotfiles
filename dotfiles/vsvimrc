@@ -1,0 +1,17 @@
+let mapleader = ' '
+nnoremap <leader><leader> :w<cr>
+nnorempa <leader>m :vsc Build.BuildSolution<cr>
+nnoremap <leader>e :vsc Window.ActivateDocumentWindow<cr>
+nnoremap <leader>c :source ~/.vsvimrc<cr>
+nnoremap <leader>C :e ~/.vsvimrc<cr>
+nnoremap <leader>n :vsc View.NextError<cr>
+nnoremap <leader>p :vsc View.PreviousError<cr>
+
+nmap <C-O> :vsc View.NavigateBackward<CR>
+nmap <C-I> :vsc View.NavigateForward<CR>
+
+" format on save 
+" window splits
+" git gutter
+" difftool
+" git done
