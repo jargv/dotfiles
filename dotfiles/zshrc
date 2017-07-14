@@ -85,6 +85,7 @@ HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 setopt appendhistory inc_append_history share_history hist_ignore_dups
+setopt histignorespace
 
 #{{{1 vim
 bindkey -v
