@@ -298,16 +298,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  if g:isMac
-    set bg=dark
-    colorscheme OceanicNext
-  elseif g:isLinux
-    set bg=dark
-    colorscheme OceanicNext
-  elseif g:isGitBash
-    set bg=dark
-    colorscheme OceanicNext
-  endif
+  set bg=light
+  colorscheme nova
 
   nnoremap <f3> :NextColorScheme<cr>
   nnoremap <f2> :PrevColorScheme<cr>

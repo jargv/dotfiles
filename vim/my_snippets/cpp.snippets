@@ -4,22 +4,11 @@ snippet inc "include the corresponding header" !b
 #include "`!v expand('%:t:r')`.hpp"
 using namespace std;
 endsnippet
-snippet afor "array index for loop" !b
-for (int ${2:i} = 0; $2 < ${1:array}.size(); ++$2){
-  auto& ${3:elem} = $1[$2];
+snippet ifor "index for loop" !b
+for (int ${2:i} = 0; $2 < ${1:items}.size(); ++$2){
+  auto& ${3:item} = $1[$2];
   ${4:${VISUAL}}
 }
-endsnippet
-snippet class "Make a class" !b
-class ${1:`!v expand('%:t:r')`} final {
-public:
-	$0
-};
-endsnippet
-snippet struct "Make a struct" !b
-struct ${1:`!v expand('%:t:r')`} final {
-	$0
-};
 endsnippet
 snippet ctor "Make a constructor for the current class" !b
 ${1:`!v
@@ -105,7 +94,7 @@ snippet dtor "Description" !b
 
 endsnippet
 
-snippet def "default all the compiler-generated members" !b
+snippet def "default all the sepcial member functions" !b
 ${1:`!v
 	get(matchlist(getline(search('^\s*class\s*\([A-Z]\w*\)', 'bWn')), '\s*class\s*\([A-Z]\w*\)'), 1, '')
 `}() = default;
@@ -115,7 +104,7 @@ $1& operator= ($1&&) = default;
 $1& operator= ($1 const&) = default;
 ~$1() = default;
 endsnippet
-snippet del "delete all the compiler-generated members" !b
+snippet del "delete all the special member functions" !b
 ${1:`!v
 	get(matchlist(getline(search('^\s*class\s*\([A-Z]\w*\)', 'bWn')), '\s*class\s*\([A-Z]\w*\)'), 1, '')
 `}() = delete;
@@ -124,12 +113,6 @@ $1($1 const&) = delete;
 $1& operator= ($1&&) = delete;
 $1& operator= ($1 const&) = delete;
 ~$1() = delete;
-endsnippet
-snippet meth "Make a  method" !b
-${3///} ${1///}(${2///}) const;
-${3:return_type} `!v expand('%:t:r')`::${1:meth}(${2}) const {
-  $4
-}
 endsnippet
 
 snippet lm "lambda" w!
@@ -141,28 +124,6 @@ snippet fn "named lambda" !b
 auto ${1:foo} = [$3]($2){
 	$0
 };
-endsnippet
-snippet block "create a lambda-block" !b
-[]($1){
-	${VISUAL}$0
-}(${1/auto&?\ ?//g});
-endsnippet
-snippet tm "template function" !b
-template<`!p
-
-args=t[2].split(', ');
-types = []
-for arg in args:
-  parts = arg.split(' ')
-	type = parts[0] if len(parts) else ''
-  types.append("typename " + type)
-
-snip.rv = ', '.join(types)
-
-`>
-${3:void} $1($2){
-
-}
 endsnippet
 snippet main "quick main function" !b
 #include <iostream>
@@ -267,20 +228,19 @@ std::ostream& operator << (std::ostream& out, $1){
 }
 endsnippet
 snippet be "begin/end construct" w!
-$1.begin(), $1.end()
-endsnippet
-snippet ac "auto const" !b
-auto const
-endsnippet
-snippet ca "const auto" !b
-const auto
-endsnippet
-snippet fwd "forward arguments" !b
-std::forward<decltype(${1:args})>($1)...
+begin($1), end($1)
 endsnippet
 snippet ns "make a namespace" !b
 namespace $1 {
 $0
 } // $1 namespace
-
 endsnippet
+snippet erm "erase remove idiom" !b
+${1:v}.erase(std::remove_if(
+  begin($1), end($1),
+  ${2:[](auto& ${3:item}){
+    return ${4:false}
+  }}
+), end($1));
+endsnippet
+
