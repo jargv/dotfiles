@@ -223,9 +223,9 @@ let g:isMac = !g:isLinux && !g:isGitBash
       let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyz'
       let g:EasyMotion_do_shade = 0
    "Plugin 'benmills/vimux' {{{2
-      Plugin 'benmills/vimux'
-      let g:VimuxHeight = 30
-      let VimuxUseNearest = 1
+      " Plugin 'benmills/vimux'
+      " let g:VimuxHeight = 30
+      " let VimuxUseNearest = 1
 
    "Plugin 'airblade/vim-gitgutter' {{{2
    let g:gitgutter_sign_added = '+'
@@ -475,6 +475,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
     let g:browserReloadCommand = 'chrome_refresh'
     let g:browserReloadArgs = ""
     let g:browserReloadPort = ""
+
+    let g:tmux_index = ""
   endfunc
 
   "autocommand on save
@@ -495,12 +497,15 @@ let g:isMac = !g:isLinux && !g:isGitBash
   nnoremap <leader>Mr :let g:runTarget = input(">", g:runTarget)<CR>
   nnoremap <leader>Md :let g:makeDirectory = input(">", len(g:makeDirectory) ? (g:makeDirectory) : getcwd())<CR>
   nnoremap <leader>Mx :let g:makeBuildtool = input(">", g:makeBuildtool)<cr>
-  nnoremap <leader>E :let g:closeOnCollectErrors = !g:closeOnCollectErrors<CR>:echo (g:closeOnCollectErrors ? "CLOSE" : "DON'T CLOSE")<CR>
-  nnoremap <leader>e :if g:closeOnCollectErrors<CR>VimuxCloseRunner<CR>endif<CR>:exec "cfile /tmp/vim-errors-".&filetype<CR>:cw<CR><CR>
+  "nnoremap <leader>E :let g:closeOnCollectErrors = !g:closeOnCollectErrors<CR>:echo (g:closeOnCollectErrors ? "CLOSE" : "DON'T CLOSE")<CR>
+  "nnoremap <leader>E :echo "FIX THIS!"
+  "nnoremap <leader>e :if g:closeOnCollectErrors<CR>VimuxCloseRunner<CR>endif<CR>:exec "cfile /tmp/vim-errors-".&filetype<CR>:cw<CR><CR>
+  nnoremap <leader>e :exec "cfile /tmp/vim-errors-".&filetype<CR>:cw<CR><CR>
 
   nnoremap <leader>Ms :call <SID>ToggleMakeOnSave()<cr>
   nnoremap <leader>Mb :call <SID>ToggleReloadBrowserOnMake()<cr>
   nnoremap <leader>Mp :let g:browserReloadPort = input('Port:', g:browserReloadPort ? g:browserReloadPort : '')<cr>
+  nnoremap <leader>Ml :let g:tmux_index = <sid>CollectTmuxPane()
 
   func! <SID>ToggleReloadBrowserOnMake()
     if !g:browserReloadOnMake
@@ -521,6 +526,22 @@ let g:isMac = !g:isLinux && !g:isGitBash
      endif
   endfunc
 
+  func! <SID>CollectTmuxPane()
+    let getpane = 'tmux display -p "#P"'
+    let vimpane = system(getpane)
+    call system("tmux display-pane 'display -t \%\% \"#P\"'")
+    let pane = input("pane:")
+    return pane
+  endfunc
+
+  func! <SID>TmuxRun(args)
+    if g:tmux_index == ""
+      let g:tmux_index = <SID>CollectTmuxPane()
+    endif
+    call system("tmux send-keys -t ".g:tmux_index.' "'.escape(a:args,'\"$`').'"')
+    call system("tmux send-keys -t ".g:tmux_index.' Enter')
+  endfunc
+
   func! <SID>DetectBuildTool()
     call <SID>InitMyMake()
     let g:makeOnSave = 1
@@ -529,7 +550,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
       let g:makeBuildtool = "ninja"
     elseif filereadable("CMakeLists.txt")
       if !isdirectory("build")
-        call VimuxRunCommand("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG .. && cd ..")
+        call <SID>TmuxRun("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG .. && cd ..")
       endif
       let g:makeDirectory .= "/build"
       let g:makeBuildtool = "make"
@@ -582,21 +603,21 @@ let g:isMac = !g:isLinux && !g:isGitBash
        let g:makeBuildTool = ""
        let g:makeTarget = "./".expand('%')
     endif
-    call VimuxRunCommand('echo "detected> '.g:makeBuildtool.' '.g:makeTarget.'"')
+    call <sid>TmuxRun('echo detected '.g:makeBuildtool.' '.g:makeTarget)
   endfunc
 
   func! <SID>RunMake()
-    call VimuxRunCommand("set -o pipefail")
+    call <sid>TmuxRun("set -o pipefail")
     let ran = 0
     wa
     if len(g:makeBuildtool) || len(g:makeTarget)
       let ran = 1
-      :VimuxInterruptRunner
+      call <sid>TmuxRun("^c")
       let cmd = g:makeBuildtool." ".g:makeTarget." 2>&1 |tee /tmp/vim-errors-".&filetype
       if len(g:runTarget)
         let cmd = cmd." && ".g:runTarget
       endif
-      call VimuxRunCommand("(cd ".g:makeDirectory." && ".cmd.")")
+      call <sid>TmuxRun("(cd ".g:makeDirectory." && ".cmd.")")
       normal 
     endif
     if g:browserReloadPort
