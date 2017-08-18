@@ -1,3 +1,10 @@
+
+nnoremap gd :YcmCompleter GoTo<cr>
+nnoremap gf :YcmCompleter GoToInclude<cr>
+nnoremap <leader>;i :YcmCompleter GetType<cr>
+nnoremap <leader>;I :YcmCompleter GetDoc<cr>
+nnoremap <leader>;; :YcmCompleter FixIt<cr>
+
 "better c++11 syntax support {{{1
 let g:c_no_curly_error = 1
 let g:c_no_bracket_error = 1
@@ -121,3 +128,4 @@ func! TranspileLua()
   s/\<nil\>/nullptr/e
   call setpos('.', pos)
 endfunction
+

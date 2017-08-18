@@ -157,24 +157,26 @@ let g:isMac = !g:isLinux && !g:isGitBash
       let g:tagbar_left = 1
       "let g:tagbar_vertical = 30
 
-   "Plugin 'Valloric/YouCompleteMe' {{{2
-      ""command! YouCompleteMeInstall :!cd ~/.vim/bundle/YouCompleteMe && git submodule update --init --recursive && ./install.py --racer-completer --clang-completer --tern-completer --system-libclang
-      "" Plugin 'Valloric/YouCompleteMe'
-      let g:ycm_rust_src_path = '~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
+  "Plugin 'Valloric/YouCompleteMe' {{{2
+      command! YouCompleteMeInstall :!cd ~/.vim/bundle/YouCompleteMe && git submodule update --init --recursive && ./install.py --racer-completer --clang-completer --tern-completer --system-libclang
+      Plugin 'Valloric/YouCompleteMe'
+      "let g:ycm_rust_src_path = '~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
       "let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
-      let g:ycm_global_ycm_extra_conf = '~/config/vim/.ycm_extra_conf.py'
-      let g:ycm_min_num_identifier_candidate_chars = 2
+      "let g:ycm_global_ycm_extra_conf = '~/config/vim/.ycm_extra_conf.py'
+      "let g:ycm_min_num_identifier_candidate_chars = 2
       "let g:ycm_filetype_whitelist = { 'cpp': 1, 'hpp': 1 }
-      "let g:ycm_show_diagnostics_ui = 1
-      "let g:ycm_autoclose_preview_window_after_completion = 1
-      "let g:ycm_autoclose_preview_window_after_insertion = 1
+      let g:ycm_show_diagnostics_ui = 1
+      let g:ycm_enable_diagnostic_signs = 0
+      let g:ycm_autoclose_preview_window_after_completion = 1
+      let g:ycm_autoclose_preview_window_after_insertion = 1
       let g:ycm_use_ultisnips_completer = 1
-      "let g:ycm_key_list_select_completion = ['<C-N>']
-      "let g:ycm_key_list_previous_completion = ['<C-P>']
+      let g:ycm_key_list_select_completion = ['<C-N>']
+      let g:ycm_key_list_previous_completion = ['<C-P>']
 
-      "let g:ycm_add_preview_to_completeopt = 0
+      let g:ycm_add_preview_to_completeopt = 0
       "let g:ycm_min_num_of_chars_for_completion = 1
       "let g:ycm_auto_trigger = 1
+
    "Plugin 'tpope/vim-vinegar' {{{2
      nmap - k
      Plugin 'tpope/vim-vinegar'
@@ -500,7 +502,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
   "nnoremap <leader>E :let g:closeOnCollectErrors = !g:closeOnCollectErrors<CR>:echo (g:closeOnCollectErrors ? "CLOSE" : "DON'T CLOSE")<CR>
   "nnoremap <leader>E :echo "FIX THIS!"
   "nnoremap <leader>e :if g:closeOnCollectErrors<CR>VimuxCloseRunner<CR>endif<CR>:exec "cfile /tmp/vim-errors-".&filetype<CR>:cw<CR><CR>
-  nnoremap <leader>e :exec "cfile /tmp/vim-errors-".&filetype<CR>:cw<CR><CR>
+  nnoremap <leader>e :exec "cfile /tmp/vim-errors-".&filetype<CR>:cw<CR>
 
   nnoremap <leader>Ms :call <SID>ToggleMakeOnSave()<cr>
   nnoremap <leader>Mb :call <SID>ToggleReloadBrowserOnMake()<cr>
@@ -550,7 +552,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
       let g:makeBuildtool = "ninja"
     elseif filereadable("CMakeLists.txt")
       if !isdirectory("build")
-        call <SID>TmuxRun("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG .. && cd ..")
+        call <SID>TmuxRun("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && cd ..")
+        !ln -s build/compile_commands.json .
       endif
       let g:makeDirectory .= "/build"
       let g:makeBuildtool = "make"
