@@ -174,8 +174,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
       let g:ycm_key_list_previous_completion = ['<C-P>']
 
       let g:ycm_add_preview_to_completeopt = 0
-      "let g:ycm_min_num_of_chars_for_completion = 1
-      "let g:ycm_auto_trigger = 1
+      let g:ycm_min_num_of_chars_for_completion = 1
+      let g:ycm_auto_trigger = 1
 
    "Plugin 'tpope/vim-vinegar' {{{2
      nmap - k
