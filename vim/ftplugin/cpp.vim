@@ -1,9 +1,11 @@
 
-nnoremap gd :YcmCompleter GoTo<cr>
-nnoremap gf :YcmCompleter GoToInclude<cr>
-nnoremap <leader>;i :YcmCompleter GetType<cr>
-nnoremap <leader>;I :YcmCompleter GetDoc<cr>
-nnoremap <leader>;; :YcmCompleter FixIt<cr>
+" {{{ ycm
+nnoremap <buffer> gd :YcmCompleter GoTo<cr>
+nnoremap <buffer> gf :YcmCompleter GoToInclude<cr>
+nnoremap <buffer> <leader>;i :YcmCompleter GetType<cr>
+nnoremap <buffer> <leader>;I :YcmCompleter GetDoc<cr>
+nnoremap <buffer> <leader>;; :YcmCompleter FixIt<cr>
+nnoremap <buffer> <cr> :YcmCompleter GoToDeclaration<cr>
 
 "better c++11 syntax support {{{1
 let g:c_no_curly_error = 1
@@ -19,7 +21,7 @@ set nospell
 "<leader>;t: move out of header {{{1
 if !exists("*MoveOutOfHeader")
    func! MoveOutOfHeader()
-      let pattern = '^\(class\|struct\)\s*\([A-Za-z_][A-Za-z0-9_]*\)'
+      let pattern = '^\s*\(class\|struct\)\s*\([A-Za-z_][A-Za-z0-9_]*\)'
       let pos = getpos('.')
       let col = pos[2]
       let lineNumber = pos[1]
@@ -86,8 +88,6 @@ nnoremap <buffer> <leader>;s :%s/std:://<cr>
 "wrap block in lambda {{{1
 nnoremap <buffer> <leader>;b :normal i[]()l%a();
 
-"hit enter to go to declaration with ycm  {{{1
-nnoremap <buffer> <cr> :YcmCompleter GoToDeclaration<cr>
 
 "folding {{{1
 setlocal foldnestmax=20

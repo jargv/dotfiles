@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+window_name=$1
+shift 1
+
+echo "waiting for $window_name window ..."
+
+while true; do
+  wmctrl -l -p | awk -e'{print $1,$5}' | while read wid name; do
+    if [[ "$name" == "$window_name" ]]; then
+      wmctrl -i -r $wid -b add,above
+    fi
+  done
+  sleep 1
+done

@@ -50,12 +50,6 @@ endsnippet
 snippet gl "bring in everything needed for opengl" !b
 include(FindPkgConfig)
 
-#sdl
-PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
-PKG_SEARCH_MODULE(SDL2_image REQUIRED SDL2_image)
-INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2_image_INCLUDE_DIRS} )
-TARGET_LINK_LIBRARIES(${1:projectname} ${SDL2_LIBRARIES} ${SDL2_image_LIBRARIES})
-
 #gl
 find_package(OpenGL REQUIRED)
 INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIRS})
@@ -64,6 +58,10 @@ TARGET_LINK_LIBRARIES($1 ${OPENGL_LIBRARIES})
 #glm
 include(cmake/FindGLM.cmake)
 include_directories(${glm_include_dir})
+
+#glfw
+find_package(glfw3 3.2 REQUIRED)
+target_link_libraries($1 glfw)
 
 #glad
 # go to http://glad.dav1d.de/ and generate the src
@@ -92,4 +90,10 @@ set_property(SOURCE ${1:interface}.i PROPERTY CPLUSPLUS ON)
       TYPE STATIC
     )
 target_link_libraries(${2:projectname} $1)
+endsnippet
+snippet sdl "SDL2 libs" !b
+#sdl
+find_package(SDL2 REQUIRED)
+target_link_libraries(${1:app} ${SDL2_LIBRARIES})
+include_directories(${SDL2_INCLUDE_DIRS})
 endsnippet

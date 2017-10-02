@@ -553,7 +553,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
     elseif filereadable("CMakeLists.txt")
       if !isdirectory("build")
         call <SID>TmuxRun("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && cd ..")
-        !ln -s build/compile_commands.json .
+        !ln -sf build/compile_commands.json .
       endif
       let g:makeDirectory .= "/build"
       let g:makeBuildtool = "make"
@@ -610,6 +610,9 @@ let g:isMac = !g:isLinux && !g:isGitBash
   endfunc
 
   func! <SID>RunMake()
+    if g:tmux_index == ""
+      return
+    endif
     call <sid>TmuxRun("set -o pipefail")
     let ran = 0
     wa
@@ -1238,6 +1241,7 @@ endfunc
       endif
       set showtabline=2 "always show the tabline
       func! GetGitBranch()
+         return ""
          if g:gitStatusInTablineShown
            let cmd = "git status -sb"
          else
