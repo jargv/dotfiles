@@ -3,13 +3,36 @@
 window_name=$1
 shift 1
 
-echo "waiting for $window_name window ..."
+getFocus(){
+  echo $(xdotool getwindowfocus getwindowname)
+}
 
+parent=$(getFocus)
+echo "parent: $parent"
+
+place(){
+  case $(getFocus) in
+    $parent)
+      wmctrl -i -r $1 -b remove,below
+      wmctrl -i -r $1 -b add,above
+      ;;
+    $window_name)
+      wmctrl -i -r $1 -b remove,above
+      wmctrl -i -r $1 -b remove,below
+      ;;
+    *)
+      wmctrl -i -r $1 -b remove,above
+      wmctrl -i -r $1 -b add,below
+      ;;
+  esac
+}
+
+echo "waiting for $window_name window ..."
 while true; do
   wmctrl -l -p | awk -e'{print $1,$5}' | while read wid name; do
     if [[ "$name" == "$window_name" ]]; then
-      wmctrl -i -r $wid -b add,above
+      place $wid
     fi
   done
-  sleep 1
+  sleep 0.3
 done
