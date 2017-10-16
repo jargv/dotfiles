@@ -301,7 +301,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set t_ut= "fix the weird background erasing crap
   set ttyfast
   set bg=dark
-  colorscheme zenesque
+  colorscheme apprentice
 
   nnoremap <f3> :NextColorScheme<cr>
   nnoremap <f2> :PrevColorScheme<cr>
@@ -1261,14 +1261,17 @@ endfunc
       endfunction
       func! MyTabLine()
         let s = " VIM "
-        for i in range(tabpagenr('$'))
-          " select the highlighting
-          let isSelected = i + 1 == tabpagenr()
+        let selected = tabpagenr()
+        let num = tabpagenr('$')
+        for i in range(num)
+          let isSelected = i + 1 == selected
+          let isFirst = selected == 1 && i == 0
+          let after = i == selected
+
           if isSelected
             let s .= '%#TabLineSel#'
-          elseif i == 0 || i == tabpagenr()
+          elseif i == tabpagenr()
             let s .= '%#TabLine#'
-            let s .= ' '
           else
             let s .= '%#TabLine#'
             let s .= '┊'
@@ -1277,16 +1280,24 @@ endfunc
           " set the tab page number (for mouse clicks)
           let s .= '%' . (i + 1) . 'T'
 
-          " the label is made by MyTabLabel()
-          let label = ' %{MyTabLabel(' . (i + 1) . ')} '
+          let padding = ''
+          if isSelected
+            let padding = ' '
+          endif
 
-          let s .= label
+          let s .= padding . ' %{MyTabLabel(' . (i + 1) . ')} ' . padding
+
+          if i == num - 1 && selected != num
+            let s .= '┊'
+          endif
+
         endfor
         let s .= '%#TabLineFill# '
 
         "start on the right
         let s .= '%='
         let s .= '%#TabLineFill# '.'%{GetGitBranch()}'.' '
+
         return s
       endfunc
       set tabline=%!MyTabLine()
