@@ -1,11 +1,11 @@
 snippet new "new project" !b
-cmake_minimum_required (VERSION 3.0)
-project (${1:`!v expand("%:p:h:t")`})
+cmake_minimum_required (VERSION 3.9 FATAL_ERROR)
+project (${1:`!v expand("%:p:h:t")`} VERSION 0.0 LANGUAGES CXX)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+set(CMAKE_CXX_STANDARD 17)
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wdeprecated")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-backtrace-limit=0")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-absolute-paths")

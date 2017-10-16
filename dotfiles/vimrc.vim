@@ -300,8 +300,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  set bg=light
-  colorscheme nova
+  set bg=dark
+  colorscheme zenesque
 
   nnoremap <f3> :NextColorScheme<cr>
   nnoremap <f2> :PrevColorScheme<cr>
@@ -1260,30 +1260,34 @@ endfunc
         return current
       endfunction
       func! MyTabLine()
-         let s = " "
-         for i in range(tabpagenr('$'))
-            " select the highlighting
-            let isSelected = i + 1 == tabpagenr()
-            if isSelected
-               let s .= '%#TabLineSel#'
-            else
-               let s .= '%#TabLine#'
-            endif
+        let s = " VIM "
+        for i in range(tabpagenr('$'))
+          " select the highlighting
+          let isSelected = i + 1 == tabpagenr()
+          if isSelected
+            let s .= '%#TabLineSel#'
+          elseif i == 0 || i == tabpagenr()
+            let s .= '%#TabLine#'
+            let s .= ' '
+          else
+            let s .= '%#TabLine#'
+            let s .= '┊'
+          endif
 
-            " set the tab page number (for mouse clicks)
-            let s .= '%' . (i + 1) . 'T'
+          " set the tab page number (for mouse clicks)
+          let s .= '%' . (i + 1) . 'T'
 
-            " the label is made by MyTabLabel()
-            let label = ' %{MyTabLabel(' . (i + 1) . ')} '
+          " the label is made by MyTabLabel()
+          let label = ' %{MyTabLabel(' . (i + 1) . ')} '
 
-            let s .= label
-         endfor
-         let s .= '%#TabLineFill# '
+          let s .= label
+        endfor
+        let s .= '%#TabLineFill# '
 
-         "start on the right
-         let s .= '%='
-         let s .= '%#TabLineFill# '.'%{GetGitBranch()}'.' '
-         return s
+        "start on the right
+        let s .= '%='
+        let s .= '%#TabLineFill# '.'%{GetGitBranch()}'.' '
+        return s
       endfunc
       set tabline=%!MyTabLine()
       " exec "hi TabLineSel          cterm=bold      ctermbg=".s:selBG."      ctermfg=".s:selText
