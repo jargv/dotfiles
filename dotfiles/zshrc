@@ -40,16 +40,16 @@ export RUST_SRC_PATH=~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib
 #Attach tmux session {{{1
 # Attempt to discover a detached session and attach
 # it, else create a new session
-if [[ "$TERM" != "screen" ]] &&
-   [[ -z "$TMUX" ]] &&
-   [[ "$SSH_CONNECTION" == "" ]]; then
-  mainsession="x"
-  if tmux has-session -t $mainsession 2>/dev/null; then
-    tmux -2 attach-session -t $mainsession
-  else
-    tmux -2 new-session -s $mainsession
-  fi
-fi
+# if [[ "$TERM" != "screen" ]] &&
+#    [[ -z "$TMUX" ]] &&
+#    [[ "$SSH_CONNECTION" == "" ]]; then
+#   mainsession="x"
+#   if tmux has-session -t $mainsession 2>/dev/null; then
+#     tmux -2 attach-session -t $mainsession
+#   else
+#     tmux -2 new-session -s $mainsession
+#   fi
+# fi
 
 #antigen {{{1
 # antigenfile=~/config/antigen/antigen.zsh
@@ -83,15 +83,35 @@ SAVEHIST=1000
 setopt appendhistory inc_append_history share_history hist_ignore_dups
 setopt histignorespace
 
-#{{{1 vim
+#vim {{{1
 bindkey -v
-
-#don't stop the backspace at the insert point
+#don't stop the backspace at the insert point {{{2
 bindkey "^?" backward-delete-char
 
-#remove all the keymaps that make esc slow
+#hit escape twice to go into normal mode in embedded terminal {{{2
+double_escape() {
+  command vim --servername $VIM_SERVERNAME --remote-send "<C-\><C-N>"
+}
+
+zle -N double_escape
+
+bindkey -M vicmd  double_escape
+
+#trying to invoke vim in embeded term opens in place {{{2
+vim() {
+  if [[ -z "$VIM_SERVERNAME" ]]; then
+    echo "empty"
+    command vim "$@"
+  else
+    command vim --servername $VIM_SERVERNAME --remote "$@"
+  fi
+}
+
+#remove all the keymaps that make esc slow {{{2
 export KEYTIMEOUT=1
 KEYTIMEOUT=1
+
+#}}}
 
 #{{{1 clang
 export CC=clang
@@ -227,7 +247,7 @@ if [[ -n $VIMRUNTIME ]]; then
     export VIM_DEPTH=$(( $VIM_DEPTH + 1 ))
     local vim_depth_string="-$VIM_DEPTH"
   fi
-  vim="${red_op}|VIM$vim_depth_string|${red_cp}"
+  #vim="${red_op}|VIM$vim_depth_string|${red_cp}"
 fi
 
 local secondLine=$terminfo[cud1]$terminfo[cuu1]$terminfo[sc]$terminfo[cud1]

@@ -147,7 +147,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
 
    "Plugin 'junegunn/fzf' {{{2
     Plugin 'junegunn/fzf'
-    nnoremap <leader>o :FZF --inline-info<cr>
+   nnoremap <leader>o :FZF --inline-info<cr>
 
    "Plugin 'junegunn/vim-easy-align' {{{2
      Plugin 'junegunn/vim-easy-align'
@@ -300,13 +300,13 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  set bg=dark
-  colorscheme apprentice
+  set bg=light
+  colorscheme atom
 
   nnoremap <f3> :NextColorScheme<cr>
   nnoremap <f2> :PrevColorScheme<cr>
   nnoremap <f1> :RandomColorScheme<cr>
-  highlight Comment cterm=italic
+  "highlight Comment cterm=italic
 
 "prototype settings {{{1
   nnoremap <leader>, :TagbarOpenAutoClose<cr>
@@ -661,6 +661,36 @@ func! <sid>manualRefresh()
   call system(g:browserReloadCommand  . " " . g:browserReloadArgs)
 endfunc
 
+" terminals {{{1
+hi Terminal guibg=#666666 guifg=#dddddd
+if has("gui_running")
+  nnoremap <leader>. :term ++curwin<cr>
+  tmap <M-k> <c-w>k
+  tmap <M-j> <c-w>j
+  tmap <M-l> <c-w>l
+  tmap <M-h> <c-w>h
+  nmap <M-k> <c-w>k
+  nmap <M-j> <c-w>j
+  nmap <M-l> <c-w>l
+  nmap <M-h> <c-w>h
+  nmap <M-x> <c-w>h
+  tmap <M-y> <c-w>N
+  tmap <M-p> <c-w>""
+  imap <M-p> <c-r>"
+  nmap <M-m> :tabnew<cr>:term ++curwin<cr>
+  tmap <M-m> <c-w>N:tabnew<cr>:term ++curwin<cr>
+  nmap <M--> :new<cr>:term ++curwin<cr>
+  nmap <M-=> :vnew<cr>:term ++curwin<cr>
+  tmap <M--> <C-w>:new<cr><C-w>:term ++curwin<cr>
+  tmap <M-=> <C-w>:vnew<cr><C-w>:term ++curwin<cr>
+  nmap <M-x> :silent bw!<cr>
+  tmap <M-x> <C-w>:silent bw!<cr>
+else
+  nnoremap <leader>. :!tmux split-window -p20 <CR><CR>
+endif
+if has("nvim")
+  nnoremap <leader>. :split term://zsh<cr>:startinsert<cr>
+end
 
 "mappings {{{1
   "better defaults {{{2
@@ -678,11 +708,6 @@ endfunc
   "control-move text{{{2
     vnoremap <C-j> xp'[V']
     vnoremap <C-k> xkP'[V']
-  "external applications {{{2
-    nnoremap <leader>. :!tmux split-window -p20 <CR><CR>
-    if has("nvim")
-      nnoremap <leader>. :split term://zsh<cr>:startinsert<cr>
-    end
   "git mappings {{{2
     nnoremap <leader>gD :!git difftool -w<CR>
     nnoremap <leader>gd :!git difftool -w %<CR><CR>
@@ -1213,25 +1238,26 @@ endfunc
       " set nocursorline
       "
    "change cursor shape in the terminal {{{2
-      if g:isLinux
-        augroup LinuxCursor
-          au!
-          au VimEnter,InsertLeave * silent execute '!echo -ne "\e[2 q"' | redraw!
-          au InsertEnter,InsertChange *
-                \ if v:insertmode == 'i' |
-                \   silent execute '!echo -ne "\e[6 q"' | redraw! |
-                \ elseif v:insertmode == 'r' |
-                \   silent execute '!echo -ne "\e[4 q"' | redraw! |
-                \ endif
-          au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
-        augroup END
-      elseif g:isMac
-        "Curosr shape in insert mode:
-        let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-        let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
-        let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+      if !has("gui_running")
+        if g:isLinux
+          augroup LinuxCursor
+            au!
+            au VimEnter,InsertLeave * silent execute '!echo -ne "\e[2 q"' | redraw!
+            au InsertEnter,InsertChange *
+                  \ if v:insertmode == 'i' |
+                  \   silent execute '!echo -ne "\e[6 q"' | redraw! |
+                  \ elseif v:insertmode == 'r' |
+                  \   silent execute '!echo -ne "\e[4 q"' | redraw! |
+                  \ endif
+            au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
+          augroup END
+        elseif g:isMac
+          "Curosr shape in insert mode:
+          let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+          let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+          let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+        endif
       endif
-
    "}}}
 
    "tabline {{{1
@@ -1260,6 +1286,11 @@ endfunc
         return current
       endfunction
       func! MyTabLine()
+        let sep = "┋"
+        "let sep = "┊"
+        "let sep = "█"
+        "let sep = "▓"
+        "let sep = "░"
         let s = " VIM "
         let selected = tabpagenr()
         let num = tabpagenr('$')
@@ -1274,7 +1305,7 @@ endfunc
             let s .= '%#TabLine#'
           else
             let s .= '%#TabLine#'
-            let s .= '┊'
+            let s .= sep
           endif
 
           " set the tab page number (for mouse clicks)
@@ -1282,13 +1313,14 @@ endfunc
 
           let padding = ''
           if isSelected
-            let padding = ' '
+            "let padding = sep
+            let padding = " "
           endif
 
           let s .= padding . ' %{MyTabLabel(' . (i + 1) . ')} ' . padding
 
           if i == num - 1 && selected != num
-            let s .= '┊'
+            let s .= sep
           endif
 
         endfor

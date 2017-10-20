@@ -27,6 +27,8 @@ make distclean
   --with-features=huge \
   --enable-multibyte \
   --with-x \
+  --enable-gui \
+  --with-terminal \
   --enable-python3interp \
   --with-python3-config-dir=/usr/lib/python3.5/config \
   --enable-luainterp
@@ -35,3 +37,4 @@ make
 sudo make install
 
 vim --version | grep clipboard
+vim --version | grep terminal

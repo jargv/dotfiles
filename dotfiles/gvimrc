@@ -1,8 +1,19 @@
 
-set guioptions-=T
-set guioptions-=t 
-set guioptions-=M
-set guioptions-=m
+" guioptions {{{1
+set guioptions=
+set guioptions+=c
+set guioptions+=e
+set guioptions+=i
 set vb t_vb=
 
+" guitablabel {{{1
+set guitablabel=%{GuiTabLabel()}
+function! GuiTabLabel()
+  return MyTabLabel(v:lnum)
+endfunc
 
+" guifont {{{1
+set guifont=Source\ Code\ Pro\ 14
+" changing font size {{{1
+nnoremap <c-up>   :let &guifont = substitute(&guifont, '\d\+', '\=eval(submatch(0)+1)', '')<cr>
+nnoremap <c-down> :let &guifont = substitute(&guifont, '\d\+', '\=eval(submatch(0)-1)', '')<cr>

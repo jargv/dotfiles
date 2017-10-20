@@ -12,3 +12,4 @@ endfunc
 "}}}
 nnoremap <f7> :source %<cr>
 nnoremap <buffer> <leader><leader> :w<cr>:source %<cr>
+nnoremap <leader>;g :split ~/.gvimrc<cr>
