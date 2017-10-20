@@ -673,7 +673,6 @@ if has("gui_running")
   nmap <M-j> <c-w>j
   nmap <M-l> <c-w>l
   nmap <M-h> <c-w>h
-  nmap <M-x> <c-w>h
   tmap <M-y> <c-w>N
   tmap <M-p> <c-w>""
   imap <M-p> <c-r>"
@@ -709,17 +708,14 @@ end
     vnoremap <C-j> xp'[V']
     vnoremap <C-k> xkP'[V']
   "git mappings {{{2
-    nnoremap <leader>gD :!git difftool -w<CR>
-    nnoremap <leader>gd :!git difftool -w %<CR><CR>
-    nnoremap <leader>gc :!git bedone<CR><CR>
-    nnoremap <leader>gi :!git rebase -i<CR>
-    nnoremap <leader>gl :!git log <CR><CR>
-    nnoremap <leader>gh :!git hist --all <CR><CR>
-    nnoremap <leader>gH :!git hist --simplify-by-decoration<cr><cr>
+    nnoremap <leader>gD :tabnew<cr>:term ++curwin ++close git difftool -w<cr>
+    nnoremap <leader>gd :exec 'tabnew \| term ++curwin ++close git difftool -w '.expand('%')<cr>
+    nnoremap <leader>gc :tabnew<cr>:term ++curwin ++close zsh -c "EDITOR=vim ~/config/bin/git-done"<cr>
+    nnoremap <leader>gi :tabnew<cr>:term ++curwin ++close zsh -c "EDITOR=vim git rebase -i"<cr>
+    nnoremap <leader>gh :tabnew<cr>:term ++curwin ++close tig<cr>
+    nnoremap <leader>gH :tabnew<cr>:term ++curwin ++close tig --simplify-by-decoration<cr>
     nnoremap <leader>gb :Gblame w<CR>
-    nnoremap <leader>gB :!git branch-i<cr><cr>
-    nnoremap <leader>gs :!tig status<CR><CR>
-    nnoremap <leader>gg :exec ":!git ".input("git> ")<CR>
+    nnoremap <leader>gg :term!<cr>git st<cr>git x<esc>C
   "working directory mappings {{{2
     nnoremap <leader>U :cd %:p:h<CR>:echo<CR>
     nnoremap <leader>u :cd ..<CR>:echo<CR>
@@ -753,6 +749,8 @@ end
         func! MySmartQuit()
           if &diff || !len(bufname('%'))
               xa!
+          elseif has("gui_running")
+              silent bw!
           else
               wq!
           endif
@@ -763,8 +761,6 @@ end
     nnoremap <leader>q :call MySmartQuit()<CR>
     nnoremap <leader>Q :cquit!<CR>
     nnoremap <leader><leader> :w<CR>
-    nnoremap <leader>X :xa!<CR>
-    nnoremap <leader>x :echo<CR>
 
   "window/tab manipulation {{{2
     nmap <leader>= :Sexplore!<cr>
