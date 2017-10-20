@@ -684,6 +684,10 @@ if has("gui_running")
   tmap <M-=> <C-w>:vnew<cr><C-w>:term ++curwin<cr>
   nmap <M-x> :silent bw!<cr>
   tmap <M-x> <C-w>:silent bw!<cr>
+  nmap <M-,> gT
+  nmap <M-.> gt
+  tmap <M-,> <C-w>:tabprev<cr>
+  tmap <M-.> <C-w>:tabnext<cr>
 else
   nnoremap <leader>. :!tmux split-window -p20 <CR><CR>
 endif
