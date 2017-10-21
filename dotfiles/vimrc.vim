@@ -1275,7 +1275,11 @@ end
       if !exists('g:gitStatusInTablineShown')
          let g:gitStatusInTablineShown = 1
       endif
-      set showtabline=1 "always show the tabline
+      if has("gui_running")
+        set showtabline=1
+      else
+        set showtabline=2
+      endif
       func! GetGitBranch()
          return ""
          if g:gitStatusInTablineShown
