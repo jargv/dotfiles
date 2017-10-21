@@ -533,11 +533,9 @@ let g:isMac = !g:isLinux && !g:isGitBash
   func! <SID>TermRun(args)
     if bufname(g:term_buf) == ""
 			let save_cursor = getcurpos()
-      50vnew
+      botright 50vnew
       let g:term_buf = bufnr('%')
       set winfixwidth
-      set winfixheight
-      normal L
       term ++curwin zsh
       normal 
 			call setpos('.', save_cursor)
