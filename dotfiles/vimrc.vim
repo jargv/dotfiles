@@ -66,8 +66,6 @@ let g:isMac = !g:isLinux && !g:isGitBash
    "javascript {{{2
    "Plugin 'ternjs/tern_for_vim'
    Plugin 'jelera/vim-javascript-syntax'
-   Plugin 'helino/vim-json'
-   Plugin 'mxw/vim-jsx'
    let g:jsx_ext_required = 0
    "typescript {{{2
    "Plugin 'leafgarland/typescript-vim'
@@ -110,7 +108,6 @@ let g:isMac = !g:isLinux && !g:isGitBash
 
    " unused plugins worth remembering {{{2
    " Plugin 'Wolfy87/vim-enmasse'
-   " Plugin 'evanmiller/nginx-vim-syntax'
    " Plugin 'edsono/vim-matchit' TODO: figure out where this went!
    " Plugin 'chriskempson/base16-vim'
    " Plugin 'Wolfy87/vim-expand'
@@ -119,6 +116,15 @@ let g:isMac = !g:isLinux && !g:isGitBash
    " Plugin 'altercation/vim-colors-solarized'
    " Plugin 'octol/vim-cpp-enhanced-highlight'
    " }}}
+
+  "Plugin 'jeetsukumaran/vim-buffergator' {{{2
+    Plugin 'jeetsukumaran/vim-buffergator'
+    let g:buffergator_viewport_split_policy = "n"
+    let g:buffergator_autoexpand_on_split = 0
+    let g:buffergator_sort_regime = "mru"
+    let g:buffergator_suppress_keymaps = 1
+    let g:buffergator_mru_cycle_loop = 1
+    nnoremap <leader>r :BuffergatorOpen<cr>
 
   "Plugin 'ervandew/supertab' {{{2
     Plugin 'ervandew/supertab'
@@ -133,21 +139,23 @@ let g:isMac = !g:isLinux && !g:isGitBash
    vmap v <Plug>(expand_region_expand)
 
    "Plugin 'sbdchd/neoformat' {{{2
-    Plugin 'sbdchd/neoformat'
-    nnoremap <leader>i :Neoformat<cr>
-    let g:neoformat_try_formatprg = 0
-    let g:neoformat_enabled_javascript = ['standard']
-    let g:neoformat_javascript_standard = {
-          \ 'exe': 'standard',
-          \ 'args': ['--stdin','--fix', '--parser', 'babel-eslint'],
-          \ 'replace': 0,
-          \ 'stdin': 1,
-          \ 'no_append': 1,
-          \ }
+    " Plugin 'sbdchd/neoformat'
+    " nnoremap <leader>i :Neoformat<cr>
+    " let g:neoformat_try_formatprg = 0
+    " let g:neoformat_enabled_javascript = ['standard']
+    " let g:neoformat_javascript_standard = {
+    "       \ 'exe': 'standard',
+    "       \ 'args': ['--stdin','--fix', '--parser', 'babel-eslint'],
+    "       \ 'replace': 0,
+    "       \ 'stdin': 1,
+    "       \ 'no_append': 1,
+    "       \ }
 
    "Plugin 'junegunn/fzf' {{{2
     Plugin 'junegunn/fzf'
+    Plugin 'junegunn/fzf.vim'
    nnoremap <leader>o :FZF --inline-info<cr>
+   nnoremap <leader>i :Buffers<cr>
 
    "Plugin 'junegunn/vim-easy-align' {{{2
      Plugin 'junegunn/vim-easy-align'
@@ -444,7 +452,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
     let parts = split(&filetype, '\.')
     let ft = len(parts) > 0 ? parts[0] : ""
 
-    tabedit ~/config/dotfiles/vimrc.vim
+    e ~/config/dotfiles/vimrc.vim
 
     if !empty(ft)
       exec "vsplit ~/.vim/ftplugin/".ft.".vim"
@@ -647,45 +655,22 @@ let g:isMac = !g:isLinux && !g:isGitBash
     endif
   endfunc
 
-"<leader>b manual browser refresh {{{1
-let g:manualRefreshArgs = ""
-nnoremap <leader>b :call <sid>manualRefresh()<cr>
-nnoremap <leader>B :let g:browserReloadArgs = ""<cr>
-func! <sid>manualRefresh()
-  if g:browserReloadArgs == "" && executable("xdotool")
-   let g:browserReloadArgs = system("xdotool selectwindow")
-  endif
+"<leader>r manual browser refresh {{{1
+"let g:manualRefreshArgs = ""
+"nnoremap <leader>b :call <sid>manualRefresh()<cr>
+"nnoremap <leader>B :let g:browserReloadArgs = ""<cr>
+" func! <sid>manualRefresh()
+"   if g:browserReloadArgs == "" && executable("xdotool")
+"    let g:browserReloadArgs = system("xdotool selectwindow")
+"   endif
 
-  call system(g:browserReloadCommand  . " " . g:browserReloadArgs)
-endfunc
+"   call system(g:browserReloadCommand  . " " . g:browserReloadArgs)
+" endfunc
 
 " terminals {{{1
 hi Terminal guibg=#666666 guifg=#dddddd
 if has("gui_running")
   nnoremap <leader>. :term ++curwin<cr>
-  tmap <M-k> <c-w>k
-  tmap <M-j> <c-w>j
-  tmap <M-l> <c-w>l
-  tmap <M-h> <c-w>h
-  nmap <M-k> <c-w>k
-  nmap <M-j> <c-w>j
-  nmap <M-l> <c-w>l
-  nmap <M-h> <c-w>h
-  tmap <M-y> <c-w>N
-  tmap <M-p> <c-w>""
-  imap <M-p> <c-r>"
-  nmap <M-m> :tabnew<cr>:term ++curwin<cr>
-  tmap <M-m> <c-w>N:tabnew<cr>:term ++curwin<cr>
-  nmap <M--> :new<cr>:term ++curwin<cr>
-  nmap <M-=> :vnew<cr>:term ++curwin<cr>
-  tmap <M--> <C-w>:new<cr><C-w>:term ++curwin<cr>
-  tmap <M-=> <C-w>:vnew<cr><C-w>:term ++curwin<cr>
-  nmap <M-x> :silent bw!<cr>
-  tmap <M-x> <C-w>:silent bw!<cr>
-  nmap <M-,> gT
-  nmap <M-.> gt
-  tmap <M-,> <C-w>:tabprev<cr>
-  tmap <M-.> <C-w>:tabnext<cr>
 else
   nnoremap <leader>. :!tmux split-window -p20 <CR><CR>
 endif
@@ -710,12 +695,12 @@ end
     vnoremap <C-j> xp'[V']
     vnoremap <C-k> xkP'[V']
   "git mappings {{{2
-    nnoremap <leader>gD :tabnew<cr>:term ++curwin ++close git difftool -w<cr>
-    nnoremap <leader>gd :exec 'tabnew \| term ++curwin ++close git difftool -w '.expand('%')<cr>
-    nnoremap <leader>gc :tabnew<cr>:term ++curwin ++close zsh -c "EDITOR=vim ~/config/bin/git-done"<cr>
-    nnoremap <leader>gi :tabnew<cr>:term ++curwin ++close zsh -c "EDITOR=vim git rebase -i"<cr>
-    nnoremap <leader>gh :tabnew<cr>:term ++curwin ++close tig<cr>
-    nnoremap <leader>gH :tabnew<cr>:term ++curwin ++close tig --simplify-by-decoration<cr>
+    nnoremap <leader>gD :-tabnew<cr>:term ++curwin ++close git difftool -w<cr>
+    nnoremap <leader>gd :exec '-tabnew \| term ++curwin ++close git difftool -w '.expand('%')<cr>
+    nnoremap <leader>gc :-tabnew<cr>:term ++curwin ++close zsh -c "EDITOR=vim ~/config/bin/git-done"<cr>
+    nnoremap <leader>gi :-tabnew<cr>:term ++curwin ++close zsh -c "EDITOR=vim git rebase -i"<cr>
+    nnoremap <leader>gh :-tabnew<cr>:term ++curwin ++close tig<cr>
+    nnoremap <leader>gH :-tabnew<cr>:term ++curwin ++close tig --simplify-by-decoration<cr>
     nnoremap <leader>gb :Gblame w<CR>
     nnoremap <leader>gg :term!<cr>git st<cr>git x<esc>C
   "working directory mappings {{{2
@@ -768,9 +753,6 @@ end
     nmap <leader>= :Sexplore!<cr>
     nmap <leader>- :Sexplore<cr>
 
-    nnoremap <leader>v :vsplit<cr>
-    nnoremap <leader>V :split<cr>
-
     nmap <leader>k <c-w>k
     nmap <leader>j <c-w>j
     nmap <leader>l <c-w>l
@@ -783,14 +765,9 @@ end
 
     nmap <leader>w <C-W>
 
-    nmap <leader>tt <C-W>T
-    nmap <leader>tl gt
-    nmap <leader>th gT
     nmap <leader>tj :call MoveWindowTo#NextTab()<CR>
     nmap <leader>tk :call MoveWindowTo#PrevTab()<CR>
-    nmap <leader>tn :$tabnew<CR>
-    nmap <leader>tc :tabclose <CR>
-    nmap <leader>to :tabonly<CR>
+    nmap <leader>tn :0tabnew<CR>
 
     nmap <leader><Down> <C-W>+
     nmap <leader><Up> <C-W>-
@@ -800,6 +777,41 @@ end
     nmap <Up>    5<C-W>-
     nmap <Left>  5<C-W><
     nmap <Right> 5<C-W>>
+
+    tmap <M-k> <c-w>k
+    tmap <M-j> <c-w>j
+    tmap <M-l> <c-w>l
+    tmap <M-h> <c-w>h
+
+    nmap <M-k> <c-w>k
+    nmap <M-j> <c-w>j
+    nmap <M-l> <c-w>l
+    nmap <M-h> <c-w>h
+
+    tmap <M-y> <c-w>N
+    tmap <M-p> <c-w>""
+    imap <M-p> <c-r>"
+
+    nmap <M--> :new<cr>
+    nmap <M-=> :vnew<cr>
+    tmap <M--> <C-w>:new<cr>
+    tmap <M-=> <C-w>:vnew<cr>
+
+    nmap <M-x> :silent bw!<cr>
+    tmap <M-x> <C-w>:silent bw!<cr>
+
+    nmap <M-,> gT
+    nmap <M-.> gt
+    tmap <M-,> <C-w>:tabprev<cr>
+    tmap <M-.> <C-w>:tabnext<cr>
+
+    nmap <M-m> :-tabnew<cr>
+    tmap <M-m> <c-w>N:-tabnew<cr>
+
+    nnoremap <M-i> :bn<cr>
+    nnoremap <M-o> :bp<cr>
+    tmap <M-i> <C-w>:bn<cr>
+    tmap <M-o> <C-w>:bp<cr>
 
   "next and previous location/error/vimgrep {{{2
     nnoremap <expr> <silent> <leader>n ((len(getqflist()) ? ":cn" : ":lnext")."<CR>")
@@ -1263,7 +1275,7 @@ end
       if !exists('g:gitStatusInTablineShown')
          let g:gitStatusInTablineShown = 1
       endif
-      set showtabline=2 "always show the tabline
+      set showtabline=1 "always show the tabline
       func! GetGitBranch()
          return ""
          if g:gitStatusInTablineShown
