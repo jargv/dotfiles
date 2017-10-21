@@ -311,6 +311,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
 "prototype settings {{{1
   nnoremap <leader>, :TagbarOpenAutoClose<cr>
   nnoremap <leader>y [sciw<esc>:echo @"<cr>a
+  set noequalalways
 
 "settings {{{1
   "vim, not vi! {{{2
@@ -471,14 +472,14 @@ let g:isMac = !g:isLinux && !g:isGitBash
     let g:makeDirectory = ""
 
     let g:makeOnSave = 0
-    let g:closeOnCollectErrors = 0
+    let g:closeOnBuild = 1
 
     let g:browserReloadOnMake = 0
     let g:browserReloadCommand = 'chrome_refresh'
     let g:browserReloadArgs = ""
     let g:browserReloadPort = ""
 
-    let g:tmux_index = ""
+    let g:term_buf = -1
   endfunc
 
   "autocommand on save
@@ -499,15 +500,16 @@ let g:isMac = !g:isLinux && !g:isGitBash
   nnoremap <leader>Mr :let g:runTarget = input(">", g:runTarget)<CR>
   nnoremap <leader>Md :let g:makeDirectory = input(">", len(g:makeDirectory) ? (g:makeDirectory) : getcwd())<CR>
   nnoremap <leader>Mx :let g:makeBuildtool = input(">", g:makeBuildtool)<cr>
-  "nnoremap <leader>E :let g:closeOnCollectErrors = !g:closeOnCollectErrors<CR>:echo (g:closeOnCollectErrors ? "CLOSE" : "DON'T CLOSE")<CR>
-  "nnoremap <leader>E :echo "FIX THIS!"
-  "nnoremap <leader>e :if g:closeOnCollectErrors<CR>VimuxCloseRunner<CR>endif<CR>:exec "cfile /tmp/vim-errors-".&filetype<CR>:cw<CR><CR>
-  nnoremap <leader>e :exec "cfile /tmp/vim-errors-".&filetype<CR>:cw<CR>
+  nnoremap <leader>e :call <SID>CollectErrors()<cr><cr>
 
   nnoremap <leader>Ms :call <SID>ToggleMakeOnSave()<cr>
   nnoremap <leader>Mb :call <SID>ToggleReloadBrowserOnMake()<cr>
   nnoremap <leader>Mp :let g:browserReloadPort = input('Port:', g:browserReloadPort ? g:browserReloadPort : '')<cr>
-  nnoremap <leader>Ml :let g:tmux_index = <sid>CollectTmuxPane()
+
+  func! <SID>CollectErrors()
+    :exec "cfile /tmp/vim-errors-".&filetype
+    :cw
+  endfunc
 
   func! <SID>ToggleReloadBrowserOnMake()
     if !g:browserReloadOnMake
@@ -528,20 +530,19 @@ let g:isMac = !g:isLinux && !g:isGitBash
      endif
   endfunc
 
-  func! <SID>CollectTmuxPane()
-    let getpane = 'tmux display -p "#P"'
-    let vimpane = system(getpane)
-    call system("tmux display-pane 'display -t \%\% \"#P\"'")
-    let pane = input("pane:")
-    return pane
-  endfunc
-
-  func! <SID>TmuxRun(args)
-    if g:tmux_index == ""
-      let g:tmux_index = <SID>CollectTmuxPane()
+  func! <SID>TermRun(args)
+    if bufname(g:term_buf) == ""
+			let save_cursor = getcurpos()
+      50vnew
+      let g:term_buf = bufnr('%')
+      set winfixwidth
+      set winfixheight
+      normal L
+      term ++curwin zsh
+      normal 
+			call setpos('.', save_cursor)
     endif
-    call system("tmux send-keys -t ".g:tmux_index.' "'.escape(a:args,'\"$`').'"')
-    call system("tmux send-keys -t ".g:tmux_index.' Enter')
+    call term_sendkeys(g:term_buf, escape(a:args,'\"$`').'')
   endfunc
 
   func! <SID>DetectBuildTool()
@@ -552,7 +553,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
       let g:makeBuildtool = "ninja"
     elseif filereadable("CMakeLists.txt")
       if !isdirectory("build")
-        call <SID>TmuxRun("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && cd ..")
+        call <SID>TermRun("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && cd ..")
         !ln -sf build/compile_commands.json .
       endif
       let g:makeDirectory .= "/build"
@@ -606,28 +607,28 @@ let g:isMac = !g:isLinux && !g:isGitBash
        let g:makeBuildTool = ""
        let g:makeTarget = "./".expand('%')
     endif
-    call <sid>TmuxRun('echo detected '.g:makeBuildtool.' '.g:makeTarget)
+    call <sid>TermRun('echo detected '.g:makeBuildtool.' '.g:makeTarget)
   endfunc
 
   func! <SID>RunMake()
-    if g:tmux_index == ""
+    if bufname(g:term_buf) == ""
       return
     endif
-    call <sid>TmuxRun("set -o pipefail")
-    let ran = 0
+    if g:closeOnBuild
+      cclose
+    endif
+    call <sid>TermRun("set -o pipefail")
     wa
     if len(g:makeBuildtool) || len(g:makeTarget)
-      let ran = 1
-      call <sid>TmuxRun("^c")
+      call <sid>TermRun("")
       let cmd = g:makeBuildtool." ".g:makeTarget." 2>&1 |tee /tmp/vim-errors-".&filetype
       if len(g:runTarget)
         let cmd = cmd." && ".g:runTarget
       endif
-      call <sid>TmuxRun("(cd ".g:makeDirectory." && ".cmd.")")
+      call <sid>TermRun("(cd ".g:makeDirectory." && ".cmd.")")
       normal 
     endif
     if g:browserReloadPort
-      let ran = 1
       let triesRemaining = 100
       let success = 0
       while !success && triesRemaining
@@ -641,7 +642,6 @@ let g:isMac = !g:isLinux && !g:isGitBash
       endif
     endif
     if g:browserReloadOnMake
-      let ran = 1
       if executable("xdotool") && empty(g:browserReloadArgs)
         let g:browserReloadArgs = system("xdotool selectwindow")
       endif
