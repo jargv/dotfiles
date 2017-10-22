@@ -274,7 +274,6 @@ let g:isMac = !g:isLinux && !g:isGitBash
 
   "Run plugin setup! {{{2
     call vundle#end()
-
     "my shiz should override EVERYTHING
     set runtimepath-=~/.vim "remove first so that the add occurs at the end
     set runtimepath+=~/.vim
@@ -709,7 +708,7 @@ end
   tmap <M--> <C-w>:new<cr>
   tmap <M-=> <C-w>:vnew<cr>
 
-  nmap <M-x> :silent bw!<cr>
+  nmap <M-x> <C-w>c
   tmap <M-x> <C-w>:silent bw!<cr>
 
   nmap <M-,> gT
@@ -720,12 +719,13 @@ end
   nmap <M-m> :-tabnew<cr>
   tmap <M-m> <c-w>N:-tabnew<cr>
 
-  nnoremap <M-o> :call <SID>bufMove(1)<cr>
-  nnoremap <M-i> :call <SID>bufMove(0)<cr>
-  nnoremap <M-u> :bd!<cr>
-  tmap <M-o> <C-w>:call <SID>bufMove(1)<cr>
-  tmap <M-i> <C-w>:call <SID>bufMove(0)<cr>
-  tmap <M-u> <C-w>:bd!<cr>
+  nnoremap <M-o> :call <SID>bufMove(1, 0)<cr>
+  nnoremap <M-i> :call <SID>bufMove(0, 0)<cr>
+  nnoremap <M-u> :call <SID>bufMove(1, 1)<cr>
+
+  tmap <M-o> <C-w>:call <SID>bufMove(1, 0)<cr>
+  tmap <M-i> <C-w>:call <SID>bufMove(0, 0)<cr>
+  tmap <M-u> <C-w>::call <SID>bufMove(1, 1)<cr>
 
   func! BufDescCmp(a, b)
     if a:a.bufnr < a:b.bufnr
@@ -737,7 +737,7 @@ end
     endif
   endfunc
 
-  func! <SID>bufMove(next)
+  func! <SID>bufMove(next, destroy)
     let current = bufnr("%")
     let buflisted = buflisted(current)
     let bufs = getbufinfo({"buflisted": buflisted})
@@ -769,9 +769,16 @@ end
       let buf = bufs[i % len(bufs)]
       if buf.listed && len(buf.windows) == 0
         exec "b".buf.bufnr
+        if a:destroy
+          exec "bd! ".current
+        endif
         return
       endif
     endfor
+    if a:destroy
+      enew
+      exec "bd! ".current
+    endif
   endfunc
 
 "mappings {{{1

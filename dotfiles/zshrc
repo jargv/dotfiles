@@ -90,7 +90,9 @@ bindkey "^?" backward-delete-char
 
 #hit escape twice to go into normal mode in embedded terminal {{{2
 double_escape() {
-  command vim --servername $VIM_SERVERNAME --remote-send "<C-\><C-N>"
+  if [[ ! -z "$VIM_SERVERNAME" ]]; then
+     command vim --servername $VIM_SERVERNAME --remote-send "<C-\><C-N>"
+  fi
 }
 
 zle -N double_escape
@@ -100,7 +102,6 @@ bindkey -M vicmd  double_escape
 #trying to invoke vim in embeded term opens in place {{{2
 vim() {
   if [[ -z "$VIM_SERVERNAME" ]]; then
-    echo "empty"
     command vim "$@"
   else
     command vim --servername $VIM_SERVERNAME --remote "$@"
