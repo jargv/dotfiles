@@ -750,8 +750,8 @@ end
     nnoremap <leader><leader> :w<CR>
 
   "window/tab manipulation {{{2
-    nmap <leader>= :Sexplore!<cr>
-    nmap <leader>- :Sexplore<cr>
+    nmap <leader>= :vnew<cr>:BuffergatorOpen<cr>
+    nmap <leader>- :new<cr>:BuffergatorOpen<cr>
 
     nmap <leader>k <c-w>k
     nmap <leader>j <c-w>j
@@ -808,10 +808,61 @@ end
     nmap <M-m> :-tabnew<cr>
     tmap <M-m> <c-w>N:-tabnew<cr>
 
-    nnoremap <M-i> :bn<cr>
-    nnoremap <M-o> :bp<cr>
-    tmap <M-i> <C-w>:bn<cr>
-    tmap <M-o> <C-w>:bp<cr>
+    nnoremap <M-o> :call <SID>bufMove(1)<cr>
+    nnoremap <M-i> :call <SID>bufMove(0)<cr>
+    nnoremap <M-u> :bd!<cr>
+    tmap <M-o> <C-w>:call <SID>bufMove(1)<cr>
+    tmap <M-i> <C-w>:call <SID>bufMove(0)<cr>
+    tmap <M-u> <C-w>:bd!<cr>
+
+    func! BufDescCmp(a, b)
+      if a:a.bufnr < a:b.bufnr
+        return -1
+      elseif a:a.bufnr > a:b.bufnr
+        return 1
+      else
+        return 0
+      endif
+    endfunc
+
+    func! <SID>bufMove(next)
+      let current = bufnr("%")
+      let buflisted = buflisted(current)
+      let bufs = getbufinfo({"buflisted": buflisted})
+
+      if len(bufs) < 2
+        call input("not evnough")
+        return
+      endif
+
+      call sort(bufs, function("BufDescCmp"))
+
+      if !a:next
+        call reverse(bufs)
+      endif
+
+      let current_index = -1
+      for i in range(len(bufs))
+        let buf = bufs[i]
+        if buf.bufnr == current
+          let current_index = i
+          break
+        endif
+      endfor
+
+      if current_index == -1
+        call input("doesn't exist:".current)
+        return
+      endif
+
+      for i in range(current_index, 2 * len(bufs))
+        let buf = bufs[i % len(bufs)]
+        if buf.listed && len(buf.windows) == 0
+          exec "b".buf.bufnr
+          return
+        endif
+      endfor
+    endfunc
 
   "next and previous location/error/vimgrep {{{2
     nnoremap <expr> <silent> <leader>n ((len(getqflist()) ? ":cn" : ":lnext")."<CR>")
