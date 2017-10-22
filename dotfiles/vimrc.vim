@@ -323,125 +323,125 @@ let g:isMac = !g:isLinux && !g:isGitBash
 
 "settings {{{1
   "vim, not vi! {{{2
-    set nocompatible
-    filetype plugin indent on
-    syntax on
-    syntax enable
+  set nocompatible
+  filetype plugin indent on
+  syntax on
+  syntax enable
   "formatting {{{2
   set formatoptions+=j "fix up comments when they are joined
   "indentation {{{2
-    set nocindent nosmartindent autoindent
-    set nolist
-    set listchars=tab:\|\ ,
+  set nocindent nosmartindent autoindent
+  set nolist
+  set listchars=tab:\|\ ,
 
   "temporary files (in /tmp, not used) {{{2
-    set backupdir=/tmp directory=/tmp undodir=/tmp
-    set nobackup noswapfile
+  set backupdir=/tmp directory=/tmp undodir=/tmp
+  set nobackup noswapfile
   "Timeout stuff (keep vim snappy) {{{2
-    set notimeout
-    set ttimeout
-    set ttimeoutlen=0
+  set notimeout
+  set ttimeout
+  set ttimeoutlen=0
   "search {{{2
-    set wildmode=full
-    set gdefault "always use the g flag in %s///g
-    set ignorecase smartcase incsearch hlsearch wrapscan
-    nnoremap <C-L> :nohlsearch<CR><C-L>
+  set wildmode=full
+  set gdefault "always use the g flag in %s///g
+  set ignorecase smartcase incsearch hlsearch wrapscan
+  nnoremap <C-L> :nohlsearch<CR><C-L>
   "}}}
   "folds {{{2
-    "blow away the wonky dashes in the folds {{{3
-    set fillchars="fold: "
-    "close a fold by moving left into the number column {{{3
-        nnoremap <expr> h MoveLeft()
-        func! MoveLeft()
-          if getpos('.')[2] == 1
-              return "zc"
-          else
-              return "h"
-          endif
-        endfunc
-    "set the fold text {{{3
-        set foldtext=MyFoldText()
-        function! MyFoldText()
-          let sub = substitute(foldtext(), '+-*\s*\d*\s*lines:\s*', '', 'g')
-          return repeat(' ', &sw * (v:foldlevel - 1)) . sub
-        endfunction
-    "}}}
+  "blow away the wonky dashes in the folds {{{3
+  set fillchars="fold: "
+  "close a fold by moving left into the number column {{{3
+  nnoremap <expr> h MoveLeft()
+  func! MoveLeft()
+    if getpos('.')[2] == 1
+      return "zc"
+    else
+      return "h"
+    endif
+  endfunc
+  "set the fold text {{{3
+  set foldtext=MyFoldText()
+  function! MyFoldText()
+    let sub = substitute(foldtext(), '+-*\s*\d*\s*lines:\s*', '', 'g')
+    return repeat(' ', &sw * (v:foldlevel - 1)) . sub
+  endfunction
+  "}}}
 
   "spell check {{{2
-    set spelllang=en_us nospell
+  set spelllang=en_us nospell
   "buffers{{{2
-    set autoread
-    set splitbelow splitright
-    "my autochdir (not in use) {{{3
-    "  func! AutoChdir()
-    "     if !exists('b:onAutoChDir')
-    "        silent! exec ":cd ".expand("%:p:h")
-    "     else
-    "        exec b:onAutoChDir
-    "     endif
-    "  endfunc
+  set autoread
+  set splitbelow splitright
+  "my autochdir (not in use) {{{3
+  "  func! AutoChdir()
+  "     if !exists('b:onAutoChDir')
+  "        silent! exec ":cd ".expand("%:p:h")
+  "     else
+  "        exec b:onAutoChDir
+  "     endif
+  "  endfunc
 
-    "  augroup AutoChdir
-    "     autocmd!
-    "     autocmd BufEnter * call AutoChdir()
-    "  augroup END
-    "No simultaneous edits {{{3
-        augroup NoSimultaneousEdits
-            autocmd!
-            autocmd  SwapExists * :let v:swapchoice = 'e'
-        augroup END
-    "}}}
+  "  augroup AutoChdir
+  "     autocmd!
+  "     autocmd BufEnter * call AutoChdir()
+  "  augroup END
+  "No simultaneous edits {{{3
+  augroup NoSimultaneousEdits
+    autocmd!
+    autocmd  SwapExists * :let v:swapchoice = 'e'
+  augroup END
+  "}}}
   "difftool {{{2
-    set diffopt=
-    set diffopt+=filler "show filler lines to keep everything in sync
-    set diffopt+=iwhite "ignore whitespace
+  set diffopt=
+  set diffopt+=filler "show filler lines to keep everything in sync
+  set diffopt+=iwhite "ignore whitespace
   "whitespace {{{2
-    "tab characters {{{3
-        set tabstop=2 shiftwidth=2 expandtab smarttab shiftround
-    ""highlight trailing whitespace {{{3
-        "highlight TrailingWhitespace cterm=underline
-        "match TrailingWhitespace /\s\+\%#\@<!$/
-        "match TrailingWhitespace /\s\+$/
-    ""blow away trailing whitespace {{{3
-      autocmd BufWritePre * :call RemoveTrailingWhitespace()
-      command! Fws :call RemoveTrailingWhitespace()
-      func! RemoveTrailingWhitespace()
-        let save_cursor = getpos(".")
-        %s/\s\+$//e
-        call setpos('.', save_cursor)
-        nohlsearch
-      endfunc
-    "}}}
+  "tab characters {{{3
+  set tabstop=2 shiftwidth=2 expandtab smarttab shiftround
+  ""highlight trailing whitespace {{{3
+  "highlight TrailingWhitespace cterm=underline
+  "match TrailingWhitespace /\s\+\%#\@<!$/
+  "match TrailingWhitespace /\s\+$/
+  ""blow away trailing whitespace {{{3
+  autocmd BufWritePre * :call RemoveTrailingWhitespace()
+  command! Fws :call RemoveTrailingWhitespace()
+  func! RemoveTrailingWhitespace()
+    let save_cursor = getpos(".")
+    %s/\s\+$//e
+    call setpos('.', save_cursor)
+    nohlsearch
+  endfunc
+  "}}}
   " indentation/wrapping {{{2
-    set wrap
-    set linebreak
-    set breakindent
-    set breakindentopt=shift:0,sbr
-    let &showbreak='> '
-    let &breakat=" 	!@*-+;:,./?(){}[]"
-    "set cpoptions+=n
+  set wrap
+  set linebreak
+  set breakindent
+  set breakindentopt=shift:0,sbr
+  let &showbreak='> '
+  let &breakat=" 	!@*-+;:,./?(){}[]"
+  "set cpoptions+=n
   "other {{{2
-    let g:filetype_pl="prolog"
-    set scrolloff=1
-    set nofileignorecase
-    set virtualedit=block "allow moving onto whitespace during block select
-    set noreadonly "I never really care about using readonly
-    set wildmenu wildmode=full
-    set autowrite autowriteall
-    set backspace=indent,eol,start
-    set switchbuf=useopen,usetab
-    set undofile hidden history=1000 " keep undo history in buffers when not visible/open
-    set completeopt=menuone,noinsert
-    set infercase
-    set mouse=a
-    if has("mouse_sgr")
-      set ttymouse=sgr
-    endif
-   if g:isLinux
-      set clipboard=unnamedplus
-    else
-      set clipboard=unnamed
-    endif
+  let g:filetype_pl="prolog"
+  set scrolloff=1
+  set nofileignorecase
+  set virtualedit=block "allow moving onto whitespace during block select
+  set noreadonly "I never really care about using readonly
+  set wildmenu wildmode=full
+  set autowrite autowriteall
+  set backspace=indent,eol,start
+  set switchbuf=useopen,usetab
+  set undofile hidden history=1000 " keep undo history in buffers when not visible/open
+  set completeopt=menuone,noinsert
+  set infercase
+  set mouse=a
+  if has("mouse_sgr")
+    set ttymouse=sgr
+  endif
+  if g:isLinux
+    set clipboard=unnamedplus
+  else
+    set clipboard=unnamed
+  endif
   "}}}
 
 "fast config {{{1
@@ -678,6 +678,120 @@ if has("nvim")
   nnoremap <leader>. :split term://zsh<cr>:startinsert<cr>
 end
 
+
+"window/tab manipulation {{{1
+  nmap <leader>= :vnew<cr>:BuffergatorOpen<cr>
+  nmap <leader>- :new<cr>:BuffergatorOpen<cr>
+
+  nmap <leader>k <c-w>k
+  nmap <leader>j <c-w>j
+  nmap <leader>l <c-w>l
+  nmap <leader>h <c-w>h
+
+  nmap <leader>K <C-W>K
+  nmap <leader>J <C-W>J
+  nmap <leader>L <C-W>L
+  nmap <leader>H <C-W>H
+
+  nmap <leader>w <C-W>
+
+  nmap <leader>tj :call MoveWindowTo#NextTab()<CR>
+  nmap <leader>tk :call MoveWindowTo#PrevTab()<CR>
+  nmap <leader>tn :0tabnew<CR>
+
+  nmap <leader><Down> <C-W>+
+  nmap <leader><Up> <C-W>-
+  nmap <leader><Left> <C-W><
+  nmap <leader><Right> <C-W>>
+  nmap <Down>  5<C-W>+
+  nmap <Up>    5<C-W>-
+  nmap <Left>  5<C-W><
+  nmap <Right> 5<C-W>>
+
+  tmap <M-k> <c-w>k
+  tmap <M-j> <c-w>j
+  tmap <M-l> <c-w>l
+  tmap <M-h> <c-w>h
+
+  nmap <M-k> <c-w>k
+  nmap <M-j> <c-w>j
+  nmap <M-l> <c-w>l
+  nmap <M-h> <c-w>h
+
+  tmap <M-y> <c-w>N
+  tmap <M-p> <c-w>""
+  imap <M-p> <c-r>"
+
+  nmap <M--> :new<cr>
+  nmap <M-=> :vnew<cr>
+  tmap <M--> <C-w>:new<cr>
+  tmap <M-=> <C-w>:vnew<cr>
+
+  nmap <M-x> :silent bw!<cr>
+  tmap <M-x> <C-w>:silent bw!<cr>
+
+  nmap <M-,> gT
+  nmap <M-.> gt
+  tmap <M-,> <C-w>:tabprev<cr>
+  tmap <M-.> <C-w>:tabnext<cr>
+
+  nmap <M-m> :-tabnew<cr>
+  tmap <M-m> <c-w>N:-tabnew<cr>
+
+  nnoremap <M-o> :call <SID>bufMove(1)<cr>
+  nnoremap <M-i> :call <SID>bufMove(0)<cr>
+  nnoremap <M-u> :bd!<cr>
+  tmap <M-o> <C-w>:call <SID>bufMove(1)<cr>
+  tmap <M-i> <C-w>:call <SID>bufMove(0)<cr>
+  tmap <M-u> <C-w>:bd!<cr>
+
+  func! BufDescCmp(a, b)
+    if a:a.bufnr < a:b.bufnr
+      return -1
+    elseif a:a.bufnr > a:b.bufnr
+      return 1
+    else
+      return 0
+    endif
+  endfunc
+
+  func! <SID>bufMove(next)
+    let current = bufnr("%")
+    let buflisted = buflisted(current)
+    let bufs = getbufinfo({"buflisted": buflisted})
+
+    if len(bufs) < 2
+      return
+    endif
+
+    call sort(bufs, function("BufDescCmp"))
+
+    if !a:next
+      call reverse(bufs)
+    endif
+
+    let current_index = -1
+    for i in range(len(bufs))
+      let buf = bufs[i]
+      if buf.bufnr == current
+        let current_index = i
+        break
+      endif
+    endfor
+
+    if current_index == -1
+      return
+    endif
+
+    for i in range(current_index, 2 * len(bufs))
+      let buf = bufs[i % len(bufs)]
+      if buf.listed && len(buf.windows) == 0
+        exec "b".buf.bufnr
+        return
+      endif
+    endfor
+  endfunc
+
 "mappings {{{1
   "better defaults {{{2
     nnoremap p p=`]
@@ -749,121 +863,6 @@ end
     nnoremap <leader>Q :cquit!<CR>
     nnoremap <leader><leader> :w<CR>
 
-  "window/tab manipulation {{{2
-    nmap <leader>= :vnew<cr>:BuffergatorOpen<cr>
-    nmap <leader>- :new<cr>:BuffergatorOpen<cr>
-
-    nmap <leader>k <c-w>k
-    nmap <leader>j <c-w>j
-    nmap <leader>l <c-w>l
-    nmap <leader>h <c-w>h
-
-    nmap <leader>K <C-W>K
-    nmap <leader>J <C-W>J
-    nmap <leader>L <C-W>L
-    nmap <leader>H <C-W>H
-
-    nmap <leader>w <C-W>
-
-    nmap <leader>tj :call MoveWindowTo#NextTab()<CR>
-    nmap <leader>tk :call MoveWindowTo#PrevTab()<CR>
-    nmap <leader>tn :0tabnew<CR>
-
-    nmap <leader><Down> <C-W>+
-    nmap <leader><Up> <C-W>-
-    nmap <leader><Left> <C-W><
-    nmap <leader><Right> <C-W>>
-    nmap <Down>  5<C-W>+
-    nmap <Up>    5<C-W>-
-    nmap <Left>  5<C-W><
-    nmap <Right> 5<C-W>>
-
-    tmap <M-k> <c-w>k
-    tmap <M-j> <c-w>j
-    tmap <M-l> <c-w>l
-    tmap <M-h> <c-w>h
-
-    nmap <M-k> <c-w>k
-    nmap <M-j> <c-w>j
-    nmap <M-l> <c-w>l
-    nmap <M-h> <c-w>h
-
-    tmap <M-y> <c-w>N
-    tmap <M-p> <c-w>""
-    imap <M-p> <c-r>"
-
-    nmap <M--> :new<cr>
-    nmap <M-=> :vnew<cr>
-    tmap <M--> <C-w>:new<cr>
-    tmap <M-=> <C-w>:vnew<cr>
-
-    nmap <M-x> :silent bw!<cr>
-    tmap <M-x> <C-w>:silent bw!<cr>
-
-    nmap <M-,> gT
-    nmap <M-.> gt
-    tmap <M-,> <C-w>:tabprev<cr>
-    tmap <M-.> <C-w>:tabnext<cr>
-
-    nmap <M-m> :-tabnew<cr>
-    tmap <M-m> <c-w>N:-tabnew<cr>
-
-    nnoremap <M-o> :call <SID>bufMove(1)<cr>
-    nnoremap <M-i> :call <SID>bufMove(0)<cr>
-    nnoremap <M-u> :bd!<cr>
-    tmap <M-o> <C-w>:call <SID>bufMove(1)<cr>
-    tmap <M-i> <C-w>:call <SID>bufMove(0)<cr>
-    tmap <M-u> <C-w>:bd!<cr>
-
-    func! BufDescCmp(a, b)
-      if a:a.bufnr < a:b.bufnr
-        return -1
-      elseif a:a.bufnr > a:b.bufnr
-        return 1
-      else
-        return 0
-      endif
-    endfunc
-
-    func! <SID>bufMove(next)
-      let current = bufnr("%")
-      let buflisted = buflisted(current)
-      let bufs = getbufinfo({"buflisted": buflisted})
-
-      if len(bufs) < 2
-        call input("not evnough")
-        return
-      endif
-
-      call sort(bufs, function("BufDescCmp"))
-
-      if !a:next
-        call reverse(bufs)
-      endif
-
-      let current_index = -1
-      for i in range(len(bufs))
-        let buf = bufs[i]
-        if buf.bufnr == current
-          let current_index = i
-          break
-        endif
-      endfor
-
-      if current_index == -1
-        call input("doesn't exist:".current)
-        return
-      endif
-
-      for i in range(current_index, 2 * len(bufs))
-        let buf = bufs[i % len(bufs)]
-        if buf.listed && len(buf.windows) == 0
-          exec "b".buf.bufnr
-          return
-        endif
-      endfor
-    endfunc
-
   "next and previous location/error/vimgrep {{{2
     nnoremap <expr> <silent> <leader>n ((len(getqflist()) ? ":cn" : ":lnext")."<CR>")
     nnoremap <expr> <silent> <leader>p ((len(getqflist()) ? ":cp" : ":lprev")."<CR>")
@@ -915,8 +914,6 @@ end
       endif
       return "" "'O'
     endfunc
-  "my plugins {{{2
-    "nmap <leader>o :Fquery<CR>
   " get the styles under the cursor {{{2
     map <leader>S :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
             \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
