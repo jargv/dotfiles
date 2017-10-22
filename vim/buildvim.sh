@@ -19,6 +19,7 @@ if [ ! -d vim ]; then
   git clone https://github.com/vim/vim.git
 fi
 cd vim
+git pull
 
 make distclean
 
@@ -28,7 +29,9 @@ make distclean
   --enable-multibyte \
   --with-x \
   --enable-gui \
-  --with-terminal \
+  --enable-job \
+  --enable-channel \
+  --enable-terminal \
   --enable-python3interp \
   --with-python3-config-dir=/usr/lib/python3.5/config \
   --enable-luainterp
