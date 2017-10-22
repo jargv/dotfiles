@@ -116,7 +116,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
    " Plugin 'altercation/vim-colors-solarized'
    " Plugin 'octol/vim-cpp-enhanced-highlight'
    " }}}
-
+  " configured plugins
   "Plugin 'jeetsukumaran/vim-buffergator' {{{2
     Plugin 'jeetsukumaran/vim-buffergator'
     let g:buffergator_viewport_split_policy = "n"
@@ -129,27 +129,9 @@ let g:isMac = !g:isLinux && !g:isGitBash
   "Plugin 'ervandew/supertab' {{{2
     Plugin 'ervandew/supertab'
     let g:SuperTabDefaultCompletionType = "context"
-   " Plugin 'ajh17/VimCompletesMe' {{{2
-    "Plugin 'ajh17/VimCompletesMe'
-    let g:vcm_direction = 'p' "n or p like C-N, C-P
-    let g:vcm_s_tab_behavior = 0
-    let g:vcm_default_maps = 1
    "Plugin 'terryma/vim-expand-region' {{{2
    Plugin 'terryma/vim-expand-region'
    vmap v <Plug>(expand_region_expand)
-
-   "Plugin 'sbdchd/neoformat' {{{2
-    " Plugin 'sbdchd/neoformat'
-    " nnoremap <leader>i :Neoformat<cr>
-    " let g:neoformat_try_formatprg = 0
-    " let g:neoformat_enabled_javascript = ['standard']
-    " let g:neoformat_javascript_standard = {
-    "       \ 'exe': 'standard',
-    "       \ 'args': ['--stdin','--fix', '--parser', 'babel-eslint'],
-    "       \ 'replace': 0,
-    "       \ 'stdin': 1,
-    "       \ 'no_append': 1,
-    "       \ }
 
    "Plugin 'junegunn/fzf' {{{2
     Plugin 'junegunn/fzf'
@@ -163,6 +145,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
    "Plugin 'majutsushi/tagbar' {{{2
       Plugin 'majutsushi/tagbar'
       let g:tagbar_left = 1
+      nnoremap <leader>, :TagbarOpenAutoClose<cr>
       "let g:tagbar_vertical = 30
 
   "Plugin 'Valloric/YouCompleteMe' {{{2
@@ -193,10 +176,10 @@ let g:isMac = !g:isLinux && !g:isGitBash
 
    "Plugin 'tpope/vim-fugitive' {{{2
       Plugin 'tpope/vim-fugitive'
-      Plugin 'idanarye/vim-merginal'
       augroup Fugitive
          autocmd!
          autocmd BufReadPost fugitive://* set bufhidden=delete
+      augroup END
 
    "Plugin 'vim-syntastic/syntastic'
      let g:syntastic_error_symbol='✗'
@@ -232,10 +215,6 @@ let g:isMac = !g:isLinux && !g:isGitBash
 
       let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyz'
       let g:EasyMotion_do_shade = 0
-   "Plugin 'benmills/vimux' {{{2
-      " Plugin 'benmills/vimux'
-      " let g:VimuxHeight = 30
-      " let VimuxUseNearest = 1
 
    "Plugin 'airblade/vim-gitgutter' {{{2
    let g:gitgutter_sign_added = '+'
@@ -293,11 +272,13 @@ let g:isMac = !g:isLinux && !g:isGitBash
       nnoremap gs :GitGutterStageHunk<CR>
    "}}}
 
-  "Run the setup! {{{2
+  "Run plugin setup! {{{2
     call vundle#end()
+
     "my shiz should override EVERYTHING
     set runtimepath-=~/.vim "remove first so that the add occurs at the end
     set runtimepath+=~/.vim
+
     filetype plugin indent on
     if vundleDoInstall
         BundleInstall!
@@ -317,9 +298,6 @@ let g:isMac = !g:isLinux && !g:isGitBash
   "highlight Comment cterm=italic
 
 "prototype settings {{{1
-  nnoremap <leader>, :TagbarOpenAutoClose<cr>
-  nnoremap <leader>y [sciw<esc>:echo @"<cr>a
-  set noequalalways
 
 "settings {{{1
   "vim, not vi! {{{2
@@ -369,6 +347,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
 
   "spell check {{{2
   set spelllang=en_us nospell
+  " jump to the previous misspelled error
+  nnoremap <leader>y [sciw<esc>:echo @"<cr>a
   "buffers{{{2
   set autoread
   set splitbelow splitright
@@ -680,6 +660,8 @@ end
 
 
 "window/tab manipulation {{{1
+  set noequalalways "don't automatically resize windows
+
   nmap <leader>= :vnew<cr>:BuffergatorOpen<cr>
   nmap <leader>- :new<cr>:BuffergatorOpen<cr>
 
