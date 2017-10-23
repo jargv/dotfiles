@@ -117,6 +117,10 @@ let g:isMac = !g:isLinux && !g:isGitBash
    " Plugin 'octol/vim-cpp-enhanced-highlight'
    " }}}
   " configured plugins
+  "Plugin 'dhruvasagar/vim-table-mode' {{{2
+    let g:table_mode_map_prefix = "<Leader>tt"
+    Plugin 'dhruvasagar/vim-table-mode'
+
   "Plugin 'jeetsukumaran/vim-buffergator' {{{2
     Plugin 'jeetsukumaran/vim-buffergator'
     let g:buffergator_viewport_split_policy = "n"
@@ -288,8 +292,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  set bg=light
-  colorscheme atom
+  set bg=dark
+  colorscheme paintbox
 
   nnoremap <f3> :NextColorScheme<cr>
   nnoremap <f2> :PrevColorScheme<cr>
