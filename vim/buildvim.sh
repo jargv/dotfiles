@@ -1,15 +1,20 @@
 #!/bin/bash
 
 #fail on first error
-#set -e
+set -e
 
 if [ $(uname) == "Linux" ]; then
   if [ -x /usr/bin/pacman ]; then
     sudo pacman -S xorg-server-devel
+  elif [ -x /usr/bin/apt ]; then
+    sudo apt install xorg-dev # for x, for clipboard
+    sudo apt install libx11-dev libxtst-dev # for x, for clipboard
+    sudo apt install python3-dev
+    sudo apt install libncurses5-dev
+    sudo apt install gnome-devel
   else
-    sudo apt-get install xorg-dev # for x, for clipboard
-    sudo apt-get install libx11-dev libxtst-dev # for x, for clipboard
-    sudo apt-get install python3-dev
+    echo "couldn't find linux version"
+    exit
   fi
 fi
 

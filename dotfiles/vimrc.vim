@@ -294,6 +294,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set ttyfast
   set bg=dark
   colorscheme paintbox
+  colorscheme pacific
 
   nnoremap <f3> :NextColorScheme<cr>
   nnoremap <f2> :PrevColorScheme<cr>

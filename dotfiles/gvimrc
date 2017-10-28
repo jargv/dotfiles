@@ -13,7 +13,7 @@ function! GuiTabLabel()
 endfunc
 
 " guifont {{{1
-set guifont=Source\ Code\ Pro\ 12
+set guifont=Noto\ Mono\ 13
 set titlestring=gvim
 " changing font size {{{1
 nnoremap <c-up>   :let &guifont = substitute(&guifont, '\d\+', '\=eval(submatch(0)+1)', '')<cr>
