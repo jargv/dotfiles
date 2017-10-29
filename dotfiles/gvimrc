@@ -1,14 +1,15 @@
-
 " guioptions {{{1
 set guioptions=
 set guioptions+=c
 set guioptions+=e
 set guioptions+=i
+" no bell
 set vb t_vb=
 
 " guitablabel {{{1
 set guitablabel=%{GuiTabLabel()}
 function! GuiTabLabel()
+  " this is defined in the main vim file for non-gui tabs
   return MyTabLabel(v:lnum)
 endfunc
 

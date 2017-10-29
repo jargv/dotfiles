@@ -129,6 +129,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
     let g:buffergator_suppress_keymaps = 1
     let g:buffergator_mru_cycle_loop = 1
     nnoremap <leader>r :BuffergatorOpen<cr>
+    nnoremap <M-r> :BuffergatorOpen<cr>
+    tnoremap <M-r> <C-w>:BuffergatorOpen<cr>
 
   "Plugin 'ervandew/supertab' {{{2
     Plugin 'ervandew/supertab'
@@ -292,9 +294,9 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  set bg=dark
   colorscheme paintbox
   colorscheme pacific
+  set bg=dark
 
   nnoremap <f3> :NextColorScheme<cr>
   nnoremap <f2> :PrevColorScheme<cr>
@@ -652,16 +654,14 @@ let g:isMac = !g:isLinux && !g:isGitBash
 " endfunc
 
 " terminals {{{1
-hi Terminal guibg=#666666 guifg=#dddddd
+hi Terminal guibg=#f3eaea guifg=#40427f
 if has("gui_running")
   nnoremap <leader>. :term ++curwin<cr>
+elseif has("nvim")
+  nnoremap <leader>. :split term://zsh<cr>:startinsert<cr>
 else
   nnoremap <leader>. :!tmux split-window -p20 <CR><CR>
 endif
-if has("nvim")
-  nnoremap <leader>. :split term://zsh<cr>:startinsert<cr>
-end
-
 
 "window/tab manipulation {{{1
   set noequalalways "don't automatically resize windows
@@ -684,6 +684,8 @@ end
   nmap <leader>tj :call MoveWindowTo#NextTab()<CR>
   nmap <leader>tk :call MoveWindowTo#PrevTab()<CR>
   nmap <leader>tn :0tabnew<CR>
+  nmap <leader>tc :tabclose<CR>
+  nmap <leader>to :tabonly<CR>
 
   nmap <leader><Down> <C-W>+
   nmap <leader><Up> <C-W>-
@@ -914,374 +916,7 @@ end
             \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
   "}}}
 
-   "terminal colorschemes {{{1
-   "set t_Co=256
-   ""Solorized options {{{2
-   "   let g:solarized_termtrans = 1
-   "   "let g:solarized_termcolors = 256
-   "   let g:solarized_contrast="normal"    "default value is normal
-   "   let g:solarized_visibility="normal"  "default value is normal
-   ""}}}
 
-   "let g:isSeafoamOrBlazer = 0
-   "let g:isSymfonic = 0
-   "let g:oceanDark = 0 "isLinux || isMac
-   "let g:oceanLight = 1
-   "let g:codeSchool = 0
-   "let g:atelierlakeside_light = 0
-   "let g:atelierlakeside_dark = 0
-   "let g:solarized_dark = 0
-   "let g:solarized_light = 0
-
-   ""colorscheme tweaks {{{2
-   " if g:atelierlakeside_light "{{{3
-   "   colorscheme adam
-   "   "tabline {{{4
-   "      let s:background = 7
-   "      let s:text       = 12
-   "      let s:selText    = 8
-   "      let s:titleText  = 4
-   "      let s:selBG      = 15
-   "      let s:titleBG    = 7
-   "   "}}}
-   "   "git gutter {{{4
-   "     highlight GitGutterAdd          ctermbg=4 ctermfg=7 " an added line
-   "     highlight GitGutterChange       ctermbg=4 ctermfg=7 " a changed line
-   "     highlight GitGutterDelete       ctermbg=4 ctermfg=7 " at least one removed line
-   "     highlight GitGutterChangeDelete ctermbg=4 ctermfg=7 " a changed line followed by at least one removed line
-   "     highlight SignColumn            ctermbg=4 ctermfg=7
-   "   "}}}
-   "   "diffs {{{4
-   "     highlight DiffAdd ctermbg=16 "change
-   "     highlight DiffDelete ctermbg=16 ctermfg=2
-   "     highlight DiffChange ctermbg=16 ctermfg=none cterm=none
-   "     highlight DiffText ctermbg=12 ctermfg=16 cterm=none
-   "   "}}}
-
-   "   highlight VertSplit ctermbg=4 ctermfg=4
-   "   highlight LineNr ctermbg=4 ctermfg=7 cterm=none
-   "   highlight NonText ctermfg=39
-   "   highlight Search ctermbg=15 cterm=underline,bold
-   "   highlight Folded ctermbg=none ctermfg=24 cterm=underline
-   "   highlight Visual ctermbg=16 term=none cterm=none ctermfg=none
-   "   highlight StatusLine ctermbg=7 ctermfg=8 cterm=underline
-   "   highlight StatusLineNC ctermbg=7 ctermfg=8 cterm=underline
-   "   highlight StatusLineBold ctermbg=7 ctermfg=23 cterm=underline
-   "   highlight MatchParen ctermbg=15 ctermfg=10 cterm=bold
-   "   highlight CursorLine cterm=none ctermbg=none
-   "   highlight CursorLineNR cterm=bold ctermfg=15 ctermbg=4
-   "   highlight Pmenu ctermbg=4 ctermfg=0
-   "   highlight Pmenusel ctermbg=13 ctermfg=16
-
-   " elseif g:atelierlakeside_dark "{{{3
-   " colorscheme adam
-   " "colorscheme Chasing_Logic
-   " "colorscheme 256-grayvim
-   "   "tabline {{{4
-   "      let s:background = 10
-   "      let s:text       = 7
-   "      let s:selText    = 5
-   "      let s:selBG      = 0
-   "      let s:titleText  = 13
-   "      let s:titleBG    = 10
-   "   "}}}
-   "   "git gutter {{{4
-   "     highlight GitGutterAdd          ctermbg=16 ctermfg=22 " an added line
-   "     highlight GitGutterChange       ctermbg=16 ctermfg=5 " a changed line
-   "     highlight GitGutterDelete       ctermbg=16 ctermfg=6 " at least one removed line
-   "     highlight GitGutterChangeDelete ctermbg=16 ctermfg=0 " a changed line followed by at least one removed line
-   "     highlight SignColumn            ctermbg=16 ctermfg=0
-   "   "}}}
-   "   "diffs {{{4
-   "     highlight DiffAdd    ctermbg=16 "change
-   "     highlight DiffDelete ctermbg=16 ctermfg=2
-   "     highlight DiffChange ctermbg=16 ctermfg=none cterm=none
-   "     highlight DiffText   ctermbg=8 ctermfg=16 cterm=none
-   "     highlight FoldColumn ctermbg=10 ctermfg=0
-   "   "}}}
-   "   highlight VertSplit ctermbg=0 ctermfg=10
-   "   highlight LineNr ctermbg=16 ctermfg=10 cterm=none
-   "   highlight NonText ctermfg=0
-   "   highlight Search ctermbg=10 cterm=none
-   "   highlight Folded ctermbg=none ctermfg=24 cterm=underline
-   "   highlight Visual ctermbg=10 term=none cterm=none ctermfg=none
-   "   highlight StatusLine ctermbg=10 ctermfg=13 cterm=underline
-   "   highlight StatusLineNC ctermbg=10 ctermfg=13 cterm=underline
-   "   highlight StatusLineBold ctermbg=10 ctermfg=5 cterm=underline
-   "   highlight MatchParen ctermbg=2 ctermfg=13 cterm=bold
-   "   highlight CursorLine cterm=none ctermbg=none
-   "   highlight CursorLineNR cterm=bold,underline ctermfg=0 ctermbg=13
-   "   highlight Pmenu ctermbg=11 ctermfg=16
-   "   highlight Pmenusel ctermbg=13 ctermfg=16
-
-   " elseif g:codeSchool "{{{3
-   "   colorscheme DevC++
-   "   "tabline {{{4
-   "      let s:background = 16
-   "      let s:text       = 8
-   "      let s:selText    = 4
-   "      let s:titleText  = 3
-   "      let s:selBG      = 0
-   "      let s:titleBG    = 16
-   "   "}}}
-   "   "git gutter {{{4
-   "     highlight GitGutterAdd          ctermbg=16 ctermfg=22 " an added line
-   "     highlight GitGutterChange       ctermbg=16 ctermfg=5 " a changed line
-   "     highlight GitGutterDelete       ctermbg=16 ctermfg=6 " at least one removed line
-   "     highlight GitGutterChangeDelete ctermbg=16 ctermfg=0 " a changed line followed by at least one removed line
-   "   "}}}
-   "   "diffs {{{4
-   "     highlight DiffAdd ctermbg=16 "change
-   "     highlight DiffDelete ctermbg=16 ctermfg=2
-   "     highlight DiffChange ctermbg=16 ctermfg=none cterm=none
-   "     highlight DiffText ctermbg=12 ctermfg=16 cterm=none
-   "   "}}}
-
-   "   highlight VertSplit ctermbg=4 ctermfg=16
-   "   highlight LineNr ctermbg=16 ctermfg=0 cterm=none
-   "   highlight SignColumn ctermbg=16 ctermfg=0
-   "   highlight NonText ctermbg=0 ctermfg=39
-   "   highlight Search ctermbg=12 ctermfg=16 cterm=none
-   "   highlight Folded ctermbg=none ctermfg=24 cterm=underline
-   "   highlight Visual ctermbg=16 term=none cterm=none ctermfg=none
-   "   highlight StatusLine ctermbg=16 ctermfg=2 cterm=bold
-   "   highlight StatusLineNC ctermbg=16 ctermfg=8 cterm=none
-   "   highlight StatusLineBold ctermbg=16 ctermfg=14 cterm=none
-   "   highlight MatchParen ctermbg=16 ctermfg=15
-   "   highlight CursorLine cterm=none ctermbg=none
-   "   highlight CursorLineNR cterm=bold,underline ctermfg=red
-   "   highlight Pmenu ctermbg=16 ctermfg=1
-   "   highlight Pmenusel ctermbg=1 ctermfg=16
-
-   " elseif g:codeSchool "{{{3
-   "   "tabline {{{4
-   "      let s:background = 16
-   "      let s:text       = 8
-   "      let s:selText    = 4
-   "      let s:titleText  = 3
-   "      let s:selBG      = 0
-   "      let s:titleBG    = 16
-   "   "}}}
-   "   "git gutter {{{4
-   "     highlight GitGutterAdd          ctermbg=16 ctermfg=22 " an added line
-   "     highlight GitGutterChange       ctermbg=16 ctermfg=5 " a changed line
-   "     highlight GitGutterDelete       ctermbg=16 ctermfg=6 " at least one removed line
-   "     highlight GitGutterChangeDelete ctermbg=16 ctermfg=0 " a changed line followed by at least one removed line
-   "   "}}}
-   "   "diffs {{{4
-   "     highlight DiffAdd ctermbg=16 "change
-   "     highlight DiffDelete ctermbg=16 ctermfg=2
-   "     highlight DiffChange ctermbg=16 ctermfg=none cterm=none
-   "     highlight DiffText ctermbg=12 ctermfg=16 cterm=none
-   "   "}}}
-
-   "   highlight VertSplit ctermbg=4 ctermfg=16
-   "   highlight LineNr ctermbg=16 ctermfg=0 cterm=none
-   "   highlight SignColumn ctermbg=16 ctermfg=0
-   "   highlight NonText ctermbg=0 ctermfg=39
-   "   highlight Search ctermbg=12 ctermfg=16 cterm=none
-   "   highlight Folded ctermbg=none ctermfg=24 cterm=underline
-   "   highlight Visual ctermbg=16 term=none cterm=none ctermfg=none
-   "   highlight StatusLine ctermbg=16 ctermfg=2 cterm=bold
-   "   highlight StatusLineNC ctermbg=16 ctermfg=8 cterm=none
-   "   highlight StatusLineBold ctermbg=16 ctermfg=14 cterm=none
-   "   highlight MatchParen ctermbg=16 ctermfg=15
-   "   highlight CursorLine cterm=none ctermbg=none
-   "   highlight CursorLineNR cterm=bold,underline ctermfg=red
-   "   highlight Pmenu ctermbg=16 ctermfg=1
-   "   highlight Pmenusel ctermbg=1 ctermfg=16
-
-   " elseif g:oceanDark "{{{3
-   "   colorscheme blazer
-   "   "tabline {{{4
-   "      let s:background = 16
-   "      let s:text       = 8
-   "      let s:selText    = 6
-   "      let s:titleText  = 14
-   "      let s:selBG      = 0
-   "      let s:titleBG    = 16
-   "   "}}}
-   "   "git gutter {{{4
-   "     highlight GitGutterAdd          ctermbg=16 ctermfg=22 " an added line
-   "     highlight GitGutterChange       ctermbg=16 ctermfg=5 " a changed line
-   "     highlight GitGutterDelete       ctermbg=16 ctermfg=6 " at least one removed line
-   "     highlight GitGutterChangeDelete ctermbg=16 ctermfg=0 " a changed line followed by at least one removed line
-   "   "}}}
-   "   "diffs {{{4
-   "      highlight DiffAdd ctermbg=8 "change
-   "      highlight DiffDelete ctermbg=16 ctermfg=2
-   "      highlight DiffChange ctermbg=16 ctermfg=none cterm=none
-   "      highlight DiffText ctermbg=12 ctermfg=16 cterm=none
-   "   "}}}
-   "   highlight VertSplit ctermbg=3 ctermfg=16
-   "   highlight LineNr ctermbg=16 ctermfg=8 cterm=none
-   "   highlight SignColumn ctermbg=16 ctermfg=16
-   "   highlight NonText ctermbg=none ctermfg=39
-   "   highlight Search ctermbg=12 ctermfg=16 cterm=none
-   "   highlight Folded ctermbg=none ctermfg=24 cterm=underline
-   "   highlight Visual ctermbg=16 term=none cterm=none ctermfg=none
-   "   highlight StatusLine ctermbg=16 ctermfg=2 cterm=bold
-   "   highlight StatusLineNC ctermbg=16 ctermfg=8 cterm=none
-   "   highlight StatusLineBold ctermbg=16 ctermfg=14 cterm=none
-   "   highlight MatchParen ctermbg=16 ctermfg=15
-   "   highlight CursorLine cterm=none ctermbg=none
-   "   highlight CursorLineNR cterm=bold,underline ctermfg=red
-   "   highlight Pmenu ctermbg=4 ctermfg=0
-   "   highlight Pmenusel ctermbg=0 ctermfg=4
-   " elseif g:oceanLight "{{{3
-   "   colorscheme oceanlight
-   "   "git gutter {{{4
-   "     highlight GitGutterAdd          ctermbg=16 ctermfg=22 " an added line
-   "     highlight GitGutterChange       ctermbg=16 ctermfg=5 " a changed line
-   "     highlight GitGutterDelete       ctermbg=16 ctermfg=6 " at least one removed line
-   "     highlight GitGutterChangeDelete ctermbg=16 ctermfg=0 " a changed line followed by at least one removed line
-   "   "}}}
-   "   "tabline {{{4
-   "       let s:background = 0
-   "       let s:text       = 8
-   "       let s:selText    = 6
-   "       let s:titleText  = 14
-   "       let s:selBG      = 0
-   "       let s:titleBG    = 16
-   "   "diff {{{4
-   "     highlight DiffAdd ctermbg=7
-   "     highlight DiffDelete ctermbg=7 ctermfg=4
-   "     highlight DiffChange ctermbg=7 ctermfg=none cterm=none
-   "     highlight DiffText ctermbg=10 ctermfg=16 cterm=none
-   "   "}}}
-   "   highlight VertSplit ctermbg=3 ctermfg=16
-   "   highlight LineNr ctermbg=16 ctermfg=8 cterm=none
-   "   highlight SignColumn ctermbg=16 ctermfg=16
-   "   highlight NonText ctermbg=none ctermfg=39
-   "   highlight Search ctermbg=12 ctermfg=16 cterm=none
-   "   highlight Folded ctermbg=0 ctermfg=7 cterm=none
-   "   highlight Visual ctermbg=7 term=none cterm=none ctermfg=none
-   "   highlight StatusLine ctermbg=16 ctermfg=2 cterm=bold
-   "   highlight StatusLineNC ctermbg=16 ctermfg=8 cterm=none
-   "   highlight StatusLineBold ctermbg=16 ctermfg=14 cterm=none
-   "   highlight MatchParen ctermbg=3 ctermfg=none cterm=none
-   "   highlight CursorLine cterm=none ctermbg=none
-   "   highlight CursorLineNR cterm=bold,underline ctermfg=red
-   "   highlight Pmenu ctermbg=4 ctermfg=7
-   "   highlight Pmenusel ctermbg=13 ctermfg=16
-
-   "elseif g:isSymfonic "{{{3
-   "  set bg=dark
-   "  colorscheme solarized
-   "   "tabline
-   "      let s:background = 8
-   "      let s:text       = 12
-   "      let s:selText    = 4
-   "      let s:selBG      = 16
-   "      let s:titleText  = 22
-   "      let s:titleBG    = 8
-   "   highlight VertSplit ctermbg=8
-   "   highlight LineNr ctermbg=8 ctermfg=16
-   "   highlight SignColumn ctermbg=0 ctermfg=16
-   "   highlight NonText ctermbg=0 ctermfg=39
-   "   highlight Search ctermbg=white ctermfg=4
-   "   highlight Folded ctermbg=none ctermfg=24 cterm=underline
-   "   highlight Visual ctermbg=8 term=none cterm=none ctermfg=none
-   "   highlight StatusLine ctermbg=8 ctermfg=24 cterm=bold
-   "   highlight StatusLineNC ctermbg=8 ctermfg=24 cterm=bold
-   "   highlight StatusLineBold ctermbg=8 ctermfg=1 cterm=bold
-   "   highlight MatchParen ctermbg=16 ctermfg=0 cterm=underline
-   "   highlight CursorLine cterm=none ctermbg=none
-   "   highlight CursorLineNR cterm=bold ctermfg=red cterm=underline
-   "   highlight DiffAdd ctermbg=8
-   "   highlight DiffDelete ctermbg=8 ctermfg=24
-   "   highlight DiffChange ctermbg=8 cterm=none
-   "   highlight DiffText ctermbg=17 ctermfg=24 cterm=none "add
-   "elseif g:isSeafoamOrBlazer "{{{3
-   "   "tabline
-   "      let s:background = 7
-   "      let s:text       = 4
-   "      let s:selText    = 109
-   "      let s:selBG      = "white"
-   "      let s:titleText  = 24
-   "      let s:titleBG    = 7
-   "      let s:tabSep     = 7
-   "   highlight VertSplit ctermbg=16
-   "   "highlight LineNr ctermbg=none ctermfg=59
-   "   highlight LineNr ctermbg=none ctermfg=4 ctermbg=16
-   "   highlight SignColumn ctermbg=none ctermfg=12
-   "   highlight NonText ctermbg=none ctermfg=39
-   "   highlight Search ctermbg=white ctermfg=4
-   "   highlight Folded ctermbg=none ctermfg=24 cterm=underline
-   "   highlight Visual ctermbg=16 term=none cterm=none ctermfg=none
-   "   highlight StatusLine ctermbg=16 ctermfg=24 cterm=bold
-   "   highlight StatusLineNC ctermbg=16 ctermfg=24 cterm=bold
-   "   highlight StatusLineBold ctermbg=16 ctermfg=12 cterm=bold
-   "   highlight MatchParen ctermbg=black ctermfg=white
-   "   highlight CursorLine cterm=bold ctermbg=none
-   "   highlight CursorLineNR cterm=bold ctermfg=red
-   "   highlight DiffAdd ctermbg=16
-   "   highlight DiffDelete ctermbg=16 ctermfg=24
-   "   highlight DiffChange ctermbg=16 cterm=none
-   "   highlight DiffText ctermbg=17 ctermfg=24 cterm=none
-   "elseif g:solarized_dark "{{{3
-   "   colorscheme solarized
-   "   set bg=dark
-   "   "tabline {{{4
-   "      let s:background = 16
-   "      let s:text       = 12
-   "      let s:selText    = 4
-   "      let s:selBG      = "none"
-   "      let s:titleText  = 24
-   "      let s:titleBG    = 16
-   "      "}}}
-   "   highlight VertSplit ctermbg=black
-   "   highlight LineNr ctermbg=0 ctermfg=6
-   "   highlight NonText ctermfg=4
-   "   highlight Search ctermbg=8 ctermfg=4
-   "   highlight SignColumn ctermbg=black ctermfg=4
-   "   highlight Folded ctermbg=black ctermfg=6 cterm=bold
-   "   highlight Visual ctermbg=16 term=none cterm=none ctermfg=none
-   "   highlight MatchParen ctermbg=black ctermfg=white
-   "   highlight StatusLine ctermfg=black ctermbg=white
-   "   highlight StatusLineNC ctermbg=12 ctermfg=black
-   "   highlight StatusLineBold ctermfg=black ctermbg=4 cterm=bold,reverse
-   "elseif g:solarized_light "{{{3
-   "   colorscheme solarized
-   "   set bg=light
-   "   "tabline {{{4
-   "      let s:background = 24
-   "      let s:text       = 7
-   "      let s:selText    = 0
-   "      let s:titleText  = 4
-   "      let s:selBG      = "white"
-   "      let s:titleBG    = 24
-   "   "}}}
-   "   "git gutter {{{4
-   "     highlight GitGutterAdd          ctermbg=24 ctermfg=2 " an added line
-   "     highlight GitGutterChange       ctermbg=24 ctermfg=4 " a changed line
-   "     highlight GitGutterDelete       ctermbg=24 ctermfg=1 " at least one removed line
-   "     highlight GitGutterChangeDelete ctermbg=24 ctermfg=7 " a changed line followed by at least one removed line
-   "     highlight SignColumn            ctermbg=24 ctermfg=7
-   "   "}}}
-   "   "diffs {{{4
-   "     highlight DiffAdd ctermbg=16 "change
-   "     highlight DiffDelete ctermbg=16 ctermfg=2
-   "     highlight DiffChange ctermbg=16 ctermfg=none cterm=none
-   "     highlight DiffText ctermbg=12 ctermfg=16 cterm=none
-   "   "}}}
-
-   "   highlight VertSplit ctermbg=24 ctermfg=4
-   "   highlight LineNr ctermbg=24 ctermfg=7 cterm=none
-   "   highlight NonText ctermfg=39
-   "   highlight Search ctermbg=15 cterm=underline,bold
-   "   highlight Folded ctermbg=none ctermfg=24 cterm=underline
-   "   highlight Visual ctermbg=16 term=none cterm=none ctermfg=none
-   "   highlight StatusLine ctermbg=24 ctermfg=7 cterm=none
-   "   highlight StatusLineNC ctermbg=24 ctermfg=4 cterm=none
-   "   highlight StatusLineBold ctermbg=24 ctermfg=4 cterm=none
-   "   highlight MatchParen ctermbg=15 ctermfg=10 cterm=bold
-   "   highlight CursorLine cterm=none ctermbg=none
-   "   highlight CursorLineNR cterm=bold ctermfg=15 ctermbg=4
-   "   highlight Pmenu ctermbg=4 ctermfg=0
-   "   highlight Pmenusel ctermbg=13 ctermfg=16
-   " endif
-   ""}}}
 "cursor {{{1
    "use the cursorline as mode indicator {{{2
       " autocmd InsertEnter * set cursorline
@@ -1488,15 +1123,6 @@ end
          end
       endfunc
   "}}}
-
-"nvim {{{1
-if has('nvim')
-  augroup NVIM
-  augroup! NVIM
-  "autocmd TermClose * wincmd c
-  tnoremap  <c-\><c-n>
-  augroup END
-endif
 
 "embedded languages {{{1
 func! HighlightEmbedded(ft, start, end)
