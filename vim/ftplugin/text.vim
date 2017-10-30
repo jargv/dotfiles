@@ -9,7 +9,7 @@ func! <sid>toggleWriting()
   if !b:writing
     let b:colorscheme = g:colors_name
     colorscheme osx_like
-    exec "Goyo " . width
+    exec "Goyo " . (width + 1)
   else
     exec "colorscheme ".b:colorscheme
     Goyo
