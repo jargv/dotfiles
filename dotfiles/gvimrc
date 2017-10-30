@@ -1,3 +1,4 @@
+set titlestring=gvim
 " guioptions {{{1
 set guioptions=
 set guioptions+=c
@@ -14,8 +15,8 @@ function! GuiTabLabel()
 endfunc
 
 " guifont {{{1
-set guifont=Noto\ Mono\ 13
-set titlestring=gvim
+set guifont=Inconsolata\ Medium\ 16
+" set guifont=Noto\ Mono\ 13
 " changing font size {{{1
 nnoremap <c-up>   :let &guifont = substitute(&guifont, '\d\+', '\=eval(submatch(0)+1)', '')<cr>
 nnoremap <c-down> :let &guifont = substitute(&guifont, '\d\+', '\=eval(submatch(0)-1)', '')<cr>

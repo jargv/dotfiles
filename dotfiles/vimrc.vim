@@ -97,6 +97,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
    Plugin 'trevordmiller/nova-vim'
    "}}}
 
+   Plugin 'junegunn/limelight.vim'
+   Plugin 'junegunn/goyo.vim'
    Plugin 'Raimondi/delimitMate'
    Plugin 'PeterRincker/vim-argumentative'
    Plugin 'tpope/vim-repeat'
@@ -435,6 +437,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
   nnoremap <leader>C :call <SID>goConfig()<CR><CR>
 
   func! <SID>goConfig()
+    split
     let parts = split(&filetype, '\.')
     let ft = len(parts) > 0 ? parts[0] : ""
 
@@ -707,8 +710,8 @@ endif
   nmap <M-h> <c-w>h
 
   tmap <M-y> <c-w>N
-  tmap <M-p> <c-w>""
-  imap <M-p> <c-r>"
+  tmap <M-p> <c-w>"+
+  imap <M-p> <c-r>+
 
   nmap <M--> :new<cr>
   nmap <M-=> :vnew<cr>
@@ -777,7 +780,7 @@ endif
       if buf.listed && len(buf.windows) == 0
         exec "b".buf.bufnr
         if a:destroy
-          exec "bd! ".current
+          exec "silent bd! ".current
         endif
         return
       endif
