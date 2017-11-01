@@ -8,10 +8,16 @@ set guioptions+=i
 set vb t_vb=
 
 " guitablabel {{{1
+"
+nnoremap <M-n> :let t:mytabname = input(">")<cr>
 set guitablabel=%{GuiTabLabel()}
 function! GuiTabLabel()
   " this is defined in the main vim file for non-gui tabs
-  return MyTabLabel(v:lnum)
+  if exists("t:mytabname") && len(t:mytabname) > 0
+    return t:mytabname
+  else
+    return MyTabLabel(v:lnum)
+  endif
 endfunc
 
 " guifont {{{1
