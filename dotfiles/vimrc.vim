@@ -97,6 +97,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
    Plugin 'trevordmiller/nova-vim'
    "}}}
 
+   Plugin 'justinmk/vim-sneak'
+
    Plugin 'junegunn/limelight.vim'
    Plugin 'junegunn/goyo.vim'
    Plugin 'Raimondi/delimitMate'
