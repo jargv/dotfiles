@@ -1,20 +1,42 @@
 " distraction-free writing {{{1
 let b:writing = 0
 noremap <buffer> <leader>;; :call <sid>toggleWriting()<cr>
+
 func! <sid>toggleWriting()
+  if b:writing
+    call <sid>writingOff()
+  else
+    call <sid>writingOn()
+  endif
+endfunc
+
+func! <sid>writingOn()
+  let b:writing = 1
   let width = 55
   exec "set tw=" . width
-  PencilToggle
-  Limelight!!
-  if !b:writing
-    let b:colorscheme = g:colors_name
-    colorscheme osx_like
-    exec "Goyo " . (width + 1)
-  else
-    exec "colorscheme ".b:colorscheme
-    Goyo
-  endif
-  let b:writing = !b:writing
+  PencilHard
+  Limelight
+  exec "Goyo " . (width + 1)
+
+  let b:colorscheme = g:colors_name
+  colorscheme osx_like
+
+  augroup Writing
+    autocmd!
+    autocmd BufLeave <buffer> call <sid>writingOff()
+  augroup END
+endfunc
+
+
+func! <sid>writingOff()
+  let b:writing = 0
+  PencilOff
+  Limelight!
+  Goyo!
+  exec "colorscheme ".b:colorscheme
+  augroup Writing
+    autocmd!
+  augroup END
 endfunc
 
 " outline/todos {{{1

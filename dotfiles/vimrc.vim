@@ -227,36 +227,19 @@ let g:isMac = !g:isLinux && !g:isGitBash
       let g:EasyMotion_do_shade = 0
 
    "Plugin 'airblade/vim-gitgutter' {{{2
-   let g:gitgutter_sign_added = '+'
-   let g:gitgutter_sign_modified = '~'
-   let g:gitgutter_sign_removed = 'x'
-   let g:gitgutter_sign_modified_removed = '%'
-   let g:gitgutter_diff_args = '-w'
+      let g:gitgutter_sign_added = '+'
+      let g:gitgutter_sign_modified = '~'
+      let g:gitgutter_sign_removed = 'x'
+      let g:gitgutter_sign_modified_removed = '%'
+      let g:gitgutter_diff_args = '-w'
 
-   if !exists('g:gitgutter_enabled')
-     let g:gitgutter_enabled = 1
-     let g:MarkingToolsState = ''
-   endif
-   let g:gitgutter_map_keys = 0
-   highlight clear SignColumn
-   Plugin 'airblade/vim-gitgutter'
-      nnoremap <leader>gu :GitGutterToggle<cr>
-      func! MarkingToolsToggle()
-         if g:MarkingToolsState == 'syntastic'
-           SyntasticToggleMode
-           GitGutterEnable
-           let g:MarkingToolsState = 'gitgutter'
-         elseif g:MarkingToolsState == 'gitgutter'
-           GitGutterDisable
-           SyntasticToggleMode
-           SyntasticCheck
-           let g:MarkingToolsState = ''
-         else
-           SyntasticT
-           let g:MarkingToolsState = 'syntastic'
-         endif
-         echo g:MarkingToolsState
-      endfunc
+      if !exists('g:gitgutter_enabled')
+        let g:gitgutter_enabled = 1
+        let g:MarkingToolsState = ''
+      endif
+      let g:gitgutter_map_keys = 0
+      Plugin 'airblade/vim-gitgutter'
+      highlight clear SignColumn
       func! GitAdjacentChange(next)
         if &diff
           if a:next
