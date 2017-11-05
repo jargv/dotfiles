@@ -16,7 +16,7 @@ func! <sid>writingOn()
   exec "set tw=" . width
   PencilHard
   Limelight
-  exec "Goyo " . (width + 1)
+  exec "Goyo " . (width + 2)
 
   let b:colorscheme = g:colors_name
   colorscheme osx_like

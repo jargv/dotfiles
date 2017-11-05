@@ -281,8 +281,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  colorscheme paintbox
-  colorscheme pacific
+  colorscheme rdark
   set bg=dark
 
   nnoremap <f3> :NextColorScheme<cr>
@@ -534,7 +533,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
     elseif filereadable("CMakeLists.txt")
       if !isdirectory("build")
         call <SID>TermRun("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && cd ..")
-        !ln -sf build/compile_commands.json .
+        call system("ln -sf build/compile_commands.json .")
       endif
       let g:makeDirectory .= "/build"
       let g:makeBuildtool = "make"
@@ -629,20 +628,21 @@ let g:isMac = !g:isLinux && !g:isGitBash
     endif
   endfunc
 
-"<leader>r manual browser refresh {{{1
-"let g:manualRefreshArgs = ""
-"nnoremap <leader>b :call <sid>manualRefresh()<cr>
-"nnoremap <leader>B :let g:browserReloadArgs = ""<cr>
-" func! <sid>manualRefresh()
-"   if g:browserReloadArgs == "" && executable("xdotool")
-"    let g:browserReloadArgs = system("xdotool selectwindow")
-"   endif
+"<leader>b manual browser refresh {{{1
+let g:manualRefreshArgs = ""
+nnoremap <leader>b :call <sid>manualRefresh()<cr>
+nnoremap <leader>B :let g:browserReloadArgs = ""<cr>
+ func! <sid>manualRefresh()
+   if g:browserReloadArgs == "" && executable("xdotool")
+    let g:browserReloadArgs = system("xdotool selectwindow")
+   endif
 
-"   call system(g:browserReloadCommand  . " " . g:browserReloadArgs)
-" endfunc
+   call system(g:browserReloadCommand  . " " . g:browserReloadArgs)
+ endfunc
 
 " terminals {{{1
 hi Terminal guibg=#f3eaea guifg=#40427f
+au BufWinEnter * if &buftype == 'terminal' | setlocal nonumber | endif
 if has("gui_running")
   nnoremap <leader>. :term ++curwin<cr>
 elseif has("nvim")
@@ -654,8 +654,8 @@ endif
 "window/tab manipulation {{{1
   set noequalalways "don't automatically resize windows
 
-  nmap <leader>= :vnew<cr>:BuffergatorOpen<cr>
-  nmap <leader>- :new<cr>:BuffergatorOpen<cr>
+  nmap <leader>= :Vexplore!<cr>
+  nmap <leader>- :Sexplore<cr>
 
   nmap <leader>k <c-w>k
   nmap <leader>j <c-w>j
@@ -721,6 +721,21 @@ endif
   tmap <M-o> <C-w>:call <SID>bufMove(1, 0)<cr>
   tmap <M-i> <C-w>:call <SID>bufMove(0, 0)<cr>
   tmap <M-u> <C-w>::call <SID>bufMove(1, 1)<cr>
+
+  " Zoom
+  nnoremap <silent> <M-;> :call ZoomToggle()<CR>
+  tnoremap <silent> <M-;> <C-w>:call ZoomToggle()<CR>
+  function! ZoomToggle()
+    if exists('t:zoomed') && t:zoomed
+      execute t:zoom_winrestcmd
+      let t:zoomed = 0
+    else
+      let t:zoom_winrestcmd = winrestcmd()
+      resize
+      vertical resize
+      let t:zoomed = 1
+    endif
+  endfunction
 
   func! BufDescCmp(a, b)
     if a:a.bufnr < a:b.bufnr
