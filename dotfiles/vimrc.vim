@@ -281,8 +281,14 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  colorscheme rdark
+  colorscheme rakr-light
+  colorscheme pw
   set bg=dark
+
+  if &diff
+    colorscheme rdark
+    set bg=dark
+  endif
 
   nnoremap <f3> :NextColorScheme<cr>
   nnoremap <f2> :PrevColorScheme<cr>
@@ -421,11 +427,10 @@ let g:isMac = !g:isLinux && !g:isGitBash
   nnoremap <leader>C :call <SID>goConfig()<CR><CR>
 
   func! <SID>goConfig()
-    split
     let parts = split(&filetype, '\.')
     let ft = len(parts) > 0 ? parts[0] : ""
 
-    e ~/config/dotfiles/vimrc.vim
+    tabedit ~/config/dotfiles/vimrc.vim
 
     if !empty(ft)
       exec "vsplit ~/.vim/ftplugin/".ft.".vim"
@@ -453,14 +458,14 @@ let g:isMac = !g:isLinux && !g:isGitBash
     let g:makeDirectory = ""
 
     let g:makeOnSave = 0
-    let g:closeOnBuild = 1
+    let g:closeOnCollectErrors = 0
 
     let g:browserReloadOnMake = 0
     let g:browserReloadCommand = 'chrome_refresh'
     let g:browserReloadArgs = ""
     let g:browserReloadPort = ""
 
-    let g:term_buf = -1
+    let g:tmux_index = ""
   endfunc
 
   "autocommand on save
@@ -481,7 +486,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
   nnoremap <leader>Mr :let g:runTarget = input(">", g:runTarget)<CR>
   nnoremap <leader>Md :let g:makeDirectory = input(">", len(g:makeDirectory) ? (g:makeDirectory) : getcwd())<CR>
   nnoremap <leader>Mx :let g:makeBuildtool = input(">", g:makeBuildtool)<cr>
-  nnoremap <leader>e :call <SID>CollectErrors()<cr><cr>
+  nnoremap <leader>e :call <SID>CollectErrors()<cr>
 
   nnoremap <leader>Ms :call <SID>ToggleMakeOnSave()<cr>
   nnoremap <leader>Mb :call <SID>ToggleReloadBrowserOnMake()<cr>
@@ -511,17 +516,20 @@ let g:isMac = !g:isLinux && !g:isGitBash
      endif
   endfunc
 
-  func! <SID>TermRun(args)
-    if bufname(g:term_buf) == ""
-			let save_cursor = getcurpos()
-      botright 50vnew
-      let g:term_buf = bufnr('%')
-      set winfixwidth
-      term ++curwin zsh
-      normal 
-			call setpos('.', save_cursor)
+  func! <SID>CollectTmuxPane()
+    let getpane = 'tmux display -p "#P"'
+    let vimpane = system(getpane)
+    call system("tmux display-pane 'display -t \%\% \"#P\"'")
+    let pane = input("pane:")
+    return pane
+  endfunc
+
+  func! <SID>TmuxRun(args)
+    if g:tmux_index == ""
+      let g:tmux_index = <SID>CollectTmuxPane()
     endif
-    call term_sendkeys(g:term_buf, escape(a:args,'\"$`').'')
+    call system("tmux send-keys -t ".g:tmux_index.' "'.escape(a:args,'\"$`').'"')
+    call system("tmux send-keys -t ".g:tmux_index.' Enter')
   endfunc
 
   func! <SID>DetectBuildTool()
@@ -532,7 +540,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
       let g:makeBuildtool = "ninja"
     elseif filereadable("CMakeLists.txt")
       if !isdirectory("build")
-        call <SID>TermRun("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && cd ..")
+        call <SID>TmuxRun("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && cd ..")
         call system("ln -sf build/compile_commands.json .")
       endif
       let g:makeDirectory .= "/build"
@@ -586,25 +594,24 @@ let g:isMac = !g:isLinux && !g:isGitBash
        let g:makeBuildTool = ""
        let g:makeTarget = "./".expand('%')
     endif
-    call <sid>TermRun('echo detected '.g:makeBuildtool.' '.g:makeTarget)
+    call <sid>TmuxRun('echo detected '.g:makeBuildtool.' '.g:makeTarget)
   endfunc
 
   func! <SID>RunMake()
-    if bufname(g:term_buf) == ""
+    if g:tmux_index == ""
       return
     endif
-    if g:closeOnBuild
-      cclose
-    endif
-    call <sid>TermRun("set -o pipefail")
+    call <sid>TmuxRun("set -o pipefail")
+    let ran = 0
     wa
     if len(g:makeBuildtool) || len(g:makeTarget)
-      call <sid>TermRun("")
+      let ran = 1
+      call <sid>TmuxRun("^c")
       let cmd = g:makeBuildtool." ".g:makeTarget." 2>&1 |tee /tmp/vim-errors-".&filetype
       if len(g:runTarget)
         let cmd = cmd." && ".g:runTarget
       endif
-      call <sid>TermRun("(cd ".g:makeDirectory." && ".cmd.")")
+      call <sid>TmuxRun("(cd ".g:makeDirectory." && ".cmd.")")
       normal 
     endif
     if g:browserReloadPort
@@ -632,7 +639,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
 let g:manualRefreshArgs = ""
 nnoremap <leader>b :call <sid>manualRefresh()<cr>
 nnoremap <leader>B :let g:browserReloadArgs = ""<cr>
- func! <sid>manualRefresh()
+func! <sid>manualRefresh()
    if g:browserReloadArgs == "" && executable("xdotool")
     let g:browserReloadArgs = system("xdotool selectwindow")
    endif
@@ -694,48 +701,28 @@ endif
   nmap <M-l> <c-w>l
   nmap <M-h> <c-w>h
 
-  tmap <M-y> <c-w>N
-  tmap <M-p> <c-w>"+
-  imap <M-p> <c-r>+
+  nnoremap <leader>] :call <SID>bufMove(1, 0)<cr>
+  nnoremap <leader>[ :call <SID>bufMove(0, 0)<cr>
+  nnoremap <leader>\ :call <SID>bufMove(1, 1)<cr>
 
-  nmap <M--> :new<cr>
-  nmap <M-=> :vnew<cr>
-  tmap <M--> <C-w>:new<cr>
-  tmap <M-=> <C-w>:vnew<cr>
+  tnoremap <M-o> <C-w>:call <SID>bufMove(1, 0)<cr>
+  tnoremap <M-i> <C-w>:call <SID>bufMove(0, 0)<cr>
+  tnoremap <M-u> <C-w>::call <SID>bufMove(1, 1)<cr>
 
-  nmap <M-x> <C-w>c
-  tmap <M-x> <C-w>:silent bw!<cr>
-
-  nmap <M-,> gT
-  nmap <M-.> gt
-  tmap <M-,> <C-w>:tabprev<cr>
-  tmap <M-.> <C-w>:tabnext<cr>
-
-  nmap <M-m> :-tabnew<cr>
-  tmap <M-m> <c-w>N:-tabnew<cr>
-
-  nnoremap <M-o> :call <SID>bufMove(1, 0)<cr>
-  nnoremap <M-i> :call <SID>bufMove(0, 0)<cr>
-  nnoremap <M-u> :call <SID>bufMove(1, 1)<cr>
-
-  tmap <M-o> <C-w>:call <SID>bufMove(1, 0)<cr>
-  tmap <M-i> <C-w>:call <SID>bufMove(0, 0)<cr>
-  tmap <M-u> <C-w>::call <SID>bufMove(1, 1)<cr>
-
-  " Zoom
-  nnoremap <silent> <M-;> :call ZoomToggle()<CR>
-  tnoremap <silent> <M-;> <C-w>:call ZoomToggle()<CR>
-  function! ZoomToggle()
-    if exists('t:zoomed') && t:zoomed
-      execute t:zoom_winrestcmd
-      let t:zoomed = 0
-    else
-      let t:zoom_winrestcmd = winrestcmd()
-      resize
-      vertical resize
-      let t:zoomed = 1
-    endif
-  endfunction
+  " " Zoom
+  " nnoremap <silent> <M-;> :call ZoomToggle()<CR>
+  " tnoremap <silent> <M-;> <C-w>:call ZoomToggle()<CR>
+  " function! ZoomToggle()
+  "   if exists('t:zoomed') && t:zoomed
+  "     execute t:zoom_winrestcmd
+  "     let t:zoomed = 0
+  "   else
+  "     let t:zoom_winrestcmd = winrestcmd()
+  "     resize
+  "     vertical resize
+  "     let t:zoomed = 1
+  "   endif
+  " endfunction
 
   func! BufDescCmp(a, b)
     if a:a.bufnr < a:b.bufnr
@@ -808,14 +795,17 @@ endif
     vnoremap <C-j> xp'[V']
     vnoremap <C-k> xkP'[V']
   "git mappings {{{2
-    nnoremap <leader>gD :-tabnew<cr>:term ++curwin ++close git difftool -w<cr>
-    nnoremap <leader>gd :exec '-tabnew \| term ++curwin ++close git difftool -w '.expand('%')<cr>
-    nnoremap <leader>gc :-tabnew<cr>:term ++curwin ++close zsh -c "EDITOR=vim ~/config/bin/git-done"<cr>
-    nnoremap <leader>gi :-tabnew<cr>:term ++curwin ++close zsh -c "EDITOR=vim git rebase -i"<cr>
-    nnoremap <leader>gh :-tabnew<cr>:term ++curwin ++close tig<cr>
-    nnoremap <leader>gH :-tabnew<cr>:term ++curwin ++close tig --simplify-by-decoration<cr>
+    nnoremap <leader>gD :!git difftool -w<cr><cr>
+    nnoremap <leader>gd :!git difftool -w %<CR><CR>
+    nnoremap <leader>gc :!git bedone<CR><CR>
+    nnoremap <leader>gi :!git rebase -i<cr><cr>
+    nnoremap <leader>gl :!git log <CR><CR>
+    nnoremap <leader>gh :!git hist --all <CR><CR>
+    nnoremap <leader>gH :!git hist --simplify-by-decoration<cr><cr>
     nnoremap <leader>gb :Gblame w<CR>
-    nnoremap <leader>gg :term!<cr>git st<cr>git x<esc>C
+    nnoremap <leader>gB :!git branch-i<cr><cr>
+    nnoremap <leader>gs :!tig status<CR><CR>
+    nnoremap <leader>gg :exec ":!git ".input("git> ")<CR>
   "working directory mappings {{{2
     nnoremap <leader>U :cd %:p:h<CR>:echo<CR>
     nnoremap <leader>u :cd ..<CR>:echo<CR>
