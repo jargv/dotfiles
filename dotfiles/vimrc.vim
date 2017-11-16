@@ -97,8 +97,6 @@ let g:isMac = !g:isLinux && !g:isGitBash
    Plugin 'trevordmiller/nova-vim'
    "}}}
 
-   Plugin 'justinmk/vim-sneak'
-
    Plugin 'junegunn/limelight.vim'
    Plugin 'junegunn/goyo.vim'
    Plugin 'Raimondi/delimitMate'
@@ -659,7 +657,7 @@ else
 endif
 
 "window/tab manipulation {{{1
-  set noequalalways "don't automatically resize windows
+  set equalalways "automatically resize windows
 
   nmap <leader>= :Vexplore!<cr>
   nmap <leader>- :Sexplore<cr>
