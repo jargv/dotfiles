@@ -21,13 +21,9 @@ add_library(${1:lib}
 )
 endsnippet
 snippet test "Add tests to the project" !b
-add_executable(${1:app}_test
+add_executable(test_${1:app}
   test_main.cpp
   vendor/catch.hpp
-)
-
-add_custom_target(test_$1 COMMAND $1_test
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 set(CATCH_URL "https://raw.githubusercontent.com/philsquared/Catch/master/single_include/catch.hpp")

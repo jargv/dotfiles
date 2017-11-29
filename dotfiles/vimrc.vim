@@ -279,13 +279,13 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  colorscheme rakr-light
-  colorscheme pw
-  set bg=dark
+  colorscheme rakr-light | set bg=light
+  colorscheme rdark | set bg=dark
+  colorscheme nova | set bg=dark
+  colorscheme mustang | set bg=dark
 
   if &diff
-    colorscheme rdark
-    set bg=dark
+    colorscheme rdark | set bg=dark
   endif
 
   nnoremap <f3> :NextColorScheme<cr>
