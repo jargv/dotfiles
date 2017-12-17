@@ -294,6 +294,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
   "highlight Comment cterm=italic
 
 "prototype settings {{{1
+nnoremap <c-k> [{
+nnoremap <c-j> [}
 
 "settings {{{1
   "vim, not vi! {{{2
@@ -853,6 +855,8 @@ endif
   "next and previous location/error/vimgrep {{{2
     nnoremap <expr> <silent> <leader>n ((len(getqflist()) ? ":cn" : ":lnext")."<CR>")
     nnoremap <expr> <silent> <leader>p ((len(getqflist()) ? ":cp" : ":lprev")."<CR>")
+    nnoremap <expr> <silent> <leader>N ((len(getqflist()) ? ":cnf" : ":lnf")."<CR>")
+    nnoremap <expr> <silent> <leader>P ((len(getqflist()) ? ":cpf" : ":lpf")."<CR>")
   "K as the opposite of Join {{{2
     vnoremap <silent> K <Nop>
     nnoremap <silent> K :call <SID>Format() <CR>

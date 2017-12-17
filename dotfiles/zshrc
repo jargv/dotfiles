@@ -13,7 +13,9 @@ fi
 #setup nix {{{1
 # export NIX_PATH="~/.nix-defexpr/nixpgks"
 # export nixpkgs="~/.nix-defexpr/nixpgks"
-# . ~/.nix-profile/etc/profile.d/nix.sh
+if [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]]; then
+  . ~/.nix-profile/etc/profile.d/nix.sh
+fi
 
 #path {{{1
 export EDITOR="vim"
