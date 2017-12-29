@@ -27,24 +27,54 @@ func! AssertToIf()
 
   let indent = matches[1]
   let cond = matches[2]
-
-  let cond = "not(".cond.")"
+  let cond = s:invert(cond)
 
   let lines = [
   \ indent."if ".cond." then",
-  \ indent."  error(('failed: %s'):fmt('".escape(cond, "'")."'), 1)",
+  \ indent."  error('failed: ".escape(cond, "'")."', 1)",
   \ indent."end"
   \]
   call setline('.', lines[0])
   call append('.', lines[1:])
 endfunc
 
-nnoremap <leader>;n :call SwapNotExpression()<cr>
-func! SwapNotExpression()
-  s/not//e
-  s/and/or/e
-  s/or/and/e
-  s/\~=/==/e
-  s/==/\~=/e
+func! s:invert(code)
+  let parts = matchlist(a:code, '\v^\s*(.{-})(and|or)\s*(.*)$')
+  if len(parts)
+    let first = s:invertSegment(parts[1])
+    let rest = s:invert(parts[3])
+    let operator = parts[2] == "and" ? "or" : "and"
+    return s:trim(first) . " " . operator . " " . rest
+  else
+    return s:trim(s:invertSegment(a:code))
+  endif
 endfunc
 
+func! s:invertSegment(code)
+  " not(.*)
+  let parts = matchlist(a:code, "\v^\s*not\s*\((.*)\)\s*$")
+  if len(parts)
+    return parts[1]
+  endif
+
+  " not .*
+  let parts = matchlist(a:code, "\v^\s*not\s*(.*)\s*$")
+  if len(parts)
+    return parts[1]
+  endif
+
+  " ~=
+  let parts = matchlist(a:code, '\v^\s*(.+)(\=\=|\~\=)(.+)\s*$')
+  if len(parts)
+    let op = parts[2] == '==' ? '~=' : '=='
+    return parts[1] . "~=" . parts[3]
+  endif
+
+  return "not ".a:code
+endfunc
+
+func! s:trim(code)
+  " {-} is non-greedy * in vimscript 0.o
+  let parts = matchlist(a:code, '\v^\s*(.{-})\s*$')
+  return parts[1]
+endfunc

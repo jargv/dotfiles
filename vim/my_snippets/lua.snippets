@@ -10,12 +10,12 @@ end
 
 endsnippet
 snippet class "Make a class" !b
-local $1 = {}
-$1.__index = $1
-function $1.new($2)
-  local self = setmetatable({}, $1)
-  $0
-	return self
+local method = {}
+local meta = {__index=method}
+local function ${1:foo}()
+  return setmetatable({
+    $0
+  }, meta)
 end
 endsnippet
 snippet r "require something" !b
@@ -28,8 +28,11 @@ for ${3:i}, ${2:val} in $4pairs($1) do
 end
 endsnippet
 snippet l "print variables" !b
-print("$1 = ", ${1})
+print("$1 => ", ${1})
 endsnippet
 snippet log "print text" !b
 print "$1"
+endsnippet
+snippet type "type assert" !b
+assert(type($1) == '$2', 1)
 endsnippet
