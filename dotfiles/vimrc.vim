@@ -90,7 +90,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
    "lua {{{2
     Plugin 'SpaceVim/vim-swig'
 
-   "colorschems {{{2
+   "colorschemes {{{2
    Plugin 'xolox/vim-misc'
    Plugin 'xolox/vim-colorscheme-switcher'
    Plugin 'flazz/vim-colorschemes'
@@ -132,7 +132,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
     let g:buffergator_mru_cycle_loop = 1
     nnoremap <leader>r :BuffergatorOpen<cr>
     nnoremap <M-r> :BuffergatorOpen<cr>
-    tnoremap <M-r> <C-w>:BuffergatorOpen<cr>
+    "tnoremap <M-r> <C-w>:BuffergatorOpen<cr>
 
   "Plugin 'ervandew/supertab' {{{2
     Plugin 'ervandew/supertab'
@@ -281,8 +281,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set ttyfast
   colorscheme rakr-light | set bg=light
   colorscheme rdark | set bg=dark
-  colorscheme nova | set bg=dark
   colorscheme mustang | set bg=dark
+  colorscheme nova | set bg=dark
 
   if &diff
     colorscheme rdark | set bg=dark
@@ -692,10 +692,10 @@ endif
   nmap <Left>  5<C-W><
   nmap <Right> 5<C-W>>
 
-  tmap <M-k> <c-w>k
-  tmap <M-j> <c-w>j
-  tmap <M-l> <c-w>l
-  tmap <M-h> <c-w>h
+  " tmap <M-k> <c-w>k
+  " tmap <M-j> <c-w>j
+  " tmap <M-l> <c-w>l
+  " tmap <M-h> <c-w>h
 
   nmap <M-k> <c-w>k
   nmap <M-j> <c-w>j
@@ -706,9 +706,9 @@ endif
   nnoremap <leader>[ :call <SID>bufMove(0, 0)<cr>
   nnoremap <leader>\ :call <SID>bufMove(1, 1)<cr>
 
-  tnoremap <M-o> <C-w>:call <SID>bufMove(1, 0)<cr>
-  tnoremap <M-i> <C-w>:call <SID>bufMove(0, 0)<cr>
-  tnoremap <M-u> <C-w>::call <SID>bufMove(1, 1)<cr>
+  " tnoremap <M-o> <C-w>:call <SID>bufMove(1, 0)<cr>
+  " tnoremap <M-i> <C-w>:call <SID>bufMove(0, 0)<cr>
+  " tnoremap <M-u> <C-w>::call <SID>bufMove(1, 1)<cr>
 
   " " Zoom
   " nnoremap <silent> <M-;> :call ZoomToggle()<CR>

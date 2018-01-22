@@ -73,7 +73,7 @@ fi
 
 #autojump {{{1
 if [[ $(uname) == "Linux" ]]; then
-  . /usr/share/autojump/autojump.zsh
+  [[ -f /usr/share/autojump/autojump.zsh ]] && . /usr/share/autojump/autojump.zsh
 else
   #[[ -s $(brew --prefix)/etc/autojump.sh ]] && . $(brew --prefix)/etc/autojump.sh
 fi
