@@ -295,7 +295,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
 
 "prototype settings {{{1
 nnoremap <c-k> [{
-nnoremap <c-j> [}
+nnoremap <c-j> ]}
+nnoremap <leader>tN :tab split<cr>
 
 "settings {{{1
   "vim, not vi! {{{2
@@ -592,7 +593,7 @@ nnoremap <c-j> [}
     else
        "just try to execute the file
        let g:makeBuildTool = ""
-       let g:makeTarget = "./".expand('%')
+       let g:makeTarget = "./".expand('%:t')
     endif
     call <sid>TmuxRun('echo detected '.g:makeBuildtool.' '.g:makeTarget)
   endfunc

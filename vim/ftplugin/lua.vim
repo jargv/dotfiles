@@ -67,7 +67,7 @@ func! s:invertSegment(code)
   let parts = matchlist(a:code, '\v^\s*(.+)(\=\=|\~\=)(.+)\s*$')
   if len(parts)
     let op = parts[2] == '==' ? '~=' : '=='
-    return parts[1] . "~=" . parts[3]
+    return parts[1] . op . parts[3]
   endif
 
   return "not ".a:code
