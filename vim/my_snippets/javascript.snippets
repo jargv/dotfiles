@@ -250,7 +250,10 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   resolve: {
-    extensions: ['.webpack.js', '.ts', '.tsx', '.js', '.jsx']
+    extensions: ['.webpack.js', '.ts', '.tsx', '.js', '.jsx'],
+    // alias: {
+    //   vue: 'vue/dist/vue.common.js'
+    // }
   },
   // cache: true,
   devServer: {

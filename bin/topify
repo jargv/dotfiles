@@ -4,7 +4,7 @@ window_name=$1
 shift 1
 
 getFocus(){
-  echo $(xdotool getwindowfocus getwindowname)
+  echo $(xdotool getwindowfocus getwindowname 2>/dev/null)
 }
 
 parent=$(getFocus)
@@ -29,7 +29,7 @@ place(){
 
 echo "waiting for $window_name window ..."
 while true; do
-  wmctrl -l -p | awk -e'{print $1,$5}' | while read wid name; do
+  wmctrl -l -p | awk -e '{print $1,$5}' | while read wid name; do
     if [[ "$name" == "$window_name" ]]; then
       place $wid
     fi

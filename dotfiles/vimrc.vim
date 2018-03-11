@@ -66,7 +66,10 @@ let g:isMac = !g:isLinux && !g:isGitBash
    "javascript {{{2
    "Plugin 'ternjs/tern_for_vim'
    Plugin 'jelera/vim-javascript-syntax'
+   Plugin 'posva/vim-vue'
    let g:jsx_ext_required = 0
+   "html {{{2
+   Plugin 'othree/html5.vim'
    "typescript {{{2
    "Plugin 'leafgarland/typescript-vim'
    "Plugin 'FrigoEU/psc-ide-vim'
@@ -283,6 +286,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
   colorscheme rdark | set bg=dark
   colorscheme mustang | set bg=dark
   colorscheme nova | set bg=dark
+  colorscheme seattle
 
   if &diff
     colorscheme rdark | set bg=dark
@@ -500,9 +504,9 @@ nnoremap <leader>tN :tab split<cr>
 
   func! <SID>ToggleReloadBrowserOnMake()
     if !g:browserReloadOnMake
-      echom "Reload on save [ON]"
+      echom "Reload browser on save [ON]"
     else
-      echom "Reload on save: [OFF]"
+      echom "Reload browser on save: [OFF]"
       let g:browserReloadArgs = ""
     endif
     let g:browserReloadOnMake = !g:browserReloadOnMake
@@ -599,14 +603,11 @@ nnoremap <leader>tN :tab split<cr>
   endfunc
 
   func! <SID>RunMake()
-    if g:tmux_index == ""
-      return
+    if g:tmux_index != ""
+      call <sid>TmuxRun("set -o pipefail")
+      wa
     endif
-    call <sid>TmuxRun("set -o pipefail")
-    let ran = 0
-    wa
     if len(g:makeBuildtool) || len(g:makeTarget)
-      let ran = 1
       call <sid>TmuxRun("^c")
       let cmd = g:makeBuildtool." ".g:makeTarget." 2>&1 |tee /tmp/vim-errors-".&filetype
       if len(g:runTarget)
@@ -637,16 +638,16 @@ nnoremap <leader>tN :tab split<cr>
   endfunc
 
 "<leader>b manual browser refresh {{{1
-let g:manualRefreshArgs = ""
-nnoremap <leader>b :call <sid>manualRefresh()<cr>
-nnoremap <leader>B :let g:browserReloadArgs = ""<cr>
-func! <sid>manualRefresh()
-   if g:browserReloadArgs == "" && executable("xdotool")
-    let g:browserReloadArgs = system("xdotool selectwindow")
-   endif
+  let g:manualRefreshArgs = ""
+  nnoremap <leader>b :call <sid>manualRefresh()<cr>
+  nnoremap <leader>B :let g:browserReloadArgs = ""<cr>
+  func! <sid>manualRefresh()
+    if g:browserReloadArgs == "" && executable("xdotool")
+      let g:browserReloadArgs = system("xdotool selectwindow")
+    endif
 
-   call system(g:browserReloadCommand  . " " . g:browserReloadArgs)
- endfunc
+    call system(g:browserReloadCommand  . " " . g:browserReloadArgs)
+  endfunc
 
 " terminals {{{1
 hi Terminal guibg=#f3eaea guifg=#40427f
@@ -874,17 +875,18 @@ endif
   "smart enter key "{{{2
     inoremap <expr> <CR> SmartEnter()
     func! SmartEnter()
+      let isLua = &ft == 'lua'
+
       "select from the popup menu if it's visible
-      if pumvisible()
-        return "\<C-y>"
-      endif
+      " if pumvisible()
+      "   return ''
+      " endif
 
       let line = getline('.')
       let p = getpos('.')[2]
       let lastChar = line[p-2]
       let restOfLine = (line[p-1:])
       let tab = repeat(' ', &sw)
-      let isLua = &ft == 'lua'
 
       if (len(restOfLine) >= 1)
         let nextToLastChar  = line[p-1]
@@ -900,6 +902,7 @@ endif
         if     lastChar == '{' | return '}O'
         elseif lastChar == '(' | return ')O'
         elseif lastChar == '[' | return ']O'
+        elseif isLua && pumvisible() && (line[-4:] == 'then' || line[-2:] == 'do') | return 'endO'
         elseif isLua && (line[-4:] == 'then' || line[-2:] == 'do') | return 'endO'
         else                   | return ''
         endif
