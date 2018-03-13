@@ -49,6 +49,7 @@
   edit = ! vim -o $(git status --porcelain | cut -d' ' -f 3)
   fuckit = reset --hard
   pushup = ! git push --force-with-lease origin $(git rev-parse --abbrev-ref @)
+  pushupnew = ! git push origin $(git rev-parse --abbrev-ref @)
 [github]
   user = jargv
 [gui]

@@ -100,7 +100,7 @@ $1 = append($1, $0)
 endsnippet
 snippet http "quick http handler" !b
 http.HandleFunc("/$1", func(w http.ResponseWriter, r *http.Request) {
-  fmt.Fprintln(w, "hello")
+  fmt.Fprintln(w, "$2")
 })
 $0
 endsnippet

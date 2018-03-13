@@ -24,6 +24,10 @@ let g:isMac = !g:isLinux && !g:isGitBash
       "}}}
    "}}}
 
+
+   "powershell {{{2
+   Plugin 'PProvost/vim-ps1'
+
    "rust {{{2
    Plugin 'rust-lang/rust.vim'
    Plugin 'racer-rust/vim-racer'
