@@ -45,15 +45,12 @@ endsnippet
 snippet gl "bring in everything needed for opengl" !b
 include(FindPkgConfig)
 
-<<<<<<< HEAD
-=======
 #sdl
 #PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
 #PKG_SEARCH_MODULE(SDL2_image REQUIRED SDL2_image)
 #INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2_image_INCLUDE_DIRS} )
 #TARGET_LINK_LIBRARIES(${1:projectname} ${SDL2_LIBRARIES} ${SDL2_image_LIBRARIES})
 
->>>>>>> Update some cmake snippets
 #gl
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
@@ -73,6 +70,7 @@ include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/include)
 target_link_libraries(${1:projectname} dl)
 # TODO: add ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/src/glad.c to executable
 endsnippet
+
 
 snippet lua "include lua" !b
 #NOTE: include "lua.hpp", not "lua.h" or <lua/lua.hpp>

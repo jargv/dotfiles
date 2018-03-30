@@ -266,7 +266,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
       endfunc
       nnoremap gn :call GitAdjacentChange(1)<cr>
       nnoremap gp :call GitAdjacentChange(0)<cr>
-      nnoremap gr :GitGutterRevertHunk<CR>
+      nnoremap gr :GitGutterUndoHunk<CR>
       nnoremap gs :GitGutterStageHunk<CR>
    "}}}
 

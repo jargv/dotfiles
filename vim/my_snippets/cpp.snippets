@@ -2,7 +2,8 @@ extends c
 priority 1
 snippet inc "include the corresponding header" !b
 #include "`!v expand('%:t:r')`.hpp"
-using namespace std;
+using namespace ${1:std};
+$0
 endsnippet
 snippet ifor "index for loop" !b
 for (int ${2:i} = 0; $2 < ${1:items}.size(); ++$2){

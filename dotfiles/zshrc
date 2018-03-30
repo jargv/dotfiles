@@ -25,6 +25,7 @@ export PATH=$PATH:~/bin
 export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/sbin:$PATH
 export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+export PATH=/home/j/.nimble/bin:$PATH
 #linuxbrew paths {{{2
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 export MANPATH="/home/linuxbrew/.linuxbrew/share/man:$MANPATH"
