@@ -1,15 +1,17 @@
 snippet new "new project" !b
 cmake_minimum_required (VERSION 3.9 FATAL_ERROR)
-project (${1:`!v expand("%:p:h:t")`} VERSION 0.0 LANGUAGES CXX)
+project (${1:`!v expand("%:p:h:t")`} VERSION 0.0 LANGUAGES CXX C)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wdeprecated")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-backtrace-limit=0")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-absolute-paths")
+#compiler
+set(CMAKE_CXX_STANDARD 17)
+#add_compile_options(-stdlib=libstdc++)
+add_compile_options(-Wall -Wextra -Werror -Wdeprecated -Wno-unused-parameter)
+add_compile_options(-Wno-unused-parameter -Wno-unused-function -Wno-unused-variable)
+add_compile_options(-ftemplate-backtrace-limit=0 -fdiagnostics-absolute-paths)
 
+#executable
 add_executable($1
   main.cpp
 )
@@ -49,12 +51,12 @@ include(FindPkgConfig)
 #PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
 #PKG_SEARCH_MODULE(SDL2_image REQUIRED SDL2_image)
 #INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2_image_INCLUDE_DIRS} )
-#TARGET_LINK_LIBRARIES(${1:projectname} ${SDL2_LIBRARIES} ${SDL2_image_LIBRARIES})
+#TARGET_LINK_LIBRARIES($1 ${SDL2_LIBRARIES} ${SDL2_image_LIBRARIES})
 
 #gl
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
-target_link_libraries(cgame ${OPENGL_LIBRARIES})
+target_link_libraries($1 ${OPENGL_LIBRARIES})
 
 #glm
 include(cmake/FindGLM.cmake)
@@ -68,7 +70,7 @@ target_link_libraries($1 glfw)
 # go to http://glad.dav1d.de/ and generate the src
 include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/include)
 target_link_libraries(${1:projectname} dl)
-# TODO: add ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/src/glad.c to executable
+# TODO: add to executable: ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/src/glad.c
 endsnippet
 
 
