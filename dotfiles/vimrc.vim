@@ -171,7 +171,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
       "let g:ycm_global_ycm_extra_conf = '~/config/vim/.ycm_extra_conf.py'
       "let g:ycm_min_num_identifier_candidate_chars = 2
       "let g:ycm_filetype_whitelist = { 'cpp': 1, 'hpp': 1 }
-      let g:ycm_show_diagnostics_ui = 1
+      let g:ycm_show_diagnostics_ui = 0
       let g:ycm_enable_diagnostic_signs = 0
       let g:ycm_autoclose_preview_window_after_completion = 1
       let g:ycm_autoclose_preview_window_after_insertion = 1
@@ -197,16 +197,16 @@ let g:isMac = !g:isLinux && !g:isGitBash
       augroup END
 
    "Plugin 'vim-syntastic/syntastic'
-     let g:syntastic_error_symbol='✗'
-     let g:syntastic_style_error_symbol='✗'
-     let g:syntastic_warning_symbol='⚠'
-     let g:syntastic_style_warning_symbol='⚠'
-     " let g:syntastic_mode_map = {
-     "    \ "mode": "passive",
-     "    \ "active_filetypes": [],
-     "    \ "passive_filetypes": []
-     "    \ }
-     let g:syntastic_javascript_checkers = ['standard']
+     " let g:syntastic_error_symbol='✗'
+     " let g:syntastic_style_error_symbol='✗'
+     " let g:syntastic_warning_symbol='⚠'
+     " let g:syntastic_style_warning_symbol='⚠'
+     " " let g:syntastic_mode_map = {
+     " "    \ "mode": "passive",
+     " "    \ "active_filetypes": [],
+     " "    \ "passive_filetypes": []
+     " "    \ }
+     " let g:syntastic_javascript_checkers = ['standard']
    "Plugin 'vim-scripts/UltiSnips' {{{2
       if !g:isGitBash
         Plugin 'vim-scripts/UltiSnips'

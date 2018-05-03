@@ -7,7 +7,7 @@ if [ $(uname) == "Linux" ]; then
     sudo pacman -S xorg-server-devel
   elif [ -x /usr/bin/apt ]; then
     sudo apt install build-essential xorg-dev libx11-dev \
-      libxtst-dev python3-dev libncurses5-dev gnome-devel
+      libxtst-dev python-dev libncurses5-dev gnome-devel
   else
     echo "couldn't find linux version"
     exit
@@ -33,8 +33,7 @@ make distclean
   --enable-job \
   --enable-channel \
   --enable-terminal \
-  --enable-python3interp \
-  --with-python3-config-dir=/usr/lib/python3.5/config \
+  --enable-pythoninterp \
   --enable-luainterp
 
 make
