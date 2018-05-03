@@ -32,6 +32,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
    Plugin 'rust-lang/rust.vim'
    Plugin 'racer-rust/vim-racer'
    let g:racer_experimental_completer = 1
+   let g:ycm_rust_src_path = '~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
 
    "go {{{2
    Plugin 'jargv/vim-go-error-folds'
@@ -166,7 +167,6 @@ let g:isMac = !g:isLinux && !g:isGitBash
   "Plugin 'Valloric/YouCompleteMe' {{{2
       command! YouCompleteMeInstall :!cd ~/.vim/bundle/YouCompleteMe && git submodule update --init --recursive && ./install.py --racer-completer --clang-completer --tern-completer --system-libclang
       Plugin 'Valloric/YouCompleteMe'
-      "let g:ycm_rust_src_path = '~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
       "let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
       "let g:ycm_global_ycm_extra_conf = '~/config/vim/.ycm_extra_conf.py'
       "let g:ycm_min_num_identifier_candidate_chars = 2
@@ -300,6 +300,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
   nnoremap <f2> :PrevColorScheme<cr>
   nnoremap <f1> :RandomColorScheme<cr>
   "highlight Comment cterm=italic
+
 
 "prototype settings {{{1
 nnoremap <c-k> [{
@@ -1127,23 +1128,26 @@ endif
       endfunc
   "}}}
 
-"embedded languages {{{1
-func! HighlightEmbedded(ft, start, end)
-  highlight clear HighlightEmbeddedSnip
-  "lots of scripts use this variable to bail early
-  if exists('b:current_syntax')
-    let s:current_syntax = b:current_syntax
-    unlet b:current_syntax
-  endif
+  "embedded languages {{{1
+  func! HighlightEmbedded(ft, start, end)
+    highlight clear HighlightEmbeddedSnip
+    "lots of scripts use this variable to bail early
+    if exists('b:current_syntax')
+      let s:current_syntax = b:current_syntax
+      unlet b:current_syntax
+    endif
 
-  exec 'syntax include @'.a:ft.' syntax/'.a:ft.'.vim'
-  exec 'syntax region sqlString matchgroup=HighlightEmbeddedSnip start=+'.a:start.'+ end=+'.a:end.'+ contains=@'.a:ft
-  highlight default HighlightEmbeddedSnip ctermfg=none ctermbg=none
+    exec 'syntax include @'.a:ft.' syntax/'.a:ft.'.vim'
+    exec 'syntax region sqlString matchgroup=HighlightEmbeddedSnip start=+'.a:start.'+ end=+'.a:end.'+ contains=@'.a:ft
+    highlight default HighlightEmbeddedSnip ctermfg=none ctermbg=none
 
-  "reset the value
-  if exists('s:current_syntax')
-    let b:current_syntax=s:current_syntax
-  else
-    unlet b:current_syntax
-  end
-endfunc
+    "reset the value
+    if exists('s:current_syntax')
+      let b:current_syntax=s:current_syntax
+    else
+      unlet b:current_syntax
+    end
+  endfunc
+
+" abolish tildes at end of file {{{1
+hi EndOfBuffer ctermfg=black guifg=black

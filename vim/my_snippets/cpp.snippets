@@ -117,12 +117,12 @@ $1& operator= ($1 const&) = delete;
 endsnippet
 
 snippet lm "lambda" w!
-[${2}]($1){
+[${2:&}]($1){
 	$0
 }$3
 endsnippet
 snippet fn "named lambda" !b
-auto ${1:foo} = [$3]($2){
+auto ${1:foo} = [${3:&}]($2){
 	$0
 };
 endsnippet
@@ -248,3 +248,18 @@ ${1:v}.erase(std::remove_if(
 ), end($1));
 endsnippet
 
+snippet switch "switch statement" !b
+switch($1){
+  $0
+}
+endsnippet
+snippet case "switch case" !b
+case $1: {
+  $0
+} break;
+endsnippet
+snippet default "switch default" !b
+default: {
+  $0
+} break;
+endsnippet

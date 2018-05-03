@@ -19,7 +19,9 @@ func! <sid>writingOn()
   exec "Goyo " . (width + 2)
 
   let b:colorscheme = g:colors_name
-  colorscheme osx_like
+  "colorscheme osx_like
+  colorscheme asmdev
+  hi EndOfBuffer ctermfg=white guifg=bg
 
   augroup Writing
     autocmd!
@@ -34,6 +36,7 @@ func! <sid>writingOff()
   Limelight!
   Goyo!
   exec "colorscheme ".b:colorscheme
+  hi EndOfBuffer ctermfg=bg guifg=bg
   augroup Writing
     autocmd!
   augroup END
