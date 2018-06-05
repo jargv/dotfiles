@@ -237,6 +237,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
       let g:gitgutter_sign_removed = 'x'
       let g:gitgutter_sign_modified_removed = '%'
       let g:gitgutter_diff_args = '-w'
+      let g:gitgutter_terminal_reports_focus = 0
 
       if !exists('g:gitgutter_enabled')
         let g:gitgutter_enabled = 1
@@ -286,11 +287,14 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  colorscheme rakr-light | set bg=light
-  colorscheme rdark | set bg=dark
-  colorscheme mustang | set bg=dark
   colorscheme nova | set bg=dark
   colorscheme seattle
+  colorscheme rakr-light | set bg=light
+  colorscheme mustang | set bg=dark
+  colorscheme rdark | set bg=dark
+  colorscheme oceandeep
+  colorscheme onedark | set bg=dark
+  colorscheme oceanlight
 
   if &diff
     colorscheme rdark | set bg=dark
@@ -306,6 +310,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
 nnoremap <c-k> [{
 nnoremap <c-j> ]}
 nnoremap <leader>tN :tab split<cr>
+set updatetime=300
 
 "settings {{{1
   "vim, not vi! {{{2
@@ -881,6 +886,7 @@ endif
     inoremap <expr> <CR> SmartEnter()
     func! SmartEnter()
       let isLua = &ft == 'lua'
+      let isCpp = &ft == 'cpp'
 
       "select from the popup menu if it's visible
       " if pumvisible()
@@ -899,6 +905,9 @@ endif
         let parens   = lastChar == '(' && nextToLastChar == ')'
         let squares  = lastChar == '[' && nextToLastChar == ']'
         if brackets || parens || squares
+          if isCpp && brackets && line =~ '\v^\s*(class)|(struct)'
+            return 'A;O'
+          endif
           return 'O'
         else
           return ''

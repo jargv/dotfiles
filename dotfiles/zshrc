@@ -6,6 +6,8 @@ if [[ -f ~/.zshlocal ]]; then
   source ~/.zshlocal
 fi
 
+#arduino {{{1
+ARDUINO_PATH=~/bin/arduino-1.8.5/
 #windows (wsl) {{{1
 if [[ -d "/mnt/c" ]]; then
   export DISPLAY=:0
