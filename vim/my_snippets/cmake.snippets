@@ -99,8 +99,7 @@ snippet sdl "SDL2 libs" !b
 #sdl
 find_package(SDL2 REQUIRED)
 target_link_libraries(${1:app} ${SDL2_LIBRARIES})
-include_directories(${SDL2_INCLUDE_DIRS})
-endsnippet
+target_include_directories($1 SYSTEM PRIVATE ${SDL2_INCLUDE_DIRS})
 snippet sqlite "sqlite" !b
 target_link_libraries($1 sqlite3)
 endsnippet
