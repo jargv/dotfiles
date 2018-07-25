@@ -129,3 +129,31 @@ func! TranspileLua()
   call setpos('.', pos)
 endfunction
 
+" <leader>;k = SplitArgs() {{{1
+nnoremap <buffer> <leader>;k :call SplitArgs()<cr>
+func! SplitArgs()
+  let cursor = getpos('.')
+  let line = getline('.')
+  let indent = repeat(' ', indent('.'))
+
+  let lineParts = split(line, '(')
+  if len(lineParts) < 2
+    return
+  endif
+  let before = lineParts[0]
+  let line = join(lineParts[1:], '(')
+
+  let lineParts = split(line, ')', 1)
+  if len(lineParts) < 2
+    return
+  endif
+  let after = lineParts[len(lineParts) - 1]
+  let line = join(lineParts[:len(lineParts)-2], ')')
+
+  let args = split(line, ',\s*')
+  let args = add(map(args[:-2], "indent.'  '.v:val.','"), indent.'  '.args[-1])
+  let args = add(args, indent.')'.after)
+  call append('.', args)
+  call setline('.', before.'(')
+  call setpos('.', cursor)
+endfunc

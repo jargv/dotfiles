@@ -128,10 +128,9 @@ auto ${1:foo} = [${3:&}]($2){
 endsnippet
 snippet main "quick main function" !b
 #include <iostream>
-using namespace std;
 
 int main(int, char**){
-  cout << "main!" << endl;
+  std::cout << "main!" << std::endl;
 	return 0;
 }
 endsnippet
