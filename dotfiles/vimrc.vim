@@ -131,16 +131,6 @@ let g:isMac = !g:isLinux && !g:isGitBash
     let g:table_mode_map_prefix = "<Leader>tt"
     Plugin 'dhruvasagar/vim-table-mode'
 
-  "Plugin 'jeetsukumaran/vim-buffergator' {{{2
-    Plugin 'jeetsukumaran/vim-buffergator'
-    let g:buffergator_viewport_split_policy = "n"
-    let g:buffergator_autoexpand_on_split = 0
-    let g:buffergator_sort_regime = "mru"
-    let g:buffergator_suppress_keymaps = 1
-    let g:buffergator_mru_cycle_loop = 1
-    nnoremap <leader>r :BuffergatorOpen<cr>
-    nnoremap <M-r> :BuffergatorOpen<cr>
-    "tnoremap <M-r> <C-w>:BuffergatorOpen<cr>
 
   "Plugin 'ervandew/supertab' {{{2
     Plugin 'ervandew/supertab'
@@ -293,7 +283,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
   colorscheme mustang | set bg=dark
   colorscheme rdark | set bg=dark
   colorscheme oceandeep
-  colorscheme onedark | set bg=dark
+  "colorscheme onedark | set bg=dark
   colorscheme oceanlight
 
   if &diff
@@ -311,6 +301,24 @@ nnoremap <c-k> [{
 nnoremap <c-j> ]}
 nnoremap <leader>tN :tab split<cr>
 set updatetime=300
+nnoremap <leader>r :call RangerOpen()<cr>
+func! RangerOpen()
+  let resultsFile = "/tmp/ranger_vim"
+  exec("silent !ranger --selectfile=".expand('%')." --choosefiles=".resultsFile)
+  if filereadable(resultsFile)
+    let files = readfile(resultsFile)
+    if !empty(files)
+      exec "tabnew ".files[0]
+      for file in files[1:]
+        exec ":vsplit ".file
+      endfor
+    endif
+  endif
+  exec "silent !rm ".resultsFile
+  redraw!
+endfunc
+"debugger
+packadd termdebug
 
 "settings {{{1
   "vim, not vi! {{{2
