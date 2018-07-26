@@ -304,7 +304,7 @@ set updatetime=300
 nnoremap <leader>r :call RangerOpen()<cr>
 func! RangerOpen()
   let resultsFile = "/tmp/ranger_vim"
-  exec("silent !ranger --selectfile=".expand('%')." --choosefiles=".resultsFile)
+  exec("silent !clear && ranger --selectfile=".expand('%')." --choosefiles=".resultsFile)
   if filereadable(resultsFile)
     let files = readfile(resultsFile)
     if !empty(files)
