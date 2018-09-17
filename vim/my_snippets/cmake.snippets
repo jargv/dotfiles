@@ -103,3 +103,12 @@ target_include_directories($1 SYSTEM PRIVATE ${SDL2_INCLUDE_DIRS})
 snippet sqlite "sqlite" !b
 target_link_libraries($1 sqlite3)
 endsnippet
+snippet freetype "Description" !b
+#freetype
+include(FindFreetype)
+if(NOT FREETYPE_FOUND)
+  message( FATAL_ERROR "couldn't find freetype")
+endif()
+target_include_directories($1 PRIVATE ${FREETYPE_INCLUDE_DIRS})
+target_link_libraries($1 PRIVATE ${FREETYPE_LIBRARIES})
+endsnippet
