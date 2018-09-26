@@ -5,7 +5,6 @@ nnoremap <buffer> gf :YcmCompleter GoToInclude<cr>
 nnoremap <buffer> <leader>;i :YcmCompleter GetType<cr>
 nnoremap <buffer> <leader>;I :YcmCompleter GetDoc<cr>
 nnoremap <buffer> <leader>;; :YcmCompleter FixIt<cr>
-nnoremap <buffer> <cr> :YcmCompleter GoToDeclaration<cr>
 
 "better c++11 syntax support {{{1
 let g:c_no_curly_error = 1

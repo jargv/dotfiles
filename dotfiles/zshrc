@@ -6,6 +6,10 @@ if [[ -f ~/.zshlocal ]]; then
   source ~/.zshlocal
 fi
 
+#nvm {{{1
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
 #arduino {{{1
 ARDUINO_PATH=~/bin/arduino-1.8.5/
 #windows (wsl) {{{1

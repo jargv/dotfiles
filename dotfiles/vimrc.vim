@@ -131,6 +131,16 @@ let g:isMac = !g:isLinux && !g:isGitBash
     let g:table_mode_map_prefix = "<Leader>tt"
     Plugin 'dhruvasagar/vim-table-mode'
 
+  "Plugin 'jeetsukumaran/vim-buffergator' {{{2
+    Plugin 'jeetsukumaran/vim-buffergator'
+    let g:buffergator_viewport_split_policy = "n"
+    let g:buffergator_autoexpand_on_split = 0
+    let g:buffergator_sort_regime = "mru"
+    let g:buffergator_suppress_keymaps = 1
+    let g:buffergator_mru_cycle_loop = 1
+    nnoremap <leader>r :BuffergatorOpen<cr>
+    nnoremap <M-r> :BuffergatorOpen<cr>
+    "tnoremap <M-r> <C-w>:BuffergatorOpen<cr>
 
   "Plugin 'ervandew/supertab' {{{2
     Plugin 'ervandew/supertab'
@@ -283,7 +293,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
   colorscheme mustang | set bg=dark
   colorscheme rdark | set bg=dark
   colorscheme oceandeep
-  "colorscheme onedark | set bg=dark
+  colorscheme onedark | set bg=dark
   colorscheme oceanlight
 
   if &diff
@@ -293,6 +303,9 @@ let g:isMac = !g:isLinux && !g:isGitBash
   nnoremap <f3> :NextColorScheme<cr>
   nnoremap <f2> :PrevColorScheme<cr>
   nnoremap <f1> :RandomColorScheme<cr>
+  if mapcheck("<F8>", "n")
+    nunmap <F8>
+  endif
   "highlight Comment cterm=italic
 
 

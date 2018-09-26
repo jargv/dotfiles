@@ -262,3 +262,6 @@ default: {
   $0
 } break;
 endsnippet
+snippet e "failure with result type" !b
+if (!${1:foo}) return $1.failure();
+endsnippet
