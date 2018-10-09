@@ -176,3 +176,13 @@ func! <sid>toggleLambda()
   +1,+2delete _
   call setpos('.', pos)
 endfunc
+
+" <Leader>e load errors
+nnoremap <buffer> <leader>e :call <sid>loadErrors()<cr>
+func! <sid>loadErrors()
+  :ALEDisable
+  :ALEEnable
+  :ALELint
+  :ALEFix
+  :lw
+endfunc

@@ -131,6 +131,11 @@ let g:isMac = !g:isLinux && !g:isGitBash
     let g:table_mode_map_prefix = "<Leader>tt"
     Plugin 'dhruvasagar/vim-table-mode'
 
+    "Plugin 'w0rp/ale' {{{2
+    let g:ale_fixers = {'javascript': ['eslint', 'prettier']}
+    let g:ale_fix_on_save = 1
+    let g:ale_lint_on_save = 1
+    Plugin 'w0rp/ale'
   "Plugin 'jeetsukumaran/vim-buffergator' {{{2
     Plugin 'jeetsukumaran/vim-buffergator'
     let g:buffergator_viewport_split_policy = "n"
@@ -195,18 +200,14 @@ let g:isMac = !g:isLinux && !g:isGitBash
          autocmd!
          autocmd BufReadPost fugitive://* set bufhidden=delete
       augroup END
+  "Plugin 'prettier/vim-prettier' {{{2
+    " Plugin 'prettier/vim-prettier'
 
-   "Plugin 'vim-syntastic/syntastic'
-     " let g:syntastic_error_symbol='✗'
-     " let g:syntastic_style_error_symbol='✗'
-     " let g:syntastic_warning_symbol='⚠'
-     " let g:syntastic_style_warning_symbol='⚠'
-     " " let g:syntastic_mode_map = {
-     " "    \ "mode": "passive",
-     " "    \ "active_filetypes": [],
-     " "    \ "passive_filetypes": []
-     " "    \ }
-     " let g:syntastic_javascript_checkers = ['standard']
+    " augroup Prettier
+    "   autocmd!
+    "   autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue PrettierAsync
+    " augroup END
+
    "Plugin 'vim-scripts/UltiSnips' {{{2
       if !g:isGitBash
         Plugin 'vim-scripts/UltiSnips'
@@ -605,7 +606,8 @@ packadd termdebug
       let g:makeBuildtool = "lua"
       let g:makeTarget = expand('%')
     elseif expand('%:e') == "js"
-      let g:makeBuildtool = "standard --parser babel-eslint"
+      let g:makeBuildtool = "node"
+      let g:makeTarget = expand('%')
     elseif filereadable("project.clj")
       let g:makeBuildtool = "lein"
       let g:makeTarget = "run"

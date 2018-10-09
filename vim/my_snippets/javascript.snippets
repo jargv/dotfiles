@@ -41,7 +41,7 @@ function$1($2){
 }
 endsnippet
 snippet lm "lambda" !w
-($1)=>{
+($1) => {
   $2
 }
 endsnippet
@@ -141,20 +141,10 @@ do {
 } while (${VISUAL});$0
 endsnippet
 
-snippet def "requirejs define" !b
-define(function(require){
-  $0
-});
-endsnippet
 
-snippet req "requirejs require" !b
-require(function(require){
-  $0
-});
-endsnippet
 
 snippet r "common-js style require" !b
-var ${1:foo} = require('$2${3:$1}');
+const ${1:foo} = require('$2${3:$1}');
 $0
 endsnippet
 
@@ -280,7 +270,7 @@ snippet </ "self closing tag" !i
 <$1/>
 endsnippet
 snippet import "import" !b
-import ${1:foo} from '${2:./$1}'
+import ${1:foo} from "${2:./$1}"
 endsnippet
 snippet raf "requestAnimationFrame" !b
 !(function frame(){
