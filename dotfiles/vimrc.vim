@@ -132,6 +132,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
     Plugin 'dhruvasagar/vim-table-mode'
 
     "Plugin 'w0rp/ale' {{{2
+    let g:ale_linters_explicit = 1
     let g:ale_fixers = {'javascript': ['eslint', 'prettier']}
     let g:ale_fix_on_save = 1
     let g:ale_lint_on_save = 1
@@ -358,7 +359,7 @@ packadd termdebug
   set wildmode=full
   set gdefault "always use the g flag in %s///g
   set ignorecase smartcase incsearch hlsearch wrapscan
-  nnoremap <C-L> :nohlsearch<CR><C-L>
+  nnoremap <C-L> :nohlsearch<cr>:syn sync minlines=99999<cr><C-L>
   "}}}
   "folds {{{2
   "blow away the wonky dashes in the folds {{{3
