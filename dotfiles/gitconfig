@@ -43,17 +43,13 @@
 [alias]
   st = status -sb
   dt = difftool
-  #hist = log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-  hist = !tig
-  fshow = ! sh -c 'git show --pretty="format:" --name-only $1 | grep -v "^$" | uniq | sed -e "s#^#`git rev-parse --show-toplevel`/#"' -
-  edit = ! vim -o $(git status --porcelain | cut -d' ' -f 3)
+  hist = !tig --all
+  hist-one = !tig
   fuckit = reset --hard
   pushup = ! git push --force-with-lease origin $(git rev-parse --abbrev-ref @)
   pushupnew = ! git push origin $(git rev-parse --abbrev-ref @)
 [github]
   user = jargv
-[gui]
-  recentrepo = /Users/jonathangeddes/projects/domo/domoweb
 [tig]
   main-view-author = abbreviated
   main-view-date = relative-compact

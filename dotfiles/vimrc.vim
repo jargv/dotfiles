@@ -109,10 +109,9 @@ let g:isMac = !g:isLinux && !g:isGitBash
    Plugin 'junegunn/goyo.vim'
    Plugin 'Raimondi/delimitMate'
    Plugin 'PeterRincker/vim-argumentative'
-   Plugin 'tpope/vim-repeat'
    Plugin 'rking/ag.vim'
-   Plugin 'tpope/vim-obsession'
    Plugin 'reedes/vim-pencil'
+   Plugin 'tpope/vim-obsession'
    Plugin 'tpope/vim-surround'
    Plugin 'tpope/vim-commentary'
 
@@ -135,7 +134,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
     let g:ale_linters_explicit = 1
     let g:ale_fixers = {'javascript': ['eslint', 'prettier']}
     let g:ale_fix_on_save = 1
-    let g:ale_lint_on_save = 1
+    let g:ale_lint_on_save = 0
     Plugin 'w0rp/ale'
   "Plugin 'jeetsukumaran/vim-buffergator' {{{2
     Plugin 'jeetsukumaran/vim-buffergator'
@@ -833,6 +832,8 @@ endif
   "git mappings {{{2
     nnoremap <leader>gD :!git difftool -w<cr><cr>
     nnoremap <leader>gd :!git difftool -w %<CR><CR>
+    nnoremap <leader>gM :!git difftool -w origin/master<cr><cr>
+    nnoremap <leader>gm :!git difftool -w origin/master -- %<CR><CR>
     nnoremap <leader>gc :!git bedone<CR><CR>
     nnoremap <leader>gi :!git rebase -i<cr><cr>
     nnoremap <leader>gl :!git log <CR><CR>

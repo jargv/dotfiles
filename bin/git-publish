@@ -1,0 +1,1 @@
+git push origin @:$(git rev-parse --abbrev-ref @{u} | sed -e "s/origin\///")

@@ -177,7 +177,7 @@ func! <sid>toggleLambda()
   call setpos('.', pos)
 endfunc
 
-" <Leader>e load errors
+" <Leader>e load errors {{{1
 nnoremap <buffer> <leader>e :call <sid>loadErrors()<cr>
 func! <sid>loadErrors()
   :ALEDisable
