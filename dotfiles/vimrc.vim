@@ -109,7 +109,6 @@ let g:isMac = !g:isLinux && !g:isGitBash
    Plugin 'junegunn/goyo.vim'
    Plugin 'Raimondi/delimitMate'
    Plugin 'PeterRincker/vim-argumentative'
-   Plugin 'rking/ag.vim'
    Plugin 'reedes/vim-pencil'
    Plugin 'tpope/vim-obsession'
    Plugin 'tpope/vim-surround'
@@ -832,8 +831,8 @@ endif
   "git mappings {{{2
     nnoremap <leader>gD :!git difftool -w<cr><cr>
     nnoremap <leader>gd :!git difftool -w %<CR><CR>
-    nnoremap <leader>gM :!git difftool -w origin/master<cr><cr>
-    nnoremap <leader>gm :!git difftool -w origin/master -- %<CR><CR>
+    nnoremap <leader>gM :!git difftool -w origin/$(git config j.publish)<cr><cr>
+    nnoremap <leader>gm :!git difftool -w origin/$(git config j.publish) -- %<CR><CR>
     nnoremap <leader>gc :!git bedone<CR><CR>
     nnoremap <leader>gi :!git rebase -i<cr><cr>
     nnoremap <leader>gl :!git log <CR><CR>

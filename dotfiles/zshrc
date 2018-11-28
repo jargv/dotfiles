@@ -280,7 +280,7 @@ setopt pushd_ignore_dups
 setopt no_clobber hist_allow_clobber
 setopt csh_null_glob
 unsetopt beep
-zstyle :compinstall filename '/home/jonathan/.zshrc'
+zstyle :compinstall filename '~/.zshrc'
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
