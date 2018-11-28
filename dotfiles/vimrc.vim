@@ -6,37 +6,36 @@ let g:isGitBash = system('uname')[0:4] == "MINGW"
 let g:isMac = !g:isLinux && !g:isGitBash
 
 "plugins {{{1
-   "setup Vundle {{{2
+   "setup vim Plug {{{2
       "install setup {{{3
-         let vundleDir = expand('~/.vim/bundle/')
-         let vundleDoInstall = 0
-         if !isdirectory(vundleDir)
-            let gitUrl = "https://github.com/gmarik/vundle.git"
-            call mkdir(vundleDir)
-            exec "!git clone ".gitUrl." ".vundleDir."vundle"
-            let vundleDoInstall = 1
+         let plugDir = "~/.vim/plug"
+         let plugDoInstall = 0
+         if !isdirectory(expand(plugDir))
+            let plugUrl = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+            let plugFile = plugDir . "/plug/autoload/plug.vim"
+            exec "!curl -fLo ".plugFile." --create-dirs " . plugUrl
+            let plugDoInstall = 1
          endif
       "normal setup {{{3
          filetype off
-         set runtimepath=$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,~/.vim/bundle/vundle
-         call vundle#begin()
-         Plugin 'gmarik/vundle'
+         set runtimepath=$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,~/.vim/plug/plug
+         call plug#begin('~/.vim/plug')
       "}}}
    "}}}
 
-
+   " Language-specifig plugins
    "powershell {{{2
-   Plugin 'PProvost/vim-ps1'
+   Plug 'PProvost/vim-ps1'
 
    "rust {{{2
-   Plugin 'rust-lang/rust.vim'
-   Plugin 'racer-rust/vim-racer'
+   Plug 'rust-lang/rust.vim'
+   Plug 'racer-rust/vim-racer'
    let g:racer_experimental_completer = 1
    let g:ycm_rust_src_path = '~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
 
    "go {{{2
-   Plugin 'jargv/vim-go-error-folds'
-   Plugin 'fatih/vim-go'
+   Plug 'jargv/vim-go-error-folds'
+   Plug 'fatih/vim-go'
    let g:go_fmt_command = "goimports"
    "let g:go_fmt_command = "gofmt"
    let g:go_fmt_fail_silently = 1
@@ -69,147 +68,130 @@ let g:isMac = !g:isLinux && !g:isGitBash
    " "Scope guru to the whole gopath
    " let g:go_guru_scope = [""]
    "javascript {{{2
-   "Plugin 'ternjs/tern_for_vim'
-   Plugin 'jelera/vim-javascript-syntax'
-   Plugin 'posva/vim-vue'
+   "Plug 'ternjs/tern_for_vim'
+   Plug 'jelera/vim-javascript-syntax'
+   Plug 'posva/vim-vue'
    let g:jsx_ext_required = 0
    "html {{{2
-   Plugin 'othree/html5.vim'
+   Plug 'othree/html5.vim'
    "typescript {{{2
-   "Plugin 'leafgarland/typescript-vim'
-   "Plugin 'FrigoEU/psc-ide-vim'
+   "Plug 'leafgarland/typescript-vim'
+   "Plug 'FrigoEU/psc-ide-vim'
 
    "purescript {{{2
-   "Plugin 'raichoo/purescript-vim'
+   "Plug 'raichoo/purescript-vim'
 
    "css {{{2
-   Plugin 'JulesWang/css.vim'
+   Plug 'JulesWang/css.vim'
 
    "html {{{2
-   Plugin 'mattn/emmet-vim'
+   Plug 'mattn/emmet-vim'
    "toml {{{2
-   Plugin 'cespare/vim-toml'
+   Plug 'cespare/vim-toml'
    "docker {{{2
-   Plugin 'ekalinin/Dockerfile.vim'
+   Plug 'ekalinin/Dockerfile.vim'
 
    "glsl {{{2
-   Plugin 'vim-scripts/glsl.vim'
+   Plug 'vim-scripts/glsl.vim'
 
    "lua {{{2
-    Plugin 'SpaceVim/vim-swig'
+    Plug 'SpaceVim/vim-swig'
 
    "colorschemes {{{2
-   Plugin 'xolox/vim-misc'
-   Plugin 'xolox/vim-colorscheme-switcher'
-   Plugin 'flazz/vim-colorschemes'
-   Plugin 'trevordmiller/nova-vim'
+   Plug 'xolox/vim-misc'
+   Plug 'xolox/vim-colorscheme-switcher'
+   Plug 'flazz/vim-colorschemes'
+   Plug 'trevordmiller/nova-vim'
    "}}}
 
-   Plugin 'junegunn/limelight.vim'
-   Plugin 'junegunn/goyo.vim'
-   Plugin 'Raimondi/delimitMate'
-   Plugin 'PeterRincker/vim-argumentative'
-   Plugin 'reedes/vim-pencil'
-   Plugin 'tpope/vim-obsession'
-   Plugin 'tpope/vim-surround'
-   Plugin 'tpope/vim-commentary'
-
+   Plug 'junegunn/limelight.vim'
+   Plug 'junegunn/goyo.vim'
+   Plug 'Raimondi/delimitMate'
+   Plug 'PeterRincker/vim-argumentative'
+   Plug 'reedes/vim-pencil'
+   Plug 'tpope/vim-obsession'
+   Plug 'tpope/vim-surround'
+   Plug 'tpope/vim-commentary'
    " unused plugins worth remembering {{{2
-   " Plugin 'Wolfy87/vim-enmasse'
-   " Plugin 'edsono/vim-matchit' TODO: figure out where this went!
-   " Plugin 'chriskempson/base16-vim'
-   " Plugin 'Wolfy87/vim-expand'
-   " Plugin 'diepm/vim-rest-console'
-   " Plugin 'artur-shaik/vim-javacomplete2'
-   " Plugin 'altercation/vim-colors-solarized'
-   " Plugin 'octol/vim-cpp-enhanced-highlight'
+   " Plug 'Wolfy87/vim-enmasse'
+   " Plug 'edsono/vim-matchit' TODO: figure out where this went!
+   " Plug 'chriskempson/base16-vim'
+   " Plug 'diepm/vim-rest-console'
+   " Plug 'artur-shaik/vim-javacomplete2'
+   " Plug 'altercation/vim-colors-solarized'
+   " Plug 'octol/vim-cpp-enhanced-highlight'
    " }}}
+   "Plug 'w0rp/ale' {{{2
+   " let g:ale_linters_explicit = 1
+   " let g:ale_fixers = {'javascript': ['eslint', 'prettier']}
+   " let g:ale_fix_on_save = 1
+   " let g:ale_lint_on_save = 0
+   " Plug 'w0rp/ale'
+   "Plug 'Valloric/YouCompleteMe' {{{2
+   "command! YouCompleteMeInstall :!cd ~/.vim/bundle/YouCompleteMe && git submodule update --init --recursive && ./install.py --racer-completer --clang-completer --tern-completer --system-libclang
+   "Plug 'Valloric/YouCompleteMe'
+   ""let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
+   ""let g:ycm_global_ycm_extra_conf = '~/config/vim/.ycm_extra_conf.py'
+   ""let g:ycm_min_num_identifier_candidate_chars = 2
+   ""let g:ycm_filetype_whitelist = { 'cpp': 1, 'hpp': 1 }
+   "let g:ycm_show_diagnostics_ui = 0
+   "let g:ycm_enable_diagnostic_signs = 0
+   "let g:ycm_autoclose_preview_window_after_completion = 1
+   "let g:ycm_autoclose_preview_window_after_insertion = 1
+   "let g:ycm_use_ultisnips_completer = 1
+   "let g:ycm_key_list_select_completion = ['<C-N>']
+   "let g:ycm_key_list_previous_completion = ['<C-P>']
+
+   "let g:ycm_add_preview_to_completeopt = 0
+   "let g:ycm_min_num_of_chars_for_completion = 1
+   "let g:ycm_auto_trigger = 1
+
+
   " configured plugins
-  "Plugin 'dhruvasagar/vim-table-mode' {{{2
+  "
+  "Plug 'dhruvasagar/vim-table-mode' {{{2
     let g:table_mode_map_prefix = "<Leader>tt"
-    Plugin 'dhruvasagar/vim-table-mode'
+    Plug 'dhruvasagar/vim-table-mode'
 
-    "Plugin 'w0rp/ale' {{{2
-    let g:ale_linters_explicit = 1
-    let g:ale_fixers = {'javascript': ['eslint', 'prettier']}
-    let g:ale_fix_on_save = 1
-    let g:ale_lint_on_save = 0
-    Plugin 'w0rp/ale'
-  "Plugin 'jeetsukumaran/vim-buffergator' {{{2
-    Plugin 'jeetsukumaran/vim-buffergator'
-    let g:buffergator_viewport_split_policy = "n"
-    let g:buffergator_autoexpand_on_split = 0
-    let g:buffergator_sort_regime = "mru"
-    let g:buffergator_suppress_keymaps = 1
-    let g:buffergator_mru_cycle_loop = 1
-    nnoremap <leader>r :BuffergatorOpen<cr>
-    nnoremap <M-r> :BuffergatorOpen<cr>
-    "tnoremap <M-r> <C-w>:BuffergatorOpen<cr>
 
-  "Plugin 'ervandew/supertab' {{{2
-    Plugin 'ervandew/supertab'
+  "Plug 'ervandew/supertab' {{{2
+    Plug 'ervandew/supertab'
     let g:SuperTabDefaultCompletionType = "context"
-   "Plugin 'terryma/vim-expand-region' {{{2
-   Plugin 'terryma/vim-expand-region'
+   "Plug 'terryma/vim-expand-region' {{{2
+   Plug 'terryma/vim-expand-region'
    vmap v <Plug>(expand_region_expand)
 
-   "Plugin 'junegunn/fzf' {{{2
-    Plugin 'junegunn/fzf'
-    Plugin 'junegunn/fzf.vim'
+   "Plug 'junegunn/fzf' {{{2
+    Plug 'junegunn/fzf'
+    Plug 'junegunn/fzf.vim'
    nnoremap <leader>o :FZF --inline-info<cr>
    nnoremap <leader>i :Buffers<cr>
 
-   "Plugin 'junegunn/vim-easy-align' {{{2
-     Plugin 'junegunn/vim-easy-align'
+   "Plug 'junegunn/vim-easy-align' {{{2
+     Plug 'junegunn/vim-easy-align'
      vmap ga <Plug>(EasyAlign)
-   "Plugin 'majutsushi/tagbar' {{{2
-      Plugin 'majutsushi/tagbar'
+   "Plug 'majutsushi/tagbar' {{{2
+      Plug 'majutsushi/tagbar'
       let g:tagbar_left = 1
       nnoremap <leader>, :TagbarOpenAutoClose<cr>
       "let g:tagbar_vertical = 30
 
-  "Plugin 'Valloric/YouCompleteMe' {{{2
-      command! YouCompleteMeInstall :!cd ~/.vim/bundle/YouCompleteMe && git submodule update --init --recursive && ./install.py --racer-completer --clang-completer --tern-completer --system-libclang
-      Plugin 'Valloric/YouCompleteMe'
-      "let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
-      "let g:ycm_global_ycm_extra_conf = '~/config/vim/.ycm_extra_conf.py'
-      "let g:ycm_min_num_identifier_candidate_chars = 2
-      "let g:ycm_filetype_whitelist = { 'cpp': 1, 'hpp': 1 }
-      let g:ycm_show_diagnostics_ui = 0
-      let g:ycm_enable_diagnostic_signs = 0
-      let g:ycm_autoclose_preview_window_after_completion = 1
-      let g:ycm_autoclose_preview_window_after_insertion = 1
-      let g:ycm_use_ultisnips_completer = 1
-      let g:ycm_key_list_select_completion = ['<C-N>']
-      let g:ycm_key_list_previous_completion = ['<C-P>']
-
-      let g:ycm_add_preview_to_completeopt = 0
-      let g:ycm_min_num_of_chars_for_completion = 1
-      let g:ycm_auto_trigger = 1
-
-   "Plugin 'tpope/vim-vinegar' {{{2
+   "Plug 'tpope/vim-vinegar' {{{2
      nmap - k
-     Plugin 'tpope/vim-vinegar'
+     Plug 'tpope/vim-vinegar'
      nnoremap <leader>d :Explore<cr>
      nnoremap <leader>D :exec ":e ".getcwd()<cr>
 
-   "Plugin 'tpope/vim-fugitive' {{{2
-      Plugin 'tpope/vim-fugitive'
+   "Plug 'tpope/vim-fugitive' {{{2
+      Plug 'tpope/vim-fugitive'
       augroup Fugitive
          autocmd!
          autocmd BufReadPost fugitive://* set bufhidden=delete
       augroup END
-  "Plugin 'prettier/vim-prettier' {{{2
-    " Plugin 'prettier/vim-prettier'
 
-    " augroup Prettier
-    "   autocmd!
-    "   autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue PrettierAsync
-    " augroup END
-
-   "Plugin 'vim-scripts/UltiSnips' {{{2
+   "Plug 'vim-scripts/UltiSnips' {{{2
       if !g:isGitBash
-        Plugin 'vim-scripts/UltiSnips'
+        Plug 'vim-scripts/UltiSnips'
       endif
       let g:UltiSnipsExpandTrigger="<tab>"
       let g:UltiSnipsJumpForwardTrigger="<tab>"
@@ -222,8 +204,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
 
       map <leader>s :UltiSnipsEdit<CR>
 
-   "Plugin 'Lokaltog/vim-easymotion' {{{2
-   Plugin 'easymotion/vim-easymotion'
+   "Plug 'Lokaltog/vim-easymotion' {{{2
+   Plug 'easymotion/vim-easymotion'
       let g:EasyMotion_do_mapping = 0
 
       map <leader>f <Plug>(easymotion-s)
@@ -231,7 +213,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
       let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyz'
       let g:EasyMotion_do_shade = 0
 
-   "Plugin 'airblade/vim-gitgutter' {{{2
+   "Plug 'airblade/vim-gitgutter' {{{2
       let g:gitgutter_sign_added = '+'
       let g:gitgutter_sign_modified = '~'
       let g:gitgutter_sign_removed = 'x'
@@ -244,7 +226,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
         let g:MarkingToolsState = ''
       endif
       let g:gitgutter_map_keys = 0
-      Plugin 'airblade/vim-gitgutter'
+      Plug 'airblade/vim-gitgutter'
       highlight clear SignColumn
       func! GitAdjacentChange(next)
         if &diff
@@ -271,15 +253,16 @@ let g:isMac = !g:isLinux && !g:isGitBash
       nnoremap gs :GitGutterStageHunk<CR>
    "}}}
 
-  "Run plugin setup! {{{2
-    call vundle#end()
+  "Run plugin setup {{{2
+    call plug#end()
     "my shiz should override EVERYTHING
     set runtimepath-=~/.vim "remove first so that the add occurs at the end
     set runtimepath+=~/.vim
 
     filetype plugin indent on
-    if vundleDoInstall
-        BundleInstall!
+    if plugDoInstall
+        PlugInstall!
+        let plugDoInstall = 0
     endif
   "}}}
 
@@ -287,13 +270,13 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  colorscheme nova | set bg=dark
-  colorscheme seattle
-  colorscheme rakr-light | set bg=light
-  colorscheme mustang | set bg=dark
-  colorscheme rdark | set bg=dark
-  colorscheme oceandeep
-  colorscheme onedark | set bg=dark
+  "colorscheme nova | set bg=dark
+  "colorscheme seattle
+  "colorscheme rakr-light | set bg=light
+  "colorscheme mustang | set bg=dark
+  "colorscheme rdark | set bg=dark
+  "colorscheme oceandeep
+  "colorscheme onedark | set bg=dark
   colorscheme oceanlight
 
   if &diff

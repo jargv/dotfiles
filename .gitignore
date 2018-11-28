@@ -1,5 +1,6 @@
 vim/.netrwhist
 vim/bundle/
+vim/plug/
 vim/doc/
 dotemacs.d/auto-save-list
 dotemacs.d/elpa
