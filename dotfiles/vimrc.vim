@@ -69,9 +69,9 @@ let g:isMac = !g:isLinux && !g:isGitBash
    " let g:go_guru_scope = [""]
    "javascript {{{2
    "Plug 'ternjs/tern_for_vim'
-   Plug 'jelera/vim-javascript-syntax'
-   Plug 'posva/vim-vue'
-   let g:jsx_ext_required = 0
+   "Plug 'jelera/vim-javascript-syntax'
+   "Plug 'posva/vim-vue'
+   "let g:jsx_ext_required = 0
    "html {{{2
    Plug 'othree/html5.vim'
    "typescript {{{2
@@ -121,12 +121,28 @@ let g:isMac = !g:isLinux && !g:isGitBash
    " Plug 'altercation/vim-colors-solarized'
    " Plug 'octol/vim-cpp-enhanced-highlight'
    " }}}
+   "Plug 'autozimu/LanguageClient-neovim' {{2
+   Plug 'autozimu/LanguageClient-neovim', {
+         \ 'branch': 'next',
+         \ 'do': 'bash install.sh',
+         \ }
+
+   let g:LanguageClient_serverCommands = {
+         \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+         \ 'javascript': ['~/bin/javascript-typescript-stdio'],
+         \ }
+   nnoremap <leader>;d :call LanguageClient#textDocument_definition()<cr>
+   nnoremap <leader>;i :call LanguageClient#textDocument_hover()<cr>
+   nnoremap <leader>;m :call LanguageClient_contextMenu()<cr>
+   nnoremap <leader>;n :call LanguageClient#textDocument_rename()<cr>
+   nnoremap <leader>;f :call LanguageClient#textDocument_formatting()<cr>
+   nnoremap <leader>;e :call LanguageClient#setDiagnosticsList("Quickfix")<cr>
    "Plug 'w0rp/ale' {{{2
-   " let g:ale_linters_explicit = 1
-   " let g:ale_fixers = {'javascript': ['eslint', 'prettier']}
-   " let g:ale_fix_on_save = 1
-   " let g:ale_lint_on_save = 0
-   " Plug 'w0rp/ale'
+   let g:ale_linters_explicit = 1
+   let g:ale_fixers = {'javascript': ['eslint', 'prettier']}
+   let g:ale_fix_on_save = 1
+   let g:ale_lint_on_save = 0
+   Plug 'w0rp/ale'
    "Plug 'Valloric/YouCompleteMe' {{{2
    "command! YouCompleteMeInstall :!cd ~/.vim/bundle/YouCompleteMe && git submodule update --init --recursive && ./install.py --racer-completer --clang-completer --tern-completer --system-libclang
    "Plug 'Valloric/YouCompleteMe'
@@ -271,16 +287,21 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set t_ut= "fix the weird background erasing crap
   set ttyfast
   "colorscheme nova | set bg=dark
-  "colorscheme seattle
   "colorscheme rakr-light | set bg=light
-  "colorscheme mustang | set bg=dark
   "colorscheme rdark | set bg=dark
   "colorscheme oceandeep
   "colorscheme onedark | set bg=dark
-  colorscheme oceanlight
+  "colorscheme oceanlight
+  "colorscheme Revolution
+  "colorscheme shades-of-teal
+  colorscheme afterglow
 
   if &diff
     colorscheme rdark | set bg=dark
+  endif
+
+  if &ft == "gitcommit" || &ft == "gitrebase"
+    colorscheme shades-of-teal
   endif
 
   nnoremap <f3> :NextColorScheme<cr>

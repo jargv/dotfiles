@@ -24,10 +24,10 @@ if [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]]; then
 fi
 
 #path {{{1
-export EDITOR="vim"
-export PATH=$PATH:~/.cabal/bin
-export PATH=$PATH:~/config/bin
 export PATH=$PATH:~/bin
+export PATH=$PATH:~/config/bin
+
+export PATH=$PATH:~/.cabal/bin
 export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/sbin:$PATH
 export PATH=/opt/local/bin:/opt/local/sbin:$PATH
@@ -94,6 +94,7 @@ setopt appendhistory inc_append_history share_history hist_ignore_dups
 setopt histignorespace
 
 #vim {{{1
+export EDITOR="vim"
 bindkey -v
 #don't stop the backspace at the insert point {{{2
 bindkey "^?" backward-delete-char
@@ -123,6 +124,7 @@ export KEYTIMEOUT=1
 KEYTIMEOUT=1
 
 #}}}
+
 
 #{{{1 clang
 export CC=clang

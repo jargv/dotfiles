@@ -1,5 +1,3 @@
-"trial settings {{{1
-
 source ~/config/vim/ftplugin/html.vim
 
 func! <SNR>FoldIndents()
@@ -29,11 +27,7 @@ endfunction
 "noreab <buffer> nfor <ESC>0wifor (var i=0; i<<ESC>A<BS>; i++){<CR>}<ESC>O
 "noreab <buffer> afor <ESC>dBifor (var i=0, len=<ESC>pa.length; i<len; i++){<CR>}<ESC>Ovar = <C-R>"[i];<ESC>0ea
 
-"tern {{{1
 inoremap <buffer> . .
-nnoremap <buffer> gd :TernDef<cr>
-nnoremap <buffer> <leader>;i :TernType<cr>
-nnoremap <buffer> <leader>;n :TernRename<cr>
 
 "formatting/linting {{{1
 augroup jsfmtlint
@@ -128,61 +122,52 @@ func! <SID>ExtractVariable()
    let name  = input("name: ")
    return "c".name."\<ESC>Ovar ".name." = \<ESC>p`]a;\<ESC>"
 endfunc
-" <Leader>;f (visual): extract a function {{{1
-vnoremap <buffer> <Leader>;f :call <SID>CreateFunction()<CR>
-func! <SID>CreateFunction() range
-   let input = input("name:")
-   if input == ""
-      normal! '<O(function(){
-      normal! gv>
-      normal! '>o})();
-   else
-      let [name;rest] = split(input, ' ')
-      let params = join(rest, ', ')
-      exe "normal! '<Ofunction ".name.'('.params.'){'
-      normal! gv>
-      exe "normal! '>o}\<CR>".name.'('.params.');'
-   endif
-endfunction
+" " <Leader>;f (visual): extract a function {{{1
+" vnoremap <buffer> <Leader>;f :call <SID>CreateFunction()<CR>
+" func! <SID>CreateFunction() range
+"    let input = input("name:")
+"    if input == ""
+"       normal! '<O(function(){
+"       normal! gv>
+"       normal! '>o})();
+"    else
+"       let [name;rest] = split(input, ' ')
+"       let params = join(rest, ', ')
+"       exe "normal! '<Ofunction ".name.'('.params.'){'
+"       normal! gv>
+"       exe "normal! '>o}\<CR>".name.'('.params.');'
+"    endif
+" endfunction
 
 " <Leader>;f (normal) toggle a lambda from multi and single lined {{{1
-nnoremap <buffer> <leader>;f :call <sid>toggleLambda()<cr>
-func! <sid>toggleLambda()
-  let line = getline('.')
-  let pos = getcurpos()
+" nnoremap <buffer> <leader>;f :call <sid>toggleLambda()<cr>
+" func! <sid>toggleLambda()
+"   let line = getline('.')
+"   let pos = getcurpos()
 
-  let multiline  = matchlist(line, '(\([^(]*\))\s*=>\s*{\s*$')
-  if !len(multiline)
-    return
-  end
-  let [_match, args; _rest] = multiline
-  let nextLine = getline(line('.')+1)
-  let closingLine = getline(line('.')+2)
-  let body = substitute(nextLine, '^\s*', '', 'e')
-  let body = substitute(body, '^return\s*', '', 'e')
-  let closingParts = matchlist(closingLine, '^\s*}\(.*\)$')
-  if !len(body) || !len(closingParts)
-    return
-  endif
-  if match(args, ',') != -1 || len(args) == 0
-    let args = '(' . args . ')'
-  endif
-  let closing = closingParts[1]
-  if len(closing) && body[len(body)-1] == ';'
-    let body = body[0:-2]
-  endif
-  let result = substitute(line, '([^()]*)\s*=>\s*{\s*$', args . ' => ' . body . closing, "")
-  call setline('.', result)
-  +1,+2delete _
-  call setpos('.', pos)
-endfunc
+"   let multiline  = matchlist(line, '(\([^(]*\))\s*=>\s*{\s*$')
+"   if !len(multiline)
+"     return
+"   end
+"   let [_match, args; _rest] = multiline
+"   let nextLine = getline(line('.')+1)
+"   let closingLine = getline(line('.')+2)
+"   let body = substitute(nextLine, '^\s*', '', 'e')
+"   let body = substitute(body, '^return\s*', '', 'e')
+"   let closingParts = matchlist(closingLine, '^\s*}\(.*\)$')
+"   if !len(body) || !len(closingParts)
+"     return
+"   endif
+"   if match(args, ',') != -1 || len(args) == 0
+"     let args = '(' . args . ')'
+"   endif
+"   let closing = closingParts[1]
+"   if len(closing) && body[len(body)-1] == ';'
+"     let body = body[0:-2]
+"   endif
+"   let result = substitute(line, '([^()]*)\s*=>\s*{\s*$', args . ' => ' . body . closing, "")
+"   call setline('.', result)
+"   +1,+2delete _
+"   call setpos('.', pos)
+" endfunc
 
-" <Leader>e load errors {{{1
-nnoremap <buffer> <leader>e :call <sid>loadErrors()<cr>
-func! <sid>loadErrors()
-  :ALEDisable
-  :ALEEnable
-  :ALELint
-  :ALEFix
-  :lw
-endfunc

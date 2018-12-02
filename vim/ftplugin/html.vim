@@ -1,6 +1,3 @@
-"toggle to corresponding js file {{{1
-map <buffer> <F3> :exec "e ".expand('%:t:r').".js"<cr>
-
 "tag wrapping {{{1
 vnoremap <buffer> <Leader>;w :call <SID>WrapTag()<CR>
 func! <SID>WrapTag() range

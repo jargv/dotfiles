@@ -1,5 +1,0 @@
-if [[ "$1" == "-r" ]]; then
-  vim -c ":VimdirR" && ls
-else
-  vim -c ":Vimdir" && ls
-fi
