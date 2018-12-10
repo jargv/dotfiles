@@ -122,10 +122,10 @@ let g:isMac = !g:isLinux && !g:isGitBash
    " Plug 'octol/vim-cpp-enhanced-highlight'
    " }}}
    "Plug 'autozimu/LanguageClient-neovim' {{2
-   Plug 'autozimu/LanguageClient-neovim', {
-         \ 'branch': 'next',
-         \ 'do': 'bash install.sh',
-         \ }
+   " Plug 'autozimu/LanguageClient-neovim', {
+   "       \ 'branch': 'next',
+   "       \ 'do': 'bash install.sh',
+   "       \ }
 
    let g:LanguageClient_serverCommands = {
          \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
@@ -137,12 +137,12 @@ let g:isMac = !g:isLinux && !g:isGitBash
    nnoremap <leader>;n :call LanguageClient#textDocument_rename()<cr>
    nnoremap <leader>;f :call LanguageClient#textDocument_formatting()<cr>
    nnoremap <leader>;e :call LanguageClient#setDiagnosticsList("Quickfix")<cr>
-   "Plug 'w0rp/ale' {{{2
+   Plug 'w0rp/ale' "{{{2
    let g:ale_linters_explicit = 1
    let g:ale_fixers = {'javascript': ['eslint', 'prettier']}
    let g:ale_fix_on_save = 1
    let g:ale_lint_on_save = 0
-   Plug 'w0rp/ale'
+   "Plug 'w0rp/ale'
    "Plug 'Valloric/YouCompleteMe' {{{2
    "command! YouCompleteMeInstall :!cd ~/.vim/bundle/YouCompleteMe && git submodule update --init --recursive && ./install.py --racer-completer --clang-completer --tern-completer --system-libclang
    "Plug 'Valloric/YouCompleteMe'
@@ -187,7 +187,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
      Plug 'junegunn/vim-easy-align'
      vmap ga <Plug>(EasyAlign)
    "Plug 'majutsushi/tagbar' {{{2
-      Plug 'majutsushi/tagbar'
+      "Plug 'majutsushi/tagbar'
       let g:tagbar_left = 1
       nnoremap <leader>, :TagbarOpenAutoClose<cr>
       "let g:tagbar_vertical = 30
