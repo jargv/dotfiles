@@ -291,10 +291,10 @@ let g:isMac = !g:isLinux && !g:isGitBash
   "colorscheme rdark | set bg=dark
   "colorscheme oceandeep
   "colorscheme onedark | set bg=dark
-  "colorscheme oceanlight
+  colorscheme oceanlight
   "colorscheme Revolution
   "colorscheme shades-of-teal
-  colorscheme afterglow
+  "colorscheme afterglow
 
   if &diff
     colorscheme rdark | set bg=dark
