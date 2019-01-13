@@ -69,6 +69,9 @@ let g:isMac = !g:isLinux && !g:isGitBash
    " let g:go_guru_scope = [""]
    "javascript {{{2
    "Plug 'ternjs/tern_for_vim'
+   Plug 'jxnblk/vim-mdx-js'
+   Plug 'pangloss/vim-javascript'
+   Plug 'mxw/vim-jsx'
    "Plug 'jelera/vim-javascript-syntax'
    "Plug 'posva/vim-vue'
    "let g:jsx_ext_required = 0
