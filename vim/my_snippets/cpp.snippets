@@ -265,3 +265,9 @@ endsnippet
 snippet e "failure with result type" !b
 if (!${1:foo}) return $1.failure();
 endsnippet
+snippet interface "interface" !b
+struct $1 {
+  $0
+  ~$1(){}
+};
+endsnippet

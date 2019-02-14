@@ -73,7 +73,6 @@ let g:isMac = !g:isLinux && !g:isGitBash
    Plug 'pangloss/vim-javascript'
    Plug 'mxw/vim-jsx'
    "Plug 'jelera/vim-javascript-syntax'
-   "Plug 'posva/vim-vue'
    "let g:jsx_ext_required = 0
    "html {{{2
    Plug 'othree/html5.vim'
@@ -107,6 +106,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
    Plug 'trevordmiller/nova-vim'
    "}}}
 
+   Plug 'freitass/todo.txt-vim'
    Plug 'junegunn/limelight.vim'
    Plug 'junegunn/goyo.vim'
    Plug 'Raimondi/delimitMate'
@@ -190,7 +190,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
      Plug 'junegunn/vim-easy-align'
      vmap ga <Plug>(EasyAlign)
    "Plug 'majutsushi/tagbar' {{{2
-      "Plug 'majutsushi/tagbar'
+      Plug 'majutsushi/tagbar'
       let g:tagbar_left = 1
       nnoremap <leader>, :TagbarOpenAutoClose<cr>
       "let g:tagbar_vertical = 30
