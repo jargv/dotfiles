@@ -444,7 +444,7 @@ packadd termdebug
   "set cpoptions+=n
   "other {{{2
   let g:filetype_pl="prolog"
-  set scrolloff=1
+  set scrolloff=5
   set nofileignorecase
   set virtualedit=block "allow moving onto whitespace during block select
   set noreadonly "I never really care about using readonly
