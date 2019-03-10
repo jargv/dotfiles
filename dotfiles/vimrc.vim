@@ -290,11 +290,12 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set t_ut= "fix the weird background erasing crap
   set ttyfast
   "colorscheme nova | set bg=dark
-  "colorscheme rakr-light | set bg=light
+  colorscheme rakr-light | set bg=light
   "colorscheme rdark | set bg=dark
   "colorscheme oceandeep
   "colorscheme onedark | set bg=dark
-  colorscheme oceanlight
+  "colorscheme oceanlight
+  "colorscheme OceanicNext
   "colorscheme Revolution
   "colorscheme shades-of-teal
   "colorscheme afterglow
