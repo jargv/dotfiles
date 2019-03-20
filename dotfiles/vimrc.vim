@@ -70,9 +70,9 @@ let g:isMac = !g:isLinux && !g:isGitBash
    "javascript {{{2
    "Plug 'ternjs/tern_for_vim'
    Plug 'jxnblk/vim-mdx-js'
-   Plug 'pangloss/vim-javascript'
+   "Plug 'pangloss/vim-javascript'
    Plug 'mxw/vim-jsx'
-   "Plug 'jelera/vim-javascript-syntax'
+   Plug 'jelera/vim-javascript-syntax'
    "let g:jsx_ext_required = 0
    "html {{{2
    Plug 'othree/html5.vim'
