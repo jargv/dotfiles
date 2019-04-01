@@ -2,8 +2,7 @@
 let mapleader = " "
 set shortmess+=I
 let g:isLinux = system('uname') == "Linux\n"
-let g:isGitBash = system('uname')[0:4] == "MINGW"
-let g:isMac = !g:isLinux && !g:isGitBash
+let g:isMac = !g:isLinux
 
 "plugins {{{1
    "setup vim Plug {{{2
@@ -77,8 +76,8 @@ let g:isMac = !g:isLinux && !g:isGitBash
    "html {{{2
    Plug 'othree/html5.vim'
    "typescript {{{2
-   "Plug 'leafgarland/typescript-vim'
-   "Plug 'FrigoEU/psc-ide-vim'
+   Plug 'leafgarland/typescript-vim'
+   Plug 'peitalin/vim-jsx-typescript'
 
    "purescript {{{2
    "Plug 'raichoo/purescript-vim'
@@ -124,7 +123,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
    " Plug 'altercation/vim-colors-solarized'
    " Plug 'octol/vim-cpp-enhanced-highlight'
    " }}}
-   "Plug 'autozimu/LanguageClient-neovim' {{2
+   "Plug 'autozimu/LanguageClient-neovim' {{{2
    " Plug 'autozimu/LanguageClient-neovim', {
    "       \ 'branch': 'next',
    "       \ 'do': 'bash install.sh',
@@ -147,24 +146,29 @@ let g:isMac = !g:isLinux && !g:isGitBash
    let g:ale_lint_on_save = 0
    "Plug 'w0rp/ale'
    "Plug 'Valloric/YouCompleteMe' {{{2
-   "command! YouCompleteMeInstall :!cd ~/.vim/bundle/YouCompleteMe && git submodule update --init --recursive && ./install.py --racer-completer --clang-completer --tern-completer --system-libclang
-   "Plug 'Valloric/YouCompleteMe'
-   ""let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
-   ""let g:ycm_global_ycm_extra_conf = '~/config/vim/.ycm_extra_conf.py'
-   ""let g:ycm_min_num_identifier_candidate_chars = 2
-   ""let g:ycm_filetype_whitelist = { 'cpp': 1, 'hpp': 1 }
-   "let g:ycm_show_diagnostics_ui = 0
-   "let g:ycm_enable_diagnostic_signs = 0
-   "let g:ycm_autoclose_preview_window_after_completion = 1
-   "let g:ycm_autoclose_preview_window_after_insertion = 1
-   "let g:ycm_use_ultisnips_completer = 1
-   "let g:ycm_key_list_select_completion = ['<C-N>']
-   "let g:ycm_key_list_previous_completion = ['<C-P>']
+   command! YouCompleteMeInstall
+         \ :!cd ~/.vim/plug/YouCompleteMe
+         \ && git submodule update --init --recursive
+         \ && ./install.py
+         \ --clang-completer
+         \ --tern-completer
+         \ --ts-completer
+         \ --system-libclang
+   Plug 'Valloric/YouCompleteMe'
+   let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
+   let g:ycm_min_num_identifier_candidate_chars = 2
+   let g:ycm_filetype_whitelist = { 'cpp': 1, 'hpp': 1, 'typescript': 1, 'typescript.tsx': 1 }
+   let g:ycm_show_diagnostics_ui = 0
+   let g:ycm_enable_diagnostic_signs = 0
+   let g:ycm_autoclose_preview_window_after_completion = 1
+   let g:ycm_autoclose_preview_window_after_insertion = 1
+   let g:ycm_use_ultisnips_completer = 1
+   let g:ycm_key_list_select_completion = ['<C-N>']
+   let g:ycm_key_list_previous_completion = ['<C-P>']
 
-   "let g:ycm_add_preview_to_completeopt = 0
-   "let g:ycm_min_num_of_chars_for_completion = 1
-   "let g:ycm_auto_trigger = 1
-
+   let g:ycm_add_preview_to_completeopt = 0
+   let g:ycm_min_num_of_chars_for_completion = 1
+   let g:ycm_auto_trigger = 1
 
   " configured plugins
   "
@@ -209,9 +213,7 @@ let g:isMac = !g:isLinux && !g:isGitBash
       augroup END
 
    "Plug 'vim-scripts/UltiSnips' {{{2
-      if !g:isGitBash
-        Plug 'vim-scripts/UltiSnips'
-      endif
+      Plug 'vim-scripts/UltiSnips'
       let g:UltiSnipsExpandTrigger="<tab>"
       let g:UltiSnipsJumpForwardTrigger="<tab>"
       let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
@@ -290,15 +292,13 @@ let g:isMac = !g:isLinux && !g:isGitBash
   set t_ut= "fix the weird background erasing crap
   set ttyfast
   "colorscheme nova | set bg=dark
-  colorscheme rakr-light | set bg=light
   "colorscheme rdark | set bg=dark
-  "colorscheme oceandeep
-  "colorscheme onedark | set bg=dark
   "colorscheme oceanlight
   "colorscheme OceanicNext
-  "colorscheme Revolution
   "colorscheme shades-of-teal
-  "colorscheme afterglow
+  colorscheme rakr-light | set bg=light
+  "colorscheme afterglow | set bg=dark
+  "colorscheme zenburn | set bg=dark
 
   if &diff
     colorscheme rdark | set bg=dark
@@ -537,7 +537,7 @@ packadd termdebug
   nnoremap <leader>Mp :let g:browserReloadPort = input('Port:', g:browserReloadPort ? g:browserReloadPort : '')<cr>
 
   func! <SID>CollectErrors()
-    :exec "cfile /tmp/vim-errors-".&filetype
+    :exec "cfile /tmp/vim-errors"
     :cw
   endfunc
 
@@ -618,9 +618,8 @@ packadd termdebug
     elseif filereadable("project.clj")
       let g:makeBuildtool = "lein"
       let g:makeTarget = "run"
-    elseif expand('%:e') == "ts"
-      let g:makeBuildtool = "tsc"
-      let g:makeTarget = expand('%')
+    elseif filereadable("tsconfig.json")
+      let g:makeBuildtool = "npx tsc"
     elseif filereadable("Cargo.toml")
       let g:makeBuildtool = "cargo"
       let g:makeTarget = 'run'
@@ -649,7 +648,7 @@ packadd termdebug
     endif
     if len(g:makeBuildtool) || len(g:makeTarget)
       call <sid>TmuxRun("^c")
-      let cmd = g:makeBuildtool." ".g:makeTarget." 2>&1 |tee /tmp/vim-errors-".&filetype
+      let cmd = g:makeBuildtool." ".g:makeTarget." 2>&1 |tee /tmp/vim-errors"
       if len(g:runTarget)
         let cmd = cmd." && ".g:runTarget
       endif
