@@ -3,20 +3,46 @@
 window_name=$1
 shift 1
 
+for exe in xdotool wmctrl tmux; do
+  if ! command -v $exe >/dev/null; then
+    echo "executable for $exe is missing"
+    exit
+  fi
+done
+
 getFocus(){
   echo $(xdotool getwindowfocus getwindowname 2>/dev/null)
 }
 
+getTmuxWindowNumber(){
+  echo $(tmux display-message -p "#I")
+}
+
+getTmuxPaneNumber(){
+  echo $(tmux display-message -p "#{pane_index}")
+}
+
 parent=$(getFocus)
+echo "window_name: $window_name"
 echo "parent: $parent"
 
-place(){
-  case $(getFocus) in
-    $parent)
+tmux_window=$(getTmuxWindowNumber)
+echo "tmux_window: $tmux_window"
+
+tmux_pane=$(getTmuxPaneNumber)
+echo "tmux_pane: $tmux_pane"
+
+adjust_based_on_focus(){
+  case "$(getFocus):$(getTmuxWindowNumber):$(getTmuxPaneNumber)" in
+    $parent:$tmux_window:$tmux_pane)
+      wmctrl -i -r $1 -b remove,above
+      wmctrl -i -r $1 -b add,below
+      ;;
+    $parent:$tmux_window:*)
       wmctrl -i -r $1 -b remove,below
       wmctrl -i -r $1 -b add,above
       ;;
-    $window_name)
+    $window_name:*)
       wmctrl -i -r $1 -b remove,above
       wmctrl -i -r $1 -b remove,below
       ;;
@@ -27,11 +53,10 @@ place(){
   esac
 }
 
-echo "waiting for $window_name window ..."
 while true; do
   wmctrl -l -p | awk -e '{print $1,$5}' | while read wid name; do
     if [[ "$name" == "$window_name" ]]; then
-      place $wid
+      adjust_based_on_focus $wid
     fi
   done
   sleep 0.3
