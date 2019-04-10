@@ -129,16 +129,16 @@ let g:isMac = !g:isLinux
    "       \ 'do': 'bash install.sh',
    "       \ }
 
-   let g:LanguageClient_serverCommands = {
-         \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-         \ 'javascript': ['~/bin/javascript-typescript-stdio'],
-         \ }
-   nnoremap <leader>;d :call LanguageClient#textDocument_definition()<cr>
-   nnoremap <leader>;i :call LanguageClient#textDocument_hover()<cr>
-   nnoremap <leader>;m :call LanguageClient_contextMenu()<cr>
-   nnoremap <leader>;n :call LanguageClient#textDocument_rename()<cr>
-   nnoremap <leader>;f :call LanguageClient#textDocument_formatting()<cr>
-   nnoremap <leader>;e :call LanguageClient#setDiagnosticsList("Quickfix")<cr>
+   " let g:LanguageClient_serverCommands = {
+   "       \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+   "       \ 'javascript': ['~/bin/javascript-typescript-stdio'],
+   "       \ }
+   " nnoremap <leader>;d :call LanguageClient#textDocument_definition()<cr>
+   " nnoremap <leader>;i :call LanguageClient#textDocument_hover()<cr>
+   " nnoremap <leader>;m :call LanguageClient_contextMenu()<cr>
+   " nnoremap <leader>;n :call LanguageClient#textDocument_rename()<cr>
+   " nnoremap <leader>;f :call LanguageClient#textDocument_formatting()<cr> |
+   " nnoremap <leader>;e :call LanguageClient#setDiagnosticsList("Quickfix")<cr>
    Plug 'w0rp/ale' "{{{2
    let g:ale_linters_explicit = 1
    let g:ale_fixers = {'javascript': ['eslint', 'prettier']}
@@ -169,6 +169,11 @@ let g:isMac = !g:isLinux
    let g:ycm_add_preview_to_completeopt = 0
    let g:ycm_min_num_of_chars_for_completion = 1
    let g:ycm_auto_trigger = 1
+   nnoremap <leader>;t :YcmCompleter GetType<cr>
+   nnoremap <leader>;d :YcmCompleter GetDoc<cr>
+   nnoremap <leader>;r :YcmCompleter GoToReferences<cr>
+   nnoremap <leader>;f :YcmCompleter FixIt<cr>
+   nnoremap <leader>;n :exec "YcmCompleter RefactorRename ".input(">")<cr>
 
   " configured plugins
   "

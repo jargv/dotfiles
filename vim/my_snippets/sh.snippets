@@ -1,10 +1,7 @@
-snippet postgrest "stub postgrest run script" !b
-postgrest postgres://postgres@localhost:5432/$1 \
-  --port 4000 \
-  --schema api \
-  --anonymous anonymous \
-  --pool 200
+snippet l "log a variable" !b
+echo "$1: $${$1}"
+endsnippet
 
-#--jwt-secret (default "secret")
-#--max-rows (unlimited)
+snippet log "log some text" !b
+echo "$1"
 endsnippet

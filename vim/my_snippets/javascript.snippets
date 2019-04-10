@@ -273,7 +273,7 @@ snippet import "import" !b
 import ${1:foo} from "${2:./$1}"
 endsnippet
 snippet raf "requestAnimationFrame" !b
-!(function frame(){
+(function frame(){
   ${0:${VISUAL}}
   requestAnimationFrame(frame);
 })();
