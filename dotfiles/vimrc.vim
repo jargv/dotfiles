@@ -66,18 +66,18 @@ let g:isMac = !g:isLinux
 
    " "Scope guru to the whole gopath
    " let g:go_guru_scope = [""]
-   "javascript {{{2
+   "javascript/typescript {{{2
    "Plug 'ternjs/tern_for_vim'
    Plug 'jxnblk/vim-mdx-js'
-   "Plug 'pangloss/vim-javascript'
-   Plug 'mxw/vim-jsx'
-   Plug 'jelera/vim-javascript-syntax'
+   Plug 'pangloss/vim-javascript'
+   "Plug 'mxw/vim-jsx'
+   "Plug 'jelera/vim-javascript-syntax'
    "let g:jsx_ext_required = 0
+   Plug 'leafgarland/typescript-vim'
+   "Plug 'peitalin/vim-jsx-typescript'
+   Plug 'MaxMellon/vim-jsx-pretty'
    "html {{{2
    Plug 'othree/html5.vim'
-   "typescript {{{2
-   Plug 'leafgarland/typescript-vim'
-   Plug 'peitalin/vim-jsx-typescript'
 
    "purescript {{{2
    "Plug 'raichoo/purescript-vim'
@@ -624,7 +624,7 @@ packadd termdebug
       let g:makeBuildtool = "lein"
       let g:makeTarget = "run"
     elseif filereadable("tsconfig.json")
-      let g:makeBuildtool = "npx tsc"
+      let g:makeBuildtool = "tsc"
     elseif filereadable("Cargo.toml")
       let g:makeBuildtool = "cargo"
       let g:makeTarget = 'run'
