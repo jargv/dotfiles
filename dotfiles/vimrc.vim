@@ -17,7 +17,8 @@ let g:isMac = !g:isLinux
          endif
       "normal setup {{{3
          filetype off
-         set runtimepath=$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,~/.vim/plug/plug
+         "set runtimepath=$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,~/.vim/plug/plug
+         set runtimepath+=~/.vim/plug/plug
          call plug#begin('~/.vim/plug')
       "}}}
    "}}}
@@ -301,8 +302,8 @@ let g:isMac = !g:isLinux
   "colorscheme oceanlight
   "colorscheme OceanicNext
   "colorscheme shades-of-teal
-  colorscheme rakr-light | set bg=light
-  "colorscheme afterglow | set bg=dark
+  "colorscheme rakr-light | set bg=light
+  colorscheme afterglow | set bg=dark
   "colorscheme zenburn | set bg=dark
 
   if &diff
@@ -625,6 +626,9 @@ packadd termdebug
       let g:makeTarget = "run"
     elseif filereadable("tsconfig.json")
       let g:makeBuildtool = "tsc"
+    elseif expand("%:e") == "ts"
+      let g:makeBuildtool = "tsc"
+      let g:makeTarget = expand('%')
     elseif filereadable("Cargo.toml")
       let g:makeBuildtool = "cargo"
       let g:makeTarget = 'run'
