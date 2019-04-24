@@ -618,6 +618,8 @@ packadd termdebug
     elseif expand('%:e') == "lua"
       let g:makeBuildtool = "lua"
       let g:makeTarget = expand('%')
+    elseif filereadable("tsconfig.json")
+      let g:makeBuildtool = "tsc"
     elseif expand('%:e') == "js"
       let g:makeBuildtool = "node"
       let g:makeTarget = expand('%')
