@@ -1,24 +1,16 @@
-snippet tsconfig "Starting point config" !b
+snippet tsgame "Description" !b
 {
-  "compilerOptions": {
-	  "target": "es5",
-	  "module": "commonjs",
-		"sourceMap": true,
-		"noImplicitAny": true,
-    "jsx": "react"
-	},
-	"files": [
-	  "main.ts"
-	]
-}
-endsnippet
-snippet tern "Description" !b
-{
-  "libs": [
-    "browser",
-    "react"
-  ],
-  "loadEagerly":[],
-  "plugins":{}
+  "extends": "../../lib/tsconfig_base.json",
+
+    "exclude": ["build"],
+
+    "include": [
+      "../lib/**/*",
+    "./**/*"
+    ],
+
+    "compilerOptions": {
+      "outFile": "./build/game.js"
+    }
 }
 endsnippet

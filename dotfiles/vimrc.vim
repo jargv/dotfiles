@@ -627,7 +627,8 @@ packadd termdebug
       let g:makeBuildtool = "lein"
       let g:makeTarget = "run"
     elseif filereadable("tsconfig.json")
-      let g:makeBuildtool = "tsc"
+      let g:makeDirectory = ""
+      let g:makeBuildtool = "tsc --build ".getcwd()."/tsconfig.json"
     elseif expand("%:e") == "ts"
       let g:makeBuildtool = "tsc"
       let g:makeTarget = expand('%')
@@ -663,7 +664,11 @@ packadd termdebug
       if len(g:runTarget)
         let cmd = cmd." && ".g:runTarget
       endif
-      call <sid>TmuxRun("(cd ".g:makeDirectory." && ".cmd.")")
+      if len(g:makeDirectory) > 0
+        call <sid>TmuxRun("(cd ".g:makeDirectory." && ".cmd.")")
+      else
+        call <sid>TmuxRun("(cd ".getcwd()." && ".cmd.")")
+      endif
       normal 
     endif
     if g:browserReloadPort
