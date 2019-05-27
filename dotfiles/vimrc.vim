@@ -69,14 +69,14 @@ let g:isMac = !g:isLinux
    " let g:go_guru_scope = [""]
    "javascript/typescript {{{2
    "Plug 'ternjs/tern_for_vim'
-   Plug 'jxnblk/vim-mdx-js'
-   Plug 'pangloss/vim-javascript'
-   "Plug 'mxw/vim-jsx'
+   "Plug 'jxnblk/vim-mdx-js'
+   "Plug 'pangloss/vim-javascript'
+   Plug 'mxw/vim-jsx'
    "Plug 'jelera/vim-javascript-syntax'
    "let g:jsx_ext_required = 0
    Plug 'leafgarland/typescript-vim'
    "Plug 'peitalin/vim-jsx-typescript'
-   Plug 'MaxMellon/vim-jsx-pretty'
+   "Plug 'MaxMellon/vim-jsx-pretty'
    "html {{{2
    Plug 'othree/html5.vim'
 
@@ -115,6 +115,9 @@ let g:isMac = !g:isLinux
    Plug 'tpope/vim-obsession'
    Plug 'tpope/vim-surround'
    Plug 'tpope/vim-commentary'
+  "Plug 'tmsvg/pear-tree' {{{2
+      " pear-tree was good, but it had issues with enter that felt super broken, IMO.
+      "Plug 'tmsvg/pear-tree'
    " unused plugins worth remembering {{{2
    " Plug 'Wolfy87/vim-enmasse'
    " Plug 'edsono/vim-matchit' TODO: figure out where this went!
@@ -163,8 +166,8 @@ let g:isMac = !g:isLinux
    let g:ycm_filetype_whitelist = { 'cpp': 1, 'hpp': 1, 'typescript': 1, 'typescript.tsx': 1 }
    let g:ycm_show_diagnostics_ui = 0
    let g:ycm_enable_diagnostic_signs = 0
-   let g:ycm_autoclose_preview_window_after_completion = 1
-   let g:ycm_autoclose_preview_window_after_insertion = 1
+   let g:ycm_autoclose_preview_window_after_completion = 0
+   let g:ycm_autoclose_preview_window_after_insertion = 0
    let g:ycm_use_ultisnips_completer = 1
    let g:ycm_key_list_select_completion = ['<C-N>']
    let g:ycm_key_list_previous_completion = ['<C-P>']
@@ -177,6 +180,8 @@ let g:isMac = !g:isLinux
    nnoremap <leader>;r :YcmCompleter GoToReferences<cr>
    nnoremap <leader>;f :YcmCompleter FixIt<cr>
    nnoremap <leader>;n :exec "YcmCompleter RefactorRename ".input(">")<cr>
+   nnoremap gd :YcmCompleter GoTo<cr>
+   nnoremap <leader>;i :YcmCompleter OrganizeImports <cr>
 
   " configured plugins
   "
