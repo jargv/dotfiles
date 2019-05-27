@@ -154,7 +154,9 @@ let g:isMac = !g:isLinux
          \ --clang-completer
          \ --tern-completer
          \ --ts-completer
-         \ --system-libclang
+
+         ""\ --system-libclang
+
    Plug 'Valloric/YouCompleteMe'
    let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
    let g:ycm_min_num_identifier_candidate_chars = 2
