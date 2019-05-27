@@ -618,8 +618,6 @@ packadd termdebug
     elseif expand('%:e') == "lua"
       let g:makeBuildtool = "lua"
       let g:makeTarget = expand('%')
-    elseif filereadable("tsconfig.json")
-      let g:makeBuildtool = "tsc"
     elseif expand('%:e') == "js"
       let g:makeBuildtool = "node"
       let g:makeTarget = expand('%')
@@ -629,9 +627,6 @@ packadd termdebug
     elseif filereadable("tsconfig.json")
       let g:makeDirectory = ""
       let g:makeBuildtool = "tsc --build ".getcwd()."/tsconfig.json"
-    elseif expand("%:e") == "ts"
-      let g:makeBuildtool = "tsc"
-      let g:makeTarget = expand('%')
     elseif filereadable("Cargo.toml")
       let g:makeBuildtool = "cargo"
       let g:makeTarget = 'run'
