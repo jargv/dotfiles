@@ -70,7 +70,7 @@ let g:isMac = !g:isLinux
    "javascript/typescript {{{2
    "Plug 'ternjs/tern_for_vim'
    "Plug 'jxnblk/vim-mdx-js'
-   "Plug 'pangloss/vim-javascript'
+   Plug 'pangloss/vim-javascript'
    Plug 'mxw/vim-jsx'
    "Plug 'jelera/vim-javascript-syntax'
    "let g:jsx_ext_required = 0
@@ -548,6 +548,7 @@ packadd termdebug
   nnoremap <leader>Ms :call <SID>ToggleMakeOnSave()<cr>
   nnoremap <leader>Mb :call <SID>ToggleReloadBrowserOnMake()<cr>
   nnoremap <leader>Mp :let g:browserReloadPort = input('Port:', g:browserReloadPort ? g:browserReloadPort : '')<cr>
+  nnoremap <leader>Mq :call <sid>InitMyMake()<cr>:echo "make settings cleared"<cr>
 
   func! <SID>CollectErrors()
     :exec "cfile /tmp/vim-errors"
