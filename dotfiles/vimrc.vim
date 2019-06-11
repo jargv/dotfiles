@@ -548,7 +548,7 @@ packadd termdebug
   nnoremap <leader>Ms :call <SID>ToggleMakeOnSave()<cr>
   nnoremap <leader>Mb :call <SID>ToggleReloadBrowserOnMake()<cr>
   nnoremap <leader>Mp :let g:browserReloadPort = input('Port:', g:browserReloadPort ? g:browserReloadPort : '')<cr>
-  nnoremap <leader>Mq :call <sid>InitMyMake()<cr>:echo "make settings cleared"<cr>
+  nnoremap <leader>Mq :call <sid>InitMyMake()<cr>
 
   func! <SID>CollectErrors()
     :exec "cfile /tmp/vim-errors"
