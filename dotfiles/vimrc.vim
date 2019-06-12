@@ -71,12 +71,12 @@ let g:isMac = !g:isLinux
    "Plug 'ternjs/tern_for_vim'
    "Plug 'jxnblk/vim-mdx-js'
    Plug 'pangloss/vim-javascript'
-   Plug 'mxw/vim-jsx'
+   "Plug 'mxw/vim-jsx'
    "Plug 'jelera/vim-javascript-syntax'
-   "let g:jsx_ext_required = 0
+   let g:jsx_ext_required = 0
    Plug 'leafgarland/typescript-vim'
    "Plug 'peitalin/vim-jsx-typescript'
-   "Plug 'MaxMellon/vim-jsx-pretty'
+   Plug 'MaxMellon/vim-jsx-pretty'
    "html {{{2
    Plug 'othree/html5.vim'
 
@@ -634,7 +634,8 @@ packadd termdebug
       let g:makeTarget = "run"
     elseif filereadable("tsconfig.json")
       let g:makeDirectory = ""
-      let g:makeBuildtool = "tsc --build ".getcwd()."/tsconfig.json"
+      let g:makeBuildtool = "tsc --build"
+      let g:makeTarget = getcwd()."/tsconfig.json"
     elseif filereadable("Cargo.toml")
       let g:makeBuildtool = "cargo"
       let g:makeTarget = 'run'
