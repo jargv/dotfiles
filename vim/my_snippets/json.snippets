@@ -2,17 +2,15 @@ snippet tsgame "Description" !b
 {
   "extends": "../../lib/tsconfig_base.json",
 
-  "exclude": ["build"],
-
-  "include": [
-    "../../lib/**/*",
-    "../lib/**/*",
-    "./**/*"
+  "references":[
+    {"lib": "../../lib"}
   ],
 
+  "exclude": ["build"],
+
   "compilerOptions": {
-    "outFile": "./build/game.js"
+    "outFile": "../../build/${1}.js",
+    "baseUrl": "."
   }
 }
-
 endsnippet

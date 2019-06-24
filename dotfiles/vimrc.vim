@@ -76,7 +76,7 @@ let g:isMac = !g:isLinux
    let g:jsx_ext_required = 0
    Plug 'leafgarland/typescript-vim'
    "Plug 'peitalin/vim-jsx-typescript'
-   Plug 'MaxMellon/vim-jsx-pretty'
+   "Plug 'MaxMellon/vim-jsx-pretty'
    "html {{{2
    Plug 'othree/html5.vim'
 
@@ -307,10 +307,9 @@ let g:isMac = !g:isLinux
   "colorscheme nova | set bg=dark
   "colorscheme rdark | set bg=dark
   "colorscheme oceanlight
-  "colorscheme OceanicNext
-  "colorscheme shades-of-teal
+  colorscheme OceanicNext
   "colorscheme rakr-light | set bg=light
-  colorscheme afterglow | set bg=dark
+  "colorscheme afterglow | set bg=dark
   "colorscheme zenburn | set bg=dark
 
   if &diff

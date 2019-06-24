@@ -15,9 +15,9 @@ git branch | sed -e "s/^/_ /" | vipe | awk '
     checkouts[length(checkouts)+1] = $NF
   }
   END {
-    for (i=1; i<=length(news); i++) print "git new " news[i]
+    for (i=1; i<=length(news); i++)         print "git new " news[i]
     for (i=1; i<=length(checkouts); i++) print "git checkout " checkouts[i]
-    for (i=1; i<=length(deletes); i++) print "git branch -d " deletes[i]
+    for (i=1; i<=length(deletes); i++)      print "git branch -d " deletes[i]
     for (i=1; i<=length(forceDeletes); i++) print "git branch -D " forceDeletes[i]
   }
 ' | while read action; do

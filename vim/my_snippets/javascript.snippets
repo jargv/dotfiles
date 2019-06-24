@@ -12,7 +12,7 @@ describe('something', function(){
 });
 endsnippet
 snippet log "console.log something" !b
-console.log("$1");
+console.log(\`$1\`);
 endsnippet
 
 snippet l "console.log something" !b
@@ -42,7 +42,7 @@ function$1($2){
 endsnippet
 snippet lm "lambda" !w
 ($1) => {
-  $2
+  ${VISUAL}${2}
 }
 endsnippet
 snippet then "common lambda" !w
