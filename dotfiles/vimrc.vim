@@ -76,7 +76,7 @@ let g:isMac = !g:isLinux
    let g:jsx_ext_required = 0
    Plug 'leafgarland/typescript-vim'
    "Plug 'peitalin/vim-jsx-typescript'
-   "Plug 'MaxMellon/vim-jsx-pretty'
+   Plug 'MaxMellon/vim-jsx-pretty'
    "html {{{2
    Plug 'othree/html5.vim'
 
