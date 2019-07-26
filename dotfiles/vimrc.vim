@@ -307,13 +307,14 @@ let g:isMac = !g:isLinux
   "colorscheme nova | set bg=dark
   "colorscheme rdark | set bg=dark
   "colorscheme oceanlight
-  colorscheme OceanicNext
+  "colorscheme OceanicNext
   "colorscheme rakr-light | set bg=light
   "colorscheme afterglow | set bg=dark
   "colorscheme zenburn | set bg=dark
+  colorscheme peaksea | set bg=light
 
   if &diff
-    colorscheme rdark | set bg=dark
+    colorscheme peaksea | set bg=light
   endif
 
   if &ft == "gitcommit" || &ft == "gitrebase"
