@@ -603,6 +603,9 @@ packadd termdebug
       endif
       let g:makeDirectory .= "/build"
       let g:makeBuildtool = "make"
+    elseif filereadable("go.mod")
+      let g:makeBuildtool = "go install"
+      let g:makeTarget = ""
     elseif expand('%:e') == "go"
       let gopath = $GOPATH
       let testExt = "_test.go"
