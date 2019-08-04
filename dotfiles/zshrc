@@ -158,8 +158,8 @@ export CXX=clang++
 
 #fzf {{{1
 FZF_TMUX=1
-fzf_keybindings=~/config/vim/bundle/fzf/shell/key-bindings.zsh
-fzf_completion=~/config/vim/bundle/fzf/shell/completion.zsh
+fzf_keybindings=~/config/vim/plug/fzf/shell/key-bindings.zsh
+fzf_completion=~/config/vim/plug/fzf/shell/completion.zsh
 [ -f $fzf_keybindings ] && source $fzf_keybindings
 [ -f $fzf_completion ] && source $fzf_completion
 export FZF_DEFAULT_COMMAND='
