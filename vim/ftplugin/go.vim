@@ -10,6 +10,7 @@ nnoremap <buffer> <leader>;l :GoLint<cr>
 nnoremap <buffer> <leader>;n :GoRename<cr>
 nnoremap <buffer> <leader>;m :GoMetaLinter<cr>
 nnoremap <buffer> <leader>;i :GoImports<cr>
+nnoremap <buffer> <leader>;u :GoReferrers<cr>
 nnoremap <buffer> gd :GoDef<cr>
 
 " <leader>;j = JoinVars() {{{1

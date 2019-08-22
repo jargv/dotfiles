@@ -177,7 +177,7 @@ let g:isMac = !g:isLinux
    let g:ycm_auto_trigger = 1
    nnoremap <leader>;t :YcmCompleter GetType<cr>
    nnoremap <leader>;d :YcmCompleter GetDoc<cr>
-   nnoremap <leader>;r :YcmCompleter GoToReferences<cr>
+   nnoremap <leader>;u :YcmCompleter GoToReferences<cr>
    nnoremap <leader>;f :YcmCompleter FixIt<cr>
    nnoremap <leader>;n :exec "YcmCompleter RefactorRename ".input(">")<cr>
    nnoremap gd :YcmCompleter GoTo<cr>
@@ -522,7 +522,7 @@ packadd termdebug
     let g:browserReloadArgs = ""
     let g:browserReloadPort = ""
 
-    let g:tmux_index = ""
+    let g:tmux_pane_id=""
   endfunc
 
   "autocommand on save
@@ -575,19 +575,19 @@ packadd termdebug
   endfunc
 
   func! <SID>CollectTmuxPane()
-    let getpane = 'tmux display -p "#P"'
-    let vimpane = system(getpane)
     call system("tmux display-pane 'display -t \%\% \"#P\"'")
-    let pane = input("pane:")
+    let pane_index = input("pane:")
+    let pane = system("tmux display -p -t".pane_index." '#{pane_id}'")
+    let pane = substitute(pane, '\n', '', '')
     return pane
   endfunc
 
   func! <SID>TmuxRun(args)
-    if g:tmux_index == ""
-      let g:tmux_index = <SID>CollectTmuxPane()
+    if g:tmux_pane_id == ""
+      let g:tmux_pane_id = <SID>CollectTmuxPane()
     endif
-    call system("tmux send-keys -t ".g:tmux_index.' "'.escape(a:args,'\"$`').'"')
-    call system("tmux send-keys -t ".g:tmux_index.' Enter')
+    call system("tmux send-keys -t ".g:tmux_pane_id.' "'.escape(a:args,'\"$`').'"')
+    call system("tmux send-keys -t ".g:tmux_pane_id.' Enter')
   endfunc
 
   func! <SID>DetectBuildTool()
@@ -661,7 +661,7 @@ packadd termdebug
   endfunc
 
   func! <SID>RunMake()
-    if g:tmux_index != ""
+    if g:tmux_pane_id != ""
       call <sid>TmuxRun("set -o pipefail")
       wa
     endif
@@ -868,7 +868,7 @@ endif
     nnoremap <leader>gl :!git log <CR><CR>
     nnoremap <leader>gh :!git hist --all <CR><CR>
     nnoremap <leader>gH :!git hist --simplify-by-decoration<cr><cr>
-    nnoremap <leader>gb :Gblame w<CR>
+    nnoremap <leader>gb :Gblame -w<CR>
     nnoremap <leader>gB :!git branch-i<cr><cr>
     nnoremap <leader>gs :!tig status<CR><CR>
     nnoremap <leader>gg :exec ":!git ".input("git> ")<CR>
