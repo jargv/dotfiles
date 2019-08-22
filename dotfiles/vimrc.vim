@@ -551,6 +551,7 @@ packadd termdebug
   nnoremap <leader>Mq :call <sid>InitMyMake()<cr>
 
   func! <SID>CollectErrors()
+    :exec "cd ".g:makeDirectory
     :exec "cfile /tmp/vim-errors"
     :cw
   endfunc
@@ -672,7 +673,6 @@ packadd termdebug
         let cmd = cmd." && ".g:runTarget
       endif
       if len(g:makeDirectory) > 0
-        exec "cd ".g:makeDirectory
         call <sid>TmuxRun("(cd ".g:makeDirectory." && ".cmd.")")
       else
         call <sid>TmuxRun("(cd ".getcwd()." && ".cmd.")")
