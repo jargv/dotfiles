@@ -76,7 +76,7 @@ let g:isMac = !g:isLinux
    let g:jsx_ext_required = 0
    Plug 'leafgarland/typescript-vim'
    "Plug 'peitalin/vim-jsx-typescript'
-   Plug 'MaxMellon/vim-jsx-pretty'
+   "Plug 'MaxMellon/vim-jsx-pretty'
    "html {{{2
    Plug 'othree/html5.vim'
 
@@ -198,8 +198,9 @@ let g:isMac = !g:isLinux
    vmap v <Plug>(expand_region_expand)
 
    "Plug 'junegunn/fzf' {{{2
-    Plug 'junegunn/fzf'
-    Plug 'junegunn/fzf.vim'
+   let g:fzf_buffers_jump = 1
+   Plug 'junegunn/fzf'
+   Plug 'junegunn/fzf.vim'
    nnoremap <leader>o :FZF --inline-info<cr>
    nnoremap <leader>i :Buffers<cr>
 
@@ -1014,7 +1015,7 @@ endif
    "tabline {{{1
       nnoremap <leader>gt :let g:gitStatusInTablineShown = !g:gitStatusInTablineShown<cr><C-L>
       if !exists('g:gitStatusInTablineShown')
-         let g:gitStatusInTablineShown = 1
+         let g:gitStatusInTablineShown = 0
       endif
       if has("gui_running")
         set showtabline=1
@@ -1022,7 +1023,6 @@ endif
         set showtabline=2
       endif
       func! GetGitBranch()
-         return ""
          if g:gitStatusInTablineShown
            let cmd = "git status -sb"
          else
