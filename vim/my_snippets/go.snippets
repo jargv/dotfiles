@@ -70,7 +70,7 @@ get(matchlist(getline(search('\s*type\s*\(\w*\)', 'bWn')), '\s*type\s*\(\w*\)'),
 `})(nil)
 endsnippet
 snippet log "log stuff" !b
-fmt.Println("$1")
+fmt.Printf("$1\n"$0)
 endsnippet
 snippet l "log variables" !b
 fmt.Printf("$1: ${1/[^\,]+/%#v/g}\n", ${1})

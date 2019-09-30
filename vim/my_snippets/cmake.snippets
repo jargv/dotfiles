@@ -2,6 +2,8 @@ snippet new "new project" !b
 cmake_minimum_required (VERSION 3.12 FATAL_ERROR)
 project (${1:`!v expand("%:p:h:t")`} VERSION 0.0 LANGUAGES CXX C)
 
+include(FetchContent)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -31,7 +33,7 @@ FetchContent_Declare(catch2
 
 FetchContent_GetProperties(catch2)
 if(NOT catch2_POPULATED)
-FetchContent_Populate(catch2)
+  FetchContent_Populate(catch2)
   add_subdirectory(${catch2_SOURCE_DIR} ${catch2_BINARY_DIR})
 endif()
 
