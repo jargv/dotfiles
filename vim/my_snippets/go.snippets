@@ -13,15 +13,26 @@ for ${2:i} := 0; $2 < $1; $2++ {
   $0
 }
 endsnippet
-snippet e "fatal error" !b
+snippet e "error" !b
 if err != nil {
-  return fmt.Errorf("${1:failure}: %v", err)
+  return fmt.Errorf("${1:failure}: %w", err)
 }$0
 endsnippet
-snippet pe "panic if err" !b
+snippet el "log an error" !b
 if err != nil {
-  panic(fmt.Errorf("$1: %v", err))
+  log.Printf("${1:failure}: %v\n", err)
 }$0
+endsnippet
+snippet ep "panic if err" !b
+if err != nil {
+  panic(fmt.Errorf("$1: %w", err))
+}$0
+endsnippet
+snippet handle "Loop to unwrap errors, logging each" !b
+for err != nil {
+  log.Printf("err: %#v\n", err)
+  err = errors.Unwrap(err)
+}
 endsnippet
 snippet httperr "An error in an http handler" !b
 if err != nil {
@@ -70,10 +81,10 @@ get(matchlist(getline(search('\s*type\s*\(\w*\)', 'bWn')), '\s*type\s*\(\w*\)'),
 `})(nil)
 endsnippet
 snippet log "log stuff" !b
-fmt.Printf("$1\n"$0)
+log.Printf("$1\n"$0)
 endsnippet
 snippet l "log variables" !b
-fmt.Printf("$1: ${1/[^\,]+/%#v/g}\n", ${1})
+log.Printf("$1: ${1/[^\,]+/%#v/g}\n", ${1})
 endsnippet
 snippet jslog "log using console" !b
 js.Global.Get("console").Call("log", "$1", $1)
@@ -138,9 +149,9 @@ t.Errorf("$1")
 endsnippet
 snippet jsonlog "log out some json" !b
 if b, err := json.MarshalIndent($1, "  ", "  "); err != nil {
-  panic(fmt.Sprintf("couldn't format json: %v", err))
+  log.Printf("couldn't format json: %v", err)
 } else {
-  fmt.Printf("$1:\n %s\n", string(b))
+  log.Printf("$1:\n %s\n", string(b))
 }
 endsnippet
 snippet jsonbody "get json from a response body" !b

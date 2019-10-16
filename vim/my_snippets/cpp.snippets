@@ -145,19 +145,8 @@ $0
 endsnippet
 
 snippet test_main "make the main file of a catch test" !b
-//todo: move all tests out of this file, leaving only these two lines
 #define CATCH_CONFIG_MAIN
-#include "catch.hpp"
-
-SCENARIO("${1:what's going on}", "[]"){
-  GIVEN("${2:a precondition}"){
-	  WHEN("${3:something happens}"){
-      THEN("${4:it is expected that...}"){
-			  CHECK(${5:false});
-			}
- 		}
-	}
-}
+#include "catch2/catch.hpp"
 endsnippet
 
 snippet check "check call" !b

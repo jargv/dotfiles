@@ -38,7 +38,7 @@ export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
 export MANPATH="/home/linuxbrew/.linuxbrew/share/man:$MANPATH"
 export INFOPATH="/home/linuxbrew/share/info:$INFOPATH"
 #go paths {{{2
-export GOROOT=/usr/local/go
+export GOROOT=/usr/lib/go-1.13/
 export GOPATH=~/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 #}}}

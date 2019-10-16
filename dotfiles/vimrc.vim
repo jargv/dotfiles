@@ -615,8 +615,8 @@ packadd termdebug
         let g:makeBuildtool = "go build"
         let g:makeTarget = ""
       else
-        let g:makeBuildtool = "go run"
-        let g:makeTarget = expand('%')
+        let g:makeBuildtool = "go run ".expand("%")
+        let g:makeTarget = ""
       endif
     elseif len(glob('*.cabal'))
       let g:makeBuildtool = "cabal"
