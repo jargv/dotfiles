@@ -312,10 +312,13 @@ let g:isMac = !g:isLinux
   "colorscheme rakr-light | set bg=light
   "colorscheme afterglow | set bg=dark
   "colorscheme zenburn | set bg=dark
-  colorscheme peaksea | set bg=light
+  "colorscheme peaksea | set bg=light
+  colorscheme neodark | set bg=dark
+  "colorscheme vydark | set bg=dark
 
   if &diff
-    colorscheme peaksea | set bg=light
+    "colorscheme neodark | set bg=dark
+    colorscheme zenburn | set bg=dark
   endif
 
   if &ft == "gitcommit" || &ft == "gitrebase"
@@ -334,6 +337,7 @@ let g:isMac = !g:isLinux
 "prototype settings {{{1
 nnoremap <c-k> [{
 nnoremap <c-j> ]}
+
 nnoremap <leader>tN :tab split<cr>
 set updatetime=300
 nnoremap <leader>r :call RangerOpen()<cr>
