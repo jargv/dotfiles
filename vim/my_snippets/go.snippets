@@ -18,6 +18,11 @@ if err != nil {
   return fmt.Errorf("${1:failure}: %w", err)
 }$0
 endsnippet
+snippet er "return an error" !b
+if err != nil {
+  return err
+}$0
+endsnippet
 snippet el "log an error" !b
 if err != nil {
   log.Printf("${1:failure}: %v\n", err)
@@ -26,6 +31,11 @@ endsnippet
 snippet ep "panic if err" !b
 if err != nil {
   panic(fmt.Errorf("$1: %w", err))
+}$0
+endsnippet
+snippet ef "handle error log log.Fatal"
+if err != nil {
+  log.Fatalf("$1: %v", err)
 }$0
 endsnippet
 snippet handle "Loop to unwrap errors, logging each" !b
