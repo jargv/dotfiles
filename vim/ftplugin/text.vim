@@ -42,7 +42,38 @@ func! <sid>writingOff()
   augroup END
 endfunc
 
-" outline/todos {{{1
+" underline with ==== {{{1
 inoremap <C-o> <esc>yypVr=o
+" gather todos {{{1
 nnoremap <buffer> <leader>;g :s/^[\ -]*/### /<cr>:nohlsearch<cr>
 nnoremap <buffer> <leader>;G :let g:reg=@x<cr>:let @x=''<cr>:%g/^###/d X<cr>gg"xP:let @x = g:reg<cr>
+" outline folding {{{1
+
+" just use the text for foldtext
+setlocal foldtext=TextOutlineFoldText()
+function! TextOutlineFoldText()
+  return getline(v:foldstart)
+endfunction
+set debug=msg
+
+nnoremap <buffer> <leader>;f :set foldmethod=expr<cr>:echo "folding in outline mode"<cr>
+setlocal foldexpr=TextOutlineFold(v:lnum)
+func! TextOutlineFold(lnum)
+  let line = getline(a:lnum)
+  let firstNonSpace = match(line, '\S')
+
+  let nextLine = getline(a:lnum+1)
+  let nextLineFirstNonSpace = match(nextLine, '\S')
+
+  if firstNonSpace == -1 || nextLineFirstNonSpace <= firstNonSpace
+    return "="
+  endif
+
+  let indent = firstNonSpace / 2 + 1
+
+  if line[firstNonSpace] == "-" || line[firstNonSpace] == "+"
+    return ">".indent
+  endif
+
+  return "="
+endfunc
