@@ -305,16 +305,13 @@ let g:isMac = !g:isLinux
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  "colorscheme nova | set bg=dark
+  colorscheme nova | set bg=dark
   "colorscheme rdark | set bg=dark
   "colorscheme oceanlight
   "colorscheme OceanicNext
   "colorscheme rakr-light | set bg=light
   "colorscheme afterglow | set bg=dark
-  "colorscheme zenburn | set bg=dark
-  "colorscheme peaksea | set bg=light
-  colorscheme neodark | set bg=dark
-  "colorscheme vydark | set bg=dark
+  "colorscheme neodark | set bg=dark
 
   if &diff
     "colorscheme neodark | set bg=dark
@@ -1050,7 +1047,8 @@ endif
         "let sep = "█"
         "let sep = "▓"
         "let sep = "░"
-        let s = " VIM "
+        "let s = " VIM "
+        let s = "     "
         let selected = tabpagenr()
         let num = tabpagenr('$')
         for i in range(num)
