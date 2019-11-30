@@ -1,5 +1,6 @@
 source ~/.vimrc
 
+
 set norelativenumber
 set number
 
@@ -10,7 +11,7 @@ set gdefault
 map <leader>c :source ~/.ideavimrc<cr>
 map <leader>C :e ~/.ideavimrc<cr>
 
-map <leader>f :action AceJumpAction<cr>
+map <leader>f :action AceAction<cr>
 map <leader>m :action ReBuildArtifact<cr>
 map <leader>;j :!echo
 
@@ -18,7 +19,7 @@ map <leader>i :action GotoImplementation<cr>
 
 
 map <leader>tc :action CloseEditor<cr>o
-
+map <leader>tn :action SearchEverywhere<cr>o
 
 map <leader>m :action Run<cr>
 
@@ -32,3 +33,11 @@ nnoremap <leader>n :action GotoNextError<cr>
 nnoremap <leader>p :action GotoPreviousError<cr>
 
 nnoremap <leader>d :action ExternalSystemView.ProjectMenu<cr>
+
+nnoremap gd :action GotoImplementation<cr>
+nnoremap <leader>= :vsplit<cr>
+nnoremap <leader>- :split<cr>
+
+nnoremap <leader>r :action RenameElement<cr>
+
+vnoremap gc :action CommentByLineComment<cr>
