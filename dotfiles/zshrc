@@ -84,7 +84,7 @@ fi
 if [[ $(uname) == "Linux" ]]; then
   [[ -f /usr/share/autojump/autojump.zsh ]] && . /usr/share/autojump/autojump.zsh
 else
-  #[[ -s $(brew --prefix)/etc/autojump.sh ]] && . $(brew --prefix)/etc/autojump.sh
+  [[ -s $(brew --prefix)/etc/autojump.sh ]] && . $(brew --prefix)/etc/autojump.sh
 fi
 
 #{{{1 history
@@ -290,3 +290,26 @@ export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 if [ -f /Users/j/projects/src/www.domo.com/tug/kubernetes-functions.sh ]; then
   source /Users/j/projects/src/www.domo.com/tug/kubernetes-functions.sh
 fi
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/jgeddes/projects/bin/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/jgeddes/projects/bin/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/jgeddes/projects/bin/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/jgeddes/projects/bin/google-cloud-sdk/completion.zsh.inc'; fi
+# Java setup {{{1
+# The output of running java_home or the directory containing bin/javac
+export JAVA_HOME=`/usr/libexec/java_home`
+
+# Android / Gradle / Buck setup
+# The directory where the ndk-bundle was installed into
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export ANDROID_SDK=$ANDROID_HOME
+export ANDROID_SDK_ROOT=$ANDROID_SDK
+export ANDROID_NDK=${ANDROID_SDK}/ndk
+export ANDROID_NDK_HOME=$ANDROID_NDK
+unset ANDROID_NDK_REPOSITORY
+export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_NDK
+
+# appengine setup
+export APPENGINE_HOME=~/Downloads/appengine-java-sdk-1.9.54
+export PATH=${PATH}:$APPENGINE_HOME/bin/

@@ -8,6 +8,10 @@ set noerrorbells
 set visualbell
 set gdefault
 
+set clipboard+=ideaput
+
+
+
 map <leader>c :source ~/.ideavimrc<cr>
 map <leader>C :e ~/.ideavimrc<cr>
 
