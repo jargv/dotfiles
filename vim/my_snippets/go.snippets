@@ -58,7 +58,7 @@ func$1($2)$3{
   $4
 }$0
 endsnippet
-snippet lm "anonymous function" !b
+snippet lm "anonymous function" !w
 func($1){
   $2
 }$0
@@ -71,9 +71,6 @@ snip.rv=''.join([c.lower() for i, c in enumerate(t[2]) if i == 0 or c.isupper()]
 `}) ${1:foo}($4)$5{
   ${VISUAL}${0}
 }
-endsnippet
-snippet meth "old method" !b
-m$0
 endsnippet
 snippet ctor "constructor function" !b
 func New${2:$1}($3) *${1:`!v
@@ -128,6 +125,10 @@ endsnippet
 snippet listen "http listen and serve" !b
 log.Println("Listening on port ${1:3000}")
 log.Fatal(http.ListenAndServe(":$1", ${2:nil}))
+endsnippet
+snippet static "static file server" !b
+fs := http.FileServer(http.Dir("./$1"))
+http.Handle("/${2:assets}/", http.StripPrefix("/$2/", fs))
 endsnippet
 snippet test "make a test" !b
 func Test$1(t *testing.T){

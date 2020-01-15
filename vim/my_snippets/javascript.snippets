@@ -182,9 +182,9 @@ snippet /* "cool block comment" !b
 endsnippet
 
 snippet ael "Add Event Listener"  !i
-addEventListener('$1', (${2:event}) => {
+addEventListener('$1', ${2:(${3:event}) => {
   ${3:console.log('$1 event happened:', event);}
-});
+}});
 endsnippet
 snippet rel "Remove event listener" !i
 removeEventListener('$1', ${2:handler});
