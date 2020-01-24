@@ -303,7 +303,7 @@ if [[ -x /usr/libexec/java_home ]]; then
   export JAVA_HOME=`/usr/libexec/java_home`
 fi
 
-# Android / Gradle / Buck setup
+# Android / Gradle / Buck setup {{{1
 # The directory where the ndk-bundle was installed into
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export ANDROID_SDK=$ANDROID_HOME
@@ -316,3 +316,12 @@ export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_ND
 # appengine setup
 export APPENGINE_HOME=~/Downloads/appengine-java-sdk-1.9.54
 export PATH=${PATH}:$APPENGINE_HOME/bin/
+
+#super useful function to kill any gradle lingering instances
+kill_gradle() {
+  kill -9 $(ps aux | grep gradle | grep -v grep | awk '{print $2}')
+}
+export kill_gradle=kill_gradle
+
+# QCOM SVR {{{1
+export SXR_HOME=~/Snapchat/Dev/hermosa-svr-sdk
