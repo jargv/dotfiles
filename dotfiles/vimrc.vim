@@ -517,6 +517,7 @@ packadd termdebug
     let g:makeDirectory = ""
 
     let g:makeOnSave = 0
+    let g:watchMode = 0
     let g:closeOnCollectErrors = 0
 
     let g:browserReloadOnMake = 0
@@ -548,14 +549,20 @@ packadd termdebug
   nnoremap <leader>e :call <SID>CollectErrors()<cr>
 
   nnoremap <leader>Ms :call <SID>ToggleMakeOnSave()<cr>
+  nnoremap <leader>Mw :call <SID>ToggleWatchMode()<cr>
   nnoremap <leader>Mb :call <SID>ToggleReloadBrowserOnMake()<cr>
   nnoremap <leader>Mp :let g:browserReloadPort = input('Port:', g:browserReloadPort ? g:browserReloadPort : '')<cr>
   nnoremap <leader>Mq :call <sid>InitMyMake()<cr>
 
   func! <SID>CollectErrors()
-    :exec "cd ".g:makeDirectory
-    :exec "cfile /tmp/vim-errors"
-    :cw
+    if g:watchMode
+      call <sid>TmuxRun("")
+    endif
+    exec "cd ".g:makeDirectory
+    cgetfile /tmp/vim-errors
+    "call setqflist(filter(getqflist(), "v:val['lnum'] != 0"))
+    cw
+    normal <cw>
   endfunc
 
   func! <SID>ToggleReloadBrowserOnMake()
@@ -577,6 +584,16 @@ packadd termdebug
      endif
   endfunc
 
+  func! <SID>ToggleWatchMode()
+    let g:watchMode = !g:watchMode
+    if g:watchMode
+      let g:makeOnSave = 0
+      echo "watchMode [ON]  Make on Save [OFF]"
+    else
+      echo "watchMode [OFF]"
+    endif
+  endfunc
+
   func! <SID>CollectTmuxPane()
     call system("tmux display-pane 'display -t \%\% \"#P\"'")
     let pane_index = input("pane:")
@@ -588,6 +605,7 @@ packadd termdebug
   func! <SID>TmuxRun(args)
     if g:tmux_pane_id == ""
       let g:tmux_pane_id = <SID>CollectTmuxPane()
+      call <sid>TmuxRun("set -o pipefail")
     endif
     call system("tmux send-keys -t ".g:tmux_pane_id.' "'.escape(a:args,'\"$`').'"')
     call system("tmux send-keys -t ".g:tmux_pane_id.' Enter')
@@ -597,9 +615,7 @@ packadd termdebug
     call <SID>InitMyMake()
     let g:makeOnSave = 1
     let g:makeDirectory = getcwd()
-    if filereadable("build.ninja")
-      let g:makeBuildtool = "ninja"
-    elseif filereadable("CMakeLists.txt")
+    if filereadable("CMakeLists.txt")
       if !isdirectory("build")
         call <SID>TmuxRun("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && cd ..")
         call system("ln -sf build/compile_commands.json .")
@@ -619,21 +635,12 @@ packadd termdebug
         let g:makeBuildtool = "go run ".expand("%")
         let g:makeTarget = ""
       endif
-    elseif len(glob('*.cabal'))
-      let g:makeBuildtool = "cabal"
-      let g:makeTarget = expand('run')
-    elseif expand('%:e') == "hs"
-      let g:makeBuildtool = "runhaskell"
-      let g:makeTarget = expand('%')
-    elseif expand('%:e') == "lua"
-      let g:makeBuildtool = "lua"
-      let g:makeTarget = expand('%')
+    elseif filereadable("package.json")
+      let g:makeBuildtool = "npm start"
+      let g:makeTarget = ""
     elseif expand('%:e') == "js"
       let g:makeBuildtool = "node"
       let g:makeTarget = expand('%')
-    elseif filereadable("project.clj")
-      let g:makeBuildtool = "lein"
-      let g:makeTarget = "run"
     elseif filereadable("tsconfig.json")
       let g:makeDirectory = ""
       let g:makeBuildtool = "tsc --build"
@@ -644,8 +651,6 @@ packadd termdebug
     elseif expand('%:e') == "rs"
       let g:makeBuildtool = "rustc"
       let g:makeTarget = expand('%')
-    elseif expand('%:e') == "purs"
-      let g:makeBuildtool = "pulp build"
     elseif filereadable("build.gradle")
       let g:makeBuildtool = "gradle"
       let g:makeTarget = "build"
@@ -661,12 +666,18 @@ packadd termdebug
 
   func! <SID>RunMake()
     if g:tmux_pane_id != ""
-      call <sid>TmuxRun("set -o pipefail")
-      wa
+      "wa
     endif
-    if len(g:makeBuildtool) || len(g:makeTarget)
+    if (len(g:makeBuildtool) || len(g:makeTarget))
       call <sid>TmuxRun("^c")
-      let cmd = g:makeBuildtool." ".g:makeTarget." 2>&1 |tee /tmp/vim-errors"
+      let cmd = g:makeBuildtool." ".g:makeTarget." 2>&1"
+      if !g:watchMode
+        let cmd = cmd . " |tee /tmp/vim-errors"
+      endif
+
+      if g:watchMode
+        let cmd = "watchbuffer " . cmd
+      endif
       if len(g:runTarget)
         let cmd = cmd." && ".g:runTarget
       endif
