@@ -7,8 +7,8 @@ if [[ -f ~/.zshlocal ]]; then
 fi
 
 #nvm {{{1
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 #windows (wsl) {{{1
 if [[ -d "/mnt/c" ]]; then
@@ -29,8 +29,7 @@ export PATH=$PATH:~/.cabal/bin
 export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/sbin:$PATH
 export PATH=/opt/local/bin:/opt/local/sbin:$PATH
-# npm config set prefix ~/.npm to make this work
-export PATH=~/.npm/bin/:$PATH
+#export PATH=~/.npm/bin/:$PATH
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 #linuxbrew paths {{{2
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
@@ -211,6 +210,7 @@ local ack_types="--type-set handlebars=.handlebars"
 local ack_ignore_dirs="--ignore-dir node_modules --ignore-dir components --ignore-dir javascripts-built"
 export ACK_OPTIONS="--pager=less $ack_ignore_dirs $ack_types"
 export MAKEFLAGS="-j4"
+export BROWSER=none
 
 #{{{1 auto ls every time I cd
 function chpwd() {
