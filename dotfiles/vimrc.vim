@@ -636,8 +636,8 @@ packadd termdebug
         let g:makeTarget = ""
       endif
     elseif filereadable("package.json")
-      let g:makeBuildtool = "npm start"
-      let g:makeTarget = ""
+      let g:makeBuildtool = "npm run"
+      let g:makeTarget = "start"
     elseif expand('%:e') == "js"
       let g:makeBuildtool = "node"
       let g:makeTarget = expand('%')
