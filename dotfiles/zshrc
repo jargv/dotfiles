@@ -210,7 +210,7 @@ local ack_types="--type-set handlebars=.handlebars"
 local ack_ignore_dirs="--ignore-dir node_modules --ignore-dir components --ignore-dir javascripts-built"
 export ACK_OPTIONS="--pager=less $ack_ignore_dirs $ack_types"
 export MAKEFLAGS="-j4"
-export BROWSER=none
+#export BROWSER=none
 
 #{{{1 auto ls every time I cd
 function chpwd() {
