@@ -651,9 +651,8 @@ packadd termdebug
     elseif expand('%:e') == "rs"
       let g:makeBuildtool = "rustc"
       let g:makeTarget = expand('%')
-    elseif filereadable("build.gradle")
-      let g:makeBuildtool = "gradle"
-      let g:makeTarget = "build"
+    elseif filereadable("gradlew")
+      let g:makeBuildtool = "./gradlew"
     elseif filereadable("Makefile") || filereadable("makefile")
       let g:makeBuildtool = "make"
     else
