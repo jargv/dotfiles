@@ -1,4 +1,3 @@
-
 " {{{ ycm
 nnoremap <buffer> gd :YcmCompleter GoTo<cr>
 nnoremap <buffer> gf :YcmCompleter GoToInclude<cr>

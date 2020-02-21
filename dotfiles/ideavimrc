@@ -1,5 +1,6 @@
-source ~/.vimrc
+" dont forget :actionlist <searchterm>
 
+source ~/.vimrc
 
 set norelativenumber
 set number
@@ -9,7 +10,6 @@ set visualbell
 set gdefault
 
 set clipboard+=ideaput
-
 
 
 map <leader>c :source ~/.ideavimrc<cr>
@@ -45,3 +45,6 @@ nnoremap <leader>- :split<cr>
 nnoremap <leader>r :action RenameElement<cr>
 
 vnoremap gc :action CommentByLineComment<cr>
+
+nnoremap <leader>;h :action GotoRelated<cr>
+

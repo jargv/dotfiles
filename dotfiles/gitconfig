@@ -62,3 +62,8 @@
   refs = d !git difftool %(commit)
   status = d !git difftool %(file)
   refs = % !git branch %(prompt "branch name") origin/master
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
