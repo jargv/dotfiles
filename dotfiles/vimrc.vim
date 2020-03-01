@@ -517,7 +517,6 @@ packadd termdebug
     let g:makeDirectory = ""
 
     let g:makeOnSave = 0
-    let g:watchMode = 0
     let g:closeOnCollectErrors = 0
 
     let g:browserReloadOnMake = 0
@@ -541,23 +540,40 @@ packadd termdebug
 
   nnoremap <leader>m :cclose<CR>:call <SID>RunMake()<CR><CR><CR>
   nnoremap <leader>MM :call <SID>DetectBuildTool()<cr>
-
-  nnoremap <leader>Mt :let g:makeTarget = input(">", g:makeTarget)<CR>
-  nnoremap <leader>Mr :let g:runTarget = input(">", g:runTarget)<CR>
-  nnoremap <leader>Md :let g:makeDirectory = input(">", len(g:makeDirectory) ? (g:makeDirectory) : getcwd())<CR>
-  nnoremap <leader>Mx :let g:makeBuildtool = input(">", g:makeBuildtool)<cr>
   nnoremap <leader>e :call <SID>CollectErrors()<cr>
-
   nnoremap <leader>Ms :call <SID>ToggleMakeOnSave()<cr>
-  nnoremap <leader>Mw :call <SID>ToggleWatchMode()<cr>
+
+  nnoremap <leader>Mq :call <sid>clearMakeFunction()<cr>:call <sid>InitMyMake()<cr>
   nnoremap <leader>Mb :call <SID>ToggleReloadBrowserOnMake()<cr>
-  nnoremap <leader>Mp :let g:browserReloadPort = input('Port:', g:browserReloadPort ? g:browserReloadPort : '')<cr>
-  nnoremap <leader>Mq :call <sid>InitMyMake()<cr>
+
+  nnoremap <leader>Mt :call <sid>setMakeTarget()<cr>
+  func! <sid>setMakeTarget()
+    let g:makeTarget = input(">", g:makeTarget)
+    call <sid>generateMakeFunction()
+  endfunc
+
+  nnoremap <leader>Mr :call <sid>setRunTarget()<cr>
+  func! <sid>setRunTarget()
+    let g:runTarget = input(">", g:runTarget)
+    call <sid>generateMakeFunction()
+  endfunc
+
+  nnoremap <leader>Mx :call <sid>setBuildtool<cr>
+  func! <sid>setBuildTool()
+    let g:makeBuildtool = input(">", g:makeBuildtool)
+    call <sid>generateMakeFunction()
+  endfunc
+
+  nnoremap <leader>Md :call <sid>setMakeDirectory()<cr>
+  func! <sid>setMakeDirectory()
+    let g:makeDirectory = input(">", len(g:makeDirectory) ? (g:makeDirectory) : getcwd())
+    call <sid>generateMakeFunction()
+  endfunc
+
+  nnoremap <leader>Mp :echo "nope not implemented"<cr>
+    ":let g:browserReloadPort = input('Port:', g:browserReloadPort ? g:browserReloadPort : '')<cr>
 
   func! <SID>CollectErrors()
-    if g:watchMode
-      call <sid>TmuxRun("")
-    endif
     exec "cd ".g:makeDirectory
     cgetfile /tmp/vim-errors
     "call setqflist(filter(getqflist(), "v:val['lnum'] != 0"))
@@ -573,6 +589,7 @@ packadd termdebug
       let g:browserReloadArgs = ""
     endif
     let g:browserReloadOnMake = !g:browserReloadOnMake
+    call <sid>generateMakeFunction()
   endfunc
 
   func! <SID>ToggleMakeOnSave()
@@ -582,16 +599,6 @@ packadd termdebug
      else
         echo "Make on Save [OFF]"
      endif
-  endfunc
-
-  func! <SID>ToggleWatchMode()
-    let g:watchMode = !g:watchMode
-    if g:watchMode
-      let g:makeOnSave = 0
-      echo "watchMode [ON]  Make on Save [OFF]"
-    else
-      echo "watchMode [OFF]"
-    endif
   endfunc
 
   func! <SID>CollectTmuxPane()
@@ -605,8 +612,9 @@ packadd termdebug
   func! <SID>TmuxRun(args)
     if g:tmux_pane_id == ""
       let g:tmux_pane_id = <SID>CollectTmuxPane()
-      call <sid>TmuxRun("set -o pipefail")
     endif
+
+    call system("tmux send-keys -t ".g:tmux_pane_id.' ^C')
     call system("tmux send-keys -t ".g:tmux_pane_id.' "'.escape(a:args,'\"$`').'"')
     call system("tmux send-keys -t ".g:tmux_pane_id.' Enter')
   endfunc
@@ -660,52 +668,63 @@ packadd termdebug
        let g:makeBuildTool = ""
        let g:makeTarget = "./".expand('%:t')
     endif
+    call <sid>generateMakeFunction()
     call <sid>TmuxRun('echo detected '.g:makeBuildtool.' '.g:makeTarget)
   endfunc
 
-  func! <SID>RunMake()
-    if g:tmux_pane_id != ""
-      "wa
-    endif
-    if (len(g:makeBuildtool) || len(g:makeTarget))
-      call <sid>TmuxRun("^c")
-      let cmd = g:makeBuildtool." ".g:makeTarget." 2>&1"
-      if !g:watchMode
-        let cmd = cmd . " |tee /tmp/vim-errors"
-      endif
+  func! <sid>generateMakeFunction()
+    let body = "\n\t" . "set -o pipefail"
+    let body = body . "\n\t" . "set -e"
 
-      if g:watchMode
-        let cmd = "watchbuffer " . cmd
-      endif
-      if len(g:runTarget)
-        let cmd = cmd." && ".g:runTarget
-      endif
-      if len(g:makeDirectory) > 0
-        call <sid>TmuxRun("(cd ".g:makeDirectory." && ".cmd.")")
-      else
-        call <sid>TmuxRun("(cd ".getcwd()." && ".cmd.")")
-      endif
-      normal 
+    let dir = g:makeDirectory
+    if len(dir) == 0
+      let dir = getcwd()
     endif
-    if g:browserReloadPort
-      let triesRemaining = 100
-      let success = 0
-      while !success && triesRemaining
-        call system("curl -f -s localhost:".g:browserReloadPort)
-        let success = !v:shell_error
-        let triesRemaining -= 1
-      endwhile
-      if !success
-        echom "ERROR: Could not restart the server :("
-        return
-      endif
+    let body = body . "\n\t" . "cd " . dir
+
+    if len(g:makeBuildtool) || len(g:makeTarget)
+      let body = body . "\n\t" . g:makeBuildtool . " " . g:makeTarget . " 2>&1"
+      let body = body . " |tee /tmp/vim-errors"
     endif
+
+    if len(g:runTarget)
+      let body = body . "\n\t" . g:runTarget
+    endif
+
     if g:browserReloadOnMake
       if executable("xdotool") && empty(g:browserReloadArgs)
         let g:browserReloadArgs = system("xdotool selectwindow")
       endif
-      call system(g:browserReloadCommand . " " . g:browserReloadArgs)
+      let body = body . "\n\t" . g:browserReloadCommand . " " . g:browserReloadArgs
     endif
+
+    call <sid>TmuxRun("vim_rebuild(){" . body . "\n}")
+  endfunc
+
+  func! <sid>clearMakeFunction()
+    call <sid>TmuxRun("vim_rebuild(){}")
+  endfunc
+
+  func! <SID>RunMake()
+    "if g:tmux_pane_id != ""
+    "  "wa
+    "endif
+
+    call <sid>TmuxRun("(vim_rebuild)")
+
+    " if g:browserReloadPort
+    "   let triesRemaining = 100
+    "   let success = 0
+    "   while !success && triesRemaining
+    "     call system("curl -f -s localhost:".g:browserReloadPort)
+    "     let success = !v:shell_error
+    "     let triesRemaining -= 1
+    "   endwhile
+    "   if !success
+    "     echom "ERROR: Could not restart the server :("
+    "     return
+    "   endif
+    " endif
   endfunc
 
 "<leader>b manual browser refresh {{{1
