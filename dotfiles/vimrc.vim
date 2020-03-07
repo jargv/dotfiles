@@ -305,13 +305,13 @@ let g:isMac = !g:isLinux
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  colorscheme nova | set bg=dark
+  "colorscheme nova | set bg=dark
   "colorscheme rdark | set bg=dark
   "colorscheme oceanlight
   "colorscheme OceanicNext
   "colorscheme rakr-light | set bg=light
   "colorscheme afterglow | set bg=dark
-  "colorscheme neodark | set bg=dark
+  colorscheme neodark | set bg=dark
 
   if &diff
     "colorscheme neodark | set bg=dark
