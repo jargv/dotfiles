@@ -306,8 +306,9 @@ fi
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export ANDROID_SDK=$ANDROID_HOME
 export ANDROID_SDK_ROOT=$ANDROID_SDK
-export ANDROID_NDK=$HOME/Library/Android/ndk-r16b
+#export ANDROID_NDK=$HOME/Library/Android/ndk-r16b
 #export ANDROID_NDK=$HOME/Library/Android/ndk-r20b
+export ANDROID_NDK=${ANDROID_SDK}/ndk
 export ANDROID_NDK_HOME=$ANDROID_NDK
 unset ANDROID_NDK_REPOSITORY
 export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_NDK
@@ -321,6 +322,3 @@ kill_gradle() {
   kill -9 $(ps aux | grep gradle | grep -v grep | awk '{print $2}')
 }
 export kill_gradle=kill_gradle
-
-# QCOM SVR {{{1
-export SXR_HOME=~/Snapchat/Dev/hermosa-svr-sdk

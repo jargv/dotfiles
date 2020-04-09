@@ -104,6 +104,9 @@ let g:isMac = !g:isLinux
    Plug 'xolox/vim-colorscheme-switcher'
    Plug 'flazz/vim-colorschemes'
    Plug 'trevordmiller/nova-vim'
+   "markdown {{{2
+   Plug 'JamshedVesuna/vim-markdown-preview'
+   let vim_markdown_preview_github=1
    "}}}
 
    Plug 'freitass/todo.txt-vim'
