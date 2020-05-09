@@ -157,16 +157,15 @@ let g:isMac = !g:isLinux
          \ :!cd ~/.vim/plug/YouCompleteMe
          \ && git submodule update --init --recursive
          \ && ./install.py
-         \ --ts-completer
-
-         ""\ --tern-completer
-         ""\ --clang-completer
+         \ --clang-completer
          ""\ --system-libclang
+         ""\ --tern-completer
+         \ --ts-completer
 
    Plug 'Valloric/YouCompleteMe'
    let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
    let g:ycm_min_num_identifier_candidate_chars = 2
-   let g:ycm_filetype_whitelist = { 'cpp': 1, 'hpp': 1, 'typescript': 1, 'typescript.tsx': 1 }
+   let g:ycm_filetype_whitelist = { 'cpp': 1, 'hpp': 1, 'typescript': 1, 'typescript.tsx': 1, 'c': 1, 'h': 1 }
    let g:ycm_show_diagnostics_ui = 0
    let g:ycm_enable_diagnostic_signs = 0
    let g:ycm_autoclose_preview_window_after_completion = 0
