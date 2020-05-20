@@ -1,0 +1,4 @@
+
+hermosa_home(){
+  adb shell input keyevent KEYCODE_HOME
+}

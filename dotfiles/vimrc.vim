@@ -157,10 +157,10 @@ let g:isMac = !g:isLinux
          \ :!cd ~/.vim/plug/YouCompleteMe
          \ && git submodule update --init --recursive
          \ && ./install.py
-         \ --clang-completer
-         \ --tern-completer
          \ --ts-completer
 
+         ""\ --tern-completer
+         ""\ --clang-completer
          ""\ --system-libclang
 
    Plug 'Valloric/YouCompleteMe'
@@ -578,10 +578,10 @@ packadd termdebug
 
   func! <SID>CollectErrors()
     exec "cd ".g:makeDirectory
-    cgetfile /tmp/vim-errors
+    cfile! /tmp/vim-errors
     "call setqflist(filter(getqflist(), "v:val['lnum'] != 0"))
     cw
-    normal <cw>
+    normal <cr>
   endfunc
 
   func! <SID>ToggleReloadBrowserOnMake()
@@ -648,7 +648,7 @@ packadd termdebug
       endif
     elseif filereadable("package.json")
       let g:makeBuildtool = "npm run"
-      let g:makeTarget = "start"
+      let g:makeTarget = "build"
     elseif expand('%:e') == "js"
       let g:makeBuildtool = "node"
       let g:makeTarget = expand('%')
