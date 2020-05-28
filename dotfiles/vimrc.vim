@@ -154,6 +154,7 @@ let g:isMac = !g:isLinux
    let g:ycm_use_ultisnips_completer = 1
    let g:ycm_key_list_select_completion = ['<C-N>']
    let g:ycm_key_list_previous_completion = ['<C-P>']
+   let g:ycm_echo_current_diagnostic = 0
 
    let g:ycm_add_preview_to_completeopt = 0
    let g:ycm_min_num_of_chars_for_completion = 1
