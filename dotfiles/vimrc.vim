@@ -23,21 +23,21 @@ let g:isMac = !g:isLinux
       "}}}
    "}}}
 
-   " Language-specifig plugins
-   "powershell {{{2
+  "Language-specifig plugins {{{2
+   "powershell {{{3
    Plug 'PProvost/vim-ps1'
 
-   "rust {{{2
+   "rust {{{3
    Plug 'rust-lang/rust.vim'
    Plug 'racer-rust/vim-racer'
    let g:racer_experimental_completer = 1
    let g:ycm_rust_src_path = '~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
 
-   "go {{{2
-   Plug 'jargv/vim-go-error-folds'
-   Plug 'fatih/vim-go'
+   "go {{{3
+   "Plug 'jargv/vim-go-error-folds'
+   "Plug 'fatih/vim-go'
    let g:go_fmt_command = "goimports"
-   "let g:go_fmt_command = "gofmt"
+   let g:go_fmt_command = "gofmt"
    let g:go_fmt_fail_silently = 1
    let g:go_def_mapping_enabled = 0
 
@@ -67,7 +67,7 @@ let g:isMac = !g:isLinux
 
    " "Scope guru to the whole gopath
    " let g:go_guru_scope = [""]
-   "javascript/typescript {{{2
+   "javascript/typescript {{{3
    "Plug 'ternjs/tern_for_vim'
    "Plug 'jxnblk/vim-mdx-js'
    Plug 'pangloss/vim-javascript'
@@ -77,36 +77,38 @@ let g:isMac = !g:isLinux
    Plug 'leafgarland/typescript-vim'
    "Plug 'peitalin/vim-jsx-typescript'
    "Plug 'MaxMellon/vim-jsx-pretty'
-   "html {{{2
+   "html {{{3
    Plug 'othree/html5.vim'
 
-   "purescript {{{2
+   "purescript {{{3
    "Plug 'raichoo/purescript-vim'
 
-   "css {{{2
+   "css {{{3
    Plug 'JulesWang/css.vim'
 
-   "html {{{2
+   "html {{{3
    Plug 'mattn/emmet-vim'
-   "toml {{{2
+   "toml {{{3
    Plug 'cespare/vim-toml'
-   "docker {{{2
+   "docker {{{3
    Plug 'ekalinin/Dockerfile.vim'
 
-   "glsl {{{2
+   "glsl {{{3
    Plug 'vim-scripts/glsl.vim'
 
-   "lua {{{2
+   "lua {{{3
     Plug 'SpaceVim/vim-swig'
+
+   "markdown {{{3
+   Plug 'JamshedVesuna/vim-markdown-preview'
+   let vim_markdown_preview_github=1
+   "}}}
 
    "colorschemes {{{2
    Plug 'xolox/vim-misc'
    Plug 'xolox/vim-colorscheme-switcher'
    Plug 'flazz/vim-colorschemes'
    Plug 'trevordmiller/nova-vim'
-   "markdown {{{2
-   Plug 'JamshedVesuna/vim-markdown-preview'
-   let vim_markdown_preview_github=1
    "}}}
 
    Plug 'freitass/todo.txt-vim'
@@ -118,54 +120,35 @@ let g:isMac = !g:isLinux
    Plug 'tpope/vim-obsession'
    Plug 'tpope/vim-surround'
    Plug 'tpope/vim-commentary'
-  "Plug 'tmsvg/pear-tree' {{{2
-      " pear-tree was good, but it had issues with enter that felt super broken, IMO.
-      "Plug 'tmsvg/pear-tree'
-   " unused plugins worth remembering {{{2
-   " Plug 'Wolfy87/vim-enmasse'
-   " Plug 'edsono/vim-matchit' TODO: figure out where this went!
-   " Plug 'chriskempson/base16-vim'
-   " Plug 'diepm/vim-rest-console'
-   " Plug 'artur-shaik/vim-javacomplete2'
-   " Plug 'altercation/vim-colors-solarized'
-   " Plug 'octol/vim-cpp-enhanced-highlight'
-   " }}}
-   "Plug 'autozimu/LanguageClient-neovim' {{{2
-   " Plug 'autozimu/LanguageClient-neovim', {
-   "       \ 'branch': 'next',
-   "       \ 'do': 'bash install.sh',
-   "       \ }
 
-   " let g:LanguageClient_serverCommands = {
-   "       \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-   "       \ 'javascript': ['~/bin/javascript-typescript-stdio'],
-   "       \ }
-   " nnoremap <leader>;d :call LanguageClient#textDocument_definition()<cr>
-   " nnoremap <leader>;i :call LanguageClient#textDocument_hover()<cr>
-   " nnoremap <leader>;m :call LanguageClient_contextMenu()<cr>
-   " nnoremap <leader>;n :call LanguageClient#textDocument_rename()<cr>
-   " nnoremap <leader>;f :call LanguageClient#textDocument_formatting()<cr> |
-   " nnoremap <leader>;e :call LanguageClient#setDiagnosticsList("Quickfix")<cr>
-   Plug 'w0rp/ale' "{{{2
+   "Plug 'dense-analysis/ale' {{{2
+   let g:ale_fixers = {
+         \   'javascript': ['prettier'],
+         \   'typescript': ['prettier'],
+         \   'html': ['prettier'],
+         \   'css': ['prettier'],
+         \   'go': ['goimports'],
+         \}
+         "\   'c': ['clang-format', 'clangtidy'],
    let g:ale_linters_explicit = 1
-   let g:ale_fixers = {'javascript': ['eslint', 'prettier']}
    let g:ale_fix_on_save = 1
-   let g:ale_lint_on_save = 0
-   "Plug 'w0rp/ale'
+   Plug 'dense-analysis/ale'
+
    "Plug 'Valloric/YouCompleteMe' {{{2
    command! YouCompleteMeInstall
          \ :!cd ~/.vim/plug/YouCompleteMe
          \ && git submodule update --init --recursive
          \ && ./install.py
          \ --clang-completer
+         \ --ts-completer
+         \ --go-completer
          ""\ --system-libclang
          ""\ --tern-completer
-         \ --ts-completer
 
    Plug 'Valloric/YouCompleteMe'
-   let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
-   let g:ycm_min_num_identifier_candidate_chars = 2
-   let g:ycm_filetype_whitelist = { 'cpp': 1, 'hpp': 1, 'typescript': 1, 'typescript.tsx': 1, 'c': 1, 'h': 1 }
+   "let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
+   let g:ycm_min_num_identifier_candidate_chars = 0
+   let g:ycm_filetype_whitelist = {'cpp':1, 'hpp':1, 'typescript':1, 'typescript.tsx':1, 'c':1, 'h':1, 'go':1}
    let g:ycm_show_diagnostics_ui = 0
    let g:ycm_enable_diagnostic_signs = 0
    let g:ycm_autoclose_preview_window_after_completion = 0
@@ -576,7 +559,7 @@ packadd termdebug
     ":let g:browserReloadPort = input('Port:', g:browserReloadPort ? g:browserReloadPort : '')<cr>
 
   func! <SID>CollectErrors()
-    exec "cd ".g:makeDirectory
+    "exec "cd ".g:makeDirectory
     cfile! /tmp/vim-errors
     "call setqflist(filter(getqflist(), "v:val['lnum'] != 0"))
     cw

@@ -33,7 +33,8 @@ make distclean
   --enable-job \
   --enable-channel \
   --enable-terminal \
-  --enable-pythoninterp \
+  --enable-python3interp=yes \
+  --with-python3-config-dir=$(python3-config --configdir) \
   --enable-luainterp
 
 make
