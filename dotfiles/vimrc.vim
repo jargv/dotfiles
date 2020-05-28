@@ -142,8 +142,6 @@ let g:isMac = !g:isLinux
          \ --clang-completer
          \ --ts-completer
          \ --go-completer
-         ""\ --system-libclang
-         ""\ --tern-completer
 
    Plug 'Valloric/YouCompleteMe'
    "let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
@@ -163,7 +161,7 @@ let g:isMac = !g:isLinux
    nnoremap <leader>;t :YcmCompleter GetType<cr>
    nnoremap <leader>;d :YcmCompleter GetDoc<cr>
    nnoremap <leader>;u :YcmCompleter GoToReferences<cr>
-   "nnoremap <leader>;f :YcmCompleter FixIt<cr>
+   nnoremap <leader>;f :YcmCompleter FixIt<cr>
    nnoremap <leader>;n :exec "YcmCompleter RefactorRename ".input(">")<cr>
    nnoremap gd :YcmCompleter GoTo<cr>
    nnoremap <leader>;i :YcmCompleter OrganizeImports <cr>
