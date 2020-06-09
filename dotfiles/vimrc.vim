@@ -121,6 +121,16 @@ let g:isMac = !g:isLinux
    Plug 'tpope/vim-surround'
    Plug 'tpope/vim-commentary'
 
+   "Plug 'mazubieta/gitlink-vim' {{{2
+   Plug 'mazubieta/gitlink-vim'
+   function! CopyGitLink(...) range
+     redir @+
+     echo gitlink#GitLink(get(a:, 1, 0))
+     redir END
+   endfunction
+   nmap <leader>gl :call CopyGitLink()<CR>
+   vmap <leader>gl :call CopyGitLink(1)<CR>
+
    "Plug 'dense-analysis/ale' {{{2
    let g:ale_fixers = {
          \   'javascript': ['prettier'],
@@ -558,7 +568,7 @@ packadd termdebug
     ":let g:browserReloadPort = input('Port:', g:browserReloadPort ? g:browserReloadPort : '')<cr>
 
   func! <SID>CollectErrors()
-    "exec "cd ".g:makeDirectory
+    exec "cd ".g:makeDirectory
     cfile! /tmp/vim-errors
     "call setqflist(filter(getqflist(), "v:val['lnum'] != 0"))
     cw
@@ -877,7 +887,7 @@ endif
     nnoremap <leader>gm :!git difftool -w origin/$(git config j.publish) -- %<CR><CR>
     nnoremap <leader>gc :!git bedone<CR><CR>
     nnoremap <leader>gi :!git rebase -i<cr><cr>
-    nnoremap <leader>gl :!git log <CR><CR>
+    "nnoremap <leader>gl :!git log <CR><CR>
     nnoremap <leader>gh :!git hist --all <CR><CR>
     nnoremap <leader>gH :!git hist --simplify-by-decoration<cr><cr>
     nnoremap <leader>gb :Gblame -w<CR>

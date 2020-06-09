@@ -1,1 +1,1 @@
-au BufRead,BufNewFile *.fs,*.vs set filetype=glsl
+au BufRead,BufNewFile *.fs,*.vs,*.glsl set filetype=glsl
