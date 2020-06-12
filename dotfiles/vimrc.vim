@@ -107,8 +107,10 @@ let g:isMac = !g:isLinux
    "colorschemes {{{2
    Plug 'xolox/vim-misc'
    Plug 'xolox/vim-colorscheme-switcher'
-   Plug 'flazz/vim-colorschemes'
-   Plug 'trevordmiller/nova-vim'
+   "Plug 'flazz/vim-colorschemes'
+   "Plug 'trevordmiller/nova-vim'
+   Plug 'AlessandroYorba/Arcadia'
+   Plug 'jnurmine/Zenburn'
    "}}}
 
    Plug 'freitass/todo.txt-vim'
@@ -305,7 +307,9 @@ let g:isMac = !g:isLinux
   "colorscheme OceanicNext
   "colorscheme rakr-light | set bg=light
   "colorscheme afterglow | set bg=dark
-  colorscheme neodark | set bg=dark
+  "colorscheme neodark | set bg=dark
+  "let g:arcadia_Pitch=1
+  colorscheme arcadia | set bg=dark
 
   if &diff
     "colorscheme neodark | set bg=dark
@@ -1052,7 +1056,7 @@ endif
          else
            let cmd = "git rev-parse --abbrev-ref HEAD"
          endif
-         let branch = substitute(system(cmd), "\n", " |", "g")
+         let branch = substitute(system(cmd), "\n", "", "g")
          return (0 != v:shell_error) ? "[vim]" : ''.branch.''
       endfunc
       func! MyTabLabel(n)
@@ -1065,11 +1069,12 @@ endif
         return current
       endfunction
       func! MyTabLine()
-        let sep = "┋"
+        "let sep = "┋"
         "let sep = "┊"
         "let sep = "█"
         "let sep = "▓"
         "let sep = "░"
+        let sep = " "
         "let s = " VIM "
         let s = "     "
         let selected = tabpagenr()
@@ -1113,6 +1118,7 @@ endif
         return s
       endfunc
       set tabline=%!MyTabLine()
+      "hi TabLineSel          cterm=bold      ctermbg=bg      ctermfg=bg
       " exec "hi TabLineSel          cterm=bold      ctermbg=".s:selBG."      ctermfg=".s:selText
       " exec "hi TabLine             cterm=none      ctermbg=".s:background." ctermfg=".s:text
       " exec "hi TabLineSelSep       cterm=none      ctermbg=".s:background." ctermfg=".s:selBG
@@ -1235,4 +1241,4 @@ endif
   endfunc
 
 " abolish tildes at end of file {{{1
-hi EndOfBuffer ctermfg=black guifg=black
+hi EndOfBuffer ctermfg=bg ctermbg=bg guifg=bg
