@@ -310,6 +310,9 @@ let g:isMac = !g:isLinux
   "colorscheme neodark | set bg=dark
   "let g:arcadia_Pitch=1
   colorscheme arcadia | set bg=dark
+  highlight MatchParen cterm=inverse ctermbg=black
+  ":NoMatchParen
+  let g:loaded_matchparen = 1
 
   if &diff
     "colorscheme neodark | set bg=dark
