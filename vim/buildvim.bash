@@ -7,7 +7,7 @@ if [ $(uname) == "Linux" ]; then
     sudo pacman -S xorg-server-devel
   elif [ -x /usr/bin/apt ]; then
     sudo apt install build-essential xorg-dev libx11-dev \
-      libxtst-dev python-dev libncurses5-dev gnome-devel
+      libxtst-dev python3-dev libncurses5-dev gnome-devel
   else
     echo "couldn't find linux version"
     exit
@@ -42,3 +42,4 @@ sudo make install
 
 vim --version | grep clipboard
 vim --version | grep terminal
+vim --version | grep python3
