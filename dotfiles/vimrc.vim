@@ -575,11 +575,13 @@ packadd termdebug
     ":let g:browserReloadPort = input('Port:', g:browserReloadPort ? g:browserReloadPort : '')<cr>
 
   func! <SID>CollectErrors()
+    let cwd = getcwd()
     exec "cd ".g:makeDirectory
     cfile! /tmp/vim-errors
     "call setqflist(filter(getqflist(), "v:val['lnum'] != 0"))
     cw
     normal <cr>
+    exec "cd ".cwd
   endfunc
 
   func! <SID>ToggleReloadBrowserOnMake()
