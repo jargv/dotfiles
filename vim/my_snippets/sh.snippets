@@ -5,3 +5,17 @@ endsnippet
 snippet log "log some text" !b
 echo "$1"
 endsnippet
+snippet getopts "Description" !b
+while getopts "ht:" opt; do
+  case ${opt} in
+    h ) # process option h
+      echo "got an h flag"
+      ;;
+    t ) # process option t
+      echo "got a t arg with: $OPTARG value"
+      ;;
+    \? ) echo "Usage: cmd [-h] [-t]"
+      ;;
+  esac
+done
+endsnippet
