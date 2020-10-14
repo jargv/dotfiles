@@ -559,7 +559,7 @@ packadd termdebug
     call <sid>generateMakeFunction()
   endfunc
 
-  nnoremap <leader>Mx :call <sid>setBuildtool<cr>
+  nnoremap <leader>Mx :call <sid>setBuildTool()<cr>
   func! <sid>setBuildTool()
     let g:makeBuildtool = input(">", g:makeBuildtool)
     call <sid>generateMakeFunction()
