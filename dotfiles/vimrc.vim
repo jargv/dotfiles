@@ -167,6 +167,9 @@ let g:isMac = !g:isLinux
    let g:ycm_key_list_select_completion = ['<C-N>']
    let g:ycm_key_list_previous_completion = ['<C-P>']
    let g:ycm_echo_current_diagnostic = 0
+   let g:ycm_clangd_args = ['-cross-file-rename']
+   let g:ycm_clangd_binary_path = exepath("clangd")
+   let g:ycm_clangd_uses_ycmd_caching = 0
 
    let g:ycm_add_preview_to_completeopt = 0
    let g:ycm_min_num_of_chars_for_completion = 1
@@ -175,7 +178,7 @@ let g:isMac = !g:isLinux
    nnoremap <leader>;d :YcmCompleter GetDoc<cr>
    nnoremap <leader>;u :YcmCompleter GoToReferences<cr>
    nnoremap <leader>;f :YcmCompleter FixIt<cr>
-   nnoremap <leader>;n :exec "YcmCompleter RefactorRename ".input(">")<cr>
+   nnoremap <leader>;n :exec "YcmCompleter RefactorRename ".input(">", expand("<cword>"))<cr>
    nnoremap gd :YcmCompleter GoTo<cr>
    nnoremap <leader>;i :YcmCompleter OrganizeImports <cr>
 
