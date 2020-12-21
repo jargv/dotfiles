@@ -46,6 +46,7 @@
   hist-one = !tig
   fuckit = reset --hard
   pushup = ! git push --force-with-lease origin $(git rev-parse --abbrev-ref @)
+  pushupnoforce = ! git push origin $(git rev-parse --abbrev-ref @)
   pushupnew = ! git push origin $(git rev-parse --abbrev-ref @)
 [tig]
   main-view-author = abbreviated

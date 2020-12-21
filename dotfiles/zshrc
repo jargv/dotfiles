@@ -1,6 +1,4 @@
-#export TERM=screen-256color
 export TERM=xterm-256color
-#export TERM=screen-it
 
 if [[ -f ~/.zshlocal ]]; then
   source ~/.zshlocal
@@ -14,12 +12,6 @@ export NVM_DIR="$HOME/.nvm"
 if [[ -d "/mnt/c" ]]; then
   export DISPLAY=:0
 fi
-#setup nix {{{1
-# export NIX_PATH="~/.nix-defexpr/nixpgks"
-# export nixpkgs="~/.nix-defexpr/nixpgks"
-if [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]]; then
-  . ~/.nix-profile/etc/profile.d/nix.sh
-fi
 
 #path {{{1
 export PATH=$PATH:~/bin
@@ -31,12 +23,7 @@ export PATH=/usr/local/sbin:$PATH
 export PATH=/opt/local/bin:/opt/local/sbin:$PATH
 #export PATH=~/.npm/bin/:$PATH
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-#linuxbrew paths {{{2
-export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-export MANPATH="/home/linuxbrew/.linuxbrew/share/man:$MANPATH"
-export INFOPATH="/home/linuxbrew/share/info:$INFOPATH"
 #go paths {{{2
-#export GOROOT=/usr/lib/go-1.13/
 export GOPATH=~/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 #}}}
@@ -59,24 +46,6 @@ if [[ "$TERM" != "screen" ]] &&
   fi
 fi
 
-#antigen {{{1
-# antigenfile=~/config/antigen/antigen.zsh
-# if [[ ! -f "$antigenfile" ]]; then
-#   git clone "https://github.com/zsh-users/antigen.git" ~/config/antigen
-# fi
-
-# source $antigenfile
-
-# #antigen bundle man
-# antigen bundle zsh-users/zsh-syntax-highlighting
-
-# antigen bundle autojump
-# antigen bundle git
-# antigen bundle postgres
-# antigen bundle go
-# antigen bundle tmux
-# antigen apply
-
 #autojump {{{1
 if [[ $(uname) == "Linux" ]]; then
   [[ -f /usr/share/autojump/autojump.zsh ]] && . /usr/share/autojump/autojump.zsh
@@ -94,7 +63,7 @@ setopt histignorespace
 #vim {{{1
 export EDITOR="vim"
 bindkey -v
-#don't stop the backspace at the insert point {{{2
+#don't stop the backspace at the insert point
 bindkey "^?" backward-delete-char
 
 #hit escape twice to go into normal mode in embedded terminal {{{2
@@ -169,7 +138,6 @@ sed s/^..//) 2> /dev/null'
 autoload -Uz compinit
 compinit
 
-#{{{1 Aliases
 #{{{2 commands that always use sudo
 alias pacman="sudo pacman"
 alias apt-get="sudo apt-get"
@@ -281,13 +249,10 @@ setopt pushd_ignore_dups
 setopt no_clobber hist_allow_clobber
 setopt csh_null_glob
 unsetopt beep
-zstyle :compinstall filename '~/.zshrc'
+#zstyle :compinstall filename '~/.zshrc'
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
-if [ -f /Users/j/projects/src/www.domo.com/tug/kubernetes-functions.sh ]; then
-  source /Users/j/projects/src/www.domo.com/tug/kubernetes-functions.sh
-fi
 # Java setup {{{1
 # The output of running java_home or the directory containing bin/javac
 
@@ -306,7 +271,7 @@ export ANDROID_NDK=${ANDROID_SDK}/ndk
 export ANDROID_NDK_HOME=$ANDROID_NDK
 unset ANDROID_NDK_REPOSITORY
 export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_NDK
-export PATH=${PATH}:$ANDROID_HOME/build-tools/30.0.1
+export PATH=${PATH}:$ANDROID_HOME/build-tools/30.0.2
 
 # appengine setup
 export APPENGINE_HOME=~/Downloads/appengine-java-sdk-1.9.54
@@ -317,9 +282,3 @@ kill_gradle() {
   kill -9 $(ps aux | grep gradle | grep -v grep | awk '{print $2}')
 }
 export kill_gradle=kill_gradle
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/jgeddes/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/jgeddes/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/jgeddes/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/jgeddes/google-cloud-sdk/completion.zsh.inc'; fi

@@ -145,6 +145,7 @@ let g:isMac = !g:isLinux
          "\   'c': ['clang-format', 'clangtidy'],
    let g:ale_linters_explicit = 1
    let g:ale_fix_on_save = 1
+   let g:ale_completion_autoimport = 1
    Plug 'dense-analysis/ale'
 
    "Plug 'Valloric/YouCompleteMe' {{{2
@@ -580,7 +581,7 @@ packadd termdebug
 
   func! <SID>CollectErrors()
     let cwd = getcwd()
-    exec "cd ".g:makeDirectory
+    "exec "cd ".g:makeDirectory
     cfile! /tmp/vim-errors
     "call setqflist(filter(getqflist(), "v:val['lnum'] != 0"))
     cw
