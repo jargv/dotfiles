@@ -127,6 +127,8 @@ export CXX=clang++
 FZF_TMUX=1
 fzf_keybindings=~/config/vim/plug/fzf/shell/key-bindings.zsh
 fzf_completion=~/config/vim/plug/fzf/shell/completion.zsh
+bindkey '^R' fzf-history-widget
+bindkey -M vicmd '^R' fzf-history-widget
 [ -f $fzf_keybindings ] && source $fzf_keybindings
 [ -f $fzf_completion ] && source $fzf_completion
 export FZF_DEFAULT_COMMAND='
