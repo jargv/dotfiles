@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
-git ls-tree --full-tree --name-only -r HEAD | sed -e '/vendor/d' | xargs wc -l 2>/dev/null | awk -f ~/config/bin/stats-aggregate.awk
+git ls-tree --full-tree --name-only -r HEAD | while read file; do
+  wc -l $file 2>/dev/null
+done | awk -f ~/config/bin/stats-aggregate.awk
