@@ -140,7 +140,6 @@ let g:isMac = !g:isLinux
          \   'html': ['prettier'],
          \   'css': ['prettier'],
          \   'go': ['goimports'],
-         \   'c': ['clang-format'],
          \}
          "\   'c': ['clang-format', 'clangtidy'],
    let g:ale_linters_explicit = 1
