@@ -47,4 +47,3 @@ nnoremap <leader>r :action RenameElement<cr>
 vnoremap gc :action CommentByLineComment<cr>
 
 nnoremap <leader>;h :action GotoRelated<cr>
-
