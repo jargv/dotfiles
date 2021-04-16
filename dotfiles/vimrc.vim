@@ -123,6 +123,24 @@ let g:isMac = !g:isLinux
    Plug 'tpope/vim-surround'
    Plug 'tpope/vim-commentary'
 
+   "Plug 'puremourning/vimspector' {{{2
+   Plug 'puremourning/vimspector'
+   let g:vimspector_install_gadgets = [ 'vscode-cpptools' ]
+
+   nmap <leader>rr :call vimspector#Launch()<cr>
+   nmap <leader>rq :VimspectorReset<cr>
+   nmap <leader>rc <Plug>VimspectorContinue
+   nmap <leader>rS <Plug>VimspectorStop
+   nmap <leader>rs <Plug>VimspectorRestart
+   nmap <leader>rp <Plug>VimspectorPause
+   nmap <leader>rt <Plug>VimspectorToggleBreakpoint
+   nmap <leader>r? <Plug>VimspectorToggleConditionalBreakpoint
+   nmap <leader>rb <Plug>VimspectorAddFunctionBreakpoint
+   nmap <leader>rj <Plug>VimspectorStepOver
+   nmap <leader>rl <Plug>VimspectorStepInto
+   nmap <leader>rk <Plug>VimspectorStepOut
+   nmap <leader>rr <Plug>VimspectorRunToCursor
+
    "Plug 'mazubieta/gitlink-vim' {{{2
    Plug 'mazubieta/gitlink-vim'
    function! CopyGitLink(...) range
@@ -140,7 +158,6 @@ let g:isMac = !g:isLinux
          \   'html': ['prettier'],
          \   'css': ['prettier'],
          \   'go': ['goimports'],
-         \   'c': ['clang-format'],
          \}
          "\   'c': ['clang-format', 'clangtidy'],
    let g:ale_linters_explicit = 1
@@ -176,7 +193,19 @@ let g:isMac = !g:isLinux
    let g:ycm_add_preview_to_completeopt = 0
    let g:ycm_min_num_of_chars_for_completion = 1
    let g:ycm_auto_trigger = 1
-   nnoremap <leader>;t :YcmCompleter GetType<cr>
+   let g:ycm_disable_signature_help = 0
+   let g:ycm_auto_hover = ''
+
+   augroup YCMCCustom
+     autocmd!
+     autocmd FileType c,cpp let b:ycm_hover = {
+           \ 'command': 'GetDoc',
+           \ 'syntax': &filetype
+           \ }
+   augroup END
+
+   nmap <leader>;t <plug>(YCMHover)
+   nnoremap <leader>;T :YcmCompleter GetType<cr>
    nnoremap <leader>;d :YcmCompleter GetDoc<cr>
    nnoremap <leader>;u :YcmCompleter GoToReferences<cr>
    nnoremap <leader>;f :YcmCompleter FixIt<cr>
@@ -218,7 +247,7 @@ let g:isMac = !g:isLinux
      nmap - k
      Plug 'tpope/vim-vinegar'
      nnoremap <leader>d :Explore<cr>
-     nnoremap <leader>D :exec ":e ".getcwd()<cr>
+     " nnoremap <leader>D :exec ":e ".getcwd()<cr>
 
    "Plug 'tpope/vim-fugitive' {{{2
       Plug 'tpope/vim-fugitive'
@@ -343,7 +372,7 @@ nnoremap <c-j> ]}
 
 nnoremap <leader>tN :tab split<cr>
 set updatetime=300
-nnoremap <leader>r :call RangerOpen()<cr>
+"nnoremap <leader>r :call RangerOpen()<cr>
 func! RangerOpen()
   let resultsFile = "/tmp/ranger_vim"
   exec("silent !clear && ranger --selectfile=".expand('%')." --choosefiles=".resultsFile)
@@ -360,7 +389,7 @@ func! RangerOpen()
   redraw!
 endfunc
 "debugger
-packadd termdebug
+"packadd termdebug
 
 "settings {{{1
   "vim, not vi! {{{2
