@@ -1278,4 +1278,4 @@ endif
   endfunc
 
 " abolish tildes at end of file {{{1
-"hi EndOfBuffer ctermfg=bg ctermbg=bg guifg=bg
+hi EndOfBuffer ctermfg=bg ctermbg=bg guifg=bg
