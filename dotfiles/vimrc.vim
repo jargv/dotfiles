@@ -176,7 +176,7 @@ let g:isMac = !g:isLinux
 
    Plug 'Valloric/YouCompleteMe'
    "let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
-   let g:ycm_min_num_identifier_candidate_chars = 99
+   let g:ycm_min_num_identifier_candidate_chars = 0
    let g:ycm_filetype_whitelist = {'cpp':1, 'hpp':1, 'typescript':1, 'typescript.tsx':1, 'c':1, 'h':1, 'go':1}
    let g:ycm_show_diagnostics_ui = 0
    let g:ycm_enable_diagnostic_signs = 0
@@ -1150,7 +1150,7 @@ endif
 
         "start on the right
         let s .= '%='
-        let s .= '%#TabLineFill# '.'%{GetGitBranch()}'.' '
+        "let s .= '%#TabLineFill# '.'%{GetGitBranch()}'.' '
 
         return s
       endfunc
