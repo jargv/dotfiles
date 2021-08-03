@@ -25,17 +25,17 @@ let g:isMac = !g:isLinux
 
   "Language-specifig plugins {{{2
    "powershell {{{3
-   Plug 'PProvost/vim-ps1'
+   "Plug 'PProvost/vim-ps1'
 
    "rust {{{3
-   Plug 'rust-lang/rust.vim'
-   Plug 'racer-rust/vim-racer'
+   " Plug 'rust-lang/rust.vim'
+   " Plug 'racer-rust/vim-racer'
    let g:racer_experimental_completer = 1
    let g:ycm_rust_src_path = '~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
 
    "go {{{3
    "Plug 'jargv/vim-go-error-folds'
-   "Plug 'fatih/vim-go'
+   " Plug 'fatih/vim-go'
    let g:go_fmt_command = "goimports"
    let g:go_fmt_command = "gofmt"
    let g:go_fmt_fail_silently = 1
@@ -87,17 +87,17 @@ let g:isMac = !g:isLinux
    Plug 'JulesWang/css.vim'
 
    "html {{{3
-   Plug 'mattn/emmet-vim'
+   "Plug 'mattn/emmet-vim'
    "toml {{{3
    Plug 'cespare/vim-toml'
    "docker {{{3
-   Plug 'ekalinin/Dockerfile.vim'
+   "Plug 'ekalinin/Dockerfile.vim'
 
    "glsl {{{3
    Plug 'vim-scripts/glsl.vim'
 
    "lua {{{3
-    Plug 'SpaceVim/vim-swig'
+    "Plug 'SpaceVim/vim-swig'
 
    "markdown {{{3
    Plug 'JamshedVesuna/vim-markdown-preview'
@@ -107,7 +107,7 @@ let g:isMac = !g:isLinux
    "colorschemes {{{2
    Plug 'xolox/vim-misc'
    Plug 'xolox/vim-colorscheme-switcher'
-   "Plug 'flazz/vim-colorschemes'
+   Plug 'flazz/vim-colorschemes'
    "Plug 'trevordmiller/nova-vim'
    Plug 'AlessandroYorba/Arcadia'
    Plug 'jnurmine/Zenburn'
@@ -124,7 +124,7 @@ let g:isMac = !g:isLinux
    Plug 'tpope/vim-commentary'
 
    "Plug 'puremourning/vimspector' {{{2
-   Plug 'puremourning/vimspector'
+   "Plug 'puremourning/vimspector'
    let g:vimspector_install_gadgets = [ 'vscode-cpptools' ]
 
    nmap <leader>rr :call vimspector#Launch()<cr>
@@ -176,7 +176,7 @@ let g:isMac = !g:isLinux
 
    Plug 'Valloric/YouCompleteMe'
    "let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
-   let g:ycm_min_num_identifier_candidate_chars = 0
+   let g:ycm_min_num_identifier_candidate_chars = 99
    let g:ycm_filetype_whitelist = {'cpp':1, 'hpp':1, 'typescript':1, 'typescript.tsx':1, 'c':1, 'h':1, 'go':1}
    let g:ycm_show_diagnostics_ui = 0
    let g:ycm_enable_diagnostic_signs = 0
@@ -238,7 +238,7 @@ let g:isMac = !g:isLinux
      Plug 'junegunn/vim-easy-align'
      vmap ga <Plug>(EasyAlign)
    "Plug 'majutsushi/tagbar' {{{2
-      Plug 'majutsushi/tagbar'
+      "Plug 'majutsushi/tagbar'
       let g:tagbar_left = 1
       nnoremap <leader>, :TagbarOpenAutoClose<cr>
       "let g:tagbar_vertical = 30
@@ -338,12 +338,12 @@ let g:isMac = !g:isLinux
   "colorscheme nova | set bg=dark
   "colorscheme rdark | set bg=dark
   "colorscheme oceanlight
-  "colorscheme OceanicNext
+  colorscheme OceanicNext | set bg=dark
   "colorscheme rakr-light | set bg=light
   "colorscheme afterglow | set bg=dark
   "colorscheme neodark | set bg=dark
   "let g:arcadia_Pitch=1
-  colorscheme arcadia | set bg=dark
+  "colorscheme arcadia | set bg=dark
   highlight MatchParen cterm=inverse ctermbg=black
   ":NoMatchParen
   let g:loaded_matchparen = 1
@@ -388,8 +388,6 @@ func! RangerOpen()
   exec "silent !rm ".resultsFile
   redraw!
 endfunc
-"debugger
-"packadd termdebug
 
 "settings {{{1
   "vim, not vi! {{{2
@@ -681,7 +679,7 @@ endfunc
         let g:makeTarget = ""
       endif
     elseif filereadable("package.json")
-      let g:makeBuildtool = "npm run"
+      let g:makeBuildtool = "yarn run"
       let g:makeTarget = "build"
     elseif expand('%:e') == "js"
       let g:makeBuildtool = "node"
@@ -1280,4 +1278,4 @@ endif
   endfunc
 
 " abolish tildes at end of file {{{1
-hi EndOfBuffer ctermfg=bg ctermbg=bg guifg=bg
+"hi EndOfBuffer ctermfg=bg ctermbg=bg guifg=bg
