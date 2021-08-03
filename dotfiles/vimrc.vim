@@ -349,12 +349,9 @@ let g:isMac = !g:isLinux
   let g:loaded_matchparen = 1
 
   if &diff
-    "colorscheme neodark | set bg=dark
-    colorscheme zenburn | set bg=dark
-  endif
-
-  if &ft == "gitcommit" || &ft == "gitrebase"
-    colorscheme shades-of-teal
+    colorscheme neodark | set bg=dark
+    "colorscheme zenburn | set bg=dark
+    "colorscheme OceanicNext | set bg=dark
   endif
 
   nnoremap <f3> :NextColorScheme<cr>
