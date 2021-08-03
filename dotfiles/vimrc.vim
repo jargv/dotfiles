@@ -231,7 +231,7 @@ let g:isMac = !g:isLinux
    let g:fzf_buffers_jump = 1
    Plug 'junegunn/fzf'
    Plug 'junegunn/fzf.vim'
-   nnoremap <leader>o :FZF --inline-info<cr>
+   nnoremap <leader>o :FZF --inline-info <cr>
    nnoremap <leader>i :Buffers<cr>
 
    "Plug 'junegunn/vim-easy-align' {{{2
@@ -775,7 +775,7 @@ endfunc
   endfunc
 
 " terminals {{{1
-hi Terminal guibg=#f3eaea guifg=#40427f
+"hi Terminal guibg=#f3eaea guifg=#40427f
 au BufWinEnter * if &buftype == 'terminal' | setlocal nonumber | endif
 if has("gui_running")
   nnoremap <leader>. :term ++curwin<cr>
