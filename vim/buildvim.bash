@@ -3,8 +3,6 @@
 set -e
 
 if [ $(uname) == "Linux" ]; then
-  echo "TODO: check if --with-x is ned in the configure command below"
-  exit
   if [ -x /usr/bin/pacman ]; then
     sudo pacman -S xorg-server-devel
   elif [ -x /usr/bin/apt ]; then
