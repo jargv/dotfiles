@@ -1,2 +1,2 @@
 publish_branch=$(git config j.publish)
-git checkout -b "$1" origin/${publish_branch:-master}
+git checkout -b "$1" origin/${publish_branch:-main}

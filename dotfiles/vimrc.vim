@@ -122,6 +122,7 @@ let g:isMac = !g:isLinux
    Plug 'tpope/vim-obsession'
    Plug 'tpope/vim-surround'
    Plug 'tpope/vim-commentary'
+   Plug 'will133/vim-dirdiff'
 
    "Plug 'puremourning/vimspector' {{{2
    "Plug 'puremourning/vimspector'
@@ -364,6 +365,7 @@ let g:isMac = !g:isLinux
 
 
 "prototype settings {{{1
+set noesckeys
 nnoremap <c-k> [{
 nnoremap <c-j> ]}
 
