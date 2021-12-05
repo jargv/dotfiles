@@ -1,0 +1,15 @@
+snippet new "New project" !b
+project('$1', 'c',
+  default_options: ['warning_level=2', 'c_std=c11']
+)
+
+add_project_arguments(
+  '-Wdeprecated', '-Wno-unused-parameter',
+  '-Wno-unused-function', '-Wno-unused-variable',
+  '-ftemplate-backtrace-limit=0',
+  '-fdiagnostics-absolute-paths',
+  language : 'c'
+)
+
+executable('${1}', 'main.c')
+endsnippet

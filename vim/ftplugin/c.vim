@@ -13,4 +13,6 @@ func! SmartDot()
   return '.'
 endfunc
 
+let g:c_no_curly_error = 1
+
 nnoremap  <buffer> <leader>;h :w<CR>:e %:p:s,.h$,.X123X,:s,.c$,.h,:s,.X123X$,.c,<CR>

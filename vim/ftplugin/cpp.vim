@@ -13,8 +13,8 @@ let g:c_no_bracket_error = 1
 " let s:isLinux = system('uname') == "Linux\n"
 " let s:isMac = !g:isLinux
 "
-"nnoremap  <buffer> <leader>;h :w<CR>:e %:p:s,.hpp$,.X123X,:s,.cpp$,.hpp,:s,.X123X$,.cpp,<CR>
-nnoremap  <buffer> <leader>;h :w<CR>:e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+nnoremap  <buffer> <leader>;h :w<CR>:e %:p:s,.hpp$,.X123X,:s,.cpp$,.hpp,:s,.X123X$,.cpp,<CR>
+"nnoremap  <buffer> <leader>;h :w<CR>:e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 
 "general settings {{{1
 set wildignore=*.o

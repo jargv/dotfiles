@@ -4,14 +4,13 @@ project (${1:`!v expand("%:p:h:t")`} VERSION 0.0 LANGUAGES CXX C)
 
 include(FetchContent)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/vendor)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 #compiler
 set(CMAKE_CXX_STANDARD 17)
 #add_compile_options(-stdlib=libstdc++)
 add_compile_options(-Wall -Wextra -Werror -Wdeprecated -Wno-unused-parameter)
-add_compile_options(-Wno-unused-parameter -Wno-unused-function -Wno-unused-variable)
+add_compile_options(-Wno-unused-function -Wno-unused-variable)
 add_compile_options(-ftemplate-backtrace-limit=0 -fdiagnostics-absolute-paths)
 
 #executable

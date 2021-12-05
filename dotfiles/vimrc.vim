@@ -649,19 +649,28 @@ endfunc
     endif
 
     call system("tmux send-keys -t ".g:tmux_pane_id.' ^C')
-    call system("tmux send-keys -t ".g:tmux_pane_id.' "'.escape(a:args,'\"$`').'"')
-    call system("tmux send-keys -t ".g:tmux_pane_id.' Enter')
+    call system("tmux send-keys -t ".g:tmux_pane_id.' "'.escape(a:args,'\"$`').'"'.' Enter')
   endfunc
 
   func! <SID>DetectBuildTool()
     call <SID>InitMyMake()
     let g:makeOnSave = 1
     let g:makeDirectory = getcwd()
-    if filereadable("CMakeLists.txt")
+    let waitForBuild = 0
+    if filereadable("meson.build")
+      if !isdirectory("build")
+        call <SID>TmuxRun("meson setup build")
+        call system("ln -sf build/compile_commands.json .")
+      endif
+      let g:makeDirectory .= "/build"
+      let g:makeBuildtool = "ninja"
+      let waitForBuild = 1
+    elseif filereadable("CMakeLists.txt")
       if !isdirectory("build")
         call <SID>TmuxRun("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && cd ..")
         call system("ln -sf build/compile_commands.json .")
       endif
+      let waitForBuild = 1
       let g:makeDirectory .= "/build"
       let g:makeBuildtool = "make"
     elseif expand('%:e') == "go"
@@ -701,6 +710,9 @@ endfunc
        "just try to execute the file
        let g:makeBuildTool = ""
        let g:makeTarget = "./".expand('%:t')
+    endif
+    if waitForBuild
+      call input("press enter when the build has generated...")
     endif
     call <sid>generateMakeFunction()
     call <sid>TmuxRun('echo detected '.g:makeBuildtool.' '.g:makeTarget)
