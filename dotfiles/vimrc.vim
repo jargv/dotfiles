@@ -251,11 +251,11 @@ let g:isMac = !g:isLinux
      " nnoremap <leader>D :exec ":e ".getcwd()<cr>
 
    "Plug 'tpope/vim-fugitive' {{{2
-      Plug 'tpope/vim-fugitive'
-      augroup Fugitive
-         autocmd!
-         autocmd BufReadPost fugitive://* set bufhidden=delete
-      augroup END
+      "Plug 'tpope/vim-fugitive'
+      " augroup Fugitive
+      "    autocmd!
+      "    autocmd BufReadPost fugitive://* set bufhidden=delete
+      " augroup END
 
    "Plug 'vim-scripts/UltiSnips' {{{2
       Plug 'vim-scripts/UltiSnips'
