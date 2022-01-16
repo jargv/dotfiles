@@ -115,6 +115,16 @@ $1& operator= ($1&&) = delete;
 $1& operator= ($1 const&) = delete;
 ~$1() = delete;
 endsnippet
+snippet base "special members for a base class" !b
+${1:`!v
+  get(matchlist(getline(search('^\s*class\s*\([A-Z]\w*\)', 'bWn')), '\s*class\s*\([A-Z]\w*\)'), 1, '')
+`}() = default;
+virtual ~$1() = default;
+$1($1&&) = delete;
+$1($1 const&) = delete;
+$1& operator= ($1&&) = delete;
+$1& operator= ($1 const&) = delete;
+endsnippet
 
 snippet lm "lambda" w!
 [${2:&}]($1){

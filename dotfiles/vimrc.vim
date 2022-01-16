@@ -258,7 +258,7 @@ let g:isMac = !g:isLinux
       " augroup END
 
    "Plug 'vim-scripts/UltiSnips' {{{2
-      Plug 'vim-scripts/UltiSnips'
+      Plug 'SirVer/UltiSnips'
       let g:UltiSnipsExpandTrigger="<tab>"
       let g:UltiSnipsJumpForwardTrigger="<tab>"
       let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
@@ -339,9 +339,9 @@ let g:isMac = !g:isLinux
   "colorscheme nova | set bg=dark
   "colorscheme rdark | set bg=dark
   "colorscheme oceanlight
-  colorscheme OceanicNext | set bg=dark
+  "colorscheme OceanicNext | set bg=dark
   "colorscheme rakr-light | set bg=light
-  "colorscheme afterglow | set bg=dark
+  colorscheme afterglow | set bg=dark
   "colorscheme neodark | set bg=dark
   "let g:arcadia_Pitch=1
   "colorscheme arcadia | set bg=dark
