@@ -482,6 +482,7 @@ endfunc
   endfunc
   "}}}
   " indentation/wrapping {{{2
+  set nojoinspaces
   set wrap
   set linebreak
   set breakindent
