@@ -57,71 +57,9 @@ typedef enum $1 {
 } $1;$0
 endsnippet
 
-snippet system "Description" !b
-#include "$1System.h"
-#include <assert.h>
 
-static void $1System(Sys* sys);
-
-typedef struct $1Data {
-  int dummy;
-} $1Data;
-
-typedef struct $1Component {
-  int dummy;
-} $1Component;
-
-static void $1Component_free($1Component* component){
-
-}
-
-static void $1Component_update($1Component* component){
-
-}
-
-static Err* $1_update(Sys* sys){
-  $1Data* system = system_data(sys, $1System);
-  int components_len = 0;
-  $1Component* components = NULL;
-
-  components = system_components(sys, $1System, &components_len);
-  for (int i = 0; i < components_len; i++){
-    $1Component* component = &components[i];
-    $1Component_update(component);
-  }
-
-  components = system_deleted_components(sys, $1System, &components_len);
-  for (int i = 0; i < components_len; i++){
-    $1Component* component = &components[i];
-    $1Component_free(component);
-  }
-
-  return err_ok;
-}
-
-static Err* $1_sync(Ent* ent, Cmp* cmp) {
-  $1Component* component = cmp_data(cmp, $1System);
-  return err_ok;
-}
-
-static void $1_free(Sys* sys){
-
-}
-
-static void $1System(Sys* sys){
-  $1Data data = {0};
-  system_init(sys, (SystemConfig){
-      .system_size = sizeof($1Data),
-      .system_data = &data,
-      .component_size = sizeof($1Component),
-      .update_system = $1_update,
-      .sync_entity = $1_sync,
-      .free_system = $1_free,
-      });
-}
-
-void add_${1/.*/\u$0/}(Ent* ent){
-  $1Component data = {0};
-  ent_add_component(ent, $1System, &data);
-}
+snippet type "Make a new opaque type" !b
+typedef struct $1 $1;
+$1* ${1/.*/\L$0\E/}_create();
+void ${1/.*/\L$0\E/}_free(${1}*);
 endsnippet
