@@ -30,7 +30,7 @@ if !exists("*MoveOutOfHeader")
       let line = getline('.')
 
       "get the class name
-      let classStartLine = search(pattern, 'bWn')
+      let classStartLine = searchpair('struct\|class', '', '};', 'bWn')
       let className = get(matchlist(getline(classStartLine), pattern), 2, '')
 
       "figure out what the new definition
