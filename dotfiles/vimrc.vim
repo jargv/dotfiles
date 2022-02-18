@@ -341,8 +341,8 @@ let g:isMac = !g:isLinux
   "colorscheme oceanlight
   "colorscheme OceanicNext | set bg=dark
   "colorscheme rakr-light | set bg=light
-  colorscheme afterglow | set bg=dark
-  "colorscheme neodark | set bg=dark
+  "colorscheme afterglow | set bg=dark
+  colorscheme neodark | set bg=dark
   "let g:arcadia_Pitch=1
   "colorscheme arcadia | set bg=dark
   highlight MatchParen cterm=inverse ctermbg=black
@@ -934,18 +934,18 @@ endif
     vnoremap <C-j> xp'[V']
     vnoremap <C-k> xkP'[V']
   "git mappings {{{2
-    nnoremap <leader>gD :!git difftool -w<cr><cr>
-    nnoremap <leader>gd :!git difftool -w %<CR><CR>
-    nnoremap <leader>gM :!git difftool -w origin/$(git config j.publish)<cr><cr>
-    nnoremap <leader>gm :!git difftool -w origin/$(git config j.publish) -- %<CR><CR>
-    nnoremap <leader>gc :!git bedone<CR><CR>
-    nnoremap <leader>gi :!git rebase -i<cr><cr>
+    nnoremap <leader>gD :!tmux new-window "git difftool -w"<cr><cr>
+    nnoremap <leader>gd :!tmux new-window "git difftool -w %"<CR><CR>
+    nnoremap <leader>gM :!tmux new-window "git difftool -w origin/$(git config j.publish)"<cr><cr>
+    nnoremap <leader>gm :!tmux new-window "git difftool -w origin/$(git config j.publish) -- %"<CR><CR>
+    nnoremap <leader>gc :!tmux new-window "git bedone"<CR><CR>
+    nnoremap <leader>gi :!tmux new-window "git rebase -i"<cr><cr>
     "nnoremap <leader>gl :!git log <CR><CR>
-    nnoremap <leader>gh :!git hist --all <CR><CR>
-    nnoremap <leader>gH :!git hist --simplify-by-decoration<cr><cr>
+    nnoremap <leader>gh :!tmux new-window "git hist --all"<CR><CR>
+    nnoremap <leader>gH :!tmux new-window "git hist --simplify-by-decoration"<cr><cr>
     nnoremap <leader>gb :Gblame -w<CR>
-    nnoremap <leader>gB :!git branch-i<cr><cr>
-    nnoremap <leader>gs :!tig status<CR><CR>
+    nnoremap <leader>gB :!tmux new-window "git branch-i"<cr><cr>
+    nnoremap <leader>gs :!tmux new-window "tig status"<CR><CR>
     nnoremap <leader>gg :exec ":!git ".input("git> ")<CR>
   "working directory mappings {{{2
     nnoremap <leader>U :cd %:p:h<CR>:echo<CR>
