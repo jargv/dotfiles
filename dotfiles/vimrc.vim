@@ -350,8 +350,8 @@ let g:isMac = !g:isLinux
   let g:loaded_matchparen = 1
 
   if &diff
-    colorscheme neodark | set bg=dark
-    "colorscheme zenburn | set bg=dark
+    "colorscheme neodark | set bg=dark
+    colorscheme zenburn | set bg=dark
     "colorscheme OceanicNext | set bg=dark
   endif
 
