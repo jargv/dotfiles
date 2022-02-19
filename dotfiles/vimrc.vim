@@ -745,7 +745,7 @@ endfunc
       let body = body . "\n\t" . g:browserReloadCommand . " " . g:browserReloadArgs
     endif
 
-    call <sid>TmuxRun("vim_rebuild(){" . body . "\n}")
+    call <sid>TmuxRun("vim_rebuild(){" . body . " }")
   endfunc
 
   func! <sid>clearMakeFunction()

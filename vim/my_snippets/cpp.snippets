@@ -273,3 +273,14 @@ struct $1 {
   ~$1(){}
 };
 endsnippet
+snippet view "make a view" !b
+#pragma once
+#include "ui/ui.hpp"
+
+struct $1ViewConfig {
+};
+
+struct $1View : ui::ViewBase<${1}View, ${1}ViewConfig> {
+  using ViewBase::ViewBase;
+};
+endsnippet
