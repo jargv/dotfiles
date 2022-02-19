@@ -524,13 +524,13 @@ endfunc
     let parts = split(&filetype, '\.')
     let ft = len(parts) > 0 ? parts[0] : ""
 
-    tabedit ~/config/dotfiles/vimrc.vim
+    let files = "~/config/dotfiles/vimrc.vim"
 
     if !empty(ft)
-      exec "vsplit ~/.vim/ftplugin/".ft.".vim"
+      let files = files . " ~/.vim/ftplugin/".ft.".vim"
     endif
 
-    cd ~/config
+    exec '!tmux new-window "vim -O ' . files . '"'
   endfunc
   augroup ConfigReload
       au!
