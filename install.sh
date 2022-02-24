@@ -14,9 +14,13 @@ done;
 #have to do this separately since '.vim' is removed from filenames...
 ln -snf $dir/vim $HOME/.vim
 
+# nvim setup
+ln -snf $dir/vim ${XDG_CONFIG_HOME:-~/.config}/nvim
+ln -snf $dir/dotfiles/nvimrc.vim ${XDG_CONFIG_HOME:-~/.config}/nvim/init.vim
+
 #setup autokey
-mkdir -p ~/.config/autokey/data
-(cd ~/.config/autokey/data && ln -sf ~/config/autokey .)
+# mkdir -p ~/.config/autokey/data
+# (cd ~/.config/autokey/data && ln -sf ~/config/autokey .)
 
 #report completion of install script
 echo config installed

@@ -365,7 +365,9 @@ let g:isMac = !g:isLinux
 
 
 "prototype settings {{{1
-set noesckeys
+if !has('nvim')
+  set noesckeys
+endif
 nnoremap <c-k> [{
 nnoremap <c-j> ]}
 
