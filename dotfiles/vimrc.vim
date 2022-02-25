@@ -3,6 +3,11 @@ let mapleader = " "
 set shortmess+=I
 let g:isLinux = system('uname') == "Linux\n"
 let g:isMac = !g:isLinux
+let g:vim = "vim"
+if has('nvim')
+  let g:vim = "nvim"
+endif
+
 
 "plugins {{{1
    "setup vim Plug {{{2
@@ -257,7 +262,7 @@ let g:isMac = !g:isLinux
       "    autocmd BufReadPost fugitive://* set bufhidden=delete
       " augroup END
 
-   "Plug 'vim-scripts/UltiSnips' {{{2
+   "Plug  'SirVer/UltiSnips' {{{2
       Plug 'SirVer/UltiSnips'
       let g:UltiSnipsExpandTrigger="<tab>"
       let g:UltiSnipsJumpForwardTrigger="<tab>"
@@ -530,7 +535,11 @@ endfunc
       let files = files . " ~/.vim/ftplugin/".ft.".vim"
     endif
 
-    exec '!tmux new-window "vim -O ' . files . '"'
+    if has('nvim')
+      let files = "~/.config/nvim/init.vim " . files
+    endif
+
+    exec '!tmux new-window "'.g:vim.' -c \"let g:configMode=1\" -O ' . files . '"'
   endfunc
   augroup ConfigReload
       au!
@@ -979,7 +988,8 @@ endif
   "fast saving/quitting {{{2
     if !exists("g:MySmartQuitDefined")
         func! MySmartQuit()
-          if &diff || !len(bufname('%'))
+          let config = exists("g:configMode") && g:configMode
+          if &diff || !len(bufname('%')) || config
               xa!
           elseif has("gui_running")
               silent bw!
@@ -1125,8 +1135,8 @@ endif
         "let sep = "▓"
         "let sep = "░"
         let sep = " "
-        "let s = " VIM "
-        let s = "     "
+        let s = " ".g:vim." "
+        "let s = "     "
         let selected = tabpagenr()
         let num = tabpagenr('$')
         for i in range(num)

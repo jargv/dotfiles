@@ -1,1 +1,1 @@
-/Users/jgeddes/Dev/config/dotfiles/nvimrc.vim
+/home/j/config/dotfiles/nvimrc.vim

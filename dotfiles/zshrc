@@ -1,4 +1,4 @@
-export TERM=xterm-256color
+export TERM=tmux-256color
 
 if [[ -f ~/.zshlocal ]]; then
   source ~/.zshlocal
@@ -62,7 +62,8 @@ setopt appendhistory inc_append_history share_history hist_ignore_dups
 setopt histignorespace
 
 #vim {{{1
-export EDITOR="vim"
+export EDITOR="nvim"
+alias vim=nvim
 bindkey -v
 #don't stop the backspace at the insert point
 bindkey "^?" backward-delete-char
@@ -141,11 +142,7 @@ sed s/^..//) 2> /dev/null'
 autoload -Uz compinit
 compinit
 
-#{{{2 commands that always use sudo
-alias pacman="sudo pacman"
-alias apt-get="sudo apt-get"
-#{{{2 vim command alias
-#none
+
 #{{{2 git prompt aliases
 if [ -z "$GIT_PROMPT" ]; then
   GIT_PROMPT=0
@@ -164,7 +161,7 @@ alias ll='ls -l'
 alias la='ls -a'
 alias lla='ls -la'
 #{{{2 suffix aliases
-alias -s txt='vim'
+alias -s txt='nvim'
 alias -s sh=sh
 alias -s pdf=chrome
 #}}}

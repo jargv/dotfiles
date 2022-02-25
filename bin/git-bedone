@@ -23,6 +23,6 @@ git commit #-m'commit message'
 #git push"
 
 #let the user edit the script, then execute it
-script=$(echo "$script" | EDITOR=vim vipe)
+script=$(echo "$script" | EDITOR=nvim vipe)
 
 sh -c "$script"
