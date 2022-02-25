@@ -540,7 +540,6 @@ endfunc
   if !exists('*<SID>reloadConfig')
     func <SID>reloadConfig()
       silent source ~/.vimrc
-      silent source ~/config/vim/plugin/fquery.vim
       filetype detect
     endfunc
   endif
