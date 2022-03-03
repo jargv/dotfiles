@@ -801,8 +801,8 @@ endfunc
 au BufWinEnter * if &buftype == 'terminal' | setlocal nonumber | endif
 if has("gui_running")
   nnoremap <leader>. :term ++curwin<cr>
-elseif has("nvim")
-  nnoremap <leader>. :split term://zsh<cr>:startinsert<cr>
+" elseif has("nvim")
+"   nnoremap <leader>. :split term://zsh<cr>:startinsert<cr>
 else
   nnoremap <leader>. :!tmux split-window -p20 <CR><CR>
 endif
