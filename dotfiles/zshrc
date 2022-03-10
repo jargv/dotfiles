@@ -1,4 +1,4 @@
-export TERM=tmux-256color
+export TERM=screen-256color
 
 if [[ -f ~/.zshlocal ]]; then
   source ~/.zshlocal
