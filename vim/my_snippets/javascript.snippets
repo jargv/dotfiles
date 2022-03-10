@@ -2,13 +2,11 @@ snippet todo
 //TODO: $1
 endsnippet
 
-snippet test "spin up some mocha tests" !b
-let assert = require('assert');
-
-describe('something', function(){
-  it('should be something', function(){
-    assert.equal(1,2);
-  });
+snippet test "add a jest test" !b
+describe("$1", () => {
+  test("$2", () => {
+    expect(false).toEqual(true);
+  })
 });
 endsnippet
 snippet log "console.log something" !b
