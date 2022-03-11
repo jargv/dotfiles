@@ -16,7 +16,6 @@ ln -snf $dir/vim $HOME/.vim
 
 # nvim setup
 ln -snf $dir/vim ${XDG_CONFIG_HOME:-~/.config}/nvim
-ln -snf $dir/dotfiles/nvimrc.vim ${XDG_CONFIG_HOME:-~/.config}/nvim/init.vim
 
 #setup autokey
 # mkdir -p ~/.config/autokey/data

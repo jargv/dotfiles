@@ -1,1 +1,1 @@
-/home/j/config/dotfiles/nvimrc.vim
+../dotfiles/nvimrc.vim
