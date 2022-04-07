@@ -179,6 +179,7 @@ export LESS=-RXF
 # export ACK_OPTIONS="--pager=less $ack_ignore_dirs $ack_types"
 export MAKEFLAGS="-j4"
 #export BROWSER=none
+export TIMEFMT=$'\nreal\t%E\nuser\t%U\nsys\t%S'
 
 #{{{1 auto ls every time I cd
 function chpwd() {

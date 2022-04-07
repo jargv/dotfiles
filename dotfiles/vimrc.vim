@@ -726,7 +726,6 @@ endfunc
       call input("press enter when the build has generated...")
     endif
     call <sid>generateMakeFunction()
-    call <sid>TmuxRun('echo detected '.g:makeBuildtool.' '.g:makeTarget)
   endfunc
 
   func! <sid>generateMakeFunction()
@@ -755,7 +754,8 @@ endfunc
       let body = body . "\n\t" . g:browserReloadCommand . " " . g:browserReloadArgs
     endif
 
-    call <sid>TmuxRun("vim_rebuild(){" . body . " }")
+    let message = "echo detected " . g:makeBuildtool . " " . g:makeTarget
+    call <sid>TmuxRun("vim_rebuild(){" . body . " }\n " . message)
   endfunc
 
   func! <sid>clearMakeFunction()

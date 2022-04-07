@@ -1,2 +1,1 @@
---memcheck:leak-check=full
---suppressions=suppressions.supp
+--suppressions=../suppressions.supp

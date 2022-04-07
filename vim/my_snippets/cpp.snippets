@@ -127,7 +127,7 @@ $1& operator= ($1 const&) = delete;
 endsnippet
 
 snippet lm "lambda" w!
-[${2:&}]($1){
+[]($1){
 	${0:${VISUAL}}
 }$3
 endsnippet
@@ -274,13 +274,17 @@ struct $1 {
 };
 endsnippet
 snippet view "make a view" !b
-#pragma once
-#include "ui/ui.hpp"
-
 struct $1ViewConfig {
+  Rc<Font> font;
 };
 
-struct $1View : ui::ViewBase<${1}View, ${1}ViewConfig> {
+struct ${1}View : ui::ViewBase<$1View, $1ViewConfig> {
   using ViewBase::ViewBase;
+  ui::SquareBackground& bg = make_background<ui::SquareBackground>();
+
+  ui::TextView& label = new_child<ui::TextView>({
+    .font = config.font,
+    .text = "$1View is cool",
+  });
 };
 endsnippet
