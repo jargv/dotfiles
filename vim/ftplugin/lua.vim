@@ -1,3 +1,4 @@
+setlocal foldmethod=marker
 inoreab <buffer> += =<SID>opEquals('+')<cr>
 inoreab <buffer> -= =<SID>opEquals('-')<cr>
 inoreab <buffer> /= =<SID>opEquals('/')<cr>
