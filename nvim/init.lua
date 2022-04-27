@@ -30,6 +30,14 @@ vim.g.mapleader = ' ' --space
     -- Packer can manage itself
     use 'wbthomason/packer.nvim'
 
+    -- colorsceme plugins {{{3
+    use 'xolox/vim-misc'
+    use 'xolox/vim-colorscheme-switcher'
+    use 'flazz/vim-colorschemes'
+    use 'trevordmiller/nova-vim'
+    use 'AlessandroYorba/Arcadia'
+    use 'jnurmine/Zenburn'
+
     -- use 'freitass/todo.txt-vim'
     -- use 'junegunn/limelight.vim'
     -- use 'junegunn/goyo.vim'
@@ -46,6 +54,7 @@ vim.g.mapleader = ' ' --space
   if is_setup then
     vim.cmd [[PackerSync]]
   end
+
 
 -- fast config {{{1
 vim.cmd [[
@@ -80,3 +89,38 @@ vim.cmd [[
     endfunc
   endif
 ]]
+-- color settings {{{1
+vim.cmd [[colorscheme neodark | set bg=dark]]
+
+-- window/tab manipulation {{{1
+vim.opt.equalalways = true --automatically resize windows
+
+vim.api.nvim_set_keymap('n', '<leader>=', ':Vexplore!<cr>', {})
+vim.api.nvim_set_keymap('n', '<leader>-', ':Sexplore<cr>', {})
+
+vim.api.nvim_set_keymap('n', '<leader>k', '<c-w>k', {})
+vim.api.nvim_set_keymap('n', '<leader>j', '<c-w>j', {})
+vim.api.nvim_set_keymap('n', '<leader>l', '<c-w>l', {})
+vim.api.nvim_set_keymap('n', '<leader>h', '<c-w>h', {})
+
+vim.api.nvim_set_keymap('n', '<leader>K', '<C-W>K', {})
+vim.api.nvim_set_keymap('n', '<leader>J', '<C-W>J', {})
+vim.api.nvim_set_keymap('n', '<leader>L', '<C-W>L', {})
+vim.api.nvim_set_keymap('n', '<leader>H', '<C-W>H', {})
+
+vim.api.nvim_set_keymap('n', '<leader>w', '<C-W>', {})
+
+vim.api.nvim_set_keymap('n', '<leader>tj', ':call MoveWindowTo#NextTab()<CR>', {})
+vim.api.nvim_set_keymap('n', '<leader>tk', ':call MoveWindowTo#PrevTab()<CR>', {})
+vim.api.nvim_set_keymap('n', '<leader>tn', ':0tabnew<CR>', {})
+vim.api.nvim_set_keymap('n', '<leader>tc', ':tabclose<CR>', {})
+vim.api.nvim_set_keymap('n', '<leader>to', ':tabonly<CR>', {})
+
+vim.api.nvim_set_keymap('n', '<leader><Down>', '<C-W>+', {})
+vim.api.nvim_set_keymap('n', '<leader><Up>', '<C-W>-', {})
+vim.api.nvim_set_keymap('n', '<leader><Left>', '<C-W><', {})
+vim.api.nvim_set_keymap('n', '<leader><Right>', '<C-W>>', {})
+vim.api.nvim_set_keymap('n', '<Down>',  '<C-W>+', {})
+vim.api.nvim_set_keymap('n', '<Up>',    '<C-W>-', {})
+vim.api.nvim_set_keymap('n', '<Left>',  '<C-W><', {})
+vim.api.nvim_set_keymap('n', '<Right>', '<C-W>>', {})

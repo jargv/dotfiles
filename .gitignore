@@ -4,6 +4,7 @@ vim/plug/
 vim/doc/
 
 nvim/pack/
+nvim/plugin/packer_compiled.lua
 
 dotemacs.d/auto-save-list
 dotemacs.d/elpa
