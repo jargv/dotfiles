@@ -11,16 +11,11 @@ for dotfile in dotfiles/*; do
   ln -snf $dir/$dotfile $HOME/.$dest
 done;
 
-#have to do this separately since '.vim' is removed from filenames...
+# vim directory setup
 ln -snf $dir/vim $HOME/.vim
 
-# nvim setup
-ln -snf $dir/vim ${XDG_CONFIG_HOME:-~/.config}/nvim
+# nvim directory setup
+ln -snf $dir/nvim ${XDG_CONFIG_HOME:-~/.config}/nvim
 
-#setup autokey
-# mkdir -p ~/.config/autokey/data
-# (cd ~/.config/autokey/data && ln -sf ~/config/autokey .)
-
-#report completion of install script
 echo config installed
 echo "don't forget tpm ~/config/setup/tpm.sh"

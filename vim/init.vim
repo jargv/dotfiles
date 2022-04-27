@@ -1,1 +1,0 @@
-../dotfiles/nvimrc.vim

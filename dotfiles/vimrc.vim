@@ -535,7 +535,7 @@ endfunc
     endif
 
     if has('nvim')
-      let files = "~/.config/nvim/init.vim " . files
+      let files = "~/.config/nvim/init.lua " . files
     endif
 
     exec '!tmux new-window "'.g:vim.' -c \"let g:configMode=1\" -O ' . files . '"'
