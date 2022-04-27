@@ -161,7 +161,6 @@ endif
    let g:ale_fixers = {
          \   'javascript': ['prettier'],
          \   'typescript': ['prettier'],
-         \   'html': ['prettier'],
          \   'css': ['prettier'],
          \   'go': ['goimports'],
          \}
@@ -678,12 +677,13 @@ endfunc
       let waitForBuild = 1
     elseif filereadable("CMakeLists.txt")
       if !isdirectory("build")
-        call <SID>TmuxRun("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && cd ..")
+        "call <SID>TmuxRun("mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && cd ..")
+        call <SID>TmuxRun("mkdir -p build && cd build && cmake -GNinja -DCMAKE_BUILD_TYPE=DEBUG -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && cd ..")
         call system("ln -sf build/compile_commands.json .")
       endif
       let waitForBuild = 1
       let g:makeDirectory .= "/build"
-      let g:makeBuildtool = "make"
+      let g:makeBuildtool = "cmake --build ."
     elseif expand('%:e') == "go"
       let testExt = "_test.go"
       let file = expand('%:p')

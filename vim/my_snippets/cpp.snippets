@@ -154,9 +154,12 @@ $1 $2($1 val){
 $0
 endsnippet
 
-snippet test_main "make the main file of a catch test" !b
-#define CATCH_CONFIG_MAIN
-#include "catch2/catch.hpp"
+snippet test "make a new catch test" !b
+#include <catch2/catch_test_macros.hpp>
+
+TEST_CASE( "Test Case", "[some tag]" ) {
+  REQUIRE( 42 == 38 );
+}
 endsnippet
 
 snippet check "check call" !b
