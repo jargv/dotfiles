@@ -330,6 +330,7 @@ nnoremap <silent> <leader>Y
 nnoremap <silent> <leader>y <cmd>call FollowLspErrors()<cr>
 func FollowLspErrors()
   ToggleDiagDefault
+  cclose
   lua vim.diagnostic.setqflist({open = false})
   cwindow
   if &ft == "qf"
@@ -338,6 +339,7 @@ func FollowLspErrors()
 endfunction
 
 nnoremap <leader>rn :lua vim.lsp.buf.rename(vim.fn.input('>'))<cr>
+nnoremap <leader>rf :lua vim.lsp.buf.code_action()<cr>
 
   "color settings {{{1
   set termguicolors
