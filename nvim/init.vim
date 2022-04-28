@@ -277,8 +277,8 @@ let g:isMac = !g:isLinux
         let g:MarkingToolsState = ''
       endif
       let g:gitgutter_map_keys = 0
+      let g:gitgutter_set_sign_backgrounds = 0
       Plug 'airblade/vim-gitgutter'
-      highlight clear SignColumn
       func! GitAdjacentChange(next)
         if &diff
           if a:next
@@ -408,17 +408,19 @@ cmp.setup({
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  "colorscheme nova | set bg=dark
+  colorscheme summerfruit256 | set bg=light
+  "colorscheme ironman | set bg=light
+  "colorscheme nova | set bg=light
   "colorscheme rdark | set bg=dark
   "colorscheme oceanlight
   "colorscheme OceanicNext | set bg=dark
   "colorscheme rakr-light | set bg=light
   "colorscheme afterglow | set bg=dark
   "colorscheme neodark | set bg=dark
-  colorscheme nord | set bg=dark
-  "let g:arcadia_Pitch=1
-  "colorscheme arcadia | set bg=dark
-  highlight MatchParen cterm=inverse ctermbg=black
+  "colorscheme nord | set bg=dark
+  " let g:arcadia_Pitch=3
+  " colorscheme arcadia | set bg=dark
+  "highlight MatchParen cterm=inverse ctermbg=black
   ":NoMatchParen
   let g:loaded_matchparen = 1
 
@@ -437,10 +439,13 @@ cmp.setup({
   "highlight Comment cterm=italic
 
 
+"signcolumn settings {{{1
+highlight! clear SignColumn
+highlight link SignColumn LineNr
+"highlight SignColumn ctermbg=blue ctermfg=white
+set signcolumn=number
+
 "prototype settings {{{1
-if !has('nvim')
-  set noesckeys
-endif
 nnoremap <c-k> [{
 nnoremap <c-j> ]}
 
