@@ -1,0 +1,9 @@
+snippet mod "module" !b
+%module ${1:foo}
+%{
+#include "$2$1.hpp"
+%}
+
+%include <std_string.i>
+%include "$2$1.hpp"
+endsnippet

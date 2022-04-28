@@ -1,0 +1,43 @@
+snippet fn "function" !w
+function$1($2)
+  $3
+end
+endsnippet
+snippet lm "lambda function" !w
+function($1)
+  $0
+end
+endsnippet
+snippet if "conditional" !b
+if ${1:false} then
+  $0
+end
+
+endsnippet
+snippet class "Make a class" !b
+local method = {}
+local meta = {__index=method}
+local function ${1:foo}()
+  return setmetatable({
+    $0
+  }, meta)
+end
+endsnippet
+snippet r "require something" !b
+local ${1:module} = require "$3${2:$1}"
+$0
+endsnippet
+snippet for "for loop" !b
+for ${3:i}, ${2:val} in $4pairs($1) do
+  $0
+end
+endsnippet
+snippet l "print variables" !b
+print("$1 => ", ${1})
+endsnippet
+snippet log "print text" !b
+print "$1"
+endsnippet
+snippet type "type assert" !b
+assert(type($1) == '$2', 1)
+endsnippet

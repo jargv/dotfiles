@@ -1,0 +1,32 @@
+snippet compose "docker-compose" !b
+service:
+  #use either build or image
+  build: /path/to/DockerFile
+  image: ubuntu
+
+  #running
+  command: command to run
+  env_file: /file/of/env/variables
+  environment:
+    ENV: variable
+    SECRET_KEY: #will be grabbed from host on run
+
+  #interfacing
+  expose: #ports only exposed to linked services
+    - "3000"
+    - "8000"
+  ports:  #ports exposed to the outside world HOST:CONTAINER
+    - "80:3000"
+  links:
+    - db:postgres
+    - redis
+  volumes: # HOST:CONTAINER
+    - ./data:/var/lib/postgresql/data
+    - ./src:/code
+endsnippet
+snippet goose "goose config" !b
+#dbconf.yml
+development:
+  driver: postgres
+  open: user=postgres dbname=prototype sslmode=disable
+endsnippet

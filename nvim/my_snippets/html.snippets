@@ -1,0 +1,113 @@
+snippet # "mustache block" !b
+{{#$1}}
+  $2
+{{/$1}}
+endsnippet
+snippet html "Description" !b
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing: border-box;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -o-user-select: none;
+      user-select: none;
+    }
+    body {
+      font-size: 18px;
+      font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+      font-weight: 300;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="bundle.js"></script>
+</body>
+</html>
+endsnippet
+snippet clear "Description" !b
+<style>
+  *{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+  }
+  body {
+    font-size: 18px;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-weight: 300;
+    background: black;
+    overflow-x: hidden;
+  }
+</style>
+endsnippet
+snippet < "tag" !b
+<$1>
+  $0
+</${1/\ .*$//}>
+endsnippet
+snippet </ "self closing tag" !b
+<$1/>
+endsnippet
+snippet j "tag" !w
+<$1>
+  ${0:${VISUAL}}
+</${1/\ .*$//}>
+endsnippet
+snippet lorem "Lorem Ipsum" !b
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed elementum ipsum at
+nisl pulvinar luctus. Nullam ac massa et elit pulvinar suscipit vitae quis
+dolor. Phasellus varius ipsum et nisl accumsan in vehicula nisi convallis.
+Curabitur ante ligula, tempus non luctus quis, condimentum ut nibh. Nulla
+facilisi. Pellentesque et est nisi. Fusce cursus nisl at nulla feugiat vel
+pulvinar tellus rhoncus. Vivamus elit lorem, iaculis at dignissim id, venenatis
+at urna. Vestibulum volutpat posuere nibh, ac congue ligula fringilla non.
+Pellentesque nec auctor orci. Nullam ultricies, tellus vitae viverra elementum,
+ante metus facilisis sapien, in sagittis lorem risus vel lacus.
+
+Sed sapien massa, hendrerit in pretium quis, imperdiet ut augue. Suspendisse
+potenti. Pellentesque ut arcu non mi vestibulum pellentesque. Curabitur eu
+felis quam, tincidunt varius nibh.  Quisque quis orci tortor, eu elementum
+quam. Integer bibendum turpis ac felis dapibus quis interdum nulla egestas.
+Aliquam dignissim feugiat risus nec consectetur. Praesent iaculis, mi ac ornare
+mollis, mi nisl condimentum turpis, id fermentum purus mauris in nisi. Morbi
+gravida, arcu ac bibendum pellentesque, elit dui viverra orci, vel fringilla
+mauris lectus sed arcu.  Vestibulum consectetur gravida nulla interdum
+ullamcorper. Fusce semper iaculis neque sit amet pulvinar. Aliquam interdum
+mauris a odio lacinia porttitor. Ut id nisi felis, placerat scelerisque orci.
+Donec sapien arcu, mollis eget venenatis vitae, eleifend quis leo. Praesent
+eleifend, nulla et scelerisque sagittis, justo urna porttitor eros, id
+hendrerit lacus odio placerat eros. Fusce sed mi enim, non ultrices dui. Cras
+in leo lectus. Sed elit nulla, imperdiet tincidunt consequat quis, imperdiet eu
+ante. Maecenas in ligula sit amet erat faucibus aliquam a et augue. Aliquam sed
+fringilla nulla.
+
+Vivamus vehicula, elit sed ultricies vestibulum, tellus arcu suscipit magna, et
+malesuada quam risus id velit. In sit amet arcu vel risus posuere scelerisque
+at vel mauris. Etiam in tellus justo, sed cursus massa. Mauris eget suscipit
+mauris. Proin vestibulum, quam in accumsan eleifend, turpis ante imperdiet
+erat, vel porttitor nulla eros vel nisl.  Nulla varius pharetra dui, in
+elementum turpis lobortis semper. Nulla congue dolor et lorem adipiscing
+feugiat. Curabitur ligula urna, tempus at venenatis ut, tristique ac libero.
+Sed eget neque elit, et dapibus turpis. Nunc sapien metus, varius et elementum
+quis, aliquam sit amet arcu. Sed quis orci quis nisl consectetur gravida nec
+sit amet metus. In blandit porttitor est, sit amet cursus tortor molestie
+vitae.
+endsnippet
+# snippet "[a-zA-Z-]+" "Description" !br
+#   <${1:`!p
+# snip.rv = match.group()
+# `} $2>$3</$1>
+# endsnippet

@@ -1,0 +1,5 @@
+
+
+
+
+inoremap <buffer> $ $()F$la

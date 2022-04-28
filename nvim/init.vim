@@ -12,7 +12,7 @@ endif
 "plugins {{{1
    "setup vim Plug {{{2
       "install setup {{{3
-         let plugDir = "~/.vim/plug"
+         let plugDir = "~/config/nvim/plug"
          let plugDoInstall = 0
          if !isdirectory(expand(plugDir))
             let plugUrl = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
@@ -23,8 +23,8 @@ endif
       "normal setup {{{3
          filetype off
          "set runtimepath=$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,~/.vim/plug/plug
-         set runtimepath+=~/.vim/plug/plug
-         call plug#begin('~/.vim/plug')
+         set runtimepath+=~/config/nvim/plug/plug
+         call plug#begin('~/config/nvim/plug')
       "}}}
    "}}}
 
@@ -268,7 +268,7 @@ endif
       let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
       let g:UltiSnipsEditSplit = 'vertical'
-      let g:UltiSnipsSnippetsDir = '~/config/vim/my_snippets'
+      let g:UltiSnipsSnippetsDir = '~/config/nvim/my_snippets'
 
       let g:UltiSnipsSnippetDirectories=["my_snippets"]
 
@@ -326,8 +326,8 @@ endif
   "Run plugin setup {{{2
     call plug#end()
     "my shiz should override EVERYTHING
-    set runtimepath-=~/.vim "remove first so that the add occurs at the end
-    set runtimepath+=~/.vim
+    set runtimepath-=~/config/nvim "remove first so that the add occurs at the end
+    set runtimepath+=~/config/nvim
 
     filetype plugin indent on
     if plugDoInstall
@@ -543,7 +543,7 @@ endfunc
 
   if !exists('*<SID>reloadConfig')
     func <SID>reloadConfig()
-      silent source ~/.vimrc
+      silent source ~/config/nvim/init.vim
       filetype detect
     endfunc
   endif
@@ -1011,8 +1011,6 @@ endif
     func! <SID>Format()
         normal Vgq
     endfunc
-  "learn more vim! {{{2
-    nnoremap <leader><F3> :tabe ~/config/vim/bookmark.vim<cr> :source %<cr><cr>
 
   "incr/decr then save{{{2
     noremap  :w<CR>

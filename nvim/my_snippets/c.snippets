@@ -1,0 +1,65 @@
+snippet once "#pragma once" !b
+#pragma once
+$0
+endsnippet
+snippet inc "include the corresponding header" !b
+#include "`!v expand('%:t:r')`.h"
+endsnippet
+snippet if "conditional" !b
+if (${1:true}){
+	${VISUAL}$2
+}
+endsnippet
+
+snippet ifc "conditional" !b
+if (${1:${VISUAL}}){
+	$2
+}
+endsnippet
+snippet while "loop" !b
+while (${1:true}){
+	${VISUAL}$2
+}
+endsnippet
+
+snippet whilec "conditional" !b
+while (${1:${VISUAL}}){
+	$2
+}
+endsnippet
+snippet for "for loop" !b
+for (int ${1:i} = 0; $1 < $2; $1++){
+	${3:${VISUAL}}
+}
+endsnippet
+
+snippet ifor "index for loop" !b
+for (size_t ${2:i} = 0; $2 < ${1:10}; ++$2){
+	${3:${VISUAL}}
+}
+endsnippet
+snippet main "quick main function" !b
+#include <stdio.h>
+
+int main(int argc, char** argv){
+	printf("main!\n");
+	return 0;
+}
+endsnippet
+snippet tds "typedef struct" !b
+typedef struct $1 {
+  $2
+} $1;$0
+endsnippet
+snippet tde "typedef enum" !b
+typedef enum $1 {
+  $2
+} $1;$0
+endsnippet
+
+
+snippet type "Make a new opaque type" !b
+typedef struct $1 $1;
+$1* ${1/.*/\L$0\E/}_create();
+void ${1/.*/\L$0\E/}_free(${1}*);
+endsnippet
