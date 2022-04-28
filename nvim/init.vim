@@ -334,9 +334,12 @@ let g:isMac = !g:isLinux
   "}}}
 
 " lsp config {{{1
-lua require('lspconfig').clangd.setup{}
-lua vim.diagnostic.config({signs = false, virtual_text = false, underline = false})
-lua require'toggle_lsp_diagnostics'.init({signs = false, virtual_text = true, underline = true})
+if !exists('g:lsp_configured')
+  lua require('lspconfig').clangd.setup{}
+  lua vim.diagnostic.config({signs = false, virtual_text = false, underline = false})
+  lua require'toggle_lsp_diagnostics'.init({signs = false, virtual_text = true, underline = true})
+  let g:lsp_configured = 1
+endif
 
 nnoremap <silent> <leader>Y
       \ <cmd>ToggleDiagOff<cr>
