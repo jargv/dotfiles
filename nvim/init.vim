@@ -3,11 +3,6 @@ let mapleader = " "
 set shortmess+=I
 let g:isLinux = system('uname') == "Linux\n"
 let g:isMac = !g:isLinux
-let g:vim = "vim"
-if has('nvim')
-  let g:vim = "nvim"
-endif
-
 
 "plugins {{{1
    "setup vim Plug {{{2
@@ -36,7 +31,7 @@ endif
    " Plug 'rust-lang/rust.vim'
    " Plug 'racer-rust/vim-racer'
    let g:racer_experimental_completer = 1
-   let g:ycm_rust_src_path = '~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
+   "let g:ycm_rust_src_path = '~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
 
    "go {{{3
    "Plug 'jargv/vim-go-error-folds'
@@ -118,108 +113,110 @@ endif
    Plug 'jnurmine/Zenburn'
    "}}}
 
-   Plug 'freitass/todo.txt-vim'
-   Plug 'junegunn/limelight.vim'
-   Plug 'junegunn/goyo.vim'
-   Plug 'Raimondi/delimitMate'
-   Plug 'PeterRincker/vim-argumentative'
-   Plug 'reedes/vim-pencil'
-   Plug 'tpope/vim-obsession'
-   Plug 'tpope/vim-surround'
-   Plug 'tpope/vim-commentary'
-   Plug 'will133/vim-dirdiff'
+    Plug 'freitass/todo.txt-vim'
+    Plug 'junegunn/limelight.vim'
+    Plug 'junegunn/goyo.vim'
+    Plug 'Raimondi/delimitMate'
+    Plug 'PeterRincker/vim-argumentative'
+    Plug 'reedes/vim-pencil'
+    Plug 'tpope/vim-obsession'
+    Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-commentary'
+    Plug 'will133/vim-dirdiff'
 
-   "Plug 'puremourning/vimspector' {{{2
-   "Plug 'puremourning/vimspector'
-   let g:vimspector_install_gadgets = [ 'vscode-cpptools' ]
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
 
-   nmap <leader>rr :call vimspector#Launch()<cr>
-   nmap <leader>rq :VimspectorReset<cr>
-   nmap <leader>rc <Plug>VimspectorContinue
-   nmap <leader>rS <Plug>VimspectorStop
-   nmap <leader>rs <Plug>VimspectorRestart
-   nmap <leader>rp <Plug>VimspectorPause
-   nmap <leader>rt <Plug>VimspectorToggleBreakpoint
-   nmap <leader>r? <Plug>VimspectorToggleConditionalBreakpoint
-   nmap <leader>rb <Plug>VimspectorAddFunctionBreakpoint
-   nmap <leader>rj <Plug>VimspectorStepOver
-   nmap <leader>rl <Plug>VimspectorStepInto
-   nmap <leader>rk <Plug>VimspectorStepOut
-   nmap <leader>rr <Plug>VimspectorRunToCursor
+  "Plug 'puremourning/vimspector' {{{2
+  "Plug 'puremourning/vimspector'
+  let g:vimspector_install_gadgets = [ 'vscode-cpptools' ]
 
-   "Plug 'mazubieta/gitlink-vim' {{{2
-   Plug 'mazubieta/gitlink-vim'
-   function! CopyGitLink(...) range
-     redir @+
-     echo gitlink#GitLink(get(a:, 1, 0))
-     redir END
-   endfunction
-   nmap <leader>gl :call CopyGitLink()<CR>
-   vmap <leader>gl :call CopyGitLink(1)<CR>
+  nmap <leader>rr :call vimspector#Launch()<cr>
+  nmap <leader>rq :VimspectorReset<cr>
+  nmap <leader>rc <Plug>VimspectorContinue
+  nmap <leader>rS <Plug>VimspectorStop
+  nmap <leader>rs <Plug>VimspectorRestart
+  nmap <leader>rp <Plug>VimspectorPause
+  nmap <leader>rt <Plug>VimspectorToggleBreakpoint
+  nmap <leader>r? <Plug>VimspectorToggleConditionalBreakpoint
+  nmap <leader>rb <Plug>VimspectorAddFunctionBreakpoint
+  nmap <leader>rj <Plug>VimspectorStepOver
+  nmap <leader>rl <Plug>VimspectorStepInto
+  nmap <leader>rk <Plug>VimspectorStepOut
+  nmap <leader>rr <Plug>VimspectorRunToCursor
 
-   "Plug 'dense-analysis/ale' {{{2
-   let g:ale_fixers = {
-         \   'javascript': ['prettier'],
-         \   'typescript': ['prettier'],
-         \   'css': ['prettier'],
-         \   'go': ['goimports'],
-         \}
-         "\   'c': ['clang-format', 'clangtidy'],
-   let g:ale_linters_explicit = 1
-   let g:ale_fix_on_save = 1
-   let g:ale_completion_autoimport = 1
-   Plug 'dense-analysis/ale'
+  "Plug 'mazubieta/gitlink-vim' {{{2
+  Plug 'mazubieta/gitlink-vim'
+  function! CopyGitLink(...) range
+    redir @+
+    echo gitlink#GitLink(get(a:, 1, 0))
+    redir END
+  endfunction
+  nmap <leader>gl :call CopyGitLink()<CR>
+  vmap <leader>gl :call CopyGitLink(1)<CR>
 
-   "Plug 'Valloric/YouCompleteMe' {{{2
-   command! YouCompleteMeInstall
-         \ :!cd ~/.vim/plug/YouCompleteMe
-         \ && git submodule update --init --recursive
-         \ && ./install.py
-         \ --clang-completer
-         \ --ts-completer
-         \ --go-completer
+  "Plug 'dense-analysis/ale' {{{2
+  let g:ale_fixers = {
+        \   'javascript': ['prettier'],
+        \   'typescript': ['prettier'],
+        \   'css': ['prettier'],
+        \   'go': ['goimports'],
+        \}
+        "\   'c': ['clang-format', 'clangtidy'],
+  let g:ale_linters_explicit = 1
+  let g:ale_fix_on_save = 1
+  let g:ale_completion_autoimport = 1
+  Plug 'dense-analysis/ale'
 
-   Plug 'Valloric/YouCompleteMe'
-   "let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
-   let g:ycm_min_num_identifier_candidate_chars = 0
-   let g:ycm_filetype_whitelist = {'cpp':1, 'hpp':1, 'typescript':1, 'typescript.tsx':1, 'c':1, 'h':1, 'go':1}
-   let g:ycm_show_diagnostics_ui = 0
-   let g:ycm_enable_diagnostic_signs = 0
-   let g:ycm_autoclose_preview_window_after_completion = 0
-   let g:ycm_autoclose_preview_window_after_insertion = 0
-   let g:ycm_use_ultisnips_completer = 1
-   let g:ycm_key_list_select_completion = ['<C-N>']
-   let g:ycm_key_list_previous_completion = ['<C-P>']
-   let g:ycm_echo_current_diagnostic = 0
-   let g:ycm_clangd_args = ['-cross-file-rename']
-   let g:ycm_clangd_binary_path = exepath("clangd")
-   let g:ycm_clangd_uses_ycmd_caching = 0
+  "Plug 'Valloric/YouCompleteMe' {{{2
+  command! YouCompleteMeInstall
+        \ :!cd ~/.vim/plug/YouCompleteMe
+        \ && git submodule update --init --recursive
+        \ && ./install.py
+        \ --clang-completer
+        \ --ts-completer
+        \ --go-completer
 
-   let g:ycm_add_preview_to_completeopt = 0
-   let g:ycm_min_num_of_chars_for_completion = 1
-   let g:ycm_auto_trigger = 1
-   let g:ycm_disable_signature_help = 0
-   let g:ycm_auto_hover = ''
+  "Plug 'Valloric/YouCompleteMe'
+  ""let g:ycm_min_num_identifier_candidate_chars = 99 "only complete on '.' or '->'
+  "let g:ycm_min_num_identifier_candidate_chars = 0
+  "let g:ycm_filetype_whitelist = {'cpp':1, 'hpp':1, 'typescript':1, 'typescript.tsx':1, 'c':1, 'h':1, 'go':1}
+  "let g:ycm_show_diagnostics_ui = 0
+  "let g:ycm_enable_diagnostic_signs = 0
+  "let g:ycm_autoclose_preview_window_after_completion = 0
+  "let g:ycm_autoclose_preview_window_after_insertion = 0
+  "let g:ycm_use_ultisnips_completer = 1
+  "let g:ycm_key_list_select_completion = ['<C-N>']
+  "let g:ycm_key_list_previous_completion = ['<C-P>']
+  "let g:ycm_echo_current_diagnostic = 0
+  "let g:ycm_clangd_args = ['-cross-file-rename']
+  "let g:ycm_clangd_binary_path = exepath("clangd")
+  "let g:ycm_clangd_uses_ycmd_caching = 0
 
-   augroup YCMCCustom
-     autocmd!
-     autocmd FileType c,cpp let b:ycm_hover = {
-           \ 'command': 'GetDoc',
-           \ 'syntax': &filetype
-           \ }
-   augroup END
+  "let g:ycm_add_preview_to_completeopt = 0
+  "let g:ycm_min_num_of_chars_for_completion = 1
+  "let g:ycm_auto_trigger = 1
+  "let g:ycm_disable_signature_help = 0
+  "let g:ycm_auto_hover = ''
 
-   nmap <leader>;t <plug>(YCMHover)
-   nnoremap <leader>;T :YcmCompleter GetType<cr>
-   nnoremap <leader>;d :YcmCompleter GetDoc<cr>
-   nnoremap <leader>;u :YcmCompleter GoToReferences<cr>
-   nnoremap <leader>;f :YcmCompleter FixIt<cr>
-   nnoremap <leader>;n :exec "YcmCompleter RefactorRename ".input(">", expand("<cword>"))<cr>
-   nnoremap gd :YcmCompleter GoTo<cr>
-   nnoremap <leader>;i :YcmCompleter OrganizeImports <cr>
+  "augroup YCMCCustom
+  "  autocmd!
+  "  autocmd FileType c,cpp let b:ycm_hover = {
+  "        \ 'command': 'GetDoc',
+  "        \ 'syntax': &filetype
+  "        \ }
+  "augroup END
 
-  " configured plugins
-  "
+  "nmap <leader>;t <plug>(YCMHover)
+  "nnoremap <leader>;T :YcmCompleter GetType<cr>
+  "nnoremap <leader>;d :YcmCompleter GetDoc<cr>
+  "nnoremap <leader>;u :YcmCompleter GoToReferences<cr>
+  "nnoremap <leader>;f :YcmCompleter FixIt<cr>
+  "nnoremap <leader>;n :exec "YcmCompleter RefactorRename ".input(">", expand("<cword>"))<cr>
+  "nnoremap gd :YcmCompleter GoTo<cr>
+  "nnoremap <leader>;i :YcmCompleter OrganizeImports <cr>
+
+" configured plugins
   "Plug 'dhruvasagar/vim-table-mode' {{{2
     let g:table_mode_map_prefix = "<Leader>tt"
     Plug 'dhruvasagar/vim-table-mode'
@@ -336,6 +333,26 @@ endif
     endif
   "}}}
 
+" lsp config {{{1
+lua require('lspconfig').clangd.setup{}
+lua vim.diagnostic.config({signs = false, virtual_text = false, underline = false})
+lua require'toggle_lsp_diagnostics'.init({signs = false, virtual_text = true, underline = true})
+
+nnoremap <silent> <leader>Y
+      \ <cmd>ToggleDiagOff<cr>
+      \ <cmd>cclose<cr>
+
+nnoremap <silent> <leader>y <cmd>call FollowLspErrors()<cr>
+func FollowLspErrors()
+  ToggleDiagDefault
+  lua vim.diagnostic.setqflist({open = false})
+  cwindow
+  if &ft == "qf"
+    normal 
+  endif
+endfunction
+
+
   "color settings {{{1
   set termguicolors
   set t_ut= "fix the weird background erasing crap
@@ -442,8 +459,6 @@ endfunc
 
   "spell check {{{2
   set spelllang=en_us nospell
-  " jump to the previous misspelled error
-  nnoremap <leader>y [sciw<esc>:echo @"<cr>a
   "buffers{{{2
   set autoread
   set splitbelow splitright
@@ -534,7 +549,7 @@ endfunc
       let files = files . " ~/config/nvim/ftplugin/".ft.".vim"
     endif
 
-    exec '!tmux new-window "'.g:vim.' -c \"let g:configMode=1\" -O ' . files . '"'
+    exec '!tmux new-window "nvim -c \"let g:configMode=1\" -O ' . files . '"'
   endfunc
   augroup ConfigReload
       au!
@@ -543,6 +558,7 @@ endfunc
 
   if !exists('*<SID>reloadConfig')
     func <SID>reloadConfig()
+      lua require('reset_modules')()
       silent source ~/config/nvim/init.vim
       filetype detect
     endfunc
@@ -565,10 +581,18 @@ endfunc
     let g:tmux_pane_id=""
   endfunc
 
+  func! <SID>MakeOnSave()
+    if g:makeOnSave == 0
+      return
+    elseif g:makeOnSave == 1
+      call <sid>RunMake()
+    endif
+  endfunc
+
   "autocommand on save
   augroup MakeOnSaveGroup
      autocmd!
-     autocmd BufWritePost * :if g:makeOnSave | call <SID>RunMake() | endif
+     autocmd BufWritePost * call <sid>MakeOnSave()
   augroup END
 
   "ensure the variables always exist
@@ -578,7 +602,7 @@ endfunc
 
   nnoremap <leader>m :cclose<CR>:call <SID>RunMake()<CR><CR><CR>
   nnoremap <leader>MM :call <SID>DetectBuildTool()<cr>
-  nnoremap <leader>e :call <SID>CollectErrors()<cr>
+  nnoremap <leader>e :call <SID>CollectErrors()<cr><cr>
   nnoremap <leader>Ms :call <SID>ToggleMakeOnSave()<cr>
 
   nnoremap <leader>Mq :call <sid>clearMakeFunction()<cr>:call <sid>InitMyMake()<cr>
@@ -660,7 +684,6 @@ endfunc
 
   func! <SID>DetectBuildTool()
     call <SID>InitMyMake()
-    let g:makeOnSave = 1
     let g:makeDirectory = getcwd()
     let waitForBuild = 0
     if filereadable("meson.build")
@@ -1129,7 +1152,7 @@ endif
         "let sep = "▓"
         "let sep = "░"
         let sep = " "
-        let s = " ".g:vim." "
+        let s = " nvim "
         "let s = "     "
         let selected = tabpagenr()
         let num = tabpagenr('$')
@@ -1296,3 +1319,6 @@ endif
 
 " abolish tildes at end of file {{{1
 hi EndOfBuffer ctermfg=bg ctermbg=bg guifg=bg
+
+" require the lua configs {{{1
+lua require("lsp_setup")
