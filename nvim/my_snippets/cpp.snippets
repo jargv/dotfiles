@@ -11,6 +11,11 @@ for (int ${2:i} = 0; $2 < ${1:items}.size(); ++$2){
   ${4:${VISUAL}}
 }
 endsnippet
+snippet forin "foreach loop" !b
+for (auto $1 : $2){
+  $0
+}
+endsnippet
 snippet ctor "Make a constructor for the current class" !b
 ${1:`!v
   get(matchlist(getline(search('^\s*class\s*\([A-Z]\w*\)', 'bWn')), '\s*class\s*\([A-Z]\w*\)'), 1, '')

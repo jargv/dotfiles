@@ -127,6 +127,12 @@ let g:isMac = !g:isLinux
     Plug 'neovim/nvim-lspconfig'
     Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
 
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'hrsh7th/cmp-buffer'
+    Plug 'hrsh7th/cmp-path'
+    Plug 'hrsh7th/nvim-cmp'
+    Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+
   "Plug 'mazubieta/gitlink-vim' {{{2
   Plug 'mazubieta/gitlink-vim'
   function! CopyGitLink(...) range
@@ -203,10 +209,6 @@ let g:isMac = !g:isLinux
     let g:table_mode_map_prefix = "<Leader>tt"
     Plug 'dhruvasagar/vim-table-mode'
 
-
-  "Plug 'ervandew/supertab' {{{2
-    Plug 'ervandew/supertab'
-    let g:SuperTabDefaultCompletionType = "context"
    "Plug 'terryma/vim-expand-region' {{{2
    Plug 'terryma/vim-expand-region'
    vmap v <Plug>(expand_region_expand)
@@ -317,10 +319,15 @@ let g:isMac = !g:isLinux
 
 " lsp config {{{1
 if !exists('g:lsp_configured')
-  lua require('lspconfig').clangd.setup{}
-  lua vim.diagnostic.config({signs = false, virtual_text = false, underline = false})
-  lua require'toggle_lsp_diagnostics'.init({signs = false, virtual_text = true, underline = true})
-  let g:lsp_configured = 1
+lua <<
+  local capabilities = require'cmp_nvim_lsp'.update_capabilities(
+    vim.lsp.protocol.make_client_capabilities()
+  )
+  require('lspconfig').clangd.setup{capabilities = capabilities}
+  vim.diagnostic.config({signs = false, virtual_text = false, underline = false})
+  require'toggle_lsp_diagnostics'.init({signs = false, virtual_text = true, underline = true})
+.
+let g:lsp_configured = 1
 endif
 
 nnoremap <silent> <leader>Y
@@ -348,6 +355,55 @@ nmap gt <cmd>lua vim.lsp.buf.type_definition()<cr>
 nmap gu <cmd>lua vim.lsp.buf.references()<cr>
 nmap gh <cmd>lua vim.lsp.buf.hover()<cr>
 
+"Setup nvim-cmp {{{1
+lua <<
+local cmp = require 'cmp'
+-- local cmp_ultisnips_mappings = require 'cmp_nvim_ultisnips.mappings'
+
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      vim.fn["UltiSnips#Anon"](args.body)
+    end,
+  },
+  window = {
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<Tab>'] = function(fallback)
+      if
+        vim.fn["UltiSnips#CanExpandSnippet"]() == 1 or
+        vim.fn["UltiSnips#CanJumpForwards"]() == 1
+      then
+        fallback()
+      elseif cmp.visible() then
+        cmp.select_next_item()
+      else
+        cmp.complete()
+      end
+    end,
+    ['<S-Tab>'] = function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      else
+        fallback()
+      end
+    end,
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+  }),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    -- { name = 'ultisnips' },
+    -- { name = 'buffer' },
+  })
+})
+.
+
   "color settings {{{1
   set termguicolors
   set t_ut= "fix the weird background erasing crap
@@ -358,7 +414,8 @@ nmap gh <cmd>lua vim.lsp.buf.hover()<cr>
   "colorscheme OceanicNext | set bg=dark
   "colorscheme rakr-light | set bg=light
   "colorscheme afterglow | set bg=dark
-  colorscheme neodark | set bg=dark
+  "colorscheme neodark | set bg=dark
+  colorscheme nord | set bg=dark
   "let g:arcadia_Pitch=1
   "colorscheme arcadia | set bg=dark
   highlight MatchParen cterm=inverse ctermbg=black
@@ -931,15 +988,15 @@ endif
     nnoremap == ==j
     nnoremap 0 ^
     nnoremap Y y$
-    vnoremap R r<space>R
-    vnoremap & :&<cr>
+    xnoremap R r<space>R
+    xnoremap & :&<cr>
     nnoremap * :let @/ = '\<'.expand("<cword>").'\>'<CR>:set hlsearch<CR>:echo<CR>
     "todo: make this work
-    "vnoremap * :let @/ = '\<'.expand("<cword>").'\>'<CR>:set hlsearch<CR>:echo<CR>
+    "xnoremap * :let @/ = '\<'.expand("<cword>").'\>'<CR>:set hlsearch<CR>:echo<CR>
 
   "control-move text{{{2
-    vnoremap <C-j> xp'[V']
-    vnoremap <C-k> xkP'[V']
+    xnoremap <C-j> xp'[V']
+    xnoremap <C-k> xkP'[V']
   "git mappings {{{2
     nnoremap <leader>gD :!tmux new-window "git difftool -w"<cr><cr>
     nnoremap <leader>gd :!tmux new-window "git difftool -w %"<CR><CR>
@@ -961,7 +1018,7 @@ endif
 
   "make use of Q for quick system-clipboard copying{{{2
     nnoremap Q ggVG
-    vnoremap Q "+y
+    xnoremap Q "+y
   "uppercase words {{{2
     inoremap <c-u> <esc>vbgU`>a
     nnoremap <c-u> gUiw
@@ -1007,7 +1064,7 @@ endif
     nnoremap <expr> <silent> <leader>N ((len(getqflist()) ? ":cnf" : ":lnf")."<CR>")
     nnoremap <expr> <silent> <leader>P ((len(getqflist()) ? ":cpf" : ":lpf")."<CR>")
   "K as the opposite of Join {{{2
-    vnoremap <silent> K <Nop>
+    xnoremap <silent> K <Nop>
     nnoremap <silent> K :call <SID>Format() <CR>
     func! <SID>Format()
         normal Vgq
@@ -1220,22 +1277,22 @@ endif
     set statusline+=%{GetTerseCwd()}\        "working dir on the right
 "text objects {{{1
    "line (il/al) {{{2
-      vnoremap il :<C-U>silent! normal 0v$<CR>
+      xnoremap il :<C-U>silent! normal 0v$<CR>
       omap il :normal vil<CR>
-      vnoremap al :<C-U>silent! normal! 0v$<CR>
+      xnoremap al :<C-U>silent! normal! 0v$<CR>
       omap al :normal val<CR>
    "entire file (ie/ae) {{{2
       "todo: is there a difference between il and al?
-      vnoremap ie :<C-U>silent! normal ggVG<CR>
+      xnoremap ie :<C-U>silent! normal ggVG<CR>
       omap ie :normal vie<CR>
-      vnoremap ae :<C-U>silent! normal ggVG<CR>
+      xnoremap ae :<C-U>silent! normal ggVG<CR>
       omap ae :normal vae<CR>
    "indent (ii/ai) {{{2
-      vnoremap ii :<C-U>silent call <SID>InIndent(0)<CR>
+      xnoremap ii :<C-U>silent call <SID>InIndent(0)<CR>
       omap ii :normal vii<CR>
-      vnoremap ai :<C-U>silent call <SID>InIndent(1)<CR>
+      xnoremap ai :<C-U>silent call <SID>InIndent(1)<CR>
       omap ai :normal vai<CR>
-      "vnoremap ai :<C-U>silent! normal 0v$<CR>
+      "xnoremap ai :<C-U>silent! normal 0v$<CR>
       "omap ai :normal vai<CR>
       func! <SID>InIndent(inclusive)
          let spaceLine = '^\s*$'
