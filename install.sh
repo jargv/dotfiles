@@ -12,7 +12,7 @@ for dotfile in dotfiles/*; do
 done;
 
 # vim directory setup
-ln -snf $dir/vim $HOME/.vim
+# ln -snf $dir/vim $HOME/.vim
 
 # nvim directory setup
 ln -snf $dir/nvim ${XDG_CONFIG_HOME:-~/.config}/nvim
