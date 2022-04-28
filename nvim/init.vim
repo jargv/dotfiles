@@ -127,24 +127,6 @@ let g:isMac = !g:isLinux
     Plug 'neovim/nvim-lspconfig'
     Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
 
-  "Plug 'puremourning/vimspector' {{{2
-  "Plug 'puremourning/vimspector'
-  let g:vimspector_install_gadgets = [ 'vscode-cpptools' ]
-
-  nmap <leader>rr :call vimspector#Launch()<cr>
-  nmap <leader>rq :VimspectorReset<cr>
-  nmap <leader>rc <Plug>VimspectorContinue
-  nmap <leader>rS <Plug>VimspectorStop
-  nmap <leader>rs <Plug>VimspectorRestart
-  nmap <leader>rp <Plug>VimspectorPause
-  nmap <leader>rt <Plug>VimspectorToggleBreakpoint
-  nmap <leader>r? <Plug>VimspectorToggleConditionalBreakpoint
-  nmap <leader>rb <Plug>VimspectorAddFunctionBreakpoint
-  nmap <leader>rj <Plug>VimspectorStepOver
-  nmap <leader>rl <Plug>VimspectorStepInto
-  nmap <leader>rk <Plug>VimspectorStepOut
-  nmap <leader>rr <Plug>VimspectorRunToCursor
-
   "Plug 'mazubieta/gitlink-vim' {{{2
   Plug 'mazubieta/gitlink-vim'
   function! CopyGitLink(...) range
@@ -355,6 +337,7 @@ func FollowLspErrors()
   endif
 endfunction
 
+nnoremap <leader>rn :lua vim.lsp.buf.rename(vim.fn.input('>'))<cr>
 
   "color settings {{{1
   set termguicolors
@@ -397,23 +380,6 @@ nnoremap <c-j> ]}
 
 nnoremap <leader>tN :tab split<cr>
 set updatetime=300
-"nnoremap <leader>r :call RangerOpen()<cr>
-func! RangerOpen()
-  let resultsFile = "/tmp/ranger_vim"
-  exec("silent !clear && ranger --selectfile=".expand('%')." --choosefiles=".resultsFile)
-  if filereadable(resultsFile)
-    let files = readfile(resultsFile)
-    if !empty(files)
-      exec "tabnew ".files[0]
-      for file in files[1:]
-        exec ":vsplit ".file
-      endfor
-    endif
-  endif
-  exec "silent !rm ".resultsFile
-  redraw!
-endfunc
-
 "settings {{{1
   "vim, not vi! {{{2
   set nocompatible
