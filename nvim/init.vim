@@ -346,6 +346,7 @@ nmap gD <cmd>lua vim.lsp.buf.declaration()<cr>
 nmap gi <cmd>lua vim.lsp.buf.implementation()<cr>
 nmap gt <cmd>lua vim.lsp.buf.type_definition()<cr>
 nmap gu <cmd>lua vim.lsp.buf.references()<cr>
+nmap gh <cmd>lua vim.lsp.buf.hover()<cr>
 
   "color settings {{{1
   set termguicolors
