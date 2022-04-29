@@ -4,7 +4,7 @@ set -e
 
 if [ $(uname) == "Linux" ]; then
   if [ -x /usr/bin/apt ]; then
-    sudo apt install libmsgpack-dev libuv1-dev
+    sudo apt-get install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
   else
     echo "couldn't find linux version"
     exit
@@ -21,6 +21,4 @@ else
   git pull
 fi
 
-mkdir -p build && cd build
-cmake -GNinja ..
-cmake --build .
+sudo make install
