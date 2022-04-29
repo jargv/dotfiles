@@ -351,10 +351,9 @@ endfunction
 nnoremap <leader>rn :lua vim.lsp.buf.rename(vim.fn.input('>'))<cr>
 nnoremap <leader>rf :lua vim.lsp.buf.code_action()<cr>
 
-nmap gd <cmd>lua vim.lsp.buf.definition()<cr>
+nmap gd <cmd>lua vim.lsp.buf.definition()<cr>z<cr>
 nmap gD <cmd>lua vim.lsp.buf.declaration()<cr>
 nmap gi <cmd>lua vim.lsp.buf.implementation()<cr>
-nmap gt <cmd>lua vim.lsp.buf.type_definition()<cr>
 nmap gu <cmd>lua vim.lsp.buf.references()<cr>
 nmap gh <cmd>lua vim.lsp.buf.hover()<cr>
 
