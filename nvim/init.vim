@@ -105,12 +105,13 @@ let g:isMac = !g:isLinux
    "}}}
 
    "colorschemes {{{2
-   Plug 'xolox/vim-misc'
-   Plug 'xolox/vim-colorscheme-switcher'
-   Plug 'flazz/vim-colorschemes'
+   "Plug 'xolox/vim-misc'
+   "Plug 'xolox/vim-colorscheme-switcher'
+   "Plug 'flazz/vim-colorschemes'
+   Plug 'arcticicestudio/nord-vim'
    "Plug 'trevordmiller/nova-vim'
-   Plug 'AlessandroYorba/Arcadia'
-   Plug 'jnurmine/Zenburn'
+   "Plug 'AlessandroYorba/Arcadia'
+   "Plug 'jnurmine/Zenburn'
    "}}}
 
     Plug 'freitass/todo.txt-vim'
@@ -408,7 +409,8 @@ cmp.setup({
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  colorscheme summerfruit256 | set bg=light
+  "colorscheme summerfruit256 | set bg=light
+  colorscheme nord | set bg=light
   "colorscheme ironman | set bg=light
   "colorscheme nova | set bg=light
   "colorscheme rdark | set bg=dark
@@ -417,7 +419,6 @@ cmp.setup({
   "colorscheme rakr-light | set bg=light
   "colorscheme afterglow | set bg=dark
   "colorscheme neodark | set bg=dark
-  "colorscheme nord | set bg=dark
   " let g:arcadia_Pitch=3
   " colorscheme arcadia | set bg=dark
   "highlight MatchParen cterm=inverse ctermbg=black
@@ -425,11 +426,11 @@ cmp.setup({
   let g:loaded_matchparen = 1
 
   if &diff
-    "colorscheme neodark | set bg=dark
+    colorscheme neodark | set bg=dark
     "colorscheme zenburn | set bg=dark
     "colorscheme OceanicNext | set bg=dark
     "colorscheme ironman | set bg=light
-    colorscheme rakr-light | set bg=light
+    "colorscheme rakr-light | set bg=light
   endif
 
   nnoremap <f3> :NextColorScheme<cr>
@@ -1339,7 +1340,7 @@ endif
   endfunc
 
 " abolish tildes at end of file {{{1
-hi EndOfBuffer ctermfg=bg ctermbg=bg guifg=bg
+"hi EndOfBuffer ctermfg=bg ctermbg=bg guifg=bg
 
 " require the lua configs {{{1
 lua require("lsp_setup")
