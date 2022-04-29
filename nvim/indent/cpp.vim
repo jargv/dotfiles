@@ -6,10 +6,10 @@ func! CppIndentCalc(lnum)
    let ind = 0
 
    "gather loads of info
-   let lineabove = prevnonblank(a:lnum - 1)
-   if !lineabove | return 0 | endif
-   let codeAbove = getline(lineabove)
-   let indentAbove = indent(lineabove)
+   let lineAbove = prevnonblank(a:lnum - 1)
+   if !lineAbove | return 0 | endif
+   let codeAbove = getline(lineAbove)
+   let indentAbove = indent(lineAbove)
    let codeHere = getline(a:lnum)
    let lineAboveEnd = matchstr(codeAbove, '\S\s*$')[0]
    let codeHereStart = matchstr(codeHere, '^\s*\S')[-1:]
@@ -18,6 +18,12 @@ func! CppIndentCalc(lnum)
    "
    if codeHereStart =~ '[\]})]' && lineAboveEnd !~ '[{(\[]'
       let ind -= 1
+   elseif codeHere =~ '^\s*->'
+     let ind += 1
+   elseif codeAbove =~ '^\s*->'
+     if lineAboveEnd != '{'
+       let ind -= 1
+     endif
    elseif lineAboveEnd =~ '[{(\[]' && codeHereStart !~ '[\]})]'
       let ind += 1
    elseif lineAboveEnd =~ '[{(\[]' && codeHereStart =~ '[\]})]'
@@ -27,8 +33,6 @@ func! CppIndentCalc(lnum)
          let ind = 1
       elseif codeAbove =~ '\[[^\]]*$'
          let ind = 1
-      elseif codeAbove =~ '\s*var'
-         let ind = 2
       endif
    elseif codeHere =~ '^\s*:'
      let ind += 1
