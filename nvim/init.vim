@@ -426,8 +426,10 @@ cmp.setup({
 
   if &diff
     "colorscheme neodark | set bg=dark
-    colorscheme zenburn | set bg=dark
+    "colorscheme zenburn | set bg=dark
     "colorscheme OceanicNext | set bg=dark
+    "colorscheme ironman | set bg=light
+    colorscheme rakr-light | set bg=light
   endif
 
   nnoremap <f3> :NextColorScheme<cr>
