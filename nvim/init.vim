@@ -214,7 +214,7 @@ let g:isMac = !g:isLinux
 
    "Plug 'terryma/vim-expand-region' {{{2
    Plug 'terryma/vim-expand-region'
-   vmap v <Plug>(expand_region_expand)
+   xmap v <Plug>(expand_region_expand)
 
    "Plug 'junegunn/fzf' {{{2
    let g:fzf_buffers_jump = 1
@@ -323,10 +323,31 @@ let g:isMac = !g:isLinux
 " lsp config {{{1
 if !exists('g:lsp_configured')
 lua <<
+
+  local lspconfig = require "lspconfig"
+  local util = require "lspconfig/util"
+
   local capabilities = require'cmp_nvim_lsp'.update_capabilities(
-    vim.lsp.protocol.make_client_capabilities()
+  vim.lsp.protocol.make_client_capabilities()
   )
-  require('lspconfig').clangd.setup{capabilities = capabilities}
+
+  lspconfig.clangd.setup{capabilities = capabilities}
+
+  lspconfig.gopls.setup{
+    capabilities = capabilities,
+    cmd = {"gopls", "serve"},
+    filetypes = {"go", "gomod"},
+    root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+    settings = {
+      gopls = {
+        analyses = {
+          unusedparams = true,
+        },
+        staticcheck = true,
+      },
+    },
+  }
+
   vim.diagnostic.config({signs = false, virtual_text = false, underline = false})
   require'toggle_lsp_diagnostics'.init({signs = false, virtual_text = true, underline = true})
 .
@@ -334,6 +355,7 @@ let g:lsp_configured = 1
 endif
 
 nnoremap <silent> <leader>Y
+      \ wall
       \ <cmd>ToggleDiagOff<cr>
       \ <cmd>cclose<cr>
 
@@ -673,7 +695,7 @@ set updatetime=300
     call <SID>InitMyMake()
   endif
 
-  nnoremap <leader>m :cclose<CR>:call <SID>RunMake()<CR><CR><CR>
+  nnoremap <leader>m <cmd>cclose<cr> <cmd>wall<cr> <cmd>call <SID>RunMake()<cr>
   nnoremap <leader>MM :call <SID>DetectBuildTool()<cr>
   nnoremap <leader>e :call <SID>CollectErrors()<cr><cr>
   nnoremap <leader>Ms :call <SID>ToggleMakeOnSave()<cr>
