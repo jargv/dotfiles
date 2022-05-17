@@ -68,7 +68,7 @@ func (${3:`!p
 snip.rv=''.join([c.lower() for i, c in enumerate(t[2]) if i == 0 or c.isupper()])
 `} *${2:`!v
   get(matchlist(getline(search('^type\s\+\(\w*\)', 'bWn')), '\s*type\s*\(\w*\)'), 1, '')
-`}) ${1:foo}($4)$5{
+`}) ${1}($4)$5{
   ${VISUAL}${0}
 }
 endsnippet

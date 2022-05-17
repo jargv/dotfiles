@@ -328,10 +328,11 @@ lua <<
   local util = require "lspconfig/util"
 
   local capabilities = require'cmp_nvim_lsp'.update_capabilities(
-  vim.lsp.protocol.make_client_capabilities()
+    vim.lsp.protocol.make_client_capabilities()
   )
 
   lspconfig.clangd.setup{capabilities = capabilities}
+  lspconfig.tsserver.setup{capabilities = capabilities}
 
   lspconfig.gopls.setup{
     capabilities = capabilities,
@@ -355,7 +356,7 @@ let g:lsp_configured = 1
 endif
 
 nnoremap <silent> <leader>Y
-      \ wall
+      \ <cmd>wall<cr>
       \ <cmd>ToggleDiagOff<cr>
       \ <cmd>cclose<cr>
 
@@ -781,6 +782,7 @@ set updatetime=300
     call <SID>InitMyMake()
     let g:makeDirectory = getcwd()
     let waitForBuild = 0
+    let g:makeOnsave = 1
     if filereadable("meson.build")
       if !isdirectory("build")
         call <SID>TmuxRun("meson setup build")
@@ -805,15 +807,15 @@ set updatetime=300
         let g:makeBuildtool = "go test"
         let g:makeTarget = ""
       elseif filereadable("go.mod")
-        let g:makeBuildtool = "go build"
-        let g:makeTarget = ""
+        let g:makeBuildtool = "go"
+        let g:makeTarget = "build"
       else
         let g:makeBuildtool = "go run ".expand("%")
         let g:makeTarget = ""
       endif
     elseif filereadable("package.json")
       let g:makeBuildtool = "yarn run"
-      let g:makeTarget = "build"
+      let g:makeTarget = "start"
     elseif expand('%:e') == "js"
       let g:makeBuildtool = "node"
       let g:makeTarget = expand('%')
