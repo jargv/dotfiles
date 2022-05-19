@@ -677,10 +677,8 @@ set updatetime=300
     let g:tmux_pane_id=""
   endfunc
 
-  func! <SID>MakeOnSave()
-    if g:makeOnSave == 0
-      return
-    elseif g:makeOnSave == 1
+  func! <sid>MakeOnSave()
+    if g:makeOnSave
       call <sid>RunMake()
     endif
   endfunc
@@ -782,7 +780,7 @@ set updatetime=300
     call <SID>InitMyMake()
     let g:makeDirectory = getcwd()
     let waitForBuild = 0
-    let g:makeOnsave = 1
+    let g:makeOnSave = 1
     if filereadable("meson.build")
       if !isdirectory("build")
         call <SID>TmuxRun("meson setup build")
@@ -1116,9 +1114,9 @@ endif
         echo
     endif
     let g:MySmartQuitDefined = 1
-    nnoremap <leader>q :call MySmartQuit()<CR>
-    nnoremap <leader>Q :cquit!<CR>
-    nnoremap <leader><leader> :w<CR>
+    nnoremap <leader>q :call MySmartQuit()<cr>
+    nnoremap <leader>Q :cquit!<cr>
+    nnoremap <leader><leader> :wall<cr>
 
   "next and previous location/error/vimgrep {{{2
     nnoremap <expr> <silent> <leader>n ((len(getqflist()) ? ":cn" : ":lnext")."<CR>")
