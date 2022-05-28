@@ -103,6 +103,9 @@ let g:isMac = !g:isLinux
    Plug 'JamshedVesuna/vim-markdown-preview'
    let vim_markdown_preview_github=1
    "}}}
+   "zig {{{3
+   Plug 'ziglang/zig.vim'
+   let g:zig_fmt_autosave = 0
 
    "colorschemes {{{2
    "Plug 'xolox/vim-misc'
@@ -781,7 +784,10 @@ set updatetime=300
     let g:makeDirectory = getcwd()
     let waitForBuild = 0
     let g:makeOnSave = 1
-    if filereadable("meson.build")
+    if filereadable("build.zig")
+      let g:makeBuildtool = "zig"
+      let g:makeTarget = "build run"
+    elseif filereadable("meson.build")
       if !isdirectory("build")
         call <SID>TmuxRun("meson setup build")
         call system("ln -sf build/compile_commands.json .")

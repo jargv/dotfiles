@@ -298,3 +298,5 @@ export FLEX_INCLUDE_DIRS="/usr/local/opt/flex/include"
 if [[ -x $(which brew) ]]; then
   export PATH="$(brew --prefix bison)/bin:$(brew --prefix flex)/bin:$PATH"
 fi
+#zig setup {{{1
+PATH=$PATH:~/bin/zig

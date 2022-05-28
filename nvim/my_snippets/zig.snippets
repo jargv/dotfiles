@@ -1,0 +1,11 @@
+snippet if "conditional" !b
+if ($1){
+    $0
+}
+endsnippet
+snippet l "log variable" !b
+std.log.info("$1: ${1/[^,]+/{}/g}", .{${1}});
+endsnippet
+snippet log "log text" !b
+std.log.info("$1", .{});
+endsnippet
