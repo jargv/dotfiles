@@ -1074,11 +1074,10 @@ endif
     nnoremap <leader>gm :!tmux new-window "git difftool -w origin/$(git config j.publish) -- %"<CR><CR>
     nnoremap <leader>gc :!tmux new-window "git bedone"<CR><CR>
     nnoremap <leader>gi :!tmux new-window "git rebase -i"<cr><cr>
-    "nnoremap <leader>gl :!git log <CR><CR>
     nnoremap <leader>gh :!tmux new-window "git hist --all"<CR><CR>
     nnoremap <leader>gH :!tmux new-window "git hist --simplify-by-decoration"<cr><cr>
-    nnoremap <leader>gb :Gblame -w<CR>
-    nnoremap <leader>gB :!tmux new-window "git branch-i"<cr><cr>
+    nnoremap <leader>gb :Gitsigns toggle_current_line_blame<cr>
+    nnoremap <leader>gB :lua package.loaded.gitsigns.blame_line({full=false,ignore_whitespace=true})<cr>
     nnoremap <leader>gs :!tmux new-window "tig status"<CR><CR>
     nnoremap <leader>gg :exec ":!git ".input("git> ")<CR>
   "working directory mappings {{{2
