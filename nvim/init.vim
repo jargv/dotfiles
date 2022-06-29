@@ -5,23 +5,24 @@ let g:isLinux = system('uname') == "Linux\n"
 let g:isMac = !g:isLinux
 
 "plugins {{{1
-   "setup vim Plug {{{2
-      "install setup {{{3
-         let plugDir = "~/config/nvim/plug"
-         let plugDoInstall = 0
-         if !isdirectory(expand(plugDir))
-            let plugUrl = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-            let plugFile = plugDir . "/plug/autoload/plug.vim"
-            exec "!curl -fLo ".plugFile." --create-dirs " . plugUrl
-            let plugDoInstall = 1
-         endif
-      "normal setup {{{3
-         filetype off
-         "set runtimepath=$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,~/.vim/plug/plug
-         set runtimepath+=~/config/nvim/plug/plug
-         call plug#begin('~/config/nvim/plug')
-      "}}}
-   "}}}
+"setup Plug {{{2
+"install setup {{{3
+    let plugDir = "~/config/nvim/plug"
+    let plugDoInstall = 0
+    if !isdirectory(expand(plugDir))
+      let plugUrl = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+      let plugFile = plugDir . "/plug/autoload/plug.vim"
+      exec "!curl -fLo ".plugFile." --create-dirs " . plugUrl
+      let plugDoInstall = 1
+    endif
+"normal setup {{{3
+    filetype off
+    "set runtimepath=$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,~/.vim/plug/plug
+    set runtimepath+=~/config/nvim/plug/plug
+    call plug#begin('~/config/nvim/plug')
+"}}}
+"}}}
+lua setup_funcs = {}
 
   "Language-specifig plugins {{{2
    "powershell {{{3
@@ -270,58 +271,58 @@ let g:isMac = !g:isLinux
       let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyz'
       let g:EasyMotion_do_shade = 0
 
-   "Plug 'airblade/vim-gitgutter' {{{2
-      let g:gitgutter_sign_added = '+'
-      let g:gitgutter_sign_modified = '~'
-      let g:gitgutter_sign_removed = 'x'
-      let g:gitgutter_sign_modified_removed = '%'
-      let g:gitgutter_diff_args = '-w'
-      let g:gitgutter_terminal_reports_focus = 0
-
-      if !exists('g:gitgutter_enabled')
-        let g:gitgutter_enabled = 1
-        let g:MarkingToolsState = ''
-      endif
-      let g:gitgutter_map_keys = 0
-      let g:gitgutter_set_sign_backgrounds = 0
-      Plug 'airblade/vim-gitgutter'
-      func! GitAdjacentChange(next)
-        if &diff
-          if a:next
-            normal ]c
-            normal zz
-          else
-            normal [c
-            normal zz
-          endif
-        else
-          if a:next
-            GitGutterNextHunk
-            normal zz
-          else
-            GitGutterPrevHunk
-            normal zz
-          endif
-        endif
-      endfunc
-      nnoremap gn :call GitAdjacentChange(1)<cr>
-      nnoremap gp :call GitAdjacentChange(0)<cr>
-      nnoremap gr :GitGutterUndoHunk<CR>
-      nnoremap gs :GitGutterStageHunk<CR>
+"Plug 'lewis6991/gitsigns.nvim' {{{2
+Plug 'lewis6991/gitsigns.nvim'
+func! GitAdjacentChange(next)
+  if &diff
+    if a:next
+      normal ]c
+      normal zz
+    else
+      normal [c
+      normal zz
+    endif
+  else
+    if a:next
+      lua package.loaded.gitsigns.next_hunk()
+      normal zz
+    else
+      lua package.loaded.gitsigns.prev_hunk()
+      normal zz
+    endif
+  endif
+endfunc
+nnoremap gn :call GitAdjacentChange(1)<cr>
+nnoremap gp :call GitAdjacentChange(0)<cr>
+nnoremap gr :Gitsigns reset_hunk<cr>
+nnoremap gs :Gitsigns stage_hunk<cr>
+nnoremap gS :Gitsigns undo_stage_hunk<cr>
+onoremap ih :<C-U>Gitsigns select_hunk<cr>
+xnoremap ih :<C-U>Gitsigns select_hunk<cr>
+lua <<EOF
+  table.insert(setup_funcs, function()
+    require('gitsigns').setup()
+  end)
+EOF
    "}}}
 
-  "Run plugin setup {{{2
-    call plug#end()
-    "my shiz should override EVERYTHING
-    set runtimepath-=~/config/nvim "remove first so that the add occurs at the end
-    set runtimepath+=~/config/nvim
+"Run plugin setup {{{2
+call plug#end()
+"my shiz should override EVERYTHING
+set runtimepath-=~/config/nvim "remove first so that the add occurs at the end
+set runtimepath+=~/config/nvim
 
-    filetype plugin indent on
-    if plugDoInstall
-        PlugInstall!
-        let plugDoInstall = 0
-    endif
-  "}}}
+filetype plugin indent on
+if plugDoInstall
+    PlugInstall!
+    let plugDoInstall = 0
+endif
+lua <<EOF
+  for _,fn in ipairs(setup_funcs) do
+    fn()
+  end
+EOF
+"}}}
 
 " lsp config {{{1
 "
