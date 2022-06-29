@@ -22,7 +22,7 @@ let g:isMac = !g:isLinux
     call plug#begin('~/config/nvim/plug')
 "}}}
 "}}}
-lua setup_funcs = {}
+lua plugin_setup_funcs = {}
 
   "Language-specifig plugins {{{2
    "powershell {{{3
@@ -300,7 +300,7 @@ nnoremap gS :Gitsigns undo_stage_hunk<cr>
 onoremap ih :<C-U>Gitsigns select_hunk<cr>
 xnoremap ih :<C-U>Gitsigns select_hunk<cr>
 lua <<EOF
-  table.insert(setup_funcs, function()
+  table.insert(plugin_setup_funcs, function()
     require('gitsigns').setup()
   end)
 EOF
@@ -318,7 +318,7 @@ if plugDoInstall
     let plugDoInstall = 0
 endif
 lua <<EOF
-  for _,fn in ipairs(setup_funcs) do
+  for _,fn in ipairs(plugin_setup_funcs) do
     fn()
   end
 EOF
