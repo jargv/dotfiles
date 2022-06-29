@@ -324,6 +324,9 @@ let g:isMac = !g:isLinux
   "}}}
 
 " lsp config {{{1
+"
+command LspKillAll :lua vim.lsp.stop_client(vim.lsp.get_active_clients())<cr>
+
 if !exists('g:lsp_configured')
 lua <<
 
