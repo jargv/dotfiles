@@ -118,37 +118,48 @@ lua plugin_setup_funcs = {}
    "Plug 'jnurmine/Zenburn'
    "}}}
 
-    Plug 'freitass/todo.txt-vim'
-    Plug 'junegunn/limelight.vim'
-    Plug 'junegunn/goyo.vim'
-    Plug 'Raimondi/delimitMate'
-    Plug 'PeterRincker/vim-argumentative'
-    Plug 'reedes/vim-pencil'
-    Plug 'tpope/vim-obsession'
-    Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-commentary'
-    Plug 'will133/vim-dirdiff'
+Plug 'nvim-lua/plenary.nvim'
 
-    Plug 'neovim/nvim-lspconfig'
-    Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
+Plug 'freitass/todo.txt-vim'
+Plug 'junegunn/limelight.vim'
+Plug 'junegunn/goyo.vim'
+Plug 'Raimondi/delimitMate'
+Plug 'PeterRincker/vim-argumentative'
+Plug 'reedes/vim-pencil'
+Plug 'tpope/vim-obsession'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
+Plug 'will133/vim-dirdiff'
 
-    Plug 'hrsh7th/cmp-nvim-lsp'
-    Plug 'hrsh7th/cmp-buffer'
-    Plug 'hrsh7th/cmp-path'
-    Plug 'hrsh7th/nvim-cmp'
-    Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+Plug 'neovim/nvim-lspconfig'
+Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
 
-    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 
-  "Plug 'mazubieta/gitlink-vim' {{{2
-  Plug 'mazubieta/gitlink-vim'
-  function! CopyGitLink(...) range
-    redir @+
-    echo gitlink#GitLink(get(a:, 1, 0))
-    redir END
-  endfunction
-  nmap <leader>gl :call CopyGitLink()<CR>
-  vmap <leader>gl :call CopyGitLink(1)<CR>
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+"Plug 'TimUntersberger/neogit' {{{2
+Plug 'TimUntersberger/neogit'
+lua <<EOF
+  table.insert(plugin_setup_funcs, function()
+    require("neogit").setup({
+    })
+  end)
+EOF
+
+"Plug 'mazubieta/gitlink-vim' {{{2
+Plug 'mazubieta/gitlink-vim'
+function! CopyGitLink(...) range
+  redir @+
+  echo gitlink#GitLink(get(a:, 1, 0))
+  redir END
+endfunction
+nmap <leader>gl :call CopyGitLink()<CR>
+vmap <leader>gl :call CopyGitLink(1)<CR>
 
   "Plug 'dense-analysis/ale' {{{2
   let g:ale_fixers = {
