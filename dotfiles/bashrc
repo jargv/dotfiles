@@ -1,2 +1,5 @@
 set -o vi
 export PATH=$PATH:~/config/bin
+
+# The next line updates PATH for the NLO
+if [ -f '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc' ]; then . '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc'; fi

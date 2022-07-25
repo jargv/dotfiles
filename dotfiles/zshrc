@@ -24,7 +24,6 @@ export PATH=/opt/local/bin:/opt/local/sbin:$PATH
 #export PATH=~/.npm/bin/:$PATH
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 #go paths {{{2
-export GOROOT=/usr/local/go
 export GOPATH=~/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 #}}}
@@ -300,3 +299,12 @@ if [[ -x $(which brew) ]]; then
 fi
 #zig setup {{{1
 PATH=$PATH:~/bin/zig
+
+# The next line updates PATH for the NLO
+if [ -f '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc' ]; then . '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc';
+fi
+
+alias android-studio="open ~/Applications/JetBrains\ Toolbox/Android\ Studio.app"
+
+# The next line updates PATH for the NLO
+if [ -f '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc' ]; then . '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc'; fi

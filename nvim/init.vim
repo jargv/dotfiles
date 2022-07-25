@@ -496,13 +496,13 @@ require'nvim-treesitter.configs'.setup {
   ":NoMatchParen
   let g:loaded_matchparen = 1
 
-  if &diff
-    colorscheme neodark | set bg=dark
-    "colorscheme zenburn | set bg=dark
-    "colorscheme OceanicNext | set bg=dark
-    "colorscheme ironman | set bg=light
-    "colorscheme rakr-light | set bg=light
-  endif
+  "if &diff
+  "  "colorscheme neodark | set bg=dark
+  "  "colorscheme zenburn | set bg=dark
+  "  "colorscheme OceanicNext | set bg=dark
+  "  colorscheme ironman | set bg=light
+  "  "colorscheme rakr-light | set bg=light
+  "endif
 
   nnoremap <f3> :NextColorScheme<cr>
   nnoremap <f2> :PrevColorScheme<cr>

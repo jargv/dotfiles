@@ -7,6 +7,9 @@
   editor = nvim
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
+	autocrlf = input
+	longpaths = true
+	symlinks = true
 [merge]
   tool = nvimdiff
   state = true
