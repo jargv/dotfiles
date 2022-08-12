@@ -834,7 +834,7 @@ set updatetime=300
       endif
     elseif filereadable("package.json")
       let g:makeBuildtool = "yarn run"
-      let g:makeTarget = "start"
+      let g:makeTarget = "build"
     elseif expand('%:e') == "js"
       let g:makeBuildtool = "node"
       let g:makeTarget = expand('%')
