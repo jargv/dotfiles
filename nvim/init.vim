@@ -165,6 +165,7 @@ vmap <leader>gl :call CopyGitLink(1)<CR>
   let g:ale_fixers = {
         \   'javascript': ['prettier'],
         \   'typescript': ['prettier'],
+        \   'javascriptreact': ['prettier'],
         \   'css': ['prettier'],
         \   'go': ['goimports'],
         \}
@@ -714,7 +715,7 @@ set updatetime=300
 
   nnoremap <leader>m <cmd>cclose<cr> <cmd>wall<cr> <cmd>call <SID>RunMake()<cr>
   nnoremap <leader>MM :call <SID>DetectBuildTool()<cr>
-  nnoremap <leader>e :call <SID>CollectErrors()<cr><cr>
+  nnoremap <leader>e :call <SID>CollectErrors()<cr>
   nnoremap <leader>Ms :call <SID>ToggleMakeOnSave()<cr>
 
   nnoremap <leader>Mq :call <sid>clearMakeFunction()<cr>:call <sid>InitMyMake()<cr>
