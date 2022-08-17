@@ -21,4 +21,5 @@ else
   git pull
 fi
 
+make CMAKE_BUILD_TYPE=RelWithDebInfo
 sudo make install
