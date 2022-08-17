@@ -5,8 +5,8 @@ if [[ -f ~/.zshlocal ]]; then
 fi
 
 #nvm {{{1
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 #windows (wsl) {{{1
 if [[ -d "/mnt/c" ]]; then
@@ -303,6 +303,8 @@ PATH=$PATH:~/bin/zig
 # The next line updates PATH for the NLO
 if [ -f '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc' ]; then . '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc';
 fi
+
+#added setup {{{1
 
 alias android-studio="open ~/Applications/JetBrains\ Toolbox/Android\ Studio.app"
 

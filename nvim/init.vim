@@ -329,11 +329,11 @@ if plugDoInstall
     PlugInstall!
     let plugDoInstall = 0
 endif
-lua <<EOF
+lua <<
   for _,fn in ipairs(plugin_setup_funcs) do
     fn()
   end
-EOF
+.
 "}}}
 
 " lsp config {{{1
