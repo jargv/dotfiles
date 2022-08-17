@@ -142,15 +142,6 @@ Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
-"Plug 'TimUntersberger/neogit' {{{2
-Plug 'TimUntersberger/neogit'
-lua <<EOF
-  table.insert(plugin_setup_funcs, function()
-    require("neogit").setup({
-    })
-  end)
-EOF
-
 "Plug 'mazubieta/gitlink-vim' {{{2
 Plug 'mazubieta/gitlink-vim'
 function! CopyGitLink(...) range
