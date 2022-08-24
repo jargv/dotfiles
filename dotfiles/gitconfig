@@ -50,6 +50,7 @@
   fuckit = reset --hard
   pushupforce = ! git push --force-with-lease origin $(git rev-parse --abbrev-ref @)
   pushup = ! git push origin $(git rev-parse --abbrev-ref @)
+  in = ! snapaccess credentials refresh
 [tig]
   main-view-author = abbreviated
   main-view-date = relative-compact
