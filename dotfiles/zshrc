@@ -4,10 +4,6 @@ if [[ -f ~/.zshlocal ]]; then
   source ~/.zshlocal
 fi
 
-#nvm {{{1
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-
 #windows (wsl) {{{1
 if [[ -d "/mnt/c" ]]; then
   export DISPLAY=:0
@@ -310,3 +306,5 @@ alias android-studio="open ~/Applications/JetBrains\ Toolbox/Android\ Studio.app
 
 # The next line updates PATH for the NLO
 if [ -f '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc' ]; then . '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc'; fi
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"

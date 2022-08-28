@@ -472,18 +472,12 @@ require'nvim-treesitter.configs'.setup {
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  "colorscheme summerfruit256 | set bg=light
-  colorscheme nord | set bg=light
-  "colorscheme ironman | set bg=light
+  "colorscheme nord | set bg=light
   "colorscheme nova | set bg=light
-  "colorscheme rdark | set bg=dark
   "colorscheme oceanlight
   "colorscheme OceanicNext | set bg=dark
   "colorscheme rakr-light | set bg=light
-  "colorscheme afterglow | set bg=dark
-  "colorscheme neodark | set bg=dark
-  " let g:arcadia_Pitch=3
-  " colorscheme arcadia | set bg=dark
+  colorscheme neodark | set bg=dark
   "highlight MatchParen cterm=inverse ctermbg=black
   ":NoMatchParen
   let g:loaded_matchparen = 1
@@ -1406,5 +1400,3 @@ endif
 " abolish tildes at end of file {{{1
 "hi EndOfBuffer ctermfg=bg ctermbg=bg guifg=bg
 
-" require the lua configs {{{1
-lua require("lsp_setup")
