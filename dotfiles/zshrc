@@ -59,6 +59,7 @@ setopt histignorespace
 #vim {{{1
 export EDITOR="nvim"
 alias vim=nvim
+alias vimdiff='nvim -d'
 bindkey -v
 #don't stop the backspace at the insert point
 bindkey "^?" backward-delete-char
