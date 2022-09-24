@@ -265,14 +265,25 @@ vmap <leader>gl :call CopyGitLink(1)<CR>
 
       map <leader>s :UltiSnipsEdit<CR>
 
-   "Plug 'Lokaltog/vim-easymotion' {{{2
-   Plug 'easymotion/vim-easymotion'
-      let g:EasyMotion_do_mapping = 0
+  "Plug 'phaazon/hop.nvim' {{{2
+    Plug 'phaazon/hop.nvim'
+    map <leader>f :HopChar1<cr>
+    map <leader>F :HopChar1MW<cr>
+lua <<EOF
 
-      map <leader>f <Plug>(easymotion-s)
+  table.insert(plugin_setup_funcs, function()
+    require('hop').setup()
+  end)
+EOF
 
-      let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyz'
-      let g:EasyMotion_do_shade = 0
+   "Plug 'Lokaltog/vim-easymotion' (unused) {{{2
+   " Plug 'easymotion/vim-easymotion'
+   "    let g:EasyMotion_do_mapping = 0
+
+   "    map <leader>f <Plug>(easymotion-s)
+
+   "    let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyz'
+   "    let g:EasyMotion_do_shade = 0
 
 "Plug 'lewis6991/gitsigns.nvim' {{{2
 Plug 'lewis6991/gitsigns.nvim'
