@@ -1,8 +1,0 @@
-{application, {{appname}}, [
-  {description, ""},
-  {vsn, "1"},
-  {registered, []},
-  {applications, [kernel, stdlib, cowboy]},
-  {mod, { {{appname}}, []}},
-  {env, [{http_port, 4000}]}
-]}.
