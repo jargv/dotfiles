@@ -142,6 +142,18 @@ Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
+  "Plug 'SmiteshP/nvim-navic'
+  Plug 'SmiteshP/nvim-navic'
+  let g:winbarShown = 0
+  func! <sid>toggleWinbar()
+    let g:winbarShown = !g:winbarShown
+    if g:winbarShown
+      set winbar=%{%v:lua.require'nvim-navic'.get_location()%}
+    else
+      set winbar=
+    endif
+  endfunc
+  nmap <leader>v :call <sid>toggleWinbar()<cr>
 "Plug 'mazubieta/gitlink-vim' {{{2
 Plug 'mazubieta/gitlink-vim'
 function! CopyGitLink(...) range
@@ -347,12 +359,18 @@ lua <<
 
   local lspconfig = require "lspconfig"
   local util = require "lspconfig/util"
+  local navic = require "nvim-navic"
 
   local capabilities = require'cmp_nvim_lsp'.update_capabilities(
     vim.lsp.protocol.make_client_capabilities()
   )
 
-  lspconfig.clangd.setup{capabilities = capabilities}
+  lspconfig.clangd.setup{
+    capabilities = capabilities,
+    on_attach = function(client, buffnr)
+      navic.attach(client, buffnr)
+    end
+  }
   lspconfig.tsserver.setup{capabilities = capabilities}
 
   lspconfig.gopls.setup{
