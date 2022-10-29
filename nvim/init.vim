@@ -100,10 +100,6 @@ lua plugin_setup_funcs = {}
    "lua {{{3
     "Plug 'SpaceVim/vim-swig'
 
-   "markdown {{{3
-   Plug 'JamshedVesuna/vim-markdown-preview'
-   let vim_markdown_preview_github=1
-   "}}}
    "zig {{{3
    Plug 'ziglang/zig.vim'
    let g:zig_fmt_autosave = 0
