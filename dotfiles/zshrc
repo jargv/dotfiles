@@ -294,12 +294,11 @@ export FLEX_INCLUDE_DIRS="/usr/local/opt/flex/include"
 if [[ -x $(which brew) ]]; then
   export PATH="$(brew --prefix bison)/bin:$(brew --prefix flex)/bin:$PATH"
 fi
+# volta setup {{{1
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
 #zig setup {{{1
 PATH=$PATH:~/bin/zig
-
-# The next line updates PATH for the NLO
-if [ -f '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc' ]; then . '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc';
-fi
 
 #added setup {{{1
 
@@ -307,5 +306,3 @@ alias android-studio="open ~/Applications/JetBrains\ Toolbox/Android\ Studio.app
 
 # The next line updates PATH for the NLO
 if [ -f '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc' ]; then . '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc'; fi
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"

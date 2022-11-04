@@ -152,3 +152,7 @@ func! SplitArgs()
   call setline('.', before.'(')
   call setpos('.', cursor)
 endfunc
+
+" indentation {{{2
+setlocal tabstop=4 shiftwidth=4
+

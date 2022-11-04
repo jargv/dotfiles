@@ -539,12 +539,12 @@ require'nvim-treesitter.configs'.setup {
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  "colorscheme nord | set bg=light
+  colorscheme nord | set bg=light
   "colorscheme nova | set bg=light
   "colorscheme oceanlight
   "colorscheme OceanicNext | set bg=dark
   "colorscheme rakr-light | set bg=light
-  colorscheme neodark | set bg=dark
+  "colorscheme neodark | set bg=dark
   "highlight MatchParen cterm=inverse ctermbg=black
   ":NoMatchParen
   let g:loaded_matchparen = 1
@@ -575,6 +575,7 @@ set signcolumn=number
 "prototype settings {{{1
 nnoremap <c-k> [{
 nnoremap <c-j> ]}
+nnoremap <bs> cvb
 
 nnoremap <leader>tN :tab split<cr>
 set updatetime=300
