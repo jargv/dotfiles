@@ -21,6 +21,7 @@ ln -snf $dir/nvim ${DOT_CONFIG}/nvim
 
 # ranger config setup
 ln -snf $dir/ranger ${DOT_CONFIG}/ranger
+ln -snf $dir/alacritty ${DOT_CONFIG}/alacritty
 
 echo config installed
 echo "don't forget tpm ~/config/setup/tpm.sh"

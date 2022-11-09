@@ -105,13 +105,12 @@ lua plugin_setup_funcs = {}
    let g:zig_fmt_autosave = 0
 
    "colorschemes {{{2
-   "Plug 'xolox/vim-misc'
-   "Plug 'xolox/vim-colorscheme-switcher'
    "Plug 'flazz/vim-colorschemes'
    Plug 'arcticicestudio/nord-vim'
-   "Plug 'trevordmiller/nova-vim'
-   "Plug 'AlessandroYorba/Arcadia'
-   "Plug 'jnurmine/Zenburn'
+   Plug 'trevordmiller/nova-vim'
+   Plug 'AlessandroYorba/Arcadia'
+   Plug 'jnurmine/Zenburn'
+   Plug 'sonph/onehalf', { 'rtp': 'vim' }
    "}}}
 
 Plug 'nvim-lua/plenary.nvim'
@@ -266,8 +265,8 @@ vmap <leader>gl :call CopyGitLink(1)<CR>
     Plug 'dhruvasagar/vim-table-mode'
 
    "Plug 'terryma/vim-expand-region' {{{2
-   Plug 'terryma/vim-expand-region'
-   xmap v <Plug>(expand_region_expand)
+   " Plug 'terryma/vim-expand-region'
+   " xmap v <Plug>(expand_region_expand)
 
    "Plug 'junegunn/fzf' {{{2
    let g:fzf_buffers_jump = 1
@@ -541,17 +540,18 @@ require'nvim-treesitter.configs'.setup {
   "colorscheme OceanicNext | set bg=dark
   "colorscheme rakr-light | set bg=light
   "colorscheme neodark | set bg=dark
+  "colorscheme zenburn | set bg=light
+  "colorscheme arcadia
+  colorscheme onehalfdark
   "highlight MatchParen cterm=inverse ctermbg=black
   ":NoMatchParen
   let g:loaded_matchparen = 1
 
-  "if &diff
-  "  "colorscheme neodark | set bg=dark
-  "  "colorscheme zenburn | set bg=dark
-  "  "colorscheme OceanicNext | set bg=dark
-  "  colorscheme ironman | set bg=light
-  "  "colorscheme rakr-light | set bg=light
-  "endif
+  if &diff
+    "colorscheme neodark | set bg=dark
+    "colorscheme zenburn | set bg=dark
+    colorscheme OceanicNext | set bg=dark
+  endif
 
   nnoremap <f3> :NextColorScheme<cr>
   nnoremap <f2> :PrevColorScheme<cr>
@@ -571,6 +571,7 @@ set signcolumn=number
 "prototype settings {{{1
 nnoremap <c-k> [{
 nnoremap <c-j> ]}
+vnoremap v `[o`]
 nnoremap <bs> cvb
 
 nnoremap <leader>tN :tab split<cr>
