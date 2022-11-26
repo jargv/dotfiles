@@ -107,6 +107,7 @@ lua plugin_setup_funcs = {}
    "colorschemes {{{2
    "Plug 'flazz/vim-colorschemes'
    Plug 'arcticicestudio/nord-vim'
+   Plug 'sainnhe/everforest'
    Plug 'trevordmiller/nova-vim'
    Plug 'AlessandroYorba/Arcadia'
    Plug 'jnurmine/Zenburn'
@@ -394,7 +395,7 @@ lua <<
   local util = require "lspconfig/util"
   local navic = require "nvim-navic"
 
-  local capabilities = require'cmp_nvim_lsp'.update_capabilities(
+  local capabilities = require'cmp_nvim_lsp'.default_capabilities(
     vim.lsp.protocol.make_client_capabilities()
   )
 
@@ -542,7 +543,13 @@ require'nvim-treesitter.configs'.setup {
   "colorscheme neodark | set bg=dark
   "colorscheme zenburn | set bg=light
   "colorscheme arcadia
-  colorscheme onehalfdark
+  "colorscheme onehalfdark
+  let g:everforest_background = 'medium'
+  let g:everforest_enable_italic = 1
+  let g:everforest_ui_contrast = 'low'
+  let g:everforest_show_eob = 1
+  let g:everforest_diagnostic_text_highlight = 1
+  colorscheme everforest | set bg=dark
   "highlight MatchParen cterm=inverse ctermbg=black
   ":NoMatchParen
   let g:loaded_matchparen = 1
@@ -563,10 +570,10 @@ require'nvim-treesitter.configs'.setup {
 
 
 "signcolumn settings {{{1
-highlight! clear SignColumn
-highlight link SignColumn LineNr
+"highlight! clear SignColumn
+"highlight link SignColumn LineNr
 "highlight SignColumn ctermbg=blue ctermfg=white
-set signcolumn=number
+"set signcolumn=number
 
 "prototype settings {{{1
 nnoremap <c-k> [{
