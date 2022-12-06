@@ -535,7 +535,7 @@ require'nvim-treesitter.configs'.setup {
   set termguicolors
   set t_ut= "fix the weird background erasing crap
   set ttyfast
-  colorscheme nord | set bg=light
+  "colorscheme nord | set bg=light
   "colorscheme nova | set bg=light
   "colorscheme oceanlight
   "colorscheme OceanicNext | set bg=dark

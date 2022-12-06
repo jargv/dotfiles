@@ -1,7 +1,6 @@
 window:
-  opacity: 0.3
   title: "terminal"
-  decorations: "none"
+  decorations: "Full"
   dynamic_padding: true
   padding:
     x: 0
@@ -26,10 +25,6 @@ font:
   # Scale the font size based on the monitor's DPI. This will lead to bigger text on HiDPI
   # screens and make reading text a little easier.
   scale_with_dpi: true
-
-  # Thin strokes are suitable for retina displays, but for non-retina screens
-  # it is recommended to set `use_thin_strokes` to `false`
-  use_thin_strokes: false
 
 color_schemes:
   solarized_dark: &solarized_dark
