@@ -111,7 +111,12 @@ target_link_libraries(${1:app} ${SDL2_LIBRARIES})
 target_include_directories($1 SYSTEM PRIVATE ${SDL2_INCLUDE_DIRS})
 endsnippet
 snippet sqlite "sqlite" !b
-target_link_libraries($1 sqlite3)
+find_package(SQLite3 REQUIRED)
+if(SQLITE3_FOUND AND NOT SQLITE3_LIBRARIES)
+  set(SQLITE3_LIBRARIES sqlite3)
+endif()
+target_include_directories(learnsqlite PRIVATE ${SQLITE3_INCLUDE_DIRS})
+target_link_libraries (learnsqlite ${SQLITE3_LIBRARIES})
 endsnippet
 snippet freetype "Description" !b
 #freetype

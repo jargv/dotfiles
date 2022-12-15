@@ -31,16 +31,16 @@ export RUST_SRC_PATH=$( [[ -x $(which rustc) ]] && echo "$(rustc --print sysroot
 #Attach tmux session {{{1
 # Attempt to discover a detached session and attach
 # it, else create a new session
-if [[ "$TERM" != "screen" ]] &&
-   [[ -z "$TMUX" ]] &&
-   [[ "$SSH_CONNECTION" == "" ]]; then
-  mainsession="x"
-  if tmux has-session -t $mainsession 2>/dev/null; then
-    tmux -2 attach-session -t $mainsession
-  else
-    tmux -2 new-session -s $mainsession
-  fi
-fi
+# if [[ "$TERM" != "screen" ]] &&
+#    [[ -z "$TMUX" ]] &&
+#    [[ "$SSH_CONNECTION" == "" ]]; then
+#   mainsession="x"
+#   if tmux has-session -t $mainsession 2>/dev/null; then
+#     tmux -2 attach-session -t $mainsession
+#   else
+#     tmux -2 new-session -s $mainsession
+#   fi
+# fi
 
 #autojump {{{1
 if [[ $(uname) == "Linux" ]]; then
@@ -123,8 +123,8 @@ export CXX=clang++
 
 #fzf {{{1
 FZF_TMUX=1
-fzf_keybindings=~/config/vim/plug/fzf/shell/key-bindings.zsh
-fzf_completion=~/config/vim/plug/fzf/shell/completion.zsh
+fzf_keybindings=~/config/nvim/plug/fzf/shell/key-bindings.zsh
+fzf_completion=~/config/nvim/plug/fzf/shell/completion.zsh
 bindkey '^R' fzf-history-widget
 bindkey -M vicmd '^R' fzf-history-widget
 [ -f $fzf_keybindings ] && source $fzf_keybindings
@@ -300,9 +300,8 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 #zig setup {{{1
 PATH=$PATH:~/bin/zig
 
-#added setup {{{1
-
+#android setup {{{1
 alias android-studio="open ~/Applications/JetBrains\ Toolbox/Android\ Studio.app"
 
-# The next line updates PATH for the NLO
-if [ -f '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc' ]; then . '/Users/jgeddes/Snapchat/Dev/_nlo_/detail/scripts/path.shell.inc'; fi
+#script-added setup {{{1
+#

@@ -556,8 +556,8 @@ require'nvim-treesitter.configs'.setup {
 
   if &diff
     "colorscheme neodark | set bg=dark
-    "colorscheme zenburn | set bg=dark
-    colorscheme OceanicNext | set bg=dark
+    colorscheme zenburn | set bg=dark
+    "colorscheme OceanicNext | set bg=dark
   endif
 
   nnoremap <f3> :NextColorScheme<cr>
