@@ -1,7 +1,7 @@
 -- use legacy config (TODO: remove it!) {{{1
 vim.cmd [[source ~/config/nvim/legacy_init.vim]]
 
--- set up mapping objects (for nicer mapping syntax) {{{1
+-- set up key mapping objects  {{{1
 local mapping = require("mapping")
 local leader = mapping.withPrefix("<leader>")
 local normal = mapping()
@@ -147,3 +147,22 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = {"~/config/nvim/**/*.vim", "~/config/nvim/**/*.lua"},
   callback = reloadConfig
 })
+
+-- neovide config
+if vim.g.neovide then
+  local scale_delta = 0.05
+  normal["<C-->"] = function()
+    local scale_factor = vim.g.neovide_scale_factor or 1.0
+    vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - scale_delta
+    print("scale at "..vim.g.neovide_scale_factor)
+  end
+  normal["<C-=>"] = function()
+    local scale_factor = vim.g.neovide_scale_factor or 1.0
+    vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + scale_delta
+    print("scale at "..vim.g.neovide_scale_factor)
+  end
+  normal["<C-0>"] = function()
+    vim.g.neovide_scale_factor = 1.0
+    print("scale at "..vim.g.neovide_scale_factor)
+  end
+end
