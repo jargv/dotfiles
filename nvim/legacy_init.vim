@@ -270,8 +270,6 @@ vmap <leader>gl :call CopyGitLink(1)<CR>
    let g:fzf_buffers_jump = 1
    Plug 'junegunn/fzf'
    Plug 'junegunn/fzf.vim'
-   nnoremap <leader>o :FZF --inline-info <cr>
-   nnoremap <leader>i :Buffers<cr>
 
    "Plug 'junegunn/vim-easy-align' {{{2
      Plug 'junegunn/vim-easy-align'
@@ -971,11 +969,6 @@ endif
   nmap <leader>- :new<cr>
   nmap <leader>= :vnew!<cr>
 
-  nmap <leader>k <c-w>k
-  nmap <leader>j <c-w>j
-  nmap <leader>l <c-w>l
-  nmap <leader>h <c-w>h
-
   nmap <leader>K <C-W>K
   nmap <leader>J <C-W>J
   nmap <leader>L <C-W>L
@@ -985,7 +978,6 @@ endif
 
   nmap <leader>tj :call MoveWindowTo#NextTab()<CR>
   nmap <leader>tk :call MoveWindowTo#PrevTab()<CR>
-  nmap <leader>tn :0tabnew<CR>
   nmap <leader>tc :tabclose<CR>
   nmap <leader>to :tabonly<CR>
 
@@ -1092,18 +1084,11 @@ endif
     xnoremap <C-j> xp'[V']
     xnoremap <C-k> xkP'[V']
   "git mappings {{{2
-    nnoremap <leader>gD :!tmux new-window "git difftool -w"<cr><cr>
-    nnoremap <leader>gd :!tmux new-window "git difftool -w %"<CR><CR>
-    nnoremap <leader>gM :!tmux new-window "git difftool -w origin/$(git config j.publish)"<cr><cr>
-    nnoremap <leader>gm :!tmux new-window "git difftool -w origin/$(git config j.publish) -- %"<CR><CR>
-    nnoremap <leader>gc :!tmux new-window "git bedone"<CR><CR>
-    nnoremap <leader>gi :!tmux new-window "git rebase -i"<cr><cr>
-    nnoremap <leader>gh :!tmux new-window "git hist --all"<CR><CR>
-    nnoremap <leader>gH :!tmux new-window "git hist --simplify-by-decoration"<cr><cr>
     nnoremap <leader>gb :Gitsigns toggle_current_line_blame<cr>
     nnoremap <leader>gB :lua package.loaded.gitsigns.blame_line({full=false,ignore_whitespace=true})<cr>
     nnoremap <leader>gs :!tmux new-window "tig status"<CR><CR>
-    nnoremap <leader>gg :exec ":!git ".input("git> ")<CR>
+    nnoremap <leader>gc :!tmux new-window "git bedone"<CR><CR>
+
   "working directory mappings {{{2
     nnoremap <leader>U :cd %:p:h<CR>:echo<CR>
     nnoremap <leader>u :cd ..<CR>:echo<CR>

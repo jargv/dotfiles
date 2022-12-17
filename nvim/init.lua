@@ -1,25 +1,6 @@
 -- use legacy config (TODO: remove it!) {{{1
 vim.cmd [[source ~/config/nvim/legacy_init.vim]]
 
--- unmap a bunch of things from the base config (TODO: just remove them!) {{{1
-local function unmap(mode, lhs)
-  if vim.fn.maparg(lhs, mode) ~= "" then
-    vim.api.nvim_del_keymap(mode, lhs)
-  end
-end
-unmap("n", "<leader>tN")
-unmap("n", "<leader>to")
-unmap("n", "<leader>tc")
-unmap("n", "<leader>tn")
-unmap("n", "<leader>tk")
-unmap("n", "<leader>tj")
-unmap("n", "<leader>h")
-unmap("n", "<leader>j")
-unmap("n", "<leader>k")
-unmap("n", "<leader>l")
-unmap("n", "<leader>o")
-unmap("n", "<leader>i")
-
 --create the autogroup that we'll use for everything {{{1
 local augroup = "learn.autocmd"
 vim.api.nvim_create_augroup(augroup, {
@@ -33,6 +14,7 @@ local new_buffer_options = {
   {key="o", cmd=":FZF --inline-info<cr>",     desc="search for a file"},
   {key="i", cmd=":Buffers<cr>",               desc="search buffers by name"},
   {key="h", cmd=":e term://tig<cr>",          desc="git history (tig)"},
+  {key="s", cmd=":e term://tig status<cr>",   desc="git status (tig)"},
   {key="g", cmd=":e term://git difftool<cr>", desc="git diff tool"},
   {key="q", cmd=":q!<cr>",                    desc="quit"},
 }
@@ -119,9 +101,13 @@ vim.api.nvim_set_keymap("t", "<M-=>", "", {noremap = true, callback = new("vnew"
 vim.api.nvim_set_keymap("n", "<leader>.", "", {noremap = true, callback = new()})
 
 -- git hotkeys {{{1
-vim.api.nvim_set_keymap("n", "<leader>gd", ":tabedit term://git difftool -- %<cr>>", {noremap = true})
-vim.api.nvim_set_keymap("n", "<leader>gD", ":tabedit term://git difftool<cr>>", {noremap = true})
-vim.api.nvim_set_keymap("n", "<leader>gh", ":e term://tig<cr>", {noremap = true, nowait = true})
+vim.api.nvim_set_keymap("n", "<leader>gd", ":tabedit term://git difftool -w -- %<cr>>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>gD", ":tabedit term://git difftool -w<cr>>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>gm", ":tabedit term://git difftool -w origin/$(git config j.publish) -- %<cr>>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>gM", ":tabedit term://git difftool -w origin/$(git config j.publish) <cr>>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>gi", ":tabedit term://git rebase -i<cr>>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>gc", ":tabedit term://git done<cr>>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>gg", ":exec ':tabedit term://git '.input('git> ')<cr>>", {noremap = true})
 
 -- fast config {{{1
 
@@ -134,6 +120,7 @@ vim.api.nvim_set_keymap("n", "<leader>c", "", {
       luafile ~/config/nvim/init.lua
       filetype detect
     ]]
+    print "config reloaded"
   end
 })
 
