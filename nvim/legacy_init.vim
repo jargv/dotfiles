@@ -1086,8 +1086,6 @@ endif
   "git mappings {{{2
     nnoremap <leader>gb :Gitsigns toggle_current_line_blame<cr>
     nnoremap <leader>gB :lua package.loaded.gitsigns.blame_line({full=false,ignore_whitespace=true})<cr>
-    nnoremap <leader>gs :!tmux new-window "tig status"<CR><CR>
-    nnoremap <leader>gc :!tmux new-window "git bedone"<CR><CR>
 
   "working directory mappings {{{2
     nnoremap <leader>U :cd %:p:h<CR>:echo<CR>

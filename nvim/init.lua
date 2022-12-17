@@ -1,6 +1,12 @@
 -- use legacy config (TODO: remove it!) {{{1
 vim.cmd [[source ~/config/nvim/legacy_init.vim]]
 
+-- set up mapping objects (for nicer mapping syntax) {{{1
+local mapping = require("mapping")
+local leader = mapping.withPrefix("<leader>")
+local normal = mapping()
+local terminal = mapping.inMode("t")
+
 --create the autogroup that we'll use for everything {{{1
 local augroup = "learn.autocmd"
 vim.api.nvim_create_augroup(augroup, {
@@ -50,8 +56,8 @@ local function new(split)
 end
 
 -- terminal config {{{1
-vim.api.nvim_set_keymap("t", "<A-u>", "<esc>icd ..<cr>", {noremap = true})
-vim.api.nvim_set_keymap("t", "<A-r>", "<c-r>", {noremap = true})
+terminal["<A-u>"] = "<esc>icd ..<cr>"
+terminal["<A-r>"] = "<c-r>"
 vim.api.nvim_create_autocmd({"TermOpen", "BufEnter", "BufLeave"}, {
   group = augroup,
   pattern = "term:/*",
@@ -73,56 +79,54 @@ vim.api.nvim_create_autocmd({"TermOpen", "BufEnter", "BufLeave"}, {
 })
 
 -- Navigate between windows, tabs, splits {{{1
-vim.api.nvim_set_keymap("n", "<A-h>", "<C-W>h", {noremap = true})
-vim.api.nvim_set_keymap("n", "<A-j>", "<C-W>j", {noremap = true})
-vim.api.nvim_set_keymap("n", "<A-k>", "<C-W>k", {noremap = true})
-vim.api.nvim_set_keymap("n", "<A-l>", "<C-W>l", {noremap = true})
+normal["<A-h>"] = "<C-W>h"
+normal["<A-j>"] = "<C-W>j"
+normal["<A-k>"] = "<C-W>k"
+normal["<A-l>"] = "<C-W>l"
 
-vim.api.nvim_set_keymap("t", "<A-h>", "h", {noremap = true})
-vim.api.nvim_set_keymap("t", "<A-j>", "j", {noremap = true})
-vim.api.nvim_set_keymap("t", "<A-k>", "k", {noremap = true})
-vim.api.nvim_set_keymap("t", "<A-l>", "l", {noremap = true})
-vim.api.nvim_set_keymap("t", "<A-y>", "", {noremap = true})
+terminal["<A-h>"] = "h"
+terminal["<A-j>"] = "j"
+terminal["<A-k>"] = "k"
+terminal["<A-l>"] = "l"
+terminal["<A-y>"] = ""
 
-vim.api.nvim_set_keymap("n", "<M-.>", "gt", {noremap = true})
-vim.api.nvim_set_keymap("n", "<M-,>", "gT", {noremap = true})
-vim.api.nvim_set_keymap("n", "<A-m>", "", {noremap = true, callback = new("tabnew")})
-vim.api.nvim_set_keymap("t", "<M-.>", "gt", {noremap = true})
-vim.api.nvim_set_keymap("t", "<M-,>", "gT", {noremap = true})
-vim.api.nvim_set_keymap("t", "<A-m>", "", {noremap = true, callback = new("tabnew")})
+normal["<M-.>"] = "gt"
+normal["<M-,>"] = "gT"
+normal["<A-m>"] = new("tabnew")
+terminal["<M-.>"] = "gt"
+terminal["<M-,>"] = "gT"
+terminal["<A-m>"] = new("tabnew")
 
 -- create new splits
-vim.api.nvim_set_keymap("n", "<M-->", "", {noremap = true, callback = new("new")})
-vim.api.nvim_set_keymap("n", "<M-=>", "", {noremap = true, callback = new("vnew")})
-vim.api.nvim_set_keymap("n", "<leader>-", "", {noremap = true, callback = new("new")})
-vim.api.nvim_set_keymap("n", "<leader>=", "", {noremap = true, callback = new("vnew")})
-vim.api.nvim_set_keymap("t", "<M-->", "", {noremap = true, callback = new("new")})
-vim.api.nvim_set_keymap("t", "<M-=>", "", {noremap = true, callback = new("vnew")})
-vim.api.nvim_set_keymap("n", "<leader>.", "", {noremap = true, callback = new()})
+normal["<M-->"] = new("new")
+normal["<M-=>"] = new("vnew")
+normal["<leader>-"] = new("new")
+normal["<leader>="]= new("vnew")
+
+terminal["<M-->"] = new("new")
+terminal["<M-=>"] = new("vnew")
+normal["<leader>."] = new()
 
 -- git hotkeys {{{1
-vim.api.nvim_set_keymap("n", "<leader>gd", ":tabedit term://git difftool -w -- %<cr>>", {noremap = true})
-vim.api.nvim_set_keymap("n", "<leader>gD", ":tabedit term://git difftool -w<cr>>", {noremap = true})
-vim.api.nvim_set_keymap("n", "<leader>gm", ":tabedit term://git difftool -w origin/$(git config j.publish) -- %<cr>>", {noremap = true})
-vim.api.nvim_set_keymap("n", "<leader>gM", ":tabedit term://git difftool -w origin/$(git config j.publish) <cr>>", {noremap = true})
-vim.api.nvim_set_keymap("n", "<leader>gi", ":tabedit term://git rebase -i<cr>>", {noremap = true})
-vim.api.nvim_set_keymap("n", "<leader>gc", ":tabedit term://git done<cr>>", {noremap = true})
-vim.api.nvim_set_keymap("n", "<leader>gg", ":exec ':tabedit term://git '.input('git> ')<cr>", {noremap = true})
+leader.gd = ":tabedit term://git difftool -w -- %<cr>>"
+leader.gD = ":tabedit term://git difftool -w<cr>>"
+leader.gm = ":tabedit term://git difftool -w origin/$(git config j.publish) -- %<cr>>"
+leader.gM = ":tabedit term://git difftool -w origin/$(git config j.publish) <cr>>"
+leader.gi = ":tabedit term://git rebase -i<cr>>"
+leader.gc = ":tabedit term://git done<cr>>"
+leader.gg = ":exec ':tabedit term://git '.input('git> ')<cr>"
 
 -- fast config {{{1
 
 -- hotkey to open the relevant config files in a tab
-vim.api.nvim_set_keymap("n", "<leader>c", "", {
-  noremap = true,
-  callback = function()
-    require('reset_modules')()
-    vim.cmd [[
-      luafile ~/config/nvim/init.lua
-      filetype detect
-    ]]
-    print "config reloaded"
-  end
-})
+leader.c = function()
+  require('reset_modules')()
+  vim.cmd [[
+    luafile ~/config/nvim/init.lua
+    filetype detect
+  ]]
+  print "config reloaded"
+end
 
 -- reload config
 local function reloadConfig()
@@ -135,10 +139,7 @@ local function reloadConfig()
 end
 
 -- invoke a config relaod manually
-vim.api.nvim_set_keymap("n", "<leader>C", "", {
-  noremap = true,
-  callback = reloadConfig
-})
+leader.C = reloadConfig
 
 -- reload config if any config scripts change
 vim.api.nvim_create_autocmd("BufWritePost", {
