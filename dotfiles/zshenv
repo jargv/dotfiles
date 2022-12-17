@@ -1,4 +1,32 @@
+export PATH=$PATH:~/bin
+export PATH=$PATH:~/config/bin
 
-hermosa_home(){
-  adb shell input keyevent KEYCODE_HOME
-}
+export PATH=$PATH:~/.cabal/bin
+export PATH=/usr/local/bin:$PATH
+export PATH=/usr/local/sbin:$PATH
+export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+#export PATH=~/.npm/bin/:$PATH
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+#go paths
+export GOPATH=~/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+#rust paths
+export PATH=~/.cargo/bin:$PATH
+export RUST_SRC_PATH=$( [[ -x $(which rustc) ]] && echo "$(rustc --print sysroot)/lib/rustlib/src/rust/src");
+
+# vim paths
+export EDITOR="nvim"
+
+# java paths
+if [[ -x /usr/libexec/java_home ]]; then
+  export JAVA_HOME=`/usr/libexec/java_home`
+fi
+
+# volta paths
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+# zig paths
+export PATH=$PATH:~/bin/zig

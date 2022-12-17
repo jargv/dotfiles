@@ -9,24 +9,6 @@ if [[ -d "/mnt/c" ]]; then
   export DISPLAY=:0
 fi
 
-#path {{{1
-export PATH=$PATH:~/bin
-export PATH=$PATH:~/config/bin
-
-export PATH=$PATH:~/.cabal/bin
-export PATH=/usr/local/bin:$PATH
-export PATH=/usr/local/sbin:$PATH
-export PATH=/opt/local/bin:/opt/local/sbin:$PATH
-#export PATH=~/.npm/bin/:$PATH
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-#go paths {{{2
-export GOPATH=~/go
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-#}}}
-#rust paths {{{2
-export PATH=~/.cargo/bin:$PATH
-export RUST_SRC_PATH=$( [[ -x $(which rustc) ]] && echo "$(rustc --print sysroot)/lib/rustlib/src/rust/src");
-#}}}
 
 #Attach tmux session {{{1
 # Attempt to discover a detached session and attach
@@ -57,7 +39,6 @@ setopt appendhistory inc_append_history share_history hist_ignore_dups
 setopt histignorespace
 
 #vim {{{1
-export EDITOR="nvim"
 alias vim=nvim
 alias vimdiff='nvim -d'
 bindkey -v
@@ -248,31 +229,8 @@ setopt csh_null_glob
 unsetopt beep
 #zstyle :compinstall filename '~/.zshrc'
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-
 # Java setup {{{1
 # The output of running java_home or the directory containing bin/javac
-
-if [[ -x /usr/libexec/java_home ]]; then
-  export JAVA_HOME=`/usr/libexec/java_home`
-fi
-
-# Android / Gradle / Buck setup {{{1
-# The directory where the ndk-bundle was installed into
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export ANDROID_SDK=$ANDROID_HOME
-export ANDROID_SDK_ROOT=$ANDROID_SDK
-#export ANDROID_NDK=$HOME/Library/Android/ndk-r16b
-#export ANDROID_NDK=$HOME/Library/Android/ndk-r20b
-export ANDROID_NDK=${ANDROID_SDK}/ndk
-export ANDROID_NDK_HOME=$ANDROID_NDK
-unset ANDROID_NDK_REPOSITORY
-export PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_NDK
-export PATH=${PATH}:$ANDROID_HOME/build-tools/30.0.2
-
-# appengine setup
-export APPENGINE_HOME=~/Downloads/appengine-java-sdk-1.9.54
-export PATH=${PATH}:$APPENGINE_HOME/bin/
 
 #super useful function to kill any gradle lingering instances
 kill_gradle() {
@@ -280,28 +238,4 @@ kill_gradle() {
 }
 export kill_gradle=kill_gradle
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/jgeddes/Dev/gcloud/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/jgeddes/Dev/gcloud/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/jgeddes/Dev/gcloud/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/jgeddes/Dev/gcloud/google-cloud-sdk/completion.zsh.inc'; fi
-
-PATH=${PATH}:/Users/jgeddes/Library/Python/3.8/bin
-
-# Flex and bison setup {{{1
-export CMAKE_INCLUDE_PATH="/usr/local/opt/flex/include"
-export FLEX_INCLUDE_DIRS="/usr/local/opt/flex/include"
-if [[ -x $(which brew) ]]; then
-  export PATH="$(brew --prefix bison)/bin:$(brew --prefix flex)/bin:$PATH"
-fi
-# volta setup {{{1
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
-#zig setup {{{1
-PATH=$PATH:~/bin/zig
-
-#android setup {{{1
-alias android-studio="open ~/Applications/JetBrains\ Toolbox/Android\ Studio.app"
-
 #script-added setup {{{1
-#
