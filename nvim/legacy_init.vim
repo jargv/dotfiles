@@ -704,34 +704,6 @@ set updatetime=300
   endif
   "}}}
 
-"fast config {{{1
-  nnoremap <leader>c :call <SID>reloadConfig()<CR><CR>
-  nnoremap <leader>C :call <SID>goConfig()<CR><CR>
-
-  func! <SID>goConfig()
-    let parts = split(&filetype, '\.')
-    let ft = len(parts) > 0 ? parts[0] : ""
-
-    let files = "~/config/nvim/init.vim"
-
-    if !empty(ft)
-      let files = files . " ~/config/nvim/ftplugin/".ft.".vim"
-    endif
-
-    exec '!tmux new-window "nvim -c \"let g:configMode=1\" -O ' . files . '"'
-  endfunc
-  augroup ConfigReload
-      au!
-      autocmd bufwritepost *.vim call <SID>reloadConfig()
-  augroup end
-
-  if !exists('*<SID>reloadConfig')
-    func <SID>reloadConfig()
-      lua require('reset_modules')()
-      silent source ~/config/nvim/init.vim
-      filetype detect
-    endfunc
-  endif
 "compiler <leader>m {{{1
   func! <SID>InitMyMake()
     let g:makeBuildtool = ""
