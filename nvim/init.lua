@@ -107,7 +107,7 @@ vim.api.nvim_set_keymap("n", "<leader>gm", ":tabedit term://git difftool -w orig
 vim.api.nvim_set_keymap("n", "<leader>gM", ":tabedit term://git difftool -w origin/$(git config j.publish) <cr>>", {noremap = true})
 vim.api.nvim_set_keymap("n", "<leader>gi", ":tabedit term://git rebase -i<cr>>", {noremap = true})
 vim.api.nvim_set_keymap("n", "<leader>gc", ":tabedit term://git done<cr>>", {noremap = true})
-vim.api.nvim_set_keymap("n", "<leader>gg", ":exec ':tabedit term://git '.input('git> ')<cr>>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>gg", ":exec ':tabedit term://git '.input('git> ')<cr>", {noremap = true})
 
 -- fast config {{{1
 
