@@ -1,4 +1,3 @@
-"todo: pull this out into a plugin or something
 " move windows back and forth
 func! MoveWindowTo#PrevTab()
   "there is only one window
@@ -8,6 +7,8 @@ func! MoveWindowTo#PrevTab()
   "preparing new window
   let l:tab_nr = tabpagenr('$')
   let l:cur_buf = bufnr('%')
+  let hidden_setting = &bufhidden
+  set bufhidden=hide
   if tabpagenr() != 1
     close!
     if l:tab_nr == tabpagenr('$')
@@ -20,6 +21,7 @@ func! MoveWindowTo#PrevTab()
   endif
   "opening current buffer in new window
   exe "b".l:cur_buf
+  let &bufhidden = l:hidden_setting
 endfunc
 
 func! MoveWindowTo#NextTab()
@@ -30,6 +32,8 @@ func! MoveWindowTo#NextTab()
   "preparing new window
   let l:tab_nr = tabpagenr('$')
   let l:cur_buf = bufnr('%')
+  let hidden_setting = &bufhidden
+  set bufhidden=hide
   if tabpagenr() < tab_nr
     close!
     if l:tab_nr == tabpagenr('$')
@@ -41,5 +45,6 @@ func! MoveWindowTo#NextTab()
     tabnew
   endif
   "opening current buffer in new window
-  exe "b".l:cur_buf
+  exec "b".l:cur_buf
+  let &bufhidden = l:hidden_setting
 endfunc

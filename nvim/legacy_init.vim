@@ -261,9 +261,6 @@ vmap <leader>gl :call CopyGitLink(1)<CR>
   "nnoremap <leader>;i :YcmCompleter OrganizeImports <cr>
 
 " configured plugins
-  "Plug 'dhruvasagar/vim-table-mode' {{{2
-    let g:table_mode_map_prefix = "<Leader>tt"
-    Plug 'dhruvasagar/vim-table-mode'
 
    "Plug 'terryma/vim-expand-region' {{{2
    " Plug 'terryma/vim-expand-region'
@@ -999,8 +996,8 @@ endif
 "window/tab manipulation {{{1
   set equalalways "automatically resize windows
 
-  nmap <leader>= :Vexplore!<cr>
-  nmap <leader>- :Sexplore<cr>
+  nmap <leader>- :new<cr>
+  nmap <leader>= :vnew!<cr>
 
   nmap <leader>k <c-w>k
   nmap <leader>j <c-w>j
@@ -1028,16 +1025,6 @@ endif
   nmap <Up>    5<C-W>-
   nmap <Left>  5<C-W><
   nmap <Right> 5<C-W>>
-
-  " tmap <M-k> <c-w>k
-  " tmap <M-j> <c-w>j
-  " tmap <M-l> <c-w>l
-  " tmap <M-h> <c-w>h
-
-  nmap <M-k> <c-w>k
-  nmap <M-j> <c-w>j
-  nmap <M-l> <c-w>l
-  nmap <M-h> <c-w>h
 
   nnoremap <leader>] :call <SID>bufMove(1, 0)<cr>
   nnoremap <leader>[ :call <SID>bufMove(0, 0)<cr>
@@ -1175,20 +1162,25 @@ endif
 
   "fast saving/quitting {{{2
     if !exists("g:MySmartQuitDefined")
-        func! MySmartQuit()
-          let config = exists("g:configMode") && g:configMode
-          if &diff || !len(bufname('%')) || config
-              xa!
-          elseif has("gui_running")
-              silent bw!
-          else
-              wq!
-          endif
-        endfunc
-        echo
+      func! MySmartQuit()
+        let config = exists("g:configMode") && g:configMode
+        if &buftype == "terminal"
+          bwipe!
+        elseif &ft == "netrw"
+          q!
+        elseif &diff || config
+          xa!
+        elseif !len(bufname('%'))
+          q!
+        else
+          wq!
+        endif
+      endfunc
     endif
     let g:MySmartQuitDefined = 1
     nnoremap <leader>q :call MySmartQuit()<cr>
+    nnoremap <M-x> :call MySmartQuit()<cr>
+    tnoremap <M-x> :call MySmartQuit()<cr>
     nnoremap <leader>Q :cquit!<cr>
     nnoremap <leader><leader> :wall<cr>
 
