@@ -966,9 +966,6 @@ endif
 "window/tab manipulation {{{1
   set equalalways "automatically resize windows
 
-  nmap <leader>- :new<cr>
-  nmap <leader>= :vnew!<cr>
-
   nmap <leader>K <C-W>K
   nmap <leader>J <C-W>J
   nmap <leader>L <C-W>L

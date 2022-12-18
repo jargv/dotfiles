@@ -41,3 +41,14 @@ endsnippet
 snippet type "type assert" !b
 assert(type($1) == '$2', 1)
 endsnippet
+
+snippet scratch "use this file for scratch vim/lua work" !b
+-- reload this file whenever it is saved (:luafile % the first time)
+vim.api.nvim_create_autocmd("BufWritePost", {
+  buffer = 0,
+  group = vim.api.nvim_create_augroup("scratch.autogroup", {clear = true}),
+  callback = function()
+    vim.cmd("luafile "..vim.fn.expand('%'))
+  end
+})
+endsnippet

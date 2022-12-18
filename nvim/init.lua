@@ -8,7 +8,7 @@ local normal = mapping()
 local terminal = mapping.inMode("t")
 
 --create the autogroup that we'll use for everything {{{1
-local augroup = "learn.autocmd"
+local augroup = "j.config.autogroup"
 vim.api.nvim_create_augroup(augroup, {
   clear = true --clear everything in it w
 })
@@ -44,7 +44,7 @@ local function new(split)
     end
 
     -- set the contents to the instructions
-    vim.api.nvim_buf_set_lines(buf, 0, 0, false, instructions)
+    vim.api.nvim_buf_set_lines(buf, -1, -1, false, instructions)
 
     -- clean up the old buffer, unless it was a named file
     if
@@ -64,7 +64,6 @@ vim.api.nvim_create_autocmd({"TermOpen", "BufEnter", "BufLeave"}, {
   callback = function(cmd)
     -- no numbers or hidden buffers
     if cmd.event == "TermOpen" then
-      vim.wo.number = false
       vim.bo.bufhidden = 'wipe'
     end
 
@@ -78,7 +77,7 @@ vim.api.nvim_create_autocmd({"TermOpen", "BufEnter", "BufLeave"}, {
   end
 })
 
--- Navigate between windows, tabs, splits {{{1
+-- navigate between windows, tabs, splits {{{1
 normal["<A-h>"] = "<C-W>h"
 normal["<A-j>"] = "<C-W>j"
 normal["<A-k>"] = "<C-W>k"

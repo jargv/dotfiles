@@ -7,7 +7,7 @@ inoreab <buffer> or= =<SID>opEquals('or')<cr>
 inoreab <buffer> and= =<SID>opEquals('and')<cr>
 func! <SID>opEquals(op)
   let line = getline('.')
-  let list = matchlist(line, '^\s*\([a-zA-Z0-9\.]\+\)')
+  let list = matchlist(line, '^\s*\([a-zA-Z0-9_\.]\+\)')
   if len(list) < 2
     return a:op."="
   end
@@ -79,3 +79,4 @@ func! s:trim(code)
   let parts = matchlist(a:code, '\v^\s*(.{-})\s*$')
   return parts[1]
 endfunc
+
