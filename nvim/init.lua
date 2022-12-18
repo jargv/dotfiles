@@ -107,12 +107,12 @@ terminal["<M-=>"] = new("vnew")
 normal["<leader>."] = new()
 
 -- git hotkeys {{{1
-leader.gd = ":tabedit term://git difftool -w -- %<cr>>"
-leader.gD = ":tabedit term://git difftool -w<cr>>"
-leader.gm = ":tabedit term://git difftool -w origin/$(git config j.publish) -- %<cr>>"
-leader.gM = ":tabedit term://git difftool -w origin/$(git config j.publish) <cr>>"
-leader.gi = ":tabedit term://git rebase -i<cr>>"
-leader.gc = ":tabedit term://git done<cr>>"
+leader.gd = ":tabedit term://git difftool -w -- %<cr>"
+leader.gD = ":tabedit term://git difftool -w<cr>"
+leader.gm = ":tabedit term://git difftool -w origin/$(git config j.publish) -- %<cr>"
+leader.gM = ":tabedit term://git difftool -w origin/$(git config j.publish) <cr>"
+leader.gi = ":tabedit term://git rebase -i<cr>"
+leader.gc = ":tabedit term://git done<cr>"
 leader.gg = ":exec ':tabedit term://git '.input('git> ')<cr>"
 
 -- fast config {{{1
