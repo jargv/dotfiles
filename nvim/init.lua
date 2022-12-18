@@ -7,6 +7,15 @@ local leader = mapping.withPrefix("<leader>")
 local normal = mapping()
 local terminal = mapping.inMode("t")
 
+-- warning on old habit keybinds {{{1
+leader.q = function()
+  print("nope... bad habit")
+end
+
+leader.Q = function()
+  print("nope... bad habit")
+end
+
 --create the autogroup that we'll use for everything {{{1
 local augroup = "j.config.autogroup"
 vim.api.nvim_create_augroup(augroup, {
@@ -106,14 +115,26 @@ terminal["<M-->"] = new("new")
 terminal["<M-=>"] = new("vnew")
 normal["<leader>."] = new()
 
--- git hotkeys {{{1
-leader.gd = ":tabedit term://git difftool -w -- %<cr>"
-leader.gD = ":tabedit term://git difftool -w<cr>"
+-- git setup {{{1
+-- leader.gd = ":tabedit term://git difftool -w -- %<cr>"
+-- leader.gD = ":tabedit term://git difftool -w<cr>"
+local gitato = require"gitato"
 leader.gm = ":tabedit term://git difftool -w origin/$(git config j.publish) -- %<cr>"
 leader.gM = ":tabedit term://git difftool -w origin/$(git config j.publish) <cr>"
 leader.gi = ":tabedit term://git rebase -i<cr>"
 leader.gc = ":tabedit term://git done<cr>"
-leader.gg = ":exec ':tabedit term://git '.input('git> ')<cr>"
+-- leader.gg = ":exec ':tabedit term://git '.input('git> ')<cr>"
+leader.gg = function() gitato.open_viewer() end
+
+normal["<leader>d"] = function()
+  gitato.toggle_diff_against_git_ref("HEAD")
+end
+
+leader.D = function()
+  print("TODO: make this reference the publish branch!")
+  do return end
+  gitato.toggle_diff_against_git_ref("main")
+end
 
 -- fast config {{{1
 

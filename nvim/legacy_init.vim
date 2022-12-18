@@ -1130,10 +1130,8 @@ endif
       endfunc
     endif
     let g:MySmartQuitDefined = 1
-    nnoremap <leader>q :call MySmartQuit()<cr>
     nnoremap <M-x> :call MySmartQuit()<cr>
     tnoremap <M-x> :call MySmartQuit()<cr>
-    nnoremap <leader>Q :cquit!<cr>
     nnoremap <leader><leader> :wall<cr>
 
   "next and previous location/error/vimgrep {{{2
