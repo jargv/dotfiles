@@ -187,6 +187,7 @@ function gitato.open_viewer()
     local file_name = vim.fn.tempname()
     vim.cmd("botright split "..file_name)
     local buffer = vim.fn.bufnr('%')
+    vim.bo.syntax = "gitcommit"
     vim.bo.bufhidden = "wipe"
     vim.bo.buflisted = false
     vim.bo.modified = false
