@@ -182,7 +182,7 @@ function gitato.open_viewer()
       local diff_window_width = total_width - main_buf_width
       vim.cmd(""..diff_window_width.."vsplit "..current_file)
       gitato.diff_off()
-      if status ~= "??" then
+      if current_status ~= "??" then
         gitato.toggle_diff_against_git_ref("HEAD")
       end
       vim.cmd("normal gg")
@@ -192,7 +192,7 @@ function gitato.open_viewer()
       vim.cmd("normal ll")
       vim.cmd("edit "..current_file)
       gitato.diff_off()
-      if status ~= "??" then
+      if current_status ~= "??" then
         gitato.toggle_diff_against_git_ref("HEAD")
       end
     end
