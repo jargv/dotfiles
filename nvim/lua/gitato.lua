@@ -64,8 +64,8 @@ end
 function gitato.commit(post_commit)
   -- first get the git status
   local git_status = vim.fn.systemlist("git commit --verbose --dry-run")
-  if not vim.api.nvim_get_vvar("shell_error") then
-    print("error getting git status")
+  if 0 ~= vim.api.nvim_get_vvar("shell_error") then
+    print("error getting git status... anything comitted?")
     return
   end
 
@@ -112,8 +112,7 @@ function gitato.open_viewer()
 
   local function get_status()
     local result = vim.fn.systemlist({"git", "status", "-sb"})
-    local error = vim.api.nvim_get_vvar("shell_error")
-    if error ~= 0 then
+    if 0 ~= vim.api.nvim_get_vvar("shell_error") then
       print(table.concat(output, "\n"))
       return nil
     end
