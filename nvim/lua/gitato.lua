@@ -65,6 +65,7 @@ function gitato.open_viewer()
   local main_buf = vim.api.nvim_create_buf(false, true)
   local main_buf_width = 0
   local current_file = nil
+  local current_status = nil
   local current_file_window = nil
 
   local function get_status()
@@ -88,35 +89,47 @@ function gitato.open_viewer()
     end
   end
 
-  local function view_diff_for_current_line()
+  local function collect_status_and_file_from_current_line(force_update)
     local line = vim.fn.getline('.')
+
+    -- grab the file and status from the line
+    local status, file = string.match(line, "^(..)%s*(%S*)$")
+
+    -- this is the previously viewed file, no work to do
+    if file == current_file and not force_update then
+      return false
+    end
+
+    current_file = nil
+    current_status = nil
 
     -- skip comment lines
     if string.match(line, "^#") then
-      return
+      return false
     end
-
-    -- grab the file and status from the line
-    local status, file = string.match(line, "^%s*(%S*)%s*(%S*)$")
 
     -- skip empty files
     if file == "" or file == nil then
-      return
-    end
-
-    -- this is the previously viewed file, no work to do
-    if file == current_file then
-      return
+      return false
     end
 
     current_file = file
+    current_status = status
+    return true
+  end
+
+  local function view_diff_for_current_file()
+    if current_file == nil or current_file == "" then
+      return
+    end
+
     if current_file_window == nil
     or not vim.api.nvim_win_is_valid(current_file_window)
     then
       -- create the window
       local total_width = vim.api.nvim_win_get_width(0)
       local diff_window_width = total_width - main_buf_width
-      vim.cmd(""..diff_window_width.."vsplit "..file)
+      vim.cmd(""..diff_window_width.."vsplit "..current_file)
       gitato.diff_off()
       if status ~= "??" then
         gitato.toggle_diff_against_git_ref("HEAD")
@@ -126,7 +139,7 @@ function gitato.open_viewer()
     else
       -- or just move into the window
       vim.cmd("normal ll")
-      vim.cmd("edit "..file)
+      vim.cmd("edit "..current_file)
       gitato.diff_off()
       if status ~= "??" then
         gitato.toggle_diff_against_git_ref("HEAD")
@@ -181,16 +194,30 @@ function gitato.open_viewer()
   key('h', 'llgphh')
   key('a', '', function()
     if current_file then
-      vim.fn.system("git add "..current_file)
+      if current_status:sub(2,2) == "M" then
+        vim.fn.system("git add "..current_file)
+        print("added!")
+      else
+        vim.fn.system("git reset "..current_file)
+        print("reset!")
+      end
       get_and_draw_status()
-      print("added!")
+      collect_status_and_file_from_current_line(true)
     end
+  end)
+  key('s', '', function()
+    print(("current => %s (%q)"):format(current_file, current_status))
   end)
 
   vim.api.nvim_create_autocmd("CursorMoved", {
     buffer = main_buf,
     group = group,
-    callback = view_diff_for_current_line
+    callback = function()
+      local changed = collect_status_and_file_from_current_line()
+      if changed then
+        view_diff_for_current_file()
+      end
+    end
   })
 
   -- clean up when we leave the main buffer
