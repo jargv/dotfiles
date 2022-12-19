@@ -247,11 +247,24 @@ function gitato.open_viewer()
   keymap('a', '', function()
     if current_file then
       if current_status:sub(2,2) == "M" or current_status == "??" then
-        vim.fn.system("git add "..current_file)
+        vim.fn.system("git add -- "..current_file)
         print("added!")
       else
-        vim.fn.system("git reset "..current_file)
+        vim.fn.system("git reset -- "..current_file)
         print("reset!")
+      end
+      get_and_draw_status()
+      collect_status_and_file_from_current_line(true)
+    end
+  end)
+  keymap('d', '', function()
+    if current_file then
+      if current_status:sub(2,2) == "D" then
+        vim.fn.system("git rm "..current_file)
+        print("deleted!")
+      elseif (current_status:sub(1,1) == "D") then
+        vim.fn.system("git reset -- "..current_file)
+        print("undeleted!")
       end
       get_and_draw_status()
       collect_status_and_file_from_current_line(true)
