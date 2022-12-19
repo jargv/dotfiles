@@ -130,22 +130,22 @@ function gitato.open_viewer()
           local total_width = vim.api.nvim_win_get_width(0)
           local diff_window_width = total_width - menu_width
           vim.cmd(""..diff_window_width.."vsplit "..file)
-          vim.cmd("normal gg")
           gitato.diff_off()
           if status ~= "??" then
             gitato.toggle_diff_against_git_ref("HEAD")
           end
+          vim.cmd("normal gg")
           current_file_window = vim.fn.win_getid(vim.fn.winnr())
         else
           -- or just move into the window
           vim.cmd("normal ll")
           vim.cmd("edit "..file)
-          vim.cmd("normal gg")
           gitato.diff_off()
           if status ~= "??" then
             gitato.toggle_diff_against_git_ref("HEAD")
           end
         end
+        vim.cmd("normal gg")
         vim.cmd("normal hh")
         vim.wo.winfixwidth = true
       end
