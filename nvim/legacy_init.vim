@@ -535,7 +535,7 @@ require'nvim-treesitter.configs'.setup {
   "colorscheme oceanlight
   "colorscheme OceanicNext | set bg=dark
   "colorscheme rakr-light | set bg=light
-  colorscheme zenburn | set bg=light
+  "colorscheme zenburn | set bg=light
   "colorscheme arcadia
   "colorscheme onehalfdark
   let g:everforest_background = 'medium'
@@ -543,7 +543,7 @@ require'nvim-treesitter.configs'.setup {
   let g:everforest_ui_contrast = 'low'
   let g:everforest_show_eob = 1
   let g:everforest_diagnostic_text_highlight = 1
-  "colorscheme everforest | set bg=dark
+  colorscheme everforest | set bg=dark
   "highlight MatchParen cterm=inverse ctermbg=black
   ":NoMatchParen
   let g:loaded_matchparen = 1

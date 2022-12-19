@@ -168,7 +168,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   callback = reloadConfig
 })
 
--- neovide config
+-- neovide config {{{1
 if vim.g.neovide then
   local scale_delta = 0.05
   vim.g.neovide_hide_mouse_when_typing = true
@@ -177,6 +177,7 @@ if vim.g.neovide then
   vim.g.neovide_profiler = false
   vim.g.neovide_input_macos_alt_is_meta = false
   vim.g.neovide_cursor_vfx_mode = "railgun"
+  vim.opt.guifont="FiraCode Nerd Font:h12"
   normal["<C-->"] = function()
     local scale_factor = vim.g.neovide_scale_factor or 1.0
     vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - scale_delta
