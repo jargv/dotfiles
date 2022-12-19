@@ -29,8 +29,6 @@ local new_buffer_options = {
   {key="o", cmd=":FZF --inline-info<cr>",     desc="search for a file"},
   {key="i", cmd=":Buffers<cr>",               desc="search buffers by name"},
   {key="h", cmd=":e term://tig<cr>",          desc="git history (tig)"},
-  {key="s", cmd=":e term://tig status<cr>",   desc="git status (tig)"},
-  {key="g", cmd=":e term://git difftool<cr>", desc="git diff tool"},
   {key="q", cmd=":q!<cr>",                    desc="quit"},
 }
 
@@ -119,10 +117,10 @@ normal["<leader>."] = new()
 -- leader.gd = ":tabedit term://git difftool -w -- %<cr>"
 -- leader.gD = ":tabedit term://git difftool -w<cr>"
 local gitato = require"gitato"
-leader.gm = ":tabedit term://git difftool -w origin/$(git config j.publish) -- %<cr>"
-leader.gM = ":tabedit term://git difftool -w origin/$(git config j.publish) <cr>"
-leader.gi = ":tabedit term://git rebase -i<cr>"
-leader.gc = ":tabedit term://git done<cr>"
+-- leader.gm = ":tabedit term://git difftool -w origin/$(git config j.publish) -- %<cr>"
+-- leader.gM = ":tabedit term://git difftool -w origin/$(git config j.publish) <cr>"
+-- leader.gi = ":tabedit term://git rebase -i<cr>"
+-- leader.gc = ":tabedit term://git done<cr>"
 -- leader.gg = ":exec ':tabedit term://git '.input('git> ')<cr>"
 leader.gg = function() gitato.open_viewer() end
 
