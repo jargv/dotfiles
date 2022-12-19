@@ -175,24 +175,25 @@ function gitato.open_viewer()
     draw_status(status)
   end
 
-  vim.cmd("wall")
-  init()
-
-  -- set up some keymaps
-  local function key(key, action, callback)
+  local function keymap(key, action, callback)
     vim.api.nvim_buf_set_keymap(main_buf, 'n', key, action, {
       nowait=true,
       callback=callback
     })
   end
 
-  key('q', ':tabclose!<cr>')
-  key('<cr>', 'll')
-  key('gn', 'llgnhh')
-  key('gp', 'llgphh')
-  key('l', 'llgnhh')
-  key('h', 'llgphh')
-  key('a', '', function()
+  -- save every file and kick off the process
+  vim.cmd("wall")
+  init()
+
+  -- set up some keymaps
+  keymap('q', ':tabclose!<cr>')
+  keymap('<cr>', 'll')
+  keymap('gn', 'llgnhh')
+  keymap('gp', 'llgphh')
+  keymap('l', 'llgnhh')
+  keymap('h', 'llgphh')
+  keymap('a', '', function()
     if current_file then
       if current_status:sub(2,2) == "M" then
         vim.fn.system("git add "..current_file)
@@ -204,9 +205,6 @@ function gitato.open_viewer()
       get_and_draw_status()
       collect_status_and_file_from_current_line(true)
     end
-  end)
-  key('s', '', function()
-    print(("current => %s (%q)"):format(current_file, current_status))
   end)
 
   vim.api.nvim_create_autocmd("CursorMoved", {
