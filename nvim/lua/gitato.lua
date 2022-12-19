@@ -162,6 +162,7 @@ function gitato.open_viewer()
     draw_status(status)
   end
 
+  vim.cmd("wall")
   init()
 
   -- set up some keymaps
@@ -178,14 +179,6 @@ function gitato.open_viewer()
   key('gp', 'llgphh')
   key('l', 'llgnhh')
   key('h', 'llgphh')
-  key('a', '', function()
-    if current_file then
-      vim.fn.system("git add "..current_file)
-      get_and_draw_status()
-      print("added!")
-    end
-  end)
-
   key('a', '', function()
     if current_file then
       vim.fn.system("git add "..current_file)
