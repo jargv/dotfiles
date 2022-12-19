@@ -55,7 +55,7 @@ function gitato.toggle_diff_against_git_ref(ref)
   vim.bo.buftype = "nofile"
   vim.bo.bufhidden = "wipe"
   current_diff_buffer = vim.fn.bufnr("%")
-  vim.api.nvim_buf_set_lines(current_diff_buffer, 0, 0, false, diff_contents)
+  vim.api.nvim_buf_set_lines(current_diff_buffer, 0, 1, false, diff_contents)
   vim.cmd(":diffthis")
   vim.cmd("normal l")
   vim.cmd(":diffthis")
