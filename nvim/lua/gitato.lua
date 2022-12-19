@@ -63,6 +63,9 @@ end
 
 function gitato.open_viewer()
   local main_buf = vim.api.nvim_create_buf(false, true)
+  local main_buf_width = 0
+  local current_file = nil
+  local current_file_window = nil
 
   local function get_status()
     local result = vim.fn.systemlist({"git", "status", "-sb"})
@@ -85,32 +88,81 @@ function gitato.open_viewer()
     end
   end
 
-  local status = get_status()
-  if status == nil then
-    print("ERROR: Is this a git repo?")
-    return
-  end
-  draw_status(status)
+  local function view_diff_for_current_line()
+    local line = vim.fn.getline('.')
 
-  vim.cmd("-tabnew")
-
-  local tmp_buf = vim.fn.bufnr("%")
-  vim.cmd("b "..main_buf)
-  vim.cmd("silent bwipe! "..tmp_buf)
-  vim.bo.bufhidden = "wipe"
-
-  local menu_width = 0
-  for _,line in ipairs(status) do
-    if #line > menu_width then
-      menu_width = #line
+    -- skip comment lines
+    if string.match(line, "^#") then
+      return
     end
+
+    -- grab the file and status from the line
+    local status, file = string.match(line, "^%s*(%S*)%s*(%S*)$")
+
+    -- skip empty files
+    if file == "" or file == nil then
+      return
+    end
+
+    -- this is the previously viewed file, no work to do
+    if file == current_file then
+      return
+    end
+
+    current_file = file
+    if current_file_window == nil
+    or not vim.api.nvim_win_is_valid(current_file_window)
+    then
+      -- create the window
+      local total_width = vim.api.nvim_win_get_width(0)
+      local diff_window_width = total_width - main_buf_width
+      vim.cmd(""..diff_window_width.."vsplit "..file)
+      gitato.diff_off()
+      if status ~= "??" then
+        gitato.toggle_diff_against_git_ref("HEAD")
+      end
+      vim.cmd("normal gg")
+      current_file_window = vim.fn.win_getid(vim.fn.winnr())
+    else
+      -- or just move into the window
+      vim.cmd("normal ll")
+      vim.cmd("edit "..file)
+      gitato.diff_off()
+      if status ~= "??" then
+        gitato.toggle_diff_against_git_ref("HEAD")
+      end
+    end
+    vim.cmd("normal gg")
+    vim.cmd("normal hh")
+    vim.wo.winfixwidth = true
   end
 
-  local current_file = nil
-  local current_file_window = nil
+  local function init()
+    local status = get_status()
+    if status == nil then
+      print("ERROR: Is this a git repo?")
+      return
+    end
 
-  -- add some padding and account for line numbers
-  menu_width = menu_width + 10
+    vim.cmd("-tabnew")
+
+    local tmp_buf = vim.fn.bufnr("%")
+    vim.cmd("b "..main_buf)
+    vim.cmd("silent bwipe! "..tmp_buf)
+    vim.bo.bufhidden = "wipe"
+
+    for _,line in ipairs(status) do
+      if #line > main_buf_width then
+        main_buf_width = #line
+      end
+    end
+
+    -- add some padding and account for line numbers
+    main_buf_width = main_buf_width + 10
+    draw_status(status)
+  end
+
+  init()
 
   -- set up some keymaps
   local function key(key, action, callback)
@@ -119,6 +171,7 @@ function gitato.open_viewer()
       callback=callback
     })
   end
+
   key('q', ':tabclose!<cr>')
   key('<cr>', 'll')
   key('gn', 'llgnhh')
@@ -133,55 +186,18 @@ function gitato.open_viewer()
     end
   end)
 
+  key('a', '', function()
+    if current_file then
+      vim.fn.system("git add "..current_file)
+      get_and_draw_status()
+      print("added!")
+    end
+  end)
+
   vim.api.nvim_create_autocmd("CursorMoved", {
     buffer = main_buf,
     group = group,
-    callback = function()
-      local line = vim.fn.getline('.')
-
-      -- skip comment lines
-      if string.match(line, "^#") then
-        return
-      end
-
-      -- grab the file and status from the line
-      local status, file = string.match(line, "^%s*(%S*)%s*(%S*)$")
-
-      -- skip empty files
-      if file == "" or file == nil then
-        return
-      end
-
-      -- view the file if we've moved to a new one
-      if file ~= current_file then
-        current_file = file
-        if current_file_window == nil
-        or not vim.api.nvim_win_is_valid(current_file_window)
-        then
-          -- create the window
-          local total_width = vim.api.nvim_win_get_width(0)
-          local diff_window_width = total_width - menu_width
-          vim.cmd(""..diff_window_width.."vsplit "..file)
-          gitato.diff_off()
-          if status ~= "??" then
-            gitato.toggle_diff_against_git_ref("HEAD")
-          end
-          vim.cmd("normal gg")
-          current_file_window = vim.fn.win_getid(vim.fn.winnr())
-        else
-          -- or just move into the window
-          vim.cmd("normal ll")
-          vim.cmd("edit "..file)
-          gitato.diff_off()
-          if status ~= "??" then
-            gitato.toggle_diff_against_git_ref("HEAD")
-          end
-        end
-        vim.cmd("normal gg")
-        vim.cmd("normal hh")
-        vim.wo.winfixwidth = true
-      end
-    end
+    callback = view_diff_for_current_line
   })
 
   -- clean up when we leave the main buffer
