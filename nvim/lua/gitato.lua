@@ -14,19 +14,34 @@ function gitato.diff_off()
   current_diff_buffer = nil
 end
 
+function gitato.get_repo_root()
+  local result = vim.fn.systemlist("git rev-parse --show-toplevel")
+  local error = vim.api.nvim_get_vvar("shell_error")
+  if error ~= 0 or #result == 0 then
+    return nil
+  end
+  return result[1]
+end
+
 function gitato.toggle_diff_against_git_ref(ref)
   if current_diff_buffer ~= nil then
     gitato.diff_off()
     return
   end
 
+  local git_root = gitato.get_repo_root()
+  if git_root == nil then
+    print("ERROR: Is this a git repo?")
+    return
+  end
+
   local current_buffer = vim.fn.bufnr("%")
   local file = vim.fn.expand("%")
-  print("file: "..file)
-  if file[1] ~= "/" then
+  if file:sub(1, #git_root) == git_root then
+    file = file:sub(#git_root)
+  else
     file = "./"..file
   end
-  print("file: ".. file)
 
   local diff_contents = vim.fn.systemlist({"git", "show", ref..':'..file})
   local error = vim.api.nvim_get_vvar("shell_error")
@@ -145,4 +160,4 @@ function gitato.open_viewer()
   })
 end
 
-return gitato
+

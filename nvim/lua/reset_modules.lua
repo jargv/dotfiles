@@ -1,3 +1,4 @@
+-- reset all loaded modules so everything will be reloaded. Overkill?
 return function()
   local package_names = {}
   for name in pairs(package.loaded) do
