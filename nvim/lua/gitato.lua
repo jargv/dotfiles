@@ -62,26 +62,45 @@ function gitato.toggle_diff_against_git_ref(ref)
 end
 
 function gitato.open_viewer()
-  local output = vim.fn.systemlist({"git", "status", "-sb"})
-  local error = vim.api.nvim_get_vvar("shell_error")
-  if error ~= 0 then
-    print(table.concat(output, "\n"))
+  local main_buf = vim.api.nvim_create_buf(false, true)
+
+  local function get_status()
+    local result = vim.fn.systemlist({"git", "status", "-sb"})
+    local error = vim.api.nvim_get_vvar("shell_error")
+    if error ~= 0 then
+      print(table.concat(output, "\n"))
+      return nil
+    end
+    return result
+  end
+
+  local function draw_status(status)
+    vim.api.nvim_buf_set_lines(main_buf, 0, -1, false, status)
+  end
+
+  local function get_and_draw_status()
+    local status = get_status()
+    if status ~= nil then
+      draw_status(status)
+    end
+  end
+
+  local status = get_status()
+  if status == nil then
     print("ERROR: Is this a git repo?")
     return
   end
-
-  local main_buf = vim.api.nvim_create_buf(false, true)
+  draw_status(status)
 
   vim.cmd("-tabnew")
+
   local tmp_buf = vim.fn.bufnr("%")
   vim.cmd("b "..main_buf)
   vim.cmd("silent bwipe! "..tmp_buf)
   vim.bo.bufhidden = "wipe"
 
-  vim.api.nvim_buf_set_lines(main_buf, -1, -1, false, output)
-
   local menu_width = 0
-  for _,line in ipairs(output) do
+  for _,line in ipairs(status) do
     if #line > menu_width then
       menu_width = #line
     end
@@ -94,12 +113,25 @@ function gitato.open_viewer()
   menu_width = menu_width + 10
 
   -- set up some keymaps
-  vim.api.nvim_buf_set_keymap(main_buf, 'n', 'q', ':tabclose!<cr>', {nowait=true})
-  vim.api.nvim_buf_set_keymap(main_buf, 'n', '<cr>', 'll', {nowait=true})
-  vim.api.nvim_buf_set_keymap(main_buf, 'n', 'gn', 'llgnhh', {nowait=true})
-  vim.api.nvim_buf_set_keymap(main_buf, 'n', 'gp', 'llgphh', {nowait=true})
-  vim.api.nvim_buf_set_keymap(main_buf, 'n', 'l', 'llgnhh', {nowait=true})
-  vim.api.nvim_buf_set_keymap(main_buf, 'n', 'h', 'llgphh', {nowait=true})
+  local function key(key, action, callback)
+    vim.api.nvim_buf_set_keymap(main_buf, 'n', key, action, {
+      nowait=true,
+      callback=callback
+    })
+  end
+  key('q', ':tabclose!<cr>')
+  key('<cr>', 'll')
+  key('gn', 'llgnhh')
+  key('gp', 'llgphh')
+  key('l', 'llgnhh')
+  key('h', 'llgphh')
+  key('a', '', function()
+    if current_file then
+      vim.fn.system("git add "..current_file)
+      get_and_draw_status()
+      print("added!")
+    end
+  end)
 
   vim.api.nvim_create_autocmd("CursorMoved", {
     buffer = main_buf,
