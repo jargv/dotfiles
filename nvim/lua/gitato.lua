@@ -246,7 +246,7 @@ function gitato.open_viewer()
   keymap('h', 'llgphh')
   keymap('a', '', function()
     if current_file then
-      if current_status:sub(2,2) == "M" then
+      if current_status:sub(2,2) == "M" or current_status == "??" then
         vim.fn.system("git add "..current_file)
         print("added!")
       else
