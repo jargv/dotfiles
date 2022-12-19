@@ -61,6 +61,48 @@ function gitato.toggle_diff_against_git_ref(ref)
   vim.cmd(":diffthis")
 end
 
+function gitato.commit(post_commit)
+  -- first get the git status
+  local git_status = vim.fn.systemlist("git commit --verbose --dry-run")
+  if not vim.api.nvim_get_vvar("shell_error") then
+    print("error getting git status")
+    return
+  end
+
+  -- prepare a new buffer for the commit message
+  local file_name = vim.fn.tempname()
+  vim.cmd("botright split "..file_name)
+  local buffer = vim.fn.bufnr('%')
+  vim.bo.syntax = "gitcommit"
+  vim.bo.bufhidden = "wipe"
+  vim.bo.buflisted = false
+  vim.bo.modified = false
+
+  -- add the message into the buffer
+  local message = {
+    "## enter commit message above, then save to commit",
+  }
+  for _,line in ipairs(git_status) do
+    table.insert(message, "# "..line)
+  end
+  vim.api.nvim_buf_set_lines(buffer, -1, -1, false, message)
+
+  -- commit when the buffer is written
+  vim.api.nvim_create_autocmd("BufWritePost", {
+    buffer = buffer,
+    callback = function()
+      vim.defer_fn(function()
+        vim.cmd("vsplit term://git commit --cleanup=strip --file="..file_name)
+        vim.cmd("bwipe! ".. buffer)
+        if post_commit then
+          post_commit()
+        end
+      end, 0)
+    end
+  })
+end
+
+
 function gitato.open_viewer()
   local main_buf = vim.api.nvim_create_buf(false, true)
   local main_buf_width = 0
@@ -105,12 +147,12 @@ function gitato.open_viewer()
 
     -- skip comment lines
     if string.match(line, "^#") then
-      return false
+      return true
     end
 
     -- skip empty files
     if file == "" or file == nil then
-      return false
+      return true
     end
 
     current_file = file
@@ -118,8 +160,18 @@ function gitato.open_viewer()
     return true
   end
 
+  local function close_diff_window()
+    gitato.diff_off()
+    if current_file_window ~= nil and vim.api.nvim_win_is_valid(current_file_window) then
+      vim.api.nvim_win_close(current_file_window, false)
+    end
+    current_file_window = nil
+  end
+
   local function view_diff_for_current_file()
+    -- if nil, clean up the current diff windows
     if current_file == nil or current_file == "" then
+      close_diff_window()
       return
     end
 
@@ -175,44 +227,6 @@ function gitato.open_viewer()
     draw_status(status)
   end
 
-  local function commit()
-    -- first get the git status
-    local git_status = vim.fn.systemlist("git commit --verbose --dry-run")
-    if not vim.api.nvim_get_vvar("shell_error") then
-      print("error getting git status")
-      return
-    end
-
-    -- prepare a new buffer for the commit message
-    local file_name = vim.fn.tempname()
-    vim.cmd("botright split "..file_name)
-    local buffer = vim.fn.bufnr('%')
-    vim.bo.syntax = "gitcommit"
-    vim.bo.bufhidden = "wipe"
-    vim.bo.buflisted = false
-    vim.bo.modified = false
-
-    -- add the message into the buffer
-    local message = {
-      "## enter commit message above, then save to commit",
-    }
-    for _,line in ipairs(git_status) do
-      table.insert(message, "# "..line)
-    end
-    vim.api.nvim_buf_set_lines(buffer, -1, -1, false, message)
-
-    -- commit when the buffer is written
-    vim.api.nvim_create_autocmd("BufWritePost", {
-      buffer = buffer,
-      callback = function()
-        vim.defer_fn(function()
-          vim.cmd("vsplit term://git commit --cleanup=strip --file="..file_name)
-          vim.cmd("bwipe! ".. buffer)
-        end, 0)
-      end
-    })
-  end
-
   local function keymap(key, action, callback)
     vim.api.nvim_buf_set_keymap(main_buf, 'n', key, action, {
       nowait=true,
@@ -245,7 +259,11 @@ function gitato.open_viewer()
     end
   end)
   keymap('c', '', function()
-    commit()
+    gitato.commit(function()
+      close_diff_window()
+      get_and_draw_status()
+      collect_status_and_file_from_current_line(true)
+    end)
   end)
 
   vim.api.nvim_create_autocmd("CursorMoved", {
