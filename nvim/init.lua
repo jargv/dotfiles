@@ -126,7 +126,7 @@ leader.gc = ":tabedit term://git done<cr>"
 -- leader.gg = ":exec ':tabedit term://git '.input('git> ')<cr>"
 leader.gg = function() gitato.open_viewer() end
 
-normal["<leader>d"] = function()
+leader.d = function()
   gitato.toggle_diff_against_git_ref("HEAD")
 end
 

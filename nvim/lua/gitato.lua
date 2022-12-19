@@ -38,7 +38,7 @@ function gitato.toggle_diff_against_git_ref(ref)
   local current_buffer = vim.fn.bufnr("%")
   local file = vim.fn.expand("%")
   if file:sub(1, #git_root) == git_root then
-    file = file:sub(#git_root)
+    file = file:sub(#git_root + 2)
   else
     file = "./"..file
   end
@@ -160,4 +160,4 @@ function gitato.open_viewer()
   })
 end
 
-
+return gitato
