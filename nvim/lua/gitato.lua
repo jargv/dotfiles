@@ -269,10 +269,12 @@ function gitato.open_viewer()
     buffer = main_buf,
     group = group,
     callback = function()
-      local changed = collect_status_and_file_from_current_line()
-      if changed then
-        view_diff_for_current_file()
-      end
+      vim.defer_fn(function()
+        local changed = collect_status_and_file_from_current_line()
+        if changed then
+          view_diff_for_current_file()
+        end
+      end, 0)
     end
   })
 
