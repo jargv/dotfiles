@@ -113,7 +113,7 @@ function gitato.open_viewer()
   local function get_status()
     local result = vim.fn.systemlist({"git", "status", "-sb"})
     if 0 ~= vim.api.nvim_get_vvar("shell_error") then
-      print(table.concat(output, "\n"))
+      print(table.concat(result, "\n"))
       return nil
     end
     return result

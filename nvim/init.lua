@@ -65,6 +65,8 @@ end
 -- terminal config {{{1
 terminal["<A-u>"] = "<esc>icd ..<cr>"
 terminal["<A-r>"] = "<c-r>"
+terminal["<A-p>"] = "pa"
+terminal["<A-y>"] = ""
 vim.api.nvim_create_autocmd({"TermOpen", "BufEnter", "BufLeave"}, {
   group = augroup,
   pattern = "term:/*",
@@ -94,7 +96,6 @@ terminal["<A-h>"] = "h"
 terminal["<A-j>"] = "j"
 terminal["<A-k>"] = "k"
 terminal["<A-l>"] = "l"
-terminal["<A-y>"] = ""
 
 normal["<M-.>"] = "gt"
 normal["<M-,>"] = "gT"
