@@ -71,7 +71,7 @@ end
 
 function gitato.commit(post_commit)
   -- first get the git status
-  local git_status = vim.fn.systemlist("git commit --verbose --dry-run")
+  local git_status = vim.fn.systemlist("git commit -v -v --dry-run")
   if 0 ~= vim.api.nvim_get_vvar("shell_error") then
     print("error getting git status... anything comitted?")
     return
@@ -99,13 +99,12 @@ function gitato.commit(post_commit)
   vim.api.nvim_create_autocmd("BufWritePost", {
     buffer = buffer,
     callback = function()
-      vim.defer_fn(function()
-        vim.cmd("vsplit term://git commit --cleanup=strip --file="..file_name)
-        vim.cmd("bwipe! ".. buffer)
-        if post_commit then
-          post_commit()
+      vim.fn.termopen("git commit --cleanup=strip --file="..file_name, {
+        on_exit = function()
+          vim.cmd("bwipe! ".. buffer)
+          if post_commit then post_commit() end
         end
-      end, 0)
+      })
     end
   })
 end
