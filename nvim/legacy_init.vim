@@ -136,19 +136,33 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 
+
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
+
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
-  "Plug 'SmiteshP/nvim-navic'
-  Plug 'SmiteshP/nvim-navic'
-  let g:winbarShown = 0
-  func! <sid>toggleWinbar()
-    let g:winbarShown = !g:winbarShown
-    if g:winbarShown
-      set winbar=%{%v:lua.require'nvim-navic'.get_location()%}
-    else
-      set winbar=
-    endif
-  endfunc
+"Plug 'williamboman/mason.nvim' {{w
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
+lua << EOF
+table.insert(plugin_setup_funcs, function()
+  require"mason".setup()
+  require"mason-lspconfig".setup()
+end)
+EOF
+
+"Plug 'SmiteshP/nvim-navic' {{{2
+Plug 'SmiteshP/nvim-navic'
+let g:winbarShown = 0
+func! <sid>toggleWinbar()
+  let g:winbarShown = !g:winbarShown
+  if g:winbarShown
+    set winbar=%{%v:lua.require'nvim-navic'.get_location()%}
+  else
+    set winbar=
+  endif
+endfunc
 lua << EOF
 table.insert(plugin_setup_funcs, function()
   require"nvim-navic".setup {
@@ -415,6 +429,24 @@ lua <<
         staticcheck = true,
       },
     },
+  }
+  lspconfig.sumneko_lua.setup {
+    settings = {
+      Lua = {
+        runtime = {
+          version = 'LuaJIT',
+        },
+        diagnostics = {
+          globals = {'vim'},
+        },
+        workspace = {
+          library = vim.api.nvim_get_runtime_file("", true),
+        },
+        telemetry = {
+          enable = false,
+        },
+      },
+    }
   }
 
   vim.diagnostic.config({signs = false, virtual_text = false, underline = false})
