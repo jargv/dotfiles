@@ -1,3 +1,8 @@
+--[[
+TODOS:
+  - correctly update status after comitting
+]]
+
 local gitato = {}
 local group = "gitato.autogroup"
 
