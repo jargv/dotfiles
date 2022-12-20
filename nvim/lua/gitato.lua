@@ -1,6 +1,6 @@
 --[[
 TODOS:
-  - correctly update status after comitting
+  - refactor so current_status, current_file are parsed on every use
   - delete file from within the gitato status window
   - fix strange issue with adding lots of files
     (it's git status reordering...)
