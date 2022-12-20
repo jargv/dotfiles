@@ -1,6 +1,7 @@
 --[[
 TODOS:
   - correctly update status after comitting
+  - delete file from within the gitato status window
 ]]
 
 local gitato = {}

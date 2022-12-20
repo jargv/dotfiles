@@ -3,9 +3,138 @@ vim.cmd [[source ~/config/nvim/legacy_init.vim]]
 
 -- set up key mapping objects  {{{1
 local mapping = require("mapping")
+
 local leader = mapping.withPrefix("<leader>")
 local normal = mapping()
+local visual = mapping.inMode("v")
 local terminal = mapping.inMode("t")
+
+-- prototype settings {{{1
+visual.v = "`[o`]"
+leader.tN = ":tab split<cr>"
+vim.opt.updatetime = 300
+
+-- setup {{{1
+vim.g.mapleader = ' '
+vim.opt.shortmess:append({I = true}) -- don't do intro message at startup
+vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
+-- local isLinux = vim.fn.system('uname') == "Linux\n"
+
+-- settings {{{1
+
+-- formatting
+vim.opt.formatoptions:append('j')
+
+-- indent
+vim.opt.cindent = false
+vim.opt.smartindent = false
+vim.opt.autoindent = true
+vim.opt.list = false
+vim.opt.listchars = "tab:| "
+
+-- temporary files
+vim.opt.backupdir="/tmp"
+vim.opt.directory="/tmp"
+vim.opt.undodir="/tmp"
+vim.opt.backup = false
+vim.opt.swapfile = false
+
+-- timeout (snappy)
+vim.opt.timeout = false
+vim.opt.ttimeout = true
+vim.opt.ttimeoutlen = 0
+
+-- search
+vim.opt.wildmode = "full"
+vim.opt.gdefault = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.incsearch = true
+vim.opt.hlsearch = true
+vim.opt.wrapscan = true
+normal["<C-L>"] = ":nohlsearch<cr>:syn sync minlines=99999<cr><C-L>"
+
+-- folds
+vim.opt.fillchars = "fold: " --don't do dashes in the fold lines
+vim.cmd [[
+set foldtext=MyFoldText()
+function! MyFoldText()
+  let sub = substitute(foldtext(), '+-*\s*\d*\s*lines:\s*', '', 'g')
+  return repeat(' ', &sw * (v:foldlevel - 1)) . sub
+endfunction
+]]
+
+-- spell check
+vim.opt.spelllang="en_us"
+vim.opt.spell = false
+
+-- buffers
+vim.opt.splitbelow = true
+vim.opt.splitright = true
+vim.cmd [[
+  augroup NoSimultaneousEdits
+    autocmd!
+    autocmd  SwapExists * :let v:swapchoice = 'e'
+  augroup END
+]]
+
+-- difftool
+vim.opt.diffopt={
+  "filler", -- show filler lines
+  "iwhite"
+}
+
+-- whitespace
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+vim.opt.smarttab = true
+vim.opt.shiftround = true
+vim.cmd [[ "blow away triling whitespace
+  augroup NukeWhitespace
+    autocmd!
+    autocmd BufWritePre * :call RemoveTrailingWhitespace()
+    func! RemoveTrailingWhitespace()
+      let save_cursor = getpos(".")
+      %s/\s\+$//e
+      call setpos('.', save_cursor)
+      nohlsearch
+    endfunc
+  augroup END
+]]
+
+-- indentation/wrapping
+vim.opt.joinspaces = false
+vim.opt.wrap = true
+vim.opt.linebreak = true
+vim.opt.breakindent = true
+vim.opt.breakindentopt = "shift:0,sbr"
+vim.opt.showbreak = '> '
+vim.opt.breakat = " 	!@*-+;:,./?(){}[]"
+vim.opt.cpoptions:append"n"
+
+--other
+vim.g.filetype_pt = "prolog"
+vim.opt.scrolloff = 3
+vim.opt.fileignorecase = false
+vim.opt.virtualedit = "block"
+vim.opt.readonly = false
+vim.opt.wildmenu = true
+vim.opt.wildmode = "full"
+vim.opt.autowrite = true
+vim.opt.autowriteall = true
+vim.opt.backspace = "indent,eol,start"
+vim.opt.switchbuf = "useopen,usetab"
+vim.opt.undofile = true
+vim.opt.hidden = true
+vim.opt.history = 10000
+vim.opt.completeopt = "menuone,noinsert"
+vim.opt.infercase = true
+vim.opt.mouse = "a"
+if vim.fn.has("mouse_sgr") ~= 0 then
+  vim.opt.ttymouse = "sgr"
+end
+
 
 -- warning on old habit keybinds {{{1
 leader.q = function()
@@ -45,7 +174,7 @@ local function new(split)
 
     -- set up the key bindings and collect the instructions
     local instructions = {}
-    for i,val in ipairs(new_buffer_options) do
+    for _,val in ipairs(new_buffer_options) do
       vim.api.nvim_buf_set_keymap(buf, "n", val.key, val.cmd, {nowait=true})
       table.insert(instructions, val.key.." -> "..val.desc)
     end
@@ -179,12 +308,12 @@ if vim.g.neovide then
   vim.opt.guifont="FiraCode Nerd Font:h12"
   normal["<C-->"] = function()
     local scale_factor = vim.g.neovide_scale_factor or 1.0
-    vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - scale_delta
+    vim.g.neovide_scale_factor = scale_factor - scale_delta
     print("scale at "..vim.g.neovide_scale_factor)
   end
   normal["<C-=>"] = function()
     local scale_factor = vim.g.neovide_scale_factor or 1.0
-    vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + scale_delta
+    vim.g.neovide_scale_factor = scale_factor + scale_delta
     print("scale at "..vim.g.neovide_scale_factor)
   end
   normal["<C-0>"] = function()
