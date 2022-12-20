@@ -203,11 +203,12 @@ terminal["<A-p>"] = "pa"
 terminal["<A-y>"] = ""
 vim.api.nvim_create_autocmd({"TermOpen", "BufEnter", "BufLeave"}, {
   group = augroup,
-  pattern = "term:/*",
+  pattern = "term://*",
   callback = function(cmd)
     -- no numbers or hidden buffers
     if cmd.event == "TermOpen" then
       vim.bo.bufhidden = 'wipe'
+      vim.wo.number = false
     end
 
     -- insert mode shouldn't be affected by terminals
@@ -216,7 +217,6 @@ vim.api.nvim_create_autocmd({"TermOpen", "BufEnter", "BufLeave"}, {
     else
       vim.cmd("startinsert")
     end
-
   end
 })
 
