@@ -1,3 +1,8 @@
+--[[ stuff to look into:
+ - null-ls
+ - treesitter text objects
+ - telescope to replace fzf
+]]
 -- use legacy config (TODO: remove it!) {{{1
 vim.cmd [[source ~/config/nvim/legacy_init.vim]]
 
