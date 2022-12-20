@@ -2,6 +2,8 @@
 TODOS:
   - correctly update status after comitting
   - delete file from within the gitato status window
+  - fix strange issue with adding lots of files
+    (it's git status reordering...)
 ]]
 
 local gitato = {}
