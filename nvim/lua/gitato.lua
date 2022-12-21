@@ -1,9 +1,9 @@
 --[[
 TODOS:
-  - refactor so current_status, current_file are parsed on every use
   - delete file from within the gitato status window
   - fix strange issue with adding lots of files
     (it's git status reordering...)
+    (consider just moving the cursor along with the file)
 ]]
 
 local gitato = {}
@@ -43,7 +43,6 @@ function gitato.toggle_diff_against_git_ref(ref)
     return
   end
 
-  local current_buffer = vim.fn.bufnr("%")
   local file = vim.fn.expand("%")
   if file:sub(1, #git_root) == git_root then
     file = file:sub(#git_root + 2)
@@ -113,8 +112,6 @@ end
 function gitato.open_viewer()
   local main_buf = vim.api.nvim_create_buf(false, true)
   local main_buf_width = 0
-  local current_file = nil
-  local current_status = nil
   local current_file_window = nil
 
   local function get_status()
@@ -137,33 +134,23 @@ function gitato.open_viewer()
     end
   end
 
-  local function collect_status_and_file_from_current_line(force_update)
+  local function get_status_and_file_from_current_line()
     local line = vim.fn.getline('.')
 
     -- grab the file and status from the line
     local status, file = string.match(line, "^(..)%s*(%S*)$")
 
-    -- this is the previously viewed file, no work to do
-    if file == current_file and not force_update then
-      return false
-    end
-
-    current_file = nil
-    current_status = nil
-
     -- skip comment lines
     if string.match(line, "^#") then
-      return true
+      return nil, nil
     end
 
     -- skip empty files
     if file == "" or file == nil then
-      return true
+      return nil, nil
     end
 
-    current_file = file
-    current_status = status
-    return true
+    return status, file
   end
 
   local function close_diff_window()
@@ -176,9 +163,22 @@ function gitato.open_viewer()
 
   local function view_diff_for_current_file()
     -- if nil, clean up the current diff windows
-    if current_file == nil or current_file == "" then
+    local status, file = get_status_and_file_from_current_line()
+
+    if file == nil or file == "" then
       close_diff_window()
       return
+    end
+
+    -- Don't reload the file that is already loaded for viewing
+    if current_file_window ~= nil then
+      local absolute_file = vim.fn.getcwd()..'/'..file
+      local current_file_buffer = vim.api.nvim_win_get_buf(current_file_window)
+      local current_file = vim.api.nvim_buf_get_name(current_file_buffer)
+      print("current_file: ", current_file, "(", file, ")", "[", absolute_file, "]")
+      if absolute_file == current_file then
+        return
+      end
     end
 
     if current_file_window == nil
@@ -187,9 +187,9 @@ function gitato.open_viewer()
       -- create the window
       local total_width = vim.api.nvim_win_get_width(0)
       local diff_window_width = total_width - main_buf_width
-      vim.cmd(""..diff_window_width.."vsplit "..current_file)
+      vim.cmd(""..diff_window_width.."vsplit "..file)
       gitato.diff_off()
-      if current_status ~= "??" then
+      if status ~= "??" then
         gitato.toggle_diff_against_git_ref("HEAD")
       end
       vim.cmd("normal gg")
@@ -197,9 +197,9 @@ function gitato.open_viewer()
     else
       -- or just move into the window
       vim.cmd("normal ll")
-      vim.cmd("edit "..current_file)
+      vim.cmd("edit "..file)
       gitato.diff_off()
-      if current_status ~= "??" then
+      if status ~= "??" then
         gitato.toggle_diff_against_git_ref("HEAD")
       end
     end
@@ -252,36 +252,37 @@ function gitato.open_viewer()
   keymap('l', 'llgnhh')
   keymap('h', 'llgphh')
   keymap('a', '', function()
-    if current_file then
-      if current_status:sub(2,2) == "M" or current_status == "??" then
-        vim.fn.system("git add -- "..current_file)
-        print("added!")
-      else
-        vim.fn.system("git reset -- "..current_file)
-        print("reset!")
-      end
-      get_and_draw_status()
-      collect_status_and_file_from_current_line(true)
+    local status, file = get_status_and_file_from_current_line()
+    if file == nil then
+      return
     end
+
+    if (status and status:sub(2,2) == "M") or status == "??" then
+      vim.fn.system("git add -- "..file)
+      print("added!")
+    else
+      vim.fn.system("git reset -- "..file)
+      print("reset!")
+    end
+    get_and_draw_status()
   end)
   keymap('d', '', function()
-    if current_file then
-      if current_status:sub(2,2) == "D" then
-        vim.fn.system("git rm "..current_file)
+    local status, file = get_status_and_file_from_current_line()
+    if file then
+      if status and status:sub(2,2) == "D" then
+        vim.fn.system("git rm "..file)
         print("deleted!")
-      elseif (current_status:sub(1,1) == "D") then
-        vim.fn.system("git reset -- "..current_file)
+      elseif status and status:sub(1,1) == "D" then
+        vim.fn.system("git reset -- "..file)
         print("undeleted!")
       end
       get_and_draw_status()
-      collect_status_and_file_from_current_line(true)
     end
   end)
   keymap('c', '', function()
     gitato.commit(function()
       close_diff_window()
       get_and_draw_status()
-      collect_status_and_file_from_current_line(true)
     end)
   end)
 
@@ -290,10 +291,7 @@ function gitato.open_viewer()
     group = group,
     callback = function()
       vim.defer_fn(function()
-        local changed = collect_status_and_file_from_current_line()
-        if changed then
-          view_diff_for_current_file()
-        end
+        view_diff_for_current_file()
       end, 0)
     end
   })
