@@ -1,3 +1,4 @@
+--
 --[[ stuff to look into:
  - null-ls
  - treesitter text objects
@@ -324,3 +325,4 @@ if vim.g.neovide then
     print("scale at "..vim.g.neovide_scale_factor)
   end
 end
+
