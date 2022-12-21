@@ -3,9 +3,13 @@
  - treesitter text objects
  - telescope to replace fzf
 ]]
+-- setup {{{1
+vim.g.mapleader = ' '
+vim.opt.shortmess:append({I = true}) -- don't do intro message at startup
+-- local isLinux = vim.fn.system('uname') == "Linux\n"
+
 -- use legacy config (TODO: remove it!) {{{1
 vim.cmd [[source ~/config/nvim/legacy_init.vim]]
-
 -- set up key mapping objects  {{{1
 local mapping = require("mapping")
 
@@ -18,12 +22,6 @@ local terminal = mapping.inMode("t")
 visual.v = "`[o`]"
 leader.tN = ":tab split<cr>"
 vim.opt.updatetime = 300
-
--- setup {{{1
-vim.g.mapleader = ' '
-vim.opt.shortmess:append({I = true}) -- don't do intro message at startup
-vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
--- local isLinux = vim.fn.system('uname') == "Linux\n"
 
 -- settings {{{1
 
