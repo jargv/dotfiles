@@ -39,31 +39,11 @@ setopt appendhistory inc_append_history share_history hist_ignore_dups
 setopt histignorespace
 
 #vim {{{1
-alias vim=nvim
+alias vim='nvr -O'
 alias vimdiff='nvim -d'
 bindkey -v
 #don't stop the backspace at the insert point
 bindkey "^?" backward-delete-char
-
-#hit escape twice to go into normal mode in embedded terminal {{{2
-# double_escape() {
-#   if [[ ! -z "$VIM_SERVERNAME" ]]; then
-#      command vim --servername $VIM_SERVERNAME --remote-send "<C-\><C-N>"
-#   fi
-# }
-
-# zle -N double_escape
-
-# bindkey -M vicmd  double_escape
-
-#trying to invoke vim in embeded term opens in place {{{2
-# vim() {
-#   if [[ -z "$VIM_SERVERNAME" ]]; then
-#     command vim "$@"
-#   else
-#     command vim --servername $VIM_SERVERNAME --remote "$@"
-#   fi
-# }
 
 #remove all the keymaps that make esc slow {{{2
 export KEYTIMEOUT=1
