@@ -3,11 +3,18 @@ TODOS:
   - fix strange issue with adding lots of files
     (it's git status reordering...)
     (consider just moving the cursor along with the file)
-  - add key to "undo" a file with changes
 ]]
-
 local gitato = {}
 local group = "gitato.autogroup"
+
+local viewer_help = {
+  "",
+  "## keys",
+  "## a - Add the file",
+  "## R - Restore the file (checkout)",
+  "## d - delete the file",
+  "## c - commit"
+}
 
 vim.api.nvim_create_augroup(group, {clear=true})
 
@@ -125,6 +132,7 @@ function gitato.open_viewer()
 
   local function draw_status(status)
     vim.api.nvim_buf_set_lines(main_buf, 0, -1, false, status)
+    vim.api.nvim_buf_set_lines(main_buf, -1, -1, false, viewer_help)
   end
 
   local function get_and_draw_status()
@@ -220,6 +228,7 @@ function gitato.open_viewer()
     local tmp_buf = vim.fn.bufnr("%")
     vim.cmd("b "..main_buf)
     vim.cmd("silent bwipe! "..tmp_buf)
+    vim.cmd("set syntax=gitcommit")
     vim.bo.bufhidden = "wipe"
 
     for _,line in ipairs(status) do
@@ -266,7 +275,7 @@ function gitato.open_viewer()
     end
     get_and_draw_status()
   end)
-  keymap('u', '', function()
+  keymap('R', '', function()
     local status, file = get_status_and_file_from_current_line()
     if file == nil then
       return
