@@ -1055,24 +1055,6 @@ require'nvim-treesitter.configs'.setup {
    "}}}
 
    "tabline {{{1
-      nnoremap <leader>gt :let g:gitStatusInTablineShown = !g:gitStatusInTablineShown<cr><C-L>
-      if !exists('g:gitStatusInTablineShown')
-         let g:gitStatusInTablineShown = 0
-      endif
-      if has("gui_running")
-        set showtabline=1
-      else
-        set showtabline=2
-      endif
-      func! GetGitBranch()
-         if g:gitStatusInTablineShown
-           let cmd = "git status -sb"
-         else
-           let cmd = "git rev-parse --abbrev-ref HEAD"
-         endif
-         let branch = substitute(system(cmd), "\n", "", "g")
-         return (0 != v:shell_error) ? "[vim]" : ''.branch.''
-      endfunc
       func! MyTabLabel(n)
         let buflist = tabpagebuflist(a:n)
         let winnr = tabpagewinnr(a:n)
@@ -1145,9 +1127,7 @@ require'nvim-treesitter.configs'.setup {
       " exec "hi TabLineEnd          cterm=italic    ctermbg=".s:background." ctermfg=".s:text
 
   "statusline {{{1
-    set showmode "show the -- Insert -- at the bottom
     set showcmd
-    set laststatus=2 "always show the statusline
 
     func! GetRelativeFilename()
       let file = expand("%:p")
@@ -1165,18 +1145,23 @@ require'nvim-treesitter.configs'.setup {
       return dots . join(fileParts[nSame : len(fileParts)], '/')
     endfunc
 
-    func! GetTerseCwd()
-      return fnamemodify(getcwd(), ":~")
-    endfunc
-
     set statusline=
-    set statusline+=\ %{GetRelativeFilename()} " file relative to current directory
-    set statusline+=\ %m                     " modified flag [+]
     set statusline+=%y                     " filetype
+    set statusline+=%1*
+    set statusline+=\ %{fnamemodify(getcwd(),':~')}/
+    set statusline+=%2*
+    set statusline+=%{GetRelativeFilename()} " file relative to current directory
+    set statusline+=%#StatusLine#
+    set statusline+=\ %m                     " modified flag [+]
     "set statusline+=:%l:%c                  " line and column
     set statusline+=%=                       " separator... now start on the right side
     set statusline+=\ %<                     " where to truncate if the line is too long
-    set statusline+=%{GetTerseCwd()}\        "working dir on the right
+
+
+    highlight clear User1
+    highlight clear User2
+    exec "highlight User1 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Keyword'),'fg')
+    exec "highlight User2 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Function'),'fg')
 "text objects {{{1
    "line (il/al) {{{2
       xnoremap il :<C-U>silent! normal 0v$<CR>

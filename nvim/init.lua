@@ -23,6 +23,7 @@ local terminal = mapping.inMode("t")
 visual.v = "`[o`]"
 leader.tN = ":tab split<cr>"
 vim.opt.updatetime = 300
+vim.opt.laststatus = 3 -- only one statusline at bottom
 
 -- settings {{{1
 
@@ -116,6 +117,12 @@ vim.opt.breakindentopt = "shift:0,sbr"
 vim.opt.showbreak = '> '
 vim.opt.breakat = " 	!@*-+;:,./?(){}[]"
 vim.opt.cpoptions:append"n"
+
+-- tabs
+vim.o.showtabline = 1 -- only if there are multiple
+
+-- clipboard
+vim.opt.clipboard:append("unnamedplus")
 
 --other
 vim.g.filetype_pt = "prolog"
@@ -309,6 +316,7 @@ if vim.g.neovide then
   vim.g.neovide_profiler = false
   vim.g.neovide_input_macos_alt_is_meta = false
   vim.g.neovide_cursor_vfx_mode = "railgun"
+  vim.g.neovide_scroll_animation_length = 0.0
   vim.opt.guifont="FiraCode Nerd Font:h12"
   normal["<C-->"] = function()
     local scale_factor = vim.g.neovide_scale_factor or 1.0
