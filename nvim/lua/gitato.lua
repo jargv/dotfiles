@@ -4,7 +4,6 @@ TODOS:
   - fix strange issue with adding lots of files
     (it's git status reordering...)
     (consider just moving the cursor along with the file)
-  - fix issue with symlinks
 ]]
 
 local gitato = {}
@@ -173,9 +172,10 @@ function gitato.open_viewer()
 
     -- Don't reload the file that is already loaded for viewing
     if current_file_window ~= nil then
-      local absolute_file = vim.fn.getcwd()..'/'..file
+      local absolute_file = vim.fn.fnamemodify(file, ":p")
       local current_file_buffer = vim.api.nvim_win_get_buf(current_file_window)
       local current_file = vim.api.nvim_buf_get_name(current_file_buffer)
+      print("current_file: ", current_file, "(", file, ")", "[", absolute_file, "]")
       if absolute_file == current_file then
         return
       end
