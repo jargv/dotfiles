@@ -3,17 +3,18 @@ TODOS:
   - fix strange issue with adding lots of files
     (it's git status reordering...)
     (consider just moving the cursor along with the file)
+  - recompute gitato view width when status changes
 ]]
 local gitato = {}
 local group = "gitato.autogroup"
 
 local viewer_help = {
-  "",
   "## keys",
   "## a - Add the file",
   "## R - Restore the file (checkout)",
   "## d - delete the file",
-  "## c - commit"
+  "## c - commit",
+  "## q - quit"
 }
 
 vim.api.nvim_create_augroup(group, {clear=true})
@@ -119,6 +120,7 @@ end
 function gitato.open_viewer()
   local main_buf = vim.api.nvim_create_buf(false, true)
   local main_buf_width = 0
+  local main_buf_height = 0
   local current_file_window = nil
 
   local function get_status()
@@ -131,8 +133,18 @@ function gitato.open_viewer()
   end
 
   local function draw_status(status)
-    vim.api.nvim_buf_set_lines(main_buf, 0, -1, false, status)
-    vim.api.nvim_buf_set_lines(main_buf, -1, -1, false, viewer_help)
+    local line_for_help = main_buf_height - #viewer_help
+    local lines = {}
+    for i = 1,main_buf_height+1 do
+      if i <= #status then
+        table.insert(lines, status[i])
+      elseif i > line_for_help then
+        table.insert(lines, viewer_help[i - line_for_help])
+      else
+        table.insert(lines, "")
+      end
+    end
+    vim.api.nvim_buf_set_lines(main_buf, 0, -1, false, lines)
   end
 
   local function get_and_draw_status()
@@ -183,7 +195,7 @@ function gitato.open_viewer()
       local absolute_file = vim.fn.fnamemodify(file, ":p")
       local current_file_buffer = vim.api.nvim_win_get_buf(current_file_window)
       local current_file = vim.api.nvim_buf_get_name(current_file_buffer)
-      print("current_file: ", current_file, "(", file, ")", "[", absolute_file, "]")
+      -- print("current_file: ", current_file, "(", file, ")", "[", absolute_file, "]")
       if absolute_file == current_file then
         return
       end
@@ -224,6 +236,7 @@ function gitato.open_viewer()
     end
 
     vim.cmd("-tabnew")
+    main_buf_height = vim.api.nvim_win_get_height(0)
 
     local tmp_buf = vim.fn.bufnr("%")
     vim.cmd("b "..main_buf)
