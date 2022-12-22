@@ -39,7 +39,7 @@ setopt appendhistory inc_append_history share_history hist_ignore_dups
 setopt histignorespace
 
 #vim {{{1
-alias vim='nvr -O'
+alias vim='nvr -c ":set number"'
 alias vimdiff='nvim -d'
 bindkey -v
 #don't stop the backspace at the insert point
