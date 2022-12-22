@@ -3,6 +3,7 @@ TODOS:
   - fix strange issue with adding lots of files
     (it's git status reordering...)
     (consider just moving the cursor along with the file)
+  - add key to "undo" a file with changes
 ]]
 
 local gitato = {}
@@ -262,6 +263,20 @@ function gitato.open_viewer()
     else
       vim.fn.system("git reset -- "..file)
       print("reset!")
+    end
+    get_and_draw_status()
+  end)
+  keymap('u', '', function()
+    local status, file = get_status_and_file_from_current_line()
+    if file == nil then
+      return
+    end
+
+    if (status and status:sub(2,2) == "M") then
+      vim.fn.system("git checkout -- "..file)
+      print("restored!")
+    else
+      print("not sure what to do with status '"..status.."'")
     end
     get_and_draw_status()
   end)
