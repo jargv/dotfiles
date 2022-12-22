@@ -1,6 +1,5 @@
 --[[
 TODOS:
-  - delete file from within the gitato status window
   - fix strange issue with adding lots of files
     (it's git status reordering...)
     (consider just moving the cursor along with the file)
@@ -284,6 +283,25 @@ function gitato.open_viewer()
       close_diff_window()
       get_and_draw_status()
     end)
+  end)
+  keymap('d', '', function()
+    local status, file = get_status_and_file_from_current_line()
+
+    if status == " D" then
+      vim.fn.system("git rm "..file)
+    elseif status == "??" then
+      local input = vim.fn.input("really delete '"..file.."'? (type yes)")
+      if input ~= "yes" then
+        print("you typed '"..input.."' will not deleting")
+        return
+      end
+      vim.fn.system("rm "..file)
+    else
+      print("not sure what to do with status '"..status.."'")
+      return
+    end
+
+    get_and_draw_status()
   end)
 
   vim.api.nvim_create_autocmd("CursorMoved", {
