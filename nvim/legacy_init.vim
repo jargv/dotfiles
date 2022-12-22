@@ -1131,6 +1131,10 @@ require'nvim-treesitter.configs'.setup {
 
     func! GetRelativeFilename()
       let file = expand("%:p")
+      let parts = split(file, ':')
+      if len(parts) == 3
+        return "[".parts[2]."]"
+      endif
       if len(file) == 0
         return "[new file]"
       endif

@@ -4,6 +4,7 @@ TODOS:
     (it's git status reordering...)
     (consider just moving the cursor along with the file)
   - recompute gitato view width when status changes
+  - take the keybinding menu into account when computing width
 ]]
 local gitato = {}
 local group = "gitato.autogroup"
