@@ -5,6 +5,8 @@ TODOS:
     (consider just moving the cursor along with the file)
   - recompute gitato view width when status changes
   - take the keybinding menu into account when computing width
+  - ability to push from w/in gitato
+  - show log when hovering on first line (instead of empty)
 ]]
 local gitato = {}
 local group = "gitato.autogroup"
