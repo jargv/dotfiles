@@ -276,6 +276,13 @@ leader.D = function()
   gitato.toggle_diff_against_git_ref("main")
 end
 
+-- background build setup {{{1
+local build = require("background_build")
+leader.Me = build.editConfig
+leader.e = build. loadErrors
+leader.E = build.viewOutput
+leader.m = build.runAllNotRunning
+
 -- fast config {{{1
 
 -- hotkey to open the relevant config files in a tab
