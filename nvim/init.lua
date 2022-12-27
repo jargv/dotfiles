@@ -60,7 +60,7 @@ vim.opt.wrapscan = true
 normal["<C-L>"] = ":nohlsearch<cr>:syn sync minlines=99999<cr><C-L>"
 
 -- folds
-vim.opt.fillchars = "fold: " --don't do dashes in the fold lines
+vim.opt.fillchars:append "fold: " --don't do dashes in the fold lines
 vim.cmd [[
 set foldtext=MyFoldText()
 function! MyFoldText()
@@ -74,6 +74,7 @@ vim.opt.spelllang="en_us"
 vim.opt.spell = false
 
 -- buffers
+vim.opt.fillchars:append "eob: " --no "~" at end of buffer
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.cmd [[

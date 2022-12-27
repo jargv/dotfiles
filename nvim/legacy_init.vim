@@ -1243,6 +1243,4 @@ require'nvim-treesitter.configs'.setup {
     end
   endfunc
 
-" abolish tildes at end of file {{{1
-hi EndOfBuffer ctermfg=bg ctermbg=bg guifg=bg
 
