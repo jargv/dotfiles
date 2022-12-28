@@ -3,6 +3,7 @@ TODOS:
   - fix strange issue with adding lots of files
     (it's git status reordering...)
     (consider just moving the cursor along with the file)
+    (or leave it now that it's understood)
   - recompute gitato view width when status changes
   - take the keybinding menu into account when computing width
   - ability to push from w/in gitato
@@ -10,7 +11,7 @@ TODOS:
 ]]
 local gitato = {}
 local group = "gitato.autogroup"
-
+local extra_width_in_main_view = 6
 local viewer_help = {
   "## keys",
   "## a - Add the file",
@@ -253,8 +254,14 @@ function gitato.open_viewer()
       end
     end
 
+    for _,line in ipairs(viewer_help) do
+      if #line > main_buf_width then
+        main_buf_width = #line
+      end
+    end
+
     -- add some padding and account for line numbers
-    main_buf_width = main_buf_width + 10
+    main_buf_width = main_buf_width + extra_width_in_main_view
     draw_status(status)
   end
 
