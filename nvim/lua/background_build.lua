@@ -1,9 +1,9 @@
 --[[
 TODO:
+- statusline build status
 - toggle for make on save
 - figure out how to autoscroll the output buffers (or window)
-- autodetect feature to automatically add a build (like the legacy version)
-- statusline build status
+- automatic add command based on extension and simple map of defaults
 - make it work well with scripting languages
 - run command, but only if build succeeds (consider making this a separate key/feature)
 ]]
@@ -14,14 +14,14 @@ local editgroup = vim.api.nvim_create_augroup("build.edit.autogroup", {clear = t
 
 local function validateBuildConfig(config)
   for _,job in pairs(config) do
-    if type(job.cwd) ~= "string" then
-      error "job.cwd is required"
+    if type(job.dir) ~= "string" then
+      error "job.dir is required"
     elseif type(job.cmd) ~= "string" then
-      error "job.cwd is required"
+      error "job.cmd is required"
     end
 
     if job.name == nil then
-      job.name = '['..job.cwd..'] '..job.cmd
+      job.name = '['..job.dir..'] '..job.cmd
     end
 
   end
@@ -83,7 +83,7 @@ local function runJob(job)
   output("starting job "..job_descriptor)
 
   local id = vim.fn.jobstart(job.config.cmd, {
-    cwd = job.config.cwd,
+    cwd = job.config.dir,
     on_exit = function(_, exit_code, _)
       job.exit_code = exit_code
       job.id = nil
@@ -103,6 +103,9 @@ end
 
 local function wireUpJob(job, jobGroup)
   print "setting up a job"
+  if job.config.pattern == nil then
+    return
+  end
   vim.api.nvim_create_autocmd("BufWritePost", {
     pattern = job.config.pattern,
     group = jobGroup,
@@ -148,14 +151,13 @@ end
 
 local api = {}
 
-local buildConfig = {{
-  global = true,
-  name = "game",
-  cwd = "/home/j/projects/game",
-  cmd = "cmake --build build",
-  pattern = "/home/j/projects/game/*.cpp"
-}}
-local buildJobs = {}
+if buildConfig == nil then
+  buildConfig = {}
+end
+
+if buildJobs == nil then
+  buildJobs = {}
+end
 
 function api.editConfig()
   editBuildConfig(buildConfig, function(newConfig)
@@ -202,6 +204,17 @@ function api.runAllNotRunning()
     end
   end
   print(("started %d jobs"):format(count_started))
+end
+
+function api.addFromCurrentFile()
+  local file = vim.fn.expand("%:p")
+  local dir = vim.fn.fnamemodify(file, ":h")
+  local ext = vim.fn.fnamemodify(file, ":e")
+  table.insert(buildConfig, {
+    dir = dir,
+    pattern = dir .."/*."..ext
+  })
+  api.editConfig()
 end
 
 return api

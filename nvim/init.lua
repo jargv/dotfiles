@@ -279,9 +279,10 @@ end
 -- background build setup {{{1
 local build = require("background_build")
 leader.Me = build.editConfig
-leader.e = build. loadErrors
+leader.e = build.loadErrors
 leader.E = build.viewOutput
 leader.m = build.runAllNotRunning
+leader.Ma = build.addFromCurrentFile
 
 -- fast config {{{1
 
