@@ -109,11 +109,9 @@ local function runJob(job)
 end
 
 local function wireUpJob(job, jobGroup)
-  print "setting up a job"
   if job.config.pattern == nil then
     return
   end
-  vim.pretty_print(job.config.pattern)
   vim.api.nvim_create_autocmd("BufWritePost", {
     pattern = job.config.pattern,
     group = jobGroup,
@@ -189,9 +187,10 @@ function api.loadErrors()
   end
 
   vim.cmd(([[
-  cclose
-  cbuffer %s
-  cwindow
+    cclose
+    cbuffer %s
+    cwindow
+    exec "normal \<cr>"
   ]]):format(jobToShow.buf))
 end
 
