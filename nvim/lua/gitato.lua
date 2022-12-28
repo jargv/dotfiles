@@ -8,6 +8,8 @@ TODOS:
   - take the keybinding menu into account when computing width
   - ability to push from w/in gitato
   - show log when hovering on first line (instead of empty)
+  - hotkey to open tig in panel (h)
+  - hotkey to open terminal pre-populated with "git" (g)
 ]]
 local gitato = {}
 local group = "gitato.autogroup"
