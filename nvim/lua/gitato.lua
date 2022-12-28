@@ -218,7 +218,7 @@ function gitato.open_viewer()
       if status ~= "??" then
         gitato.toggle_diff_against_git_ref("HEAD")
       end
-      vim.cmd("normal gg")
+      vim.cmd("normal ggM")
       current_file_window = vim.fn.win_getid(vim.fn.winnr())
     else
       -- or just move into the window
@@ -229,7 +229,7 @@ function gitato.open_viewer()
         gitato.toggle_diff_against_git_ref("HEAD")
       end
     end
-    vim.cmd("normal gg")
+    vim.cmd("normal ggM")
     vim.cmd("normal hh")
     vim.wo.winfixwidth = true
   end
