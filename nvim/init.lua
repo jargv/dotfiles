@@ -307,19 +307,41 @@ vim.cmd[[
     return dots . join(fileParts[nSame : len(fileParts)], '/')
   endfunc
 
+  "used for build status
   highlight clear User1
   highlight clear User2
-  exec "highlight User1 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Keyword'),'fg')
-  exec "highlight User2 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Function'),'fg')
+  highlight clear User3
+  highlight clear User4
+
+  "used for current dir
+  highlight clear User6
+  highlight clear User7
+  exec "highlight User6 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Keyword'),'fg')
+  exec "highlight User7 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Function'),'fg')
+
+  " not started
+  exec "highlight User1 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('StatusLine'),'fg')
+
+  " running
+  exec "highlight User2 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Blue'),'fg')
+
+  " success
+  exec "highlight User3 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Green'),'fg')
+
+  " failed
+  exec "highlight User4 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Red'),'fg')
+
+  " separator
+  exec "highlight User5 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Comment'),'fg')
 ]]
 
 -- left side
 vim.opt.statusline = ""
 vim.opt.statusline:append "%y" -- filetype
-vim.opt.statusline:append "%1*" -- User1 highlight
+vim.opt.statusline:append "%6*" -- User5 highlight
 vim.opt.statusline:append " %<" -- truncate here, if needed
 vim.opt.statusline:append " %{fnamemodify(getcwd(),':~')}/" -- current dir
-vim.opt.statusline:append "%2*" -- User2 highlight
+vim.opt.statusline:append "%7*" -- User6 highlight
 vim.opt.statusline:append "%{GetRelativeFilename()}" -- file name relative to cwd
 vim.opt.statusline:append "%#StatusLine#" -- regular statusline highlight
 vim.opt.statusline:append " %m" -- modified flag -- regular statusline highlight
@@ -327,6 +349,7 @@ vim.opt.statusline:append " %m" -- modified flag -- regular statusline highlight
 
 -- right side
 vim.opt.statusline:append "%=" -- separator to indicate right side
+vim.opt.statusline:append "%{%v:lua.require'background_build'.statusline()%} " -- file name relative to cwd
 
 -- fast config {{{1
 

@@ -9,6 +9,7 @@ TODO:
 ]]
 
 local fmtjson = require("fmtjson")
+local fmtelapsed = require("fmtelapsed")
 
 local editgroup = vim.api.nvim_create_augroup("build.edit.autogroup", {clear = true})
 
@@ -72,11 +73,15 @@ local function runJob(job)
     vim.api.nvim_buf_set_lines(job.buf, 0, -1, false, {})
   end
 
+  -- output helpers
   local function on_out(_, output)
     vim.api.nvim_buf_set_lines(job.buf, -1, -1, false, output)
   end
-
   local function output(str) on_out(nil, {str}) end
+
+  -- a nil exit code means "running"
+  job.exit_code = nil
+  job.start_time = vim.fn.localtime()
 
   local job_descriptor = "'"..job.config.name.."'"
 
@@ -87,7 +92,9 @@ local function runJob(job)
     on_exit = function(_, exit_code, _)
       job.exit_code = exit_code
       job.id = nil
-      output("job "..job_descriptor.." exited with code ".. job.exit_code)
+      local elapsed = vim.fn.localtime() - job.start_time
+      output("job "..job_descriptor.." exited with code:".. job.exit_code)
+      output("time: "..fmtelapsed(elapsed))
     end,
     on_stdout = on_out,
     on_stderr = on_out,
@@ -106,6 +113,7 @@ local function wireUpJob(job, jobGroup)
   if job.config.pattern == nil then
     return
   end
+  vim.pretty_print(job.config.pattern)
   vim.api.nvim_create_autocmd("BufWritePost", {
     pattern = job.config.pattern,
     group = jobGroup,
@@ -215,6 +223,32 @@ function api.addFromCurrentFile()
     pattern = dir .."/*."..ext
   })
   api.editConfig()
+end
+
+function api.statusline()
+  local parts = {}
+  local sep = ""
+  for _,job in pairs(buildJobs) do
+    table.insert(parts, sep)
+    sep = "%5* | "
+    if job.start_time == nil then
+      table.insert(parts, "%1*")
+      table.insert(parts, job.config.name..": not started")
+    elseif job.exit_code == nil then
+      local elapsed = vim.fn.localtime() - job.start_time
+      table.insert(parts, "%2*")
+      table.insert(parts, job.config.name..": "..fmtelapsed(elapsed))
+    elseif job.exit_code == 0 then
+      table.insert(parts, "%3*")
+      table.insert(parts, job.config.name..": success")
+    else
+      table.insert(parts, "%4*")
+      table.insert(parts, job.config.name..": failed")
+    end
+  end
+
+  table.insert(parts, "%#StatusLine#")
+  return table.concat(parts)
 end
 
 return api
