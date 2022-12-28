@@ -1,11 +1,10 @@
 --[[
 TODO:
-- statusline build status
-- toggle for make on save
-- figure out how to autoscroll the output buffers (or window)
 - automatic add command based on extension and simple map of defaults
-- make it work well with scripting languages
+- make it work well with scripting languages (What would that mean?)
 - run command, but only if build succeeds (consider making this a separate key/feature)
+- toggle for make on save (easy enough to edit to no pattern...)
+- figure out how to autoscroll the output buffers (or window)
 ]]
 
 local fmtjson = require("fmtjson")
@@ -24,7 +23,6 @@ local function validateBuildConfig(config)
     if job.name == nil then
       job.name = '['..job.dir..'] '..job.cmd
     end
-
   end
 end
 
