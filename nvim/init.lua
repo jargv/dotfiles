@@ -284,6 +284,50 @@ leader.E = build.viewOutput
 leader.m = build.runAllNotRunning
 leader.Ma = build.addFromCurrentFile
 
+-- statusline setup {{{1
+vim.opt.showcmd = true
+vim.cmd[[
+  func! GetRelativeFilename()
+    let file = expand("%:p")
+    let parts = split(file, ':')
+    if len(parts) == 3
+      return "[".parts[2]."]"
+    endif
+    if len(file) == 0
+      return "[new file]"
+    endif
+    let dir = getcwd()
+    let fileParts = split(file, '/')
+    let dirParts = split(dir, '/')
+    let nSame = 0
+    while nSame < len(fileParts) && nSame < len(dirParts) && fileParts[nSame] == dirParts[nSame]
+      let nSame += 1
+    endwhile
+    let dots = repeat("../", len(dirParts) - nSame)
+    return dots . join(fileParts[nSame : len(fileParts)], '/')
+  endfunc
+
+  highlight clear User1
+  highlight clear User2
+  exec "highlight User1 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Keyword'),'fg')
+  exec "highlight User2 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Function'),'fg')
+]]
+
+-- left side
+vim.opt.statusline = ""
+vim.opt.statusline:append "%y" -- filetype
+vim.opt.statusline:append "%1*" -- User1 highlight
+vim.opt.statusline:append " %<" -- truncate here, if needed
+vim.opt.statusline:append " %{fnamemodify(getcwd(),':~')}/" -- current dir
+vim.opt.statusline:append "%2*" -- User2 highlight
+vim.opt.statusline:append "%{GetRelativeFilename()}" -- file name relative to cwd
+vim.opt.statusline:append "%#StatusLine#" -- regular statusline highlight
+vim.opt.statusline:append " %m" -- modified flag -- regular statusline highlight
+-- vim.opt.statusline:append ":%l:%c" -- line and column
+
+-- right side
+vim.opt.statusline:append "%=" -- separator to indicate right side
+
 -- fast config {{{1
 
 -- hotkey to open the relevant config files in a tab

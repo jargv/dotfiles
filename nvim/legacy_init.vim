@@ -1126,46 +1126,7 @@ require'nvim-treesitter.configs'.setup {
       " exec "hi VimTitleSepFirst    cterm=none      ctermbg=".s:selBG."      ctermfg=".s:titleBG
       " exec "hi TabLineEnd          cterm=italic    ctermbg=".s:background." ctermfg=".s:text
 
-  "statusline {{{1
-    set showcmd
 
-    func! GetRelativeFilename()
-      let file = expand("%:p")
-      let parts = split(file, ':')
-      if len(parts) == 3
-        return "[".parts[2]."]"
-      endif
-      if len(file) == 0
-        return "[new file]"
-      endif
-      let dir = getcwd()
-      let fileParts = split(file, '/')
-      let dirParts = split(dir, '/')
-      let nSame = 0
-      while nSame < len(fileParts) && nSame < len(dirParts) && fileParts[nSame] == dirParts[nSame]
-        let nSame += 1
-      endwhile
-      let dots = repeat("../", len(dirParts) - nSame)
-      return dots . join(fileParts[nSame : len(fileParts)], '/')
-    endfunc
-
-    set statusline=
-    set statusline+=%y                     " filetype
-    set statusline+=%1*
-    set statusline+=\ %{fnamemodify(getcwd(),':~')}/
-    set statusline+=%2*
-    set statusline+=%{GetRelativeFilename()} " file relative to current directory
-    set statusline+=%#StatusLine#
-    set statusline+=\ %m                     " modified flag [+]
-    "set statusline+=:%l:%c                  " line and column
-    set statusline+=%=                       " separator... now start on the right side
-    set statusline+=\ %<                     " where to truncate if the line is too long
-
-
-    highlight clear User1
-    highlight clear User2
-    exec "highlight User1 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Keyword'),'fg')
-    exec "highlight User2 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Function'),'fg')
 "text objects {{{1
    "line (il/al) {{{2
       xnoremap il :<C-U>silent! normal 0v$<CR>
