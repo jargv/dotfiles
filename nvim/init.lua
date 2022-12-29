@@ -1,4 +1,3 @@
---
 --[[ stuff to look into:
  - null-ls
  - treesitter text objects
@@ -410,3 +409,12 @@ if vim.g.neovide then
   end
 end
 
+-- buffer cleanup command {{{1
+vim.api.nvim_create_user_command("Bwipe", function()
+  local bufs = vim.fn.getbufinfo()
+  for _,buf in pairs(bufs) do
+    if #buf.windows == 0 then
+      vim.api.nvim_buf_delete(buf.bufnr, {force=true})
+    end
+  end
+end, {force = true})
