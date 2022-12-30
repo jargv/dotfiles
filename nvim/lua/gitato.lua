@@ -1,16 +1,13 @@
 --[[
 TODOS:
-  - make open_viewer not depend on cwd
-  - fix strange issue with adding lots of files
-    (it's git status reordering...)
-    (consider just moving the cursor along with the file)
-    (or leave it now that it's understood)
   - recompute gitato view width when status changes
-  - ability to push from w/in gitato
+    (but could it ever get longer? wouldn't it always be smaller?)
 maybe:
+  - ability to push from w/in gitato
   - show log when hovering on first line (instead of empty)
   - hotkey to open tig in panel (h)
   - hotkey to open terminal pre-populated with "git" (g)
+  - move the cursor along with the file when the status updates
 ]]
 local gitato = {}
 local group = "gitato.autogroup"
@@ -41,7 +38,6 @@ function gitato.get_repo_root(dir)
   if dir == nil then
     dir = vim.fn.expand("%:p:h")
   end
-  print(dir)
   local result = vim.fn.systemlist("cd "..dir.." && git rev-parse --show-toplevel")
   local error = vim.api.nvim_get_vvar("shell_error")
   if error ~= 0 or #result == 0 then
@@ -144,8 +140,6 @@ function gitato.open_viewer()
     git_repo_root = git_repo_root .. "/"
   end
 
-  print("git_repo_root => ", git_repo_root)
-
   local main_buf = vim.api.nvim_create_buf(false, true)
   local main_buf_width = 0
   local main_buf_height = 0
@@ -231,7 +225,7 @@ function gitato.open_viewer()
       local absolute_file = git_repo_root .. file
       local current_file_buffer = vim.api.nvim_win_get_buf(current_file_window)
       local current_file = vim.api.nvim_buf_get_name(current_file_buffer)
-      print("current_file: ", current_file, "(", file, ")", "[", absolute_file, "]")
+      -- print("current_file: ", current_file, "(", file, ")", "[", absolute_file, "]")
       if absolute_file == current_file then
         return
       end
