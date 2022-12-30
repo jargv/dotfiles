@@ -1,5 +1,6 @@
 --[[
 TODOS:
+  - make diff not depend on cwd at all (use current file instead)
   - fix strange issue with adding lots of files
     (it's git status reordering...)
     (consider just moving the cursor along with the file)
