@@ -13,7 +13,11 @@ local fmtelapsed = require("fmtelapsed")
 local editgroup = vim.api.nvim_create_augroup("build.edit.autogroup", {clear = true})
 
 local function validateBuildConfig(config)
-  for _,job in pairs(config) do
+  if config.jobs == nil then
+    error "jobs field is required"
+  end
+
+  for _,job in pairs(config.jobs) do
     -- ensure requried fields are available
     if type(job.dir) ~= "string" then
       error "job.dir is required"
@@ -145,20 +149,21 @@ end
 local function setupBuildJobs(config, oldJobs)
   local jobGroup = vim.api.nvim_create_augroup("build.job.autogroup", {clear = true})
 
+  -- collect current buffers so they can be moved to new jobs by name
   local jobBuffersByName = {}
   for _,job in ipairs(oldJobs) do
     jobBuffersByName[job.config.name] = job.buf
     job.buf = nil
   end
 
-  -- stop any current jobs, delete any buffers
+  -- stop any current jobs
   for _,job in ipairs(oldJobs) do
     stopJob(job)
   end
 
   -- set up the new job objects
   local newJobs = {}
-  for _,jobConfig in ipairs(config) do
+  for _,jobConfig in ipairs(config.jobs) do
     local job = {
       id = nil,
       buf = jobBuffersByName[jobConfig.name],
@@ -181,7 +186,7 @@ end
 local api = {}
 
 if buildConfig == nil then
-  buildConfig = {}
+  buildConfig = {jobs = {}}
 end
 
 if buildJobs == nil then
@@ -237,7 +242,7 @@ function api.runAllNotRunning()
 end
 
 function api.addFromCurrentFile()
-  table.insert(buildConfig, {
+  table.insert(buildConfig.jobs, {
     dir = vim.fn.getcwd(),
     ext = vim.fn.expand("%:e")
   })
