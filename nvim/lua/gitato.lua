@@ -6,8 +6,8 @@ TODOS:
     (consider just moving the cursor along with the file)
     (or leave it now that it's understood)
   - recompute gitato view width when status changes
-  - take the keybinding menu into account when computing width
   - ability to push from w/in gitato
+maybe:
   - show log when hovering on first line (instead of empty)
   - hotkey to open tig in panel (h)
   - hotkey to open terminal pre-populated with "git" (g)
@@ -130,18 +130,29 @@ end
 
 
 function gitato.open_viewer()
+  -- base the root on the directory of the file when the viewer is opened
+  local git_root = gitato.get_repo_root(vim.fn.expand("%:p:h"))
+
   local main_buf = vim.api.nvim_create_buf(false, true)
   local main_buf_width = 0
   local main_buf_height = 0
   local current_file_window = nil
 
-  local function get_status()
-    local result = vim.fn.systemlist({"git", "status", "-sb"})
+  local function cmd(cmd)
+    -- local result = vim.fn.systemlist(("cd %s && %s"):format(git_repo_root, cmd))
+    local result = vim.fn.systemlist(("%s"):format(cmd))
     if 0 ~= vim.api.nvim_get_vvar("shell_error") then
-      print(table.concat(result, "\n"))
       return nil
     end
     return result
+  end
+
+  local function git_cmd(c)
+    return cmd("git "..c)
+  end
+
+  local function get_status()
+    return git_cmd("status -sb")
   end
 
   local function draw_status(status)
@@ -298,10 +309,10 @@ function gitato.open_viewer()
     end
 
     if (status and status:sub(2,2) == "M") or status == "??" then
-      vim.fn.system("git add -- "..file)
+      git_cmd("add -- "..file)
       print("added!")
     else
-      vim.fn.system("git reset -- "..file)
+      git_cmd("reset -- "..file)
       print("reset!")
     end
     get_and_draw_status()
@@ -313,7 +324,7 @@ function gitato.open_viewer()
     end
 
     if (status and status:sub(2,2) == "M") then
-      vim.fn.system("git checkout -- "..file)
+      git_cmd("checkout -- "..file)
       print("restored!")
     else
       print("not sure what to do with status '"..status.."'")
@@ -324,10 +335,10 @@ function gitato.open_viewer()
     local status, file = get_status_and_file_from_current_line()
     if file then
       if status and status:sub(2,2) == "D" then
-        vim.fn.system("git rm "..file)
+        git_cmd("rm "..file)
         print("deleted!")
       elseif status and status:sub(1,1) == "D" then
-        vim.fn.system("git reset -- "..file)
+        git_cmd("reset -- "..file)
         print("undeleted!")
       end
       get_and_draw_status()
@@ -343,7 +354,7 @@ function gitato.open_viewer()
     local status, file = get_status_and_file_from_current_line()
 
     if status == " D" then
-      vim.fn.system("git rm "..file)
+      git_cmd("rm "..file)
     elseif status == "??" then
       local input = vim.fn.input("really delete '"..file.."'? (type yes)")
       if input ~= "yes" then
