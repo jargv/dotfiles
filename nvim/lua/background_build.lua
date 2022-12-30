@@ -243,7 +243,7 @@ end
 
 function api.addFromCurrentFile()
   table.insert(buildConfig.jobs, {
-    dir = vim.fn.getcwd(),
+    dir = vim.fn.expand("%:h"),
     ext = vim.fn.expand("%:e")
   })
   api.editConfig()

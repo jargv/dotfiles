@@ -1,6 +1,6 @@
 --[[
 TODOS:
-  - make diff not depend on cwd at all (use current file instead)
+  - make open_viewer not depend on cwd
   - fix strange issue with adding lots of files
     (it's git status reordering...)
     (consider just moving the cursor along with the file)
@@ -37,10 +37,15 @@ function gitato.diff_off()
   current_diff_buffer = nil
 end
 
-function gitato.get_repo_root()
-  local result = vim.fn.systemlist("git rev-parse --show-toplevel")
+function gitato.get_repo_root(dir)
+  if dir == nil then
+    dir = vim.fn.expand("%:p:h")
+  end
+  print(dir)
+  local result = vim.fn.systemlist("cd "..dir.." && git rev-parse --show-toplevel")
   local error = vim.api.nvim_get_vvar("shell_error")
   if error ~= 0 or #result == 0 then
+    print "shell error"
     return nil
   end
   return result[1]
@@ -52,20 +57,20 @@ function gitato.toggle_diff_against_git_ref(ref)
     return
   end
 
-  local git_root = gitato.get_repo_root()
+  local git_root = gitato.get_repo_root(vim.fn.expand("%:p:h"))
   if git_root == nil then
     print("ERROR: Is this a git repo?")
     return
   end
 
-  local file = vim.fn.expand("%")
+  local file = vim.fn.expand("%:p")
   if file:sub(1, #git_root) == git_root then
     file = file:sub(#git_root + 2)
   else
     file = "./"..file
   end
 
-  local diff_contents = vim.fn.systemlist({"git", "show", ref..':'..file})
+  local diff_contents = vim.fn.systemlist("cd "..git_root.." && git show ".. ref..':'..file)
   local error = vim.api.nvim_get_vvar("shell_error")
   if error ~= 0 then
     print(table.concat(diff_contents, "\n"))
