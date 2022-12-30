@@ -130,8 +130,18 @@ end
 
 
 function gitato.open_viewer()
-  -- base the root on the directory of the file when the viewer is opened
-  local git_root = gitato.get_repo_root(vim.fn.expand("%:p:h"))
+  -- find the repo root of the current file
+  local git_repo_root = gitato.get_repo_root(vim.fn.expand("%:p:h"))
+  if git_repo_root == nil then
+    print("ERROR: Is this a git repo?")
+    return
+  end
+
+  if git_repo_root:sub(-1,-1) ~= "/" then
+    git_repo_root = git_repo_root .. "/"
+  end
+
+  print("git_repo_root => ", git_repo_root)
 
   local main_buf = vim.api.nvim_create_buf(false, true)
   local main_buf_width = 0
@@ -139,9 +149,9 @@ function gitato.open_viewer()
   local current_file_window = nil
 
   local function cmd(cmd)
-    -- local result = vim.fn.systemlist(("cd %s && %s"):format(git_repo_root, cmd))
-    local result = vim.fn.systemlist(("%s"):format(cmd))
+    local result = vim.fn.systemlist(("cd %s && %s"):format(git_repo_root, cmd))
     if 0 ~= vim.api.nvim_get_vvar("shell_error") then
+      print(table.concat(result, '\n'))
       return nil
     end
     return result
@@ -215,10 +225,10 @@ function gitato.open_viewer()
 
     -- Don't reload the file that is already loaded for viewing
     if current_file_window ~= nil then
-      local absolute_file = vim.fn.fnamemodify(file, ":p")
+      local absolute_file = git_repo_root .. file
       local current_file_buffer = vim.api.nvim_win_get_buf(current_file_window)
       local current_file = vim.api.nvim_buf_get_name(current_file_buffer)
-      -- print("current_file: ", current_file, "(", file, ")", "[", absolute_file, "]")
+      print("current_file: ", current_file, "(", file, ")", "[", absolute_file, "]")
       if absolute_file == current_file then
         return
       end
@@ -230,7 +240,7 @@ function gitato.open_viewer()
       -- create the window
       local total_width = vim.api.nvim_win_get_width(0)
       local diff_window_width = total_width - main_buf_width
-      vim.cmd(""..diff_window_width.."vsplit "..file)
+      vim.cmd(""..diff_window_width.."vsplit "..git_repo_root..file)
       gitato.diff_off()
       if status ~= "??" then
         gitato.toggle_diff_against_git_ref("HEAD")
@@ -240,7 +250,7 @@ function gitato.open_viewer()
     else
       -- or just move into the window
       vim.cmd("normal ll")
-      vim.cmd("edit "..file)
+      vim.cmd("edit "..git_repo_root..file)
       gitato.diff_off()
       if status ~= "??" then
         gitato.toggle_diff_against_git_ref("HEAD")
@@ -361,7 +371,7 @@ function gitato.open_viewer()
         print("you typed '"..input.."' will not deleting")
         return
       end
-      vim.fn.system("rm "..file)
+      cmd("rm "..file)
     else
       print("not sure what to do with status '"..status.."'")
       return
