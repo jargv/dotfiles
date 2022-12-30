@@ -1,10 +1,8 @@
 --[[
 TODO:
-- automatic add command based on extension and simple map of defaults
-- make it work well with scripting languages (What would that mean?)
 - run command, but only if build succeeds (consider making this a separate key/feature)
-- toggle for make on save (easy enough to edit to no pattern...)
 - figure out how to autoscroll the output buffers (or window)
+  Use vim.fn.getbufinfo(buf).windows
 ]]
 
 local fmtjson = require("fmtjson")
@@ -38,8 +36,15 @@ local function validateBuildConfig(config)
 end
 
 local function editBuildConfig(config, callback)
-  local file_name = vim.fn.tempname()
-  vim.cmd('botright vsplit  '..file_name)
+  local save_file
+  if config.save then
+    save_file = config.save
+  else
+    config.save = vim.fn.tempname()
+    save_file = vim.fn.tempname()
+  end
+
+  vim.cmd('botright vsplit  '..save_file)
   local buf = vim.fn.bufnr('%')
   vim.bo.filetype = "json"
   vim.bo.bufhidden = "wipe"
@@ -54,6 +59,12 @@ local function editBuildConfig(config, callback)
       local buf_lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
       local script = table.concat(buf_lines)
       local val = vim.fn.json_decode(script)
+
+      -- if the save field was changed, also save to that file
+      if val.save ~= file_name then
+        vim.cmd("saveas "..val.save)
+      end
+
       validateBuildConfig(val)
       vim.defer_fn(function()
         vim.cmd("bwipe! "..buf)
