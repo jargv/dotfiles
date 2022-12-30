@@ -162,45 +162,6 @@ vim.api.nvim_create_augroup(augroup, {
   clear = true --clear everything in it w
 })
 
--- function new for clean new buffers with menu {{{1
-local new_buffer_options = {
-  {key=".", cmd=":e term:///bin/zsh<cr>",     desc="start a terminal"},
-  {key="d", cmd=":Explore<cr>",               desc="open a directory"},
-  {key="o", cmd=":FZF --inline-info<cr>",     desc="search for a file"},
-  {key="i", cmd=":Buffers<cr>",               desc="search buffers by name"},
-  {key="h", cmd=":e term://tig<cr>",          desc="git history (tig)"},
-  {key="q", cmd=":q!<cr>",                    desc="quit"},
-}
-
-local function new(split)
-  return function()
-    if split ~= nil then
-      vim.cmd(split)
-    end
-
-    local starting_buf = vim.fn.bufnr("%")
-    local buf = vim.api.nvim_create_buf(false, true)
-    vim.cmd("b "..buf)
-    vim.bo.bufhidden = "wipe"
-
-    -- set up the key bindings and collect the instructions
-    local instructions = {}
-    for _,val in ipairs(new_buffer_options) do
-      vim.api.nvim_buf_set_keymap(buf, "n", val.key, val.cmd, {nowait=true})
-      table.insert(instructions, val.key.." -> "..val.desc)
-    end
-
-    -- set the contents to the instructions
-    vim.api.nvim_buf_set_lines(buf, -1, -1, false, instructions)
-
-    -- clean up the old buffer, unless it was a named file
-    if
-      vim.fn.bufname(tonumber(starting_buf)) == "" and
-      vim.api.nvim_buf_is_loaded(starting_buf) then
-      vim.cmd("silent bwipe! "..starting_buf)
-    end
-  end
-end
 
 -- terminal config {{{1
 terminal["<A-u>"] = "<esc>icd ..<cr>"
@@ -227,6 +188,7 @@ vim.api.nvim_create_autocmd({"TermOpen", "BufEnter", "BufLeave"}, {
 })
 
 -- navigate between windows, tabs, splits {{{1
+local newb = require("newb")
 normal["<A-h>"] = "<C-W>h"
 normal["<A-j>"] = "<C-W>j"
 normal["<A-k>"] = "<C-W>k"
@@ -239,20 +201,20 @@ terminal["<A-l>"] = "l"
 
 normal["<M-.>"] = "gt"
 normal["<M-,>"] = "gT"
-normal["<A-m>"] = new("tabnew")
+normal["<A-m>"] = newb.create("tabnew")
 terminal["<M-.>"] = "gt"
 terminal["<M-,>"] = "gT"
-terminal["<A-m>"] = new("tabnew")
+terminal["<A-m>"] = newb.create("tabnew")
 
 -- create new splits
-normal["<M-->"] = new("new")
-normal["<M-=>"] = new("vnew")
-normal["<leader>-"] = new("new")
-normal["<leader>="]= new("vnew")
+normal["<M-->"] = newb.create("new")
+normal["<M-=>"] = newb.create("vnew")
+normal["<leader>-"] = newb.create("new")
+normal["<leader>="]= newb.create("vnew")
 
-terminal["<M-->"] = new("new")
-terminal["<M-=>"] = new("vnew")
-normal["<leader>."] = new()
+terminal["<M-->"] = newb.create("new")
+terminal["<M-=>"] = newb.create("vnew")
+normal["<leader>."] = newb.create()
 
 -- git setup {{{1
 -- leader.gd = ":tabedit term://git difftool -w -- %<cr>"
