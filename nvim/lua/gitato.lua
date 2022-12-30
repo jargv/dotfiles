@@ -88,9 +88,11 @@ function gitato.toggle_diff_against_git_ref(ref)
   vim.cmd(":diffthis")
 end
 
-function gitato.commit(post_commit)
+function gitato.commit(repo_root, post_commit)
   -- first get the git status
-  local git_status = vim.fn.systemlist("git commit -v -v --dry-run")
+  local git_status = vim.fn.systemlist(
+    ("cd %s && git commit -v -v --dry-run"):format(repo_root)
+  )
   if 0 ~= vim.api.nvim_get_vvar("shell_error") then
     print("error getting git status... anything comitted?")
     return
@@ -118,7 +120,8 @@ function gitato.commit(post_commit)
   vim.api.nvim_create_autocmd("BufWritePost", {
     buffer = buffer,
     callback = function()
-      vim.fn.termopen("git commit --cleanup=strip --file="..file_name, {
+      local cmd = ("cd %s && git commit --cleanup=strip --file=%s"):format(repo_root, file_name)
+      vim.fn.termopen(cmd, {
         on_exit = function()
           vim.cmd("bwipe! ".. buffer)
           if post_commit then post_commit() end
@@ -355,7 +358,7 @@ function gitato.open_viewer()
     end
   end)
   keymap('c', '', function()
-    gitato.commit(function()
+    gitato.commit(git_repo_root, function()
       close_diff_window()
       get_and_draw_status()
     end)
