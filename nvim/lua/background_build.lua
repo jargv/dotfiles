@@ -14,12 +14,19 @@ local editgroup = vim.api.nvim_create_augroup("build.edit.autogroup", {clear = t
 
 local function validateBuildConfig(config)
   for _,job in pairs(config) do
+    -- ensure requried fields are available
     if type(job.dir) ~= "string" then
       error "job.dir is required"
     elseif type(job.cmd) ~= "string" then
       error "job.cmd is required"
     end
 
+    -- trim the trailing '/' on dir
+    if job.dir:sub(-1,-1) == '/' then
+      job.dir = job.dir:sub(1,-2)
+    end
+
+    -- derive a name if none is given
     if job.name == nil then
       job.name = '['..job.dir..'] '..job.cmd
     end
@@ -107,11 +114,29 @@ local function runJob(job)
 end
 
 local function wireUpJob(job, jobGroup)
-  if job.config.pattern == nil then
+  local pattern = job.config.pattern
+
+  -- pattern might also be built from the ext field
+  if pattern == nil and job.config.ext ~= nil then
+    local exts = job.config.ext
+    if type(exts) == "string" then
+      exts = {exts}
+    end
+
+    pattern = {}
+    for i, ext in ipairs(exts) do
+      table.insert(pattern, job.config.dir .. "/*" .. ext)
+    end
+  end
+
+  -- nothing to wire up if no pattern!
+  if pattern == nil then
     return
   end
+
+  -- wire up
   vim.api.nvim_create_autocmd("BufWritePost", {
-    pattern = job.config.pattern,
+    pattern = pattern,
     group = jobGroup,
     callback = function() runJob(job) end
   })
@@ -212,12 +237,9 @@ function api.runAllNotRunning()
 end
 
 function api.addFromCurrentFile()
-  local file = vim.fn.expand("%:p")
-  local dir = vim.fn.fnamemodify(file, ":h")
-  local ext = vim.fn.fnamemodify(file, ":e")
   table.insert(buildConfig, {
-    dir = dir,
-    pattern = dir .."/*."..ext
+    dir = vim.fn.getcwd(),
+    ext = vim.fn.expand("%:e")
   })
   api.editConfig()
 end
