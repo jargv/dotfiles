@@ -12,7 +12,7 @@ local editgroup = vim.api.nvim_create_augroup("build.edit.autogroup", {clear = t
 
 local function validateBuildConfig(config)
   if config.jobs == nil then
-    error "jobs field is required"
+    config.jobs = {}
   end
 
   for _,job in pairs(config.jobs) do
@@ -61,8 +61,8 @@ local function editBuildConfig(config, callback)
       local val = vim.fn.json_decode(script)
 
       -- if the save field was changed, also save to that file
-      if val.save ~= file_name then
-        vim.cmd("saveas "..val.save)
+      if val.save ~= save_file then
+        vim.cmd("saveas! "..val.save)
       end
 
       validateBuildConfig(val)
