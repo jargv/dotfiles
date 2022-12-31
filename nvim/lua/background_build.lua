@@ -2,6 +2,7 @@
 TODO:
 - run command, but only if build succeeds (consider making this a separate key/feature)
 - add a way to stop all jobs (adds cancelled status)
+- add a way to clear all the jobs (<leader>Mq)
 ]]
 
 local fmtjson = require("fmtjson")
@@ -250,7 +251,11 @@ end
 function api.viewOutput()
   for _,job in pairs(buildJobs) do
     if job.buf then
-      vim.cmd(("botright vertical sbuffer %d"):format(job.buf))
+      vim.cmd(([[
+        botright vertical sbuffer %d
+        normal G
+        setlocal nonumber
+      ]]):format(job.buf))
     end
   end
 end
