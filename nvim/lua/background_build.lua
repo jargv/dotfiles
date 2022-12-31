@@ -285,10 +285,10 @@ end
 
 function api.add_from_current_file()
   table.insert(build_config.jobs, {
-    dir = vim.fn.expand("%:h"),
+    dir = vim.fn.expand("%:p:h"),
     ext = vim.fn.expand("%:e")
   })
-  api.editConfig()
+  api.edit_config()
 end
 
 function api.statusline()
