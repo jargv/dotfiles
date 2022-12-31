@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+rm -rf build
+mkdir -p build
+pushd build
+cmake \
+  -GNinja \
+  -DCMAKE_BUILD_TYPE=DEBUG \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  ..
+popd
+ln -sf build/compile_commands.json .
