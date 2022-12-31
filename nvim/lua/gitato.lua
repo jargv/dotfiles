@@ -3,7 +3,8 @@ TODOS:
   - recompute gitato view width when status changes
     (but could it ever get longer? wouldn't it always be smaller?)
   - clean up the viewer by using win_execute function
-maybe:
+consider:
+  - set the filetype of the diff buffer to match the source buffer
   - ability to push from w/in gitato
   - show log when hovering on first line (instead of empty)
   - hotkey to open tig in panel (h)

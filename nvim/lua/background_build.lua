@@ -1,8 +1,9 @@
 --[[
 TODO:
 - run command, but only if build succeeds (consider making this a separate key/feature)
-- add a way to stop all jobs (adds cancelled status)
-- add a way to clear all the jobs (<leader>Mq)
+consider:
+- more granular control of job stopping and starting
+- cancelled status instead of "failed"
 ]]
 
 local fmtjson = require("fmtjson")
@@ -76,7 +77,7 @@ local function editBuildConfig(config, callback)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 end
 
-local function stopJob(job)
+local function stop_job(job)
   if job.id then
     vim.fn.jobstop(job.id)
     job.id = nil
@@ -84,7 +85,7 @@ local function stopJob(job)
 end
 
 local function runJob(job)
-  stopJob(job)
+  stop_job(job)
 
   -- create or clear the buffer
   if job.buf == nil then
@@ -172,7 +173,7 @@ local function wireUpJob(job, jobGroup)
   })
 end
 
-local function setupBuildJobs(config, oldJobs)
+local function setup_build_jobs(config, oldJobs)
   local jobGroup = vim.api.nvim_create_augroup("build.job.autogroup", {clear = true})
 
   -- collect current buffers so they can be moved to new jobs by name
@@ -184,7 +185,7 @@ local function setupBuildJobs(config, oldJobs)
 
   -- stop any current jobs
   for _,job in ipairs(oldJobs) do
-    stopJob(job)
+    stop_job(job)
   end
 
   -- set up the new job objects
@@ -211,24 +212,24 @@ end
 
 local api = {}
 
-if buildConfig == nil then
-  buildConfig = {jobs = {}}
+if build_config == nil then
+  build_config = {jobs = {}}
 end
 
-if buildJobs == nil then
-  buildJobs = {}
+if build_jobs == nil then
+  build_jobs = {}
 end
 
-function api.editConfig()
-  editBuildConfig(buildConfig, function(newConfig)
-    buildConfig = newConfig
-    buildJobs = setupBuildJobs(newConfig, buildJobs)
+function api.edit_config()
+  editBuildConfig(build_config, function(newConfig)
+    build_config = newConfig
+    build_jobs = setup_build_jobs(newConfig, build_jobs)
   end)
 end
 
-function api.loadErrors()
+function api.load_errors()
   local jobToShow = nil
-  for _,job in pairs(buildJobs) do
+  for _,job in pairs(build_jobs) do
     if job.buf then
       jobToShow = job
       break
@@ -248,8 +249,8 @@ function api.loadErrors()
   ]]):format(jobToShow.buf))
 end
 
-function api.viewOutput()
-  for _,job in pairs(buildJobs) do
+function api.view_output()
+  for _,job in pairs(build_jobs) do
     if job.buf then
       vim.cmd(([[
         botright vertical sbuffer %d
@@ -260,9 +261,9 @@ function api.viewOutput()
   end
 end
 
-function api.runAllNotRunning()
+function api.run_all_not_running()
   local count_started = 0
-  for _,job in pairs(buildJobs) do
+  for _,job in pairs(build_jobs) do
     if job.id == nil then
       count_started = count_started + 1
       runJob(job)
@@ -271,8 +272,19 @@ function api.runAllNotRunning()
   print(("started %d jobs"):format(count_started))
 end
 
-function api.addFromCurrentFile()
-  table.insert(buildConfig.jobs, {
+function api.stop_all()
+  local count_stopped = 0
+  for _,job in pairs(build_jobs) do
+    if job.id ~= nil and job.exit_code == nil then
+      count_stopped = count_stopped + 1
+      stop_job(job)
+    end
+  end
+  print(("stopped %d jobs"):format(count_stopped))
+end
+
+function api.add_from_current_file()
+  table.insert(build_config.jobs, {
     dir = vim.fn.expand("%:h"),
     ext = vim.fn.expand("%:e")
   })
@@ -282,7 +294,7 @@ end
 function api.statusline()
   local parts = {}
   local sep = ""
-  for _,job in pairs(buildJobs) do
+  for _,job in pairs(build_jobs) do
     table.insert(parts, sep)
     sep = "%5* | "
     if job.start_time == nil then
@@ -303,6 +315,12 @@ function api.statusline()
 
   table.insert(parts, "%#StatusLine#")
   return table.concat(parts)
+end
+
+function api.clear_config()
+  build_config = {}
+  validateBuildConfig(build_config)
+  build_jobs = setup_build_jobs(build_config, build_jobs)
 end
 
 return api

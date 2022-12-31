@@ -219,7 +219,7 @@ normal["<leader>."] = newb.create()
 -- git setup {{{1
 -- leader.gd = ":tabedit term://git difftool -w -- %<cr>"
 -- leader.gD = ":tabedit term://git difftool -w<cr>"
-local gitato = require"gitato"
+local gitato = require "gitato"
 -- leader.gm = ":tabedit term://git difftool -w origin/$(git config j.publish) -- %<cr>"
 -- leader.gM = ":tabedit term://git difftool -w origin/$(git config j.publish) <cr>"
 -- leader.gi = ":tabedit term://git rebase -i<cr>"
@@ -239,11 +239,13 @@ end
 
 -- background build setup {{{1
 local build = require("background_build")
-leader.Me = build.editConfig
-leader.e = build.loadErrors
-leader.E = build.viewOutput
-leader.m = build.runAllNotRunning
-leader.Ma = build.addFromCurrentFile
+leader.Me = build.edit_config
+leader.e = build.load_errors
+leader.E = build.view_output
+leader.m = build.run_all_not_running
+leader.Ma = build.add_from_current_file
+leader.Mq = build.clear_config
+leader.Mc = build.stop_all
 
 -- statusline setup {{{1
 vim.opt.showcmd = true
