@@ -1,8 +1,7 @@
 --[[
 TODO:
 - run command, but only if build succeeds (consider making this a separate key/feature)
-- figure out how to autoscroll the output buffers (or window)
-  Use vim.fn.getbufinfo(buf).windows
+- add a way to stop all jobs (adds cancelled status)
 ]]
 
 local fmtjson = require("fmtjson")
@@ -95,7 +94,22 @@ local function runJob(job)
 
   -- output helpers
   local function on_out(_, output)
+    local wins_to_scroll = {}
+    local windows = vim.fn.win_findbuf(job.buf)
+    for _, win in ipairs(windows) do
+      local pos = vim.api.nvim_win_get_cursor(win)
+      local line = pos[1]
+      local last_line = vim.fn.line("$", win)
+      if line == last_line then
+        table.insert(wins_to_scroll, win)
+      end
+    end
+
     vim.api.nvim_buf_set_lines(job.buf, -1, -1, false, output)
+
+    for _, win in ipairs(wins_to_scroll) do
+      vim.fn.win_execute(win, "normal G")
+    end
   end
   local function output(str) on_out(nil, {str}) end
 

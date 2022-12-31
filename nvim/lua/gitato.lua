@@ -2,6 +2,7 @@
 TODOS:
   - recompute gitato view width when status changes
     (but could it ever get longer? wouldn't it always be smaller?)
+  - clean up the viewer by using win_execute function
 maybe:
   - ability to push from w/in gitato
   - show log when hovering on first line (instead of empty)
@@ -363,7 +364,7 @@ function gitato.open_viewer()
     if status == " D" then
       git_cmd("rm "..file)
     elseif status == "??" then
-      local input = vim.fn.input("really delete '"..file.."'? (type yes)")
+      local input = vim.fn.input("really delete '"..file.."'? (type yes):")
       if input ~= "yes" then
         print("you typed '"..input.."' will not deleting")
         return
