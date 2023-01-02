@@ -5,7 +5,7 @@
 ]]
 -- setup {{{1
 vim.g.mapleader = ' '
-vim.opt.shortmess:append({I = true}) -- don't do intro message at startup
+--vim.opt.shortmess:append({I = true}) -- don't do intro message at startup
 -- local isLinux = vim.fn.system('uname') == "Linux\n"
 
 -- use legacy config (TODO: remove it!) {{{1
@@ -20,7 +20,6 @@ local terminal = mapping.inMode("t")
 
 -- prototype settings {{{1
 visual.v = "`[o`]"
-leader.tN = ":tab split<cr>"
 vim.opt.updatetime = 300
 vim.opt.laststatus = 3 -- only one statusline at bottom
 
@@ -382,3 +381,134 @@ vim.api.nvim_create_user_command("Bwipe", function()
     end
   end
 end, {force = true})
+
+-- text objects {{{1
+vim.cmd[[
+   "line (il/al) {{{2
+      xnoremap il :<C-U>silent! normal 0v$<CR>
+      omap il :normal vil<CR>
+      xnoremap al :<C-U>silent! normal! 0v$<CR>
+      omap al :normal val<CR>
+   "entire file (ie/ae) {{{2
+      "todo: is there a difference between il and al?
+      xnoremap ie :<C-U>silent! normal ggVG<CR>
+      omap ie :normal vie<CR>
+      xnoremap ae :<C-U>silent! normal ggVG<CR>
+      omap ae :normal vae<CR>
+   "indent (ii/ai) {{{2
+      xnoremap ii :<C-U>silent call TextObjectInIndent(0)<CR>
+      omap ii :normal vii<CR>
+      xnoremap ai :<C-U>silent call TextObjectInIndent(1)<CR>
+      omap ai :normal vai<CR>
+      "xnoremap ai :<C-U>silent! normal 0v$<CR>
+      "omap ai :normal vai<CR>
+      func! TextObjectInIndent(inclusive)
+         let spaceLine = '^\s*$'
+         let currentLine = line('.')
+
+         "scan down to find a non-blank line
+         while getline(currentLine) =~ spaceLine && currentLine < line('$')
+            let currentLine += 1
+         endwhile
+
+         let firstLine = currentLine
+         let lastLine = currentLine
+         let currentIndent = indent(currentLine)
+
+         "find the first line of the selection
+         while firstLine > 1 &&
+                  \ (indent(firstLine - 1) >= currentIndent
+                  \ || getline(firstLine - 1) =~ spaceLine)
+            let firstLine -= 1
+         endwhile
+
+         "find the last line of the selection
+         while lastLine < line('$') &&
+                  \ (indent(lastLine + 1) >= currentIndent
+                  \ || getline(lastLine + 1) =~ spaceLine)
+            let lastLine += 1
+         endwhile
+
+         "do the selection
+         exec "normal! ".firstLine."gg0V"
+         exec "normal! ".lastLine."gg$"
+
+         if a:inclusive
+            normal! okoj
+         end
+      endfunc
+]]
+
+-- tabline {{{1
+vim.cmd [[
+  func! MyTabLabel(n)
+    let buflist = tabpagebuflist(a:n)
+    let winnr = tabpagewinnr(a:n)
+    let current = fnamemodify(bufname(buflist[winnr - 1]),':t')
+    if current == ""
+	let current = '[new file]'
+    endif
+    return current
+  endfunction
+  func! MyTabLine()
+    "let sep = "┋"
+    "let sep = "┊"
+    "let sep = "█"
+    "let sep = "▓"
+    "let sep = "░"
+    let sep = " "
+    let s = " nvim "
+    "let s = "     "
+    let selected = tabpagenr()
+    let num = tabpagenr('$')
+    for i in range(num)
+      let isSelected = i + 1 == selected
+      let isFirst = selected == 1 && i == 0
+      let after = i == selected
+
+      if isSelected
+	let s .= '%#TabLineSel#'
+      elseif i == tabpagenr()
+	let s .= '%#TabLine#'
+      else
+	let s .= '%#TabLine#'
+	let s .= sep
+      endif
+
+      " set the tab page number (for mouse clicks)
+      let s .= '%' . (i + 1) . 'T'
+
+      let padding = ''
+      if isSelected
+	"let padding = sep
+	let padding = " "
+      endif
+
+      let s .= padding . ' %{MyTabLabel(' . (i + 1) . ')} ' . padding
+
+      if i == num - 1 && selected != num
+	let s .= sep
+      endif
+
+    endfor
+    let s .= '%#TabLineFill# '
+
+    "start on the right
+    let s .= '%='
+    "let s .= '%#TabLineFill# '.'%{GetGitBranch()}'.' '
+
+    return s
+  endfunc
+  set tabline=%!MyTabLine()
+  "hi TabLineSel          cterm=bold      ctermbg=bg      ctermfg=bg
+  " exec "hi TabLineSel          cterm=bold      ctermbg=".s:selBG."      ctermfg=".s:selText
+  " exec "hi TabLine             cterm=none      ctermbg=".s:background." ctermfg=".s:text
+  " exec "hi TabLineSelSep       cterm=none      ctermbg=".s:background." ctermfg=".s:selBG
+  " exec "hi TabLineSelSepBefore cterm=inverse   ctermbg=".s:background." ctermfg=".s:selBG
+  " exec "hi TabLineSep          cterm=none      ctermbg=".s:background." ctermfg=".s:selBG
+  " exec "hi TabLineFill         cterm=none      ctermbg=".s:background." ctermfg=".s:text
+  " exec "hi VimTitle            cterm=bold      ctermbg=".s:titleBG."    ctermfg=".s:titleText
+  " exec "hi VimTitleSep         cterm=none      ctermbg=".s:background." ctermfg=".s:selBG
+  " exec "hi VimTitleSepFirst    cterm=none      ctermbg=".s:selBG."      ctermfg=".s:titleBG
+  " exec "hi TabLineEnd          cterm=italic    ctermbg=".s:background." ctermfg=".s:text
+]]
