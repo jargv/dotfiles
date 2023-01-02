@@ -744,6 +744,98 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
+-- lsp config {{{1
+vim.api.nvim_create_user_command("LspKillAll", function()
+  vim.lsp.stop_client(vim.lsp.get_active_clients())
+end, {force = true})
+
+normal.gd = function()
+  vim.lsp.buf.definition()
+  vim.cmd("normal z<cr>")
+end
+
+vim.cmd [[
+nnoremap <silent> <leader>Y
+      \ <cmd>wall<cr>
+      \ <cmd>ToggleDiagOff<cr>
+      \ <cmd>cclose<cr>
+
+nnoremap <silent> <leader>y <cmd>call FollowLspErrors()<cr>
+func! FollowLspErrors()
+  ToggleDiagDefault
+  cclose
+  lua vim.diagnostic.setqflist({open = false})
+  cwindow
+  if &ft == "qf"
+    normal 
+  endif
+endfunction
+]]
+
+normal.gD = function() vim.lsp.buf.declaration() end
+normal.gi = function() vim.lsp.buf.implementation() end
+normal.gu = function() vim.lsp.buf.references() end
+normal.gh = function() vim.lsp.buf.hover() end
+leader.rn = function() vim.lsp.buf.rename(vim.fn.input('>')) end
+leader.rf = function() vim.lsp.buf.code_action() end
+
+if lsp_configured == nil then
+  local lspconfig = require "lspconfig"
+  local util = require "lspconfig/util"
+  local navic = require "nvim-navic"
+
+  local capabilities = require'cmp_nvim_lsp'.default_capabilities(
+    vim.lsp.protocol.make_client_capabilities()
+  )
+
+  lspconfig.clangd.setup{
+    capabilities = capabilities,
+    on_attach = function(client, buffnr)
+      navic.attach(client, buffnr)
+    end
+  }
+  lspconfig.tsserver.setup{capabilities = capabilities}
+
+  lspconfig.gopls.setup{
+    capabilities = capabilities,
+    cmd = {"gopls", "serve"},
+    filetypes = {"go", "gomod"},
+    root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+    settings = {
+      gopls = {
+        analyses = {
+          unusedparams = true,
+        },
+        staticcheck = true,
+      },
+    },
+  }
+  lspconfig.sumneko_lua.setup {
+    settings = {
+      Lua = {
+        runtime = {
+          version = 'LuaJIT',
+        },
+        diagnostics = {
+          globals = {'vim', 'require'},
+        },
+        workspace = {
+          library = vim.api.nvim_get_runtime_file("", true),
+        },
+        telemetry = {
+          enable = false,
+        },
+      },
+    }
+  }
+
+  vim.diagnostic.config({signs = false, virtual_text = false, underline = false})
+  require'toggle_lsp_diagnostics'.init({signs = false, virtual_text = true, underline = true})
+
+  lsp_configured = true
+end
+
+
 -- nvim-cmp {{{1
 local cmp = require 'cmp'
 cmp.setup({
