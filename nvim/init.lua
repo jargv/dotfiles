@@ -2,6 +2,8 @@
  - null-ls
  - treesitter text objects
  - telescope to replace fzf
+TODO:
+ - fix up the smart enter key
 ]]
 -- setup {{{1
 vim.g.mapleader = ' '
@@ -10,6 +12,21 @@ vim.g.mapleader = ' '
 
 -- use legacy config (TODO: remove it!) {{{1
 vim.cmd [[source ~/config/nvim/legacy_init.vim]]
+
+-- color settings {{{1
+vim.opt.termguicolors = true
+vim.opt.ttyfast = true
+
+vim.g.everforest_background = 'medium'
+vim.g.everforest_enable_italic = 1
+vim.g.everforest_ui_contrast = 'low'
+vim.g.everforest_show_eob = 1
+vim.g.everforest_diagnostic_text_highlight = 1
+vim.cmd [[ colorscheme everforest | set bg=dark ]]
+
+--:NoMatchParen
+vim.g.loaded_matchparen = 1
+
 -- set up key mapping objects  {{{1
 local mapping = require("mapping")
 
@@ -188,32 +205,62 @@ vim.api.nvim_create_autocmd({"TermOpen", "BufEnter", "BufLeave"}, {
 
 -- navigate between windows, tabs, splits {{{1
 local newb = require("newb")
+
+vim.opt.equalalways = true --automatically resize windows
+
+leader.w = "<C-W>"
+
+-- move between windows
 normal["<A-h>"] = "<C-W>h"
 normal["<A-j>"] = "<C-W>j"
 normal["<A-k>"] = "<C-W>k"
 normal["<A-l>"] = "<C-W>l"
-
 terminal["<A-h>"] = "h"
 terminal["<A-j>"] = "j"
 terminal["<A-k>"] = "k"
 terminal["<A-l>"] = "l"
 
+-- window resize
+leader["<Down>"] = "<C-W>+"
+leader["<Up>"] = "<C-W>-"
+leader["<Left>"] = "<C-W><"
+leader["<Right>"] = "<C-W>>"
+normal["<Down>"] = "5<C-W>+"
+normal["<Up>"] = "5<C-W>-"
+normal["<Left>"] = "5<C-W><"
+normal["<Right>"] = "5<C-W>>"
+
+-- rearrange windows
+leader.H = "<C-W>H"
+leader.J = "<C-W>H"
+leader.K = "<C-W>K"
+leader.L = "<C-W>L"
+leader.tj = ":call MoveWindowTo#NextTab()<cr>"
+leader.tk = ":call MoveWindowTo#PrevTab()<cr>"
+
+
+-- move between tabs
 normal["<M-.>"] = "gt"
 normal["<M-,>"] = "gT"
-normal["<A-m>"] = newb.create("tabnew")
 terminal["<M-.>"] = "gt"
 terminal["<M-,>"] = "gT"
+
+-- create and close tabs
+normal["<A-m>"] = newb.create("tabnew")
 terminal["<A-m>"] = newb.create("tabnew")
+leader.tc = ":tabclose<cr>"
+leader.to = ":tabonly<cr>"
 
 -- create new splits
 normal["<M-->"] = newb.create("new")
 normal["<M-=>"] = newb.create("vnew")
 normal["<leader>-"] = newb.create("new")
 normal["<leader>="]= newb.create("vnew")
-
 terminal["<M-->"] = newb.create("new")
 terminal["<M-=>"] = newb.create("vnew")
 normal["<leader>."] = newb.create()
+
+
 
 -- git setup {{{1
 -- leader.gd = ":tabedit term://git difftool -w -- %<cr>"
@@ -511,4 +558,159 @@ vim.cmd [[
   " exec "hi VimTitleSep         cterm=none      ctermbg=".s:background." ctermfg=".s:selBG
   " exec "hi VimTitleSepFirst    cterm=none      ctermbg=".s:selBG."      ctermfg=".s:titleBG
   " exec "hi TabLineEnd          cterm=italic    ctermbg=".s:background." ctermfg=".s:text
+]]
+
+-- key mappings {{{1
+vim.cmd [[
+  "better defaults {{{2
+    nnoremap p p=`]
+    nnoremap <c-p> p
+    nnoremap == ==j
+    nnoremap 0 ^
+    nnoremap Y y$
+    xnoremap R r<space>R
+    xnoremap & :&<cr>
+    nnoremap * :let @/ = '\<'.expand("<cword>").'\>'<CR>:set hlsearch<CR>:echo<CR>
+    "todo: make this work
+    "xnoremap * :let @/ = '\<'.expand("<cword>").'\>'<CR>:set hlsearch<CR>:echo<CR>
+
+  "control-move text{{{2
+    xnoremap <C-j> xp'[V']
+    xnoremap <C-k> xkP'[V']
+  "git mappings {{{2
+    nnoremap <leader>gb :Gitsigns toggle_current_line_blame<cr>
+    nnoremap <leader>gB :lua package.loaded.gitsigns.blame_line({full=false,ignore_whitespace=true})<cr>
+
+  "working directory mappings {{{2
+    nnoremap <leader>U :cd %:p:h<CR>:echo<CR>
+    nnoremap <leader>u :cd ..<CR>:echo<CR>
+
+
+  "make use of Q for quick system-clipboard copying{{{2
+    nnoremap Q ggVG
+    xnoremap Q "+y
+  "uppercase words {{{2
+    inoremap <c-u> <esc>vbgU`>a
+    nnoremap <c-u> gUiw
+
+  "toggle relative linenumbers {{{2
+    "set relativenumber
+    nnoremap <leader>3 :call ToggleRelative()<CR>
+    func! ToggleRelative()
+      if &relativenumber
+        set number
+        set norelativenumber
+      elseif &number
+          set nonumber
+      else
+        set relativenumber
+      endif
+      echo
+    endfunc
+    set number
+
+  "fast saving/quitting {{{2
+    if !exists("g:MySmartQuitDefined")
+      func! MySmartQuit()
+        let config = exists("g:configMode") && g:configMode
+        if &buftype == "terminal"
+          bwipe!
+        elseif &ft == "netrw"
+          q!
+        elseif &diff || config
+          xa!
+        elseif !len(bufname('%'))
+          q!
+        else
+          wq!
+        endif
+      endfunc
+    endif
+    let g:MySmartQuitDefined = 1
+    nnoremap <M-x> :call MySmartQuit()<cr>
+    tnoremap <M-x> :call MySmartQuit()<cr>
+    nnoremap <leader><leader> :wall<cr>
+
+  "next and previous location/error/vimgrep {{{2
+    nnoremap <expr> <silent> <leader>n ((len(getqflist()) ? ":cn" : ":lnext")."<CR>")
+    nnoremap <expr> <silent> <leader>p ((len(getqflist()) ? ":cp" : ":lprev")."<CR>")
+    nnoremap <expr> <silent> <leader>N ((len(getqflist()) ? ":cnf" : ":lnf")."<CR>")
+    nnoremap <expr> <silent> <leader>P ((len(getqflist()) ? ":cpf" : ":lpf")."<CR>")
+  "K as the opposite of Join {{{2
+    xnoremap <silent> K <Nop>
+    nnoremap <silent> K :call MyLineFormat() <CR>
+    func! MyLineFormat()
+        normal Vgq
+    endfunc
+
+  "incr/decr then save{{{2
+    noremap  :w<CR>
+    noremap  :w<CR>
+
+  "smart enter key (TODO: fix){{{2
+    "inoremap <expr> <CR> SmartEnter()
+    func! SmartEnter()
+      let isLua = &ft == 'lua'
+      let isCpp = &ft == 'cpp'
+
+      "select from the popup menu if it's visible
+      " if pumvisible()
+      "   return '<cr>'
+      " endif
+
+      let line = getline('.')
+      let p = getpos('.')[2]
+      let lastChar = line[p-2]
+      let restOfLine = (line[p-1:])
+      let tab = repeat(' ', &sw)
+
+      if (len(restOfLine) >= 1)
+        let nextToLastChar  = line[p-1]
+        let brackets = lastChar == '{' && nextToLastChar == '}'
+        let parens   = lastChar == '(' && nextToLastChar == ')'
+        let squares  = lastChar == '[' && nextToLastChar == ']'
+        if brackets || parens || squares
+          if isCpp && brackets && line =~ '\v^\s*(class)|(struct)'
+            return 'A;\<esc>O'
+          endif
+          return '<cr>\<esc>O'
+        else
+          return '<cr>'
+        endif
+      elseif len(restOfLine) == 0
+        if     lastChar == '{' | return '<cr>}\<esc>O'
+        elseif lastChar == '(' | return '<cr>)\<esc>O'
+        elseif lastChar == '[' | return '<cr>]\<esc>O'
+        elseif isLua && pumvisible() && (line[-4:] == 'then' || line[-2:] == 'do') | return '<cr><cr>end\<esc>O'
+        elseif isLua && (line[-4:] == 'then' || line[-2:] == 'do') | return '<cr>end\<esc>O'
+        else
+          return '<cr>'
+        endif
+      endif
+      return "<cr>" "'<cr>\<esc>O'
+    endfunc
+  "get the styles under the cursor {{{2
+    map <leader>S :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+            \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+            \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+  "}}}
+]]
+
+-- zoom {{{1
+vim.opt.winminheight = 1
+vim.opt.winminwidth = 1
+vim.cmd [[
+  nnoremap <silent> <M-o> :call ZoomToggle()<CR>
+  tnoremap <silent> <M-o> :call ZoomToggle()<CR>
+  function! ZoomToggle()
+    if exists('t:zoomed') && t:zoomed
+      execute t:zoom_winrestcmd
+      let t:zoomed = 0
+    else
+      let t:zoom_winrestcmd = winrestcmd()
+      resize
+      vertical resize
+      let t:zoomed = 1
+    endif
+  endfunction
 ]]
