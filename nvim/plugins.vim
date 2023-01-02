@@ -1,111 +1,117 @@
-"setup Plug {{{2
-"install setup {{{3
-    let plugDir = "~/config/nvim/plug"
-    let plugDoInstall = 0
-    if !isdirectory(expand(plugDir))
-      let plugUrl = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-      let plugFile = plugDir . "/plug/autoload/plug.vim"
-      exec "!curl -fLo ".plugFile." --create-dirs " . plugUrl
-      let plugDoInstall = 1
-    endif
-"normal setup {{{3
-    filetype off
-    "set runtimepath=$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,~/.vim/plug/plug
-    set runtimepath+=~/config/nvim/plug/plug
-    call plug#begin('~/config/nvim/plug')
+"install setup {{{1
+  let plugDir = "~/config/nvim/plug"
+  let plugDoInstall = 0
+  if !isdirectory(expand(plugDir))
+    let plugUrl = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+    let plugFile = plugDir . "/plug/autoload/plug.vim"
+    exec "!curl -fLo ".plugFile." --create-dirs " . plugUrl
+    let plugDoInstall = 1
+  endif
+"normal setup {{{1
+filetype off
+"set runtimepath=$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,~/.vim/plug/plug
+set runtimepath+=~/config/nvim/plug/plug
+call plug#begin('~/config/nvim/plug')
 "}}}
-"}}}
+
 lua plugin_setup_funcs = {}
 
-  "Language-specifig plugins {{{2
-   "powershell {{{3
-   "Plug 'PProvost/vim-ps1'
+"Language-specifig plugins {{{1
+"powershell {{{3
+"Plug 'PProvost/vim-ps1'
 
-   "rust {{{3
-   " Plug 'rust-lang/rust.vim'
-   " Plug 'racer-rust/vim-racer'
-   let g:racer_experimental_completer = 1
-   "let g:ycm_rust_src_path = '~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
+"rust {{{3
+" Plug 'rust-lang/rust.vim'
+" Plug 'racer-rust/vim-racer'
+let g:racer_experimental_completer = 1
+"let g:ycm_rust_src_path = '~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
 
-   "go {{{3
-   "Plug 'jargv/vim-go-error-folds'
-   " Plug 'fatih/vim-go'
-   let g:go_fmt_command = "goimports"
-   let g:go_fmt_command = "gofmt"
-   let g:go_fmt_fail_silently = 1
-   let g:go_def_mapping_enabled = 0
+"go {{{3
+"Plug 'jargv/vim-go-error-folds'
+" Plug 'fatih/vim-go'
+let g:go_fmt_command = "goimports"
+let g:go_fmt_command = "gofmt"
+let g:go_fmt_fail_silently = 1
+let g:go_def_mapping_enabled = 0
 
-   "don't do whitespace errors, go fmt will eliminate them
-   let g:go_highlight_trailing_whitespace_error = 0
-   let g:go_highlight_array_whitespace_error = 0
-   let g:go_highlight_chan_whitespace_error = 0
-   let g:go_highlight_space_tab_error = 0
+"don't do whitespace errors, go fmt will eliminate them
+let g:go_highlight_trailing_whitespace_error = 0
+let g:go_highlight_array_whitespace_error = 0
+let g:go_highlight_chan_whitespace_error = 0
+let g:go_highlight_space_tab_error = 0
 
-   "highlight a bunch of stuff
-   let g:go_highlight_operators = 1
-   let g:go_highlight_functions = 1
-   let g:go_highlight_methods = 1
-   let g:go_highlight_structs = 1
-   let g:go_highlight_interfaces = 1
-   let g:go_highlight_build_constraints = 1
-   let g:go_auto_type_info = 0
+"highlight a bunch of stuff
+let g:go_highlight_operators = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_interfaces = 1
+let g:go_highlight_build_constraints = 1
+let g:go_auto_type_info = 0
 
-   "I like my own K key, thanks
-   let g:go_doc_keywordprg_enabled = 0
+"I like my own K key, thanks
+let g:go_doc_keywordprg_enabled = 0
 
-   "I only want my own snippets
-   let g:go_snippet_engine = ""
+"I only want my own snippets
+let g:go_snippet_engine = ""
 
-   "I don't want the templates
-   let g:go_template_autocreate = 0
+"I don't want the templates
+let g:go_template_autocreate = 0
 
-   " "Scope guru to the whole gopath
-   " let g:go_guru_scope = [""]
-   "javascript/typescript {{{3
-   "Plug 'ternjs/tern_for_vim'
-   "Plug 'jxnblk/vim-mdx-js'
-   Plug 'pangloss/vim-javascript'
-   "Plug 'mxw/vim-jsx'
-   "Plug 'jelera/vim-javascript-syntax'
-   let g:jsx_ext_required = 0
-   Plug 'leafgarland/typescript-vim'
-   "Plug 'peitalin/vim-jsx-typescript'
-   "Plug 'MaxMellon/vim-jsx-pretty'
-   "html {{{3
-   Plug 'othree/html5.vim'
+" "Scope guru to the whole gopath
+" let g:go_guru_scope = [""]
+"javascript/typescript {{{3
+"Plug 'ternjs/tern_for_vim'
+"Plug 'jxnblk/vim-mdx-js'
+Plug 'pangloss/vim-javascript'
+"Plug 'mxw/vim-jsx'
+"Plug 'jelera/vim-javascript-syntax'
+let g:jsx_ext_required = 0
+Plug 'leafgarland/typescript-vim'
+"Plug 'peitalin/vim-jsx-typescript'
+"Plug 'MaxMellon/vim-jsx-pretty'
+"html {{{3
+Plug 'othree/html5.vim'
 
-   "purescript {{{3
-   "Plug 'raichoo/purescript-vim'
+"purescript {{{3
+"Plug 'raichoo/purescript-vim'
 
-   "css {{{3
-   Plug 'JulesWang/css.vim'
+"css {{{3
+Plug 'JulesWang/css.vim'
 
-   "html {{{3
-   "Plug 'mattn/emmet-vim'
-   "toml {{{3
-   Plug 'cespare/vim-toml'
-   "docker {{{3
-   "Plug 'ekalinin/Dockerfile.vim'
+"html {{{3
+"Plug 'mattn/emmet-vim'
+"toml {{{3
+Plug 'cespare/vim-toml'
+"docker {{{3
+"Plug 'ekalinin/Dockerfile.vim'
 
-   "glsl {{{3
-   Plug 'vim-scripts/glsl.vim'
+"glsl {{{3
+Plug 'vim-scripts/glsl.vim'
 
-   "lua {{{3
-    "Plug 'SpaceVim/vim-swig'
+"lua {{{3
+"Plug 'SpaceVim/vim-swig'
 
-   "zig {{{3
-   Plug 'ziglang/zig.vim'
-   let g:zig_fmt_autosave = 0
+"zig {{{3
+Plug 'ziglang/zig.vim'
+let g:zig_fmt_autosave = 0
 
-   "colorschemes {{{2
-   "Plug 'flazz/vim-colorschemes'
-   Plug 'arcticicestudio/nord-vim'
-   Plug 'sainnhe/everforest'
-   Plug 'trevordmiller/nova-vim'
-   Plug 'AlessandroYorba/Arcadia'
-   Plug 'jnurmine/Zenburn'
-   Plug 'sonph/onehalf', { 'rtp': 'vim' }
-   "}}}
+"}}}
+
+"}}}
+
+
+
+"colorschemes {{{1
+"
+"Plug 'flazz/vim-colorschemes'
+Plug 'arcticicestudio/nord-vim'
+Plug 'sainnhe/everforest'
+Plug 'trevordmiller/nova-vim'
+Plug 'AlessandroYorba/Arcadia'
+Plug 'jnurmine/Zenburn'
+Plug 'sonph/onehalf', { 'rtp': 'vim' }
+"}}}
 
 Plug 'nvim-lua/plenary.nvim'
 
@@ -131,7 +137,7 @@ Plug 'hrsh7th/nvim-cmp'
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
-"Plug 'williamboman/mason.nvim' {{w
+"Plug 'williamboman/mason.nvim' {{{2
 Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
 lua << EOF
@@ -362,7 +368,6 @@ lua <<EOF
     require('gitsigns').setup()
   end)
 EOF
-   "}}}
 
 "Run plugin setup {{{2
 call plug#end()
@@ -380,4 +385,3 @@ lua <<
     fn()
   end
 .
-"}}}

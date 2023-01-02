@@ -375,7 +375,7 @@ end
 -- reload config
 local function reloadConfig()
   local ft_parts = vim.fn.split(vim.bo.filetype, "\\.")
-  vim.cmd "tabe ~/config/nvim/legacy_init.vim"
+  vim.cmd "tabe ~/config/nvim/plugins.vim"
   vim.cmd "vsplit ~/config/nvim/init.lua"
   if #ft_parts ~= 0 then
     vim.cmd("vsplit ~/config/nvim/ftplugin/"..ft_parts[1]..".vim")
