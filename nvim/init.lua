@@ -10,8 +10,8 @@ vim.g.mapleader = ' '
 --vim.opt.shortmess:append({I = true}) -- don't do intro message at startup
 -- local isLinux = vim.fn.system('uname') == "Linux\n"
 
--- use legacy config (TODO: remove it!) {{{1
-vim.cmd [[source ~/config/nvim/legacy_init.vim]]
+-- run plugin setup (TODO: look into packer.nvim ) {{{1
+vim.cmd [[source ~/config/nvim/plugins.vim]]
 
 -- color settings {{{1
 vim.opt.termguicolors = true
