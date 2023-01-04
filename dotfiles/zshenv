@@ -16,13 +16,14 @@ export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 #rust paths
 export PATH=~/.cargo/bin:$PATH
 export RUST_SRC_PATH=$( [[ -x $(which rustc) ]] && echo "$(rustc --print sysroot)/lib/rustlib/src/rust/src");
+. "$HOME/.cargo/env"
 
 # vim paths
 export EDITOR="nvim"
 
 # java paths
 if [[ -x /usr/libexec/java_home ]]; then
-  export JAVA_HOME=`/usr/libexec/java_home`
+  #export JAVA_HOME=`/usr/libexec/java_home`
 fi
 
 # volta paths
