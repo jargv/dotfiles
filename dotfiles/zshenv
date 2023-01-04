@@ -2,21 +2,22 @@ export PATH=$PATH:~/bin
 export PATH=$PATH:~/config/bin
 export PATH=$PATH:~/.local/bin
 
-export PATH=$PATH:~/.cabal/bin
 export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/sbin:$PATH
 export PATH=/opt/local/bin:/opt/local/sbin:$PATH
-#export PATH=~/.npm/bin/:$PATH
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+# export PATH=~/.npm/bin/:$PATH
+# export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
-#go paths
+# go paths
 export GOPATH=~/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
-#rust paths
+# rust paths
 export PATH=~/.cargo/bin:$PATH
 export RUST_SRC_PATH=$( [[ -x $(which rustc) ]] && echo "$(rustc --print sysroot)/lib/rustlib/src/rust/src");
-. "$HOME/.cargo/env"
+if [[ -f "$HOME/.cargo/env" ]]; then
+  . "$HOME/.cargo/env"
+fi
 
 # vim paths
 export EDITOR="nvim"
@@ -32,3 +33,7 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 
 # zig paths
 export PATH=$PATH:~/bin/zig
+
+# python paths
+export PATH=$PATH:~/Library/Python/3.8/bin
+
