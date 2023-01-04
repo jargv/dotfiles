@@ -62,7 +62,7 @@
       {"code": 10, "label": {"base": "g", "shifted": "G"}},
       {
         "code": 227,
-        "label": {"base": {"full": "Super", "1u": "Sup.", "short": "Su"}},
+        "label": {"base": {"full": "Command", "1u": "Cmd", "short": "Cm"}},
         "location": "left",
         "categories": ["modifier"]
       },
@@ -131,13 +131,6 @@
     ],
     [
       {
-        "code": 17492,
-        "label": {"hint": "MoveTo", "base": "#0"},
-        "target": 0,
-        "rangeStart": 17492,
-        "categories": ["layer", "movetolayer"]
-      },
-      {
         "code": 65535,
         "label": {"base": {"full": "Transparent", "1u": " "}},
         "categories": ["blanks"]
@@ -323,10 +316,14 @@
         "categories": ["blanks"]
       },
       {
-        "code": 227,
-        "label": {"base": {"full": "Super", "1u": "Sup.", "short": "Su"}},
-        "location": "left",
-        "categories": ["modifier"]
+        "code": 65535,
+        "label": {"base": {"full": "Transparent", "1u": " "}},
+        "categories": ["blanks"]
+      },
+      {
+        "code": 65535,
+        "label": {"base": {"full": "Transparent", "1u": " "}},
+        "categories": ["blanks"]
       },
       {
         "code": 65535,
@@ -615,7 +612,7 @@
       },
       {
         "code": 227,
-        "label": {"base": {"full": "Super", "1u": "Sup.", "short": "Su"}},
+        "label": {"base": {"full": "Command", "1u": "Cmd", "short": "Cm"}},
         "location": "left",
         "categories": ["modifier"]
       },
@@ -745,9 +742,11 @@
     ],
     [
       {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
+        "code": 17492,
+        "label": {"hint": "MoveTo", "base": "#0"},
+        "target": 0,
+        "rangeStart": 17492,
+        "categories": ["layer", "movetolayer"]
       },
       {"code": 58, "label": {"base": "F1"}},
       {"code": 59, "label": {"base": "F2"}},
@@ -885,7 +884,7 @@
       },
       {
         "code": 4105,
-        "label": {"hint": {"full": "Super+", "1u": "Su+"}, "base": "f"},
+        "label": {"hint": {"full": "Command+", "1u": "Cm+"}, "base": "f"},
         "categories": ["with-modifiers", "gui"],
         "baseCode": 9
       },
@@ -896,7 +895,7 @@
       },
       {
         "code": 227,
-        "label": {"base": {"full": "Super", "1u": "Sup.", "short": "Su"}},
+        "label": {"base": {"full": "Command", "1u": "Cmd", "short": "Cm"}},
         "location": "left",
         "categories": ["modifier"]
       },
@@ -936,31 +935,31 @@
       },
       {
         "code": 4125,
-        "label": {"hint": {"full": "Super+", "1u": "Su+"}, "base": "z"},
+        "label": {"hint": {"full": "Command+", "1u": "Cm+"}, "base": "z"},
         "categories": ["with-modifiers", "gui"],
         "baseCode": 29
       },
       {
         "code": 4123,
-        "label": {"hint": {"full": "Super+", "1u": "Su+"}, "base": "x"},
+        "label": {"hint": {"full": "Command+", "1u": "Cm+"}, "base": "x"},
         "categories": ["with-modifiers", "gui"],
         "baseCode": 27
       },
       {
         "code": 4102,
-        "label": {"hint": {"full": "Super+", "1u": "Su+"}, "base": "c"},
+        "label": {"hint": {"full": "Command+", "1u": "Cm+"}, "base": "c"},
         "categories": ["with-modifiers", "gui"],
         "baseCode": 6
       },
       {
         "code": 4121,
-        "label": {"hint": {"full": "Super+", "1u": "Su+"}, "base": "v"},
+        "label": {"hint": {"full": "Command+", "1u": "Cm+"}, "base": "v"},
         "categories": ["with-modifiers", "gui"],
         "baseCode": 25
       },
       {
         "code": 4101,
-        "label": {"hint": {"full": "Super+", "1u": "Su+"}, "base": "b"},
+        "label": {"hint": {"full": "Command+", "1u": "Cm+"}, "base": "b"},
         "categories": ["with-modifiers", "gui"],
         "baseCode": 5
       },
@@ -2259,6 +2258,7 @@
       15,
       15,
       15,
+      3,
       15,
       15,
       15,
@@ -2279,8 +2279,7 @@
       15,
       15,
       15,
-      15,
-      15,
+      3,
       15,
       15,
       15,
