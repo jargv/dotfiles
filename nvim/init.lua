@@ -711,7 +711,7 @@ if vim.g.neovide then
   vim.g.neovide_confirm_quit = true
   vim.g.neovide_remember_window_size = true
   vim.g.neovide_profiler = false
-  vim.g.neovide_input_macos_alt_is_meta = false
+  vim.g.neovide_input_macos_alt_is_meta = true
   vim.g.neovide_cursor_vfx_mode = "railgun"
   vim.g.neovide_scroll_animation_length = 0.0
   vim.opt.guifont="FiraCode Nerd Font:h12"
