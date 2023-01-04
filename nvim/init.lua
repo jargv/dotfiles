@@ -13,7 +13,9 @@ TODO:
 -- setup {{{1
 vim.g.mapleader = ' '
 --vim.opt.shortmess:append({I = true}) -- don't do intro message at startup
--- local isLinux = vim.fn.system('uname') == "Linux\n"
+local uname = vim.fn.system('uname')
+local isLinux = uname == "Linux\n"
+local isMac = uname == "Darwin\n"
 
 local mapping = require("mapping")
 
@@ -31,7 +33,6 @@ local function checkPluginSetup()
 
   -- already installed?
   if 1 == vim.fn.isdirectory(plugDir) then
-    print "initial setup already complete"
     return false
   end
 
@@ -451,7 +452,11 @@ vim.opt.cpoptions:append"n"
 vim.o.showtabline = 1 -- only if there are multiple
 
 -- clipboard
-vim.opt.clipboard:append("unnamedplus")
+if isLinux then
+  vim.opt.clipboard:append("unnamedplus")
+elseif isMac then
+  vim.opt.clipboard:append("unnamed")
+end
 
 --other
 vim.g.filetype_pt = "prolog"
