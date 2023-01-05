@@ -3,6 +3,7 @@ TODOS:
   - recompute gitato view width when status changes
     (but could it ever get longer? wouldn't it always be smaller?)
   - clean up the viewer by using win_execute function
+  - Fix bug when status is longer than the window (rare)
 consider:
   - set the filetype of the diff buffer to match the source buffer
   - ability to push from w/in gitato
