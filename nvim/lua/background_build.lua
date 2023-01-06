@@ -284,8 +284,14 @@ function api.stop_all()
 end
 
 function api.add_from_current_file()
+  local src_dir = "/src"
+  local dir = vim.fn.expand("%:p:h")
+  if dir:sub(-#src_dir, -1) == src_dir then
+    dir = dir:sub(1,  -#src_dir)
+  end
+
   table.insert(build_config.jobs, {
-    dir = vim.fn.expand("%:p:h"),
+    dir = dir,
     ext = vim.fn.expand("%:e")
   })
   api.edit_config()
@@ -321,6 +327,7 @@ function api.clear_config()
   build_config = {}
   validateBuildConfig(build_config)
   build_jobs = setup_build_jobs(build_config, build_jobs)
+  print "build config cleared"
 end
 
 return api
