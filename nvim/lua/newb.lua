@@ -13,12 +13,13 @@ end
 
 local new_buffer_options = {
   {key=".", cmd = ":e term://$dir///bin/zsh", desc="start a terminal"},
-  {key="d", cmd = ":Explore $dir",           desc="open a directory"},
-  {key="o", cmd = ":FZF --inline-info $dir", desc="search for a file"},
-  {key="i", cmd = ":Buffers",           desc="search buffers by name"},
-  {key="h", cmd = ":e term://$dir//tig", desc="git history (tig)"},
-  {key="u", cmd = updir              ,  desc="cd .."},
-  {key="q", cmd = ":q!",                desc="quit"},
+  {key="d", cmd = ":Explore $dir",            desc="open a directory"},
+  {key="o", cmd = ":FZF --inline-info $dir",  desc="search for a file"},
+  {key="i", cmd = ":Buffers",                 desc="search buffers by name"},
+  {key="h", cmd = ":e term://$dir//tig",      desc="git history (tig)"},
+  {key="t", cmd = ":exec ':e '.tempname()",   desc="edit temp file"},
+  {key="u", cmd = updir,                      desc="cd .."},
+  {key="q", cmd = ":q!",                      desc="quit"},
 }
 
 function newb.create(split_command)
