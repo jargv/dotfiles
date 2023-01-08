@@ -1,35 +1,15 @@
-"JavaComplete 2 {{{1
-nnoremap <buffer> <leader>;i :JCimportAdd<cr>
-nnoremap <buffer> <leader>;a :JCimportsAddMissing<cr>
-nnoremap <buffer> <leader>;r :JCimportsRemoveUnused<cr>
-
 "Settings {{{1
 setlocal indentkeys=o,O,*<Return>,<CR>,{,}
 setlocal shiftwidth=4 tabstop=4
 setlocal omnifunc=javacomplete#Complete
 set nocindent nosmartindent autoindent
 
+lua <<
+local config = {
+  cmd = {'/bin/jdtls'},
+  root_dir = vim.fs.dirname(vim.fs.find({'.gradlew', '.git', 'mvnw'}, { upward = true })[1]),
+}
+require('jdtls').start_or_attach(config)
+.
 
-"completion {{{1
-inoremap <buffer> . .
-
-"intellij integration {{{1
-let s:file = "/tmp/intellij-vim-files"
-nnoremap <buffer> <leader>;j :exec '!idea ' . expand("%:p") . " --line " . line('.')<cr><cr> |  |
-nnoremap <buffer> <leader>;o :call <sid>openIntelliJFiles()<cr>
-
-nnoremap <buffer> <leader>;; :e!<cr>
-
-func! <sid>openIntelliJFiles()
-  if !filereadable(s:file)
-    echo "no files"
-    return
-  endif
-   let files = readfile(s:file)
-   let cmd = "tabe"
-   for file in files
-     exec cmd . " " . file
-     let cmd = "vsplit"
-   endfor
-   exec "!rm ".s:file
-endfunc
+nnoremap <A-i> <Cmd>lua require'jdtls'.organize_imports()<CR>

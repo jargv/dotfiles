@@ -138,6 +138,9 @@ Plug 'vim-scripts/glsl.vim'
 Plug 'ziglang/zig.vim'
 vim.g.zig_fmt_autosave = 0
 
+-- java {{{3
+Plug 'mfussenegger/nvim-jdtls'
+
 -- colorschemes {{{2
 -- Plug 'flazz/vim-colorschemes'
 Plug 'arcticicestudio/nord-vim'
