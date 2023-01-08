@@ -80,11 +80,14 @@ end
 local function stop_job(job)
   if job.id then
     vim.fn.jobstop(job.id)
-    job.id = nil
+    vim.fn.jobwait({job.id}, 3)
+    if job.id ~= nil then
+      error ("ERROR: job %d was not cleared, exit handler was not run!"):format(job.id)
+    end
   end
 end
 
-local function runJob(job)
+local function run_job(job)
   stop_job(job)
 
   -- create or clear the buffer
@@ -169,7 +172,7 @@ local function wireUpJob(job, jobGroup)
   vim.api.nvim_create_autocmd("BufWritePost", {
     pattern = pattern,
     group = jobGroup,
-    callback = function() runJob(job) end
+    callback = function() run_job(job) end
   })
 end
 
@@ -266,7 +269,7 @@ function api.run_all_not_running()
   for _,job in pairs(build_jobs) do
     if job.id == nil then
       count_started = count_started + 1
-      runJob(job)
+      run_job(job)
     end
   end
   print(("started %d jobs"):format(count_started))
