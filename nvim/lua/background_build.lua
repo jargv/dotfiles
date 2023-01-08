@@ -287,14 +287,11 @@ function api.stop_all()
 end
 
 function api.add_from_current_file()
-  local src_dir = "/src"
   local dir = vim.fn.expand("%:p:h")
-  if dir:sub(-#src_dir, -1) == src_dir then
-    dir = dir:sub(1,  -#src_dir)
-  end
+  local dir_before_src = dir:match("(.*)/src.*")
 
   table.insert(build_config.jobs, {
-    dir = dir,
+    dir = dir_before_src or dir,
     ext = vim.fn.expand("%:e")
   })
   api.edit_config()
