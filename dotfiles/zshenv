@@ -13,6 +13,11 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 #export PATH="$VOLTA_HOME/bin:$PATH"
 
 
+# local env file
+if [[ -f ~/.zshenv.local ]]; then
+  . ~/.zshenv.local
+fi
+
 # go paths
 export GOPATH=~/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH

@@ -75,3 +75,5 @@
 	defaultBranch = main
 [pull]
 	ff = only
+[url "git@github.snooguts.net:"]
+	insteadOf = https://github.snooguts.net/
