@@ -18,6 +18,11 @@ if [[ -f ~/.zshenv.local ]]; then
   . ~/.zshenv.local
 fi
 
+# local env file
+if [[ -f ~/.zshenv.local ]]; then
+  . ~/.zshenv.local
+fi
+
 # go paths
 export GOPATH=~/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
