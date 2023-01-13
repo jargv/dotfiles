@@ -43,6 +43,9 @@ export PATH=$PATH:~/bin/zig
 # python paths
 export PATH=$PATH:~/Library/Python/3.8/bin
 
+# brew paths
+export PATH=/opt/homebrew/bin:$PATH
+
 # fzf setup
 fzf_keybindings=~/config/nvim/plug/fzf/shell/key-bindings.zsh
 fzf_completion=~/config/nvim/plug/fzf/shell/completion.zsh

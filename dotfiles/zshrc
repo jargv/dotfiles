@@ -207,3 +207,5 @@ kill_gradle() {
 export kill_gradle=kill_gradle
 
 #script-added setup {{{1
+
+export AWS_SDK_LOAD_CONFIG=true
