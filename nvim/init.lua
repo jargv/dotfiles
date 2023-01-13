@@ -3,7 +3,6 @@
 stuff to look into:
  - null-ls
  - treesitter text objects
- - telescope to replace fzf
 
 TODO:
  - fix up the smart enter key
@@ -175,6 +174,24 @@ Plug 'hrsh7th/nvim-cmp'
 
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
 
+-- Plug 'nvim-telescope/telescope.nvim' {{{2
+Plug('nvim-telescope/telescope.nvim', { tag = '0.1.0' })
+Plug('nvim-telescope/telescope-fzf-native.nvim', {['do'] = 'make'})
+table.insert(plugin_setup_funcs, function()
+  local telescope = require "telescope"
+  local action = require "telescope.actions"
+  telescope.load_extension('fzf')
+  telescope.setup{
+    defaults = {
+      mappings = {
+        i = {
+          ["<M-a>"] = action.smart_send_to_qflist + action.open_qflist
+        }
+      }
+    },
+  }
+end)
+
 -- Plug 'williamboman/mason.nvim' {{{2
 Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
@@ -259,10 +276,10 @@ vim.g.ale_fix_on_save = 1
 vim.g.ale_completion_autoimport = 1
 Plug 'dense-analysis/ale'
 
--- Plug 'junegunn/fzf' {{{2
-vim.g.fzf_buffers_jump = 1
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
+-- Plug 'junegunn/fzf' (unused) {{{2
+-- vim.g.fzf_buffers_jump = 1
+-- Plug 'junegunn/fzf'
+-- Plug 'junegunn/fzf.vim'
 
 -- Plug 'tpope/vim-vinegar' {{{2
 Plug 'tpope/vim-vinegar'
@@ -356,11 +373,42 @@ vim.g.loaded_matchparen = 1
 visual.v = "`[o`]"
 vim.opt.updatetime = 300
 vim.opt.laststatus = 3 -- only one statusline at bottom
-leader.o = function()
+local telescope = require("telescope.builtin")
+leader.jf = function()
   local dir = require("current_dir")()
-  vim.cmd(":FZF --inline-info "..dir)
+  telescope.find_files({cwd = dir})
 end
-leader.i = ":Buffers<cr>"
+leader.jb = function()
+  telescope.buffers()
+end
+leader.jt = function()
+  telescope.treesitter()
+end
+leader.jm = function()
+  telescope.marks()
+end
+leader.jk = function()
+  telescope.keymaps()
+end
+leader.ja = function()
+  telescope.autocommands()
+end
+leader.jo = function()
+  telescope.lsp_outgoing_calls()
+end
+leader.ji = function()
+  telescope.lsp_incoming_calls()
+end
+leader.jh = function()
+  telescope.help_tags()
+end
+leader.jj = function()
+  telescope.resume()
+end
+leader['j/'] = function()
+  local dir = require("current_dir")()
+  telescope.live_grep({cwd = dir})
+end
 
 -- settings {{{1
 

@@ -2,7 +2,8 @@
 - look into making this work on all new buffers instead of requiring an explicit fn
 - look into collecting a terminal's cwd and using it
 ]]
-local current_dir = require("current_dir")
+local current_dir = require "current_dir"
+local telescope = require "telescope.builtin"
 
 local newb = {}
 
@@ -12,11 +13,25 @@ local function updir(dir, chdir)
   chdir(newdir)
 end
 
+local function find_files(root)
+  telescope.find_files{cwd = root}
+end
+
+local function live_grep(root)
+  telescope.live_grep{cwd = root}
+end
+
+local function find_buffers(root)
+  telescope.buffers{}
+end
+
+
 local new_buffer_options = {
   {key=".", cmd = ":e term://$dir///bin/zsh", desc="start a terminal"},
   {key="d", cmd = ":Explore $dir",            desc="open a directory"},
-  {key="o", cmd = ":FZF --inline-info $dir",  desc="search for a file"},
-  {key="i", cmd = ":Buffers",                 desc="search buffers by name"},
+  {key="f", cmd = find_files,                 desc="search for a file"},
+  {key="b", cmd = find_files,                 desc="search buffers by name"},
+  {key="/", cmd = live_grep,                  desc="search buffers by name"},
   {key="h", cmd = ":e term://$dir//tig",      desc="git history (tig)"},
   {key="t", cmd = ":exec ':e '.tempname()",   desc="edit temp file"},
   {key="u", cmd = updir,                      desc="cd .."},
