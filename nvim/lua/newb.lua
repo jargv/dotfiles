@@ -2,6 +2,7 @@
 - look into making this work on all new buffers instead of requiring an explicit fn
 - look into collecting a terminal's cwd and using it
 ]]
+local current_dir = require("current_dir")
 
 local newb = {}
 
@@ -25,7 +26,7 @@ local new_buffer_options = {
 function newb.create(split_command)
   return function()
     -- the directory starts with buffer *before* the split command
-    local dir
+    local dir = current_dir()
     if vim.bo.buftype == "terminal" then
       local bufname = vim.fn.bufname("%")
       dir = bufname:match("^%S*//(%S*)//%S*$") or vim.fn.expand("~:p")

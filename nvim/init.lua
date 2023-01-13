@@ -356,6 +356,11 @@ vim.g.loaded_matchparen = 1
 visual.v = "`[o`]"
 vim.opt.updatetime = 300
 vim.opt.laststatus = 3 -- only one statusline at bottom
+leader.o = function()
+  local dir = require("current_dir")()
+  vim.cmd(":FZF --inline-info "..dir)
+end
+leader.i = ":Buffers<cr>"
 
 -- settings {{{1
 
