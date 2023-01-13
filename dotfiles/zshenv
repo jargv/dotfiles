@@ -5,8 +5,13 @@ export PATH=$PATH:~/.local/bin
 export PATH=/usr/local/bin:$PATH
 export PATH=/usr/local/sbin:$PATH
 export PATH=/opt/local/bin:/opt/local/sbin:$PATH
-# export PATH=~/.npm/bin/:$PATH
-# export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+# js paths
+export PATH=~/.npm-global/bin:$PATH
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+#export VOLTA_HOME="$HOME/.volta"
+#export PATH="$VOLTA_HOME/bin:$PATH"
+
 
 # go paths
 export GOPATH=~/go
@@ -27,10 +32,6 @@ if [[ -x /usr/libexec/java_home ]]; then
   #export JAVA_HOME=`/usr/libexec/java_home`
 fi
 
-# volta paths
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
-
 # zig paths
 export PATH=$PATH:~/bin/zig
 
@@ -38,7 +39,6 @@ export PATH=$PATH:~/bin/zig
 export PATH=$PATH:~/Library/Python/3.8/bin
 
 # fzf setup
-FZF_TMUX=1
 fzf_keybindings=~/config/nvim/plug/fzf/shell/key-bindings.zsh
 fzf_completion=~/config/nvim/plug/fzf/shell/completion.zsh
 bindkey '^R' fzf-history-widget
