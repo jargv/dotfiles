@@ -1245,3 +1245,10 @@ cmp.setup({
     { name = 'path' },
   })
 })
+-- start in projects dir if no file was specified
+if vim.api.nvim_buf_get_name(0) == "" then
+  vim.cmd [[
+    cd ~/projects
+    edit ~/projects
+  ]]
+end
