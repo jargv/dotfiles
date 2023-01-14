@@ -37,10 +37,9 @@ function gitato.diff_off()
   current_diff_buffer = nil
 end
 
-function gitato.get_repo_root(dir)
-  if dir == nil then
-    dir = vim.fn.expand("%:p:h")
-  end
+function gitato.get_repo_root()
+  local dir = vim.fn.fnamemodify(vim.fn.resolve(vim.fn.expand("%:p")), ":h")
+  print(dir)
   local result = vim.fn.systemlist("cd "..dir.." && git rev-parse --show-toplevel")
   local error = vim.api.nvim_get_vvar("shell_error")
   if error ~= 0 or #result == 0 then
@@ -56,13 +55,13 @@ function gitato.toggle_diff_against_git_ref(ref)
     return
   end
 
-  local git_root = gitato.get_repo_root(vim.fn.expand("%:p:h"))
+  local git_root = gitato.get_repo_root()
   if git_root == nil then
     print("ERROR: Is this a git repo?")
     return
   end
 
-  local file = vim.fn.expand("%:p")
+  local file = vim.fn.resolve(vim.fn.expand("%:p"))
   if file:sub(1, #git_root) == git_root then
     file = file:sub(#git_root + 2)
   else
@@ -133,7 +132,7 @@ end
 
 function gitato.open_viewer()
   -- find the repo root of the current file
-  local git_repo_root = gitato.get_repo_root(vim.fn.expand("%:p:h"))
+  local git_repo_root = gitato.get_repo_root()
   if git_repo_root == nil then
     print("ERROR: Is this a git repo?")
     return
@@ -227,7 +226,7 @@ function gitato.open_viewer()
     if current_file_window ~= nil then
       local absolute_file = git_repo_root .. file
       local current_file_buffer = vim.api.nvim_win_get_buf(current_file_window)
-      local current_file = vim.api.nvim_buf_get_name(current_file_buffer)
+      local current_file = vim.fn.resolve(vim.api.nvim_buf_get_name(current_file_buffer))
       -- print("current_file: ", current_file, "(", file, ")", "[", absolute_file, "]")
       if absolute_file == current_file then
         return
