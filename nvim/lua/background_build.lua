@@ -20,8 +20,8 @@ local function validateBuildConfig(config)
     -- ensure requried fields are available
     if type(job.dir) ~= "string" then
       error "job.dir is required"
-    elseif type(job.cmd) ~= "string" then
-      error "job.cmd is required"
+    elseif type(job.build) ~= "string" then
+      error "job.build is required"
     end
 
     -- trim the trailing '/' on dir
@@ -31,12 +31,12 @@ local function validateBuildConfig(config)
 
     -- derive a name if none is given
     if job.name == nil then
-      job.name = '['..job.dir..'] '..job.cmd
+      job.name = '['..job.dir..'] '..job.build
     end
   end
 end
 
-local function editBuildConfig(config, callback)
+local function edit_build_config(config, callback)
   local save_file
   if config.save then
     save_file = config.save
@@ -126,7 +126,7 @@ local function run_job(job)
 
   output("starting job "..job_descriptor)
 
-  local id = vim.fn.jobstart(job.config.cmd, {
+  local id = vim.fn.jobstart(job.config.build, {
     cwd = job.config.dir,
     on_exit = function(_, exit_code, _)
       job.exit_code = exit_code
@@ -147,7 +147,7 @@ local function run_job(job)
   job.id = id
 end
 
-local function wireUpJob(job, jobGroup)
+local function wire_up_job_autocmd(job, jobGroup)
   local pattern = job.config.pattern
 
   -- pattern might also be built from the ext field
@@ -158,7 +158,7 @@ local function wireUpJob(job, jobGroup)
     end
 
     pattern = {}
-    for i, ext in ipairs(exts) do
+    for _, ext in ipairs(exts) do
       table.insert(pattern, job.config.dir .. "/*" .. ext)
     end
   end
@@ -177,7 +177,7 @@ local function wireUpJob(job, jobGroup)
 end
 
 local function setup_build_jobs(config, oldJobs)
-  local jobGroup = vim.api.nvim_create_augroup("build.job.autogroup", {clear = true})
+  local jobGroup = vim.api.nvim_create_augroup("background_build.job.autogroup", {clear = true})
 
   -- collect current buffers so they can be moved to new jobs by name
   local jobBuffersByName = {}
@@ -201,7 +201,7 @@ local function setup_build_jobs(config, oldJobs)
       config = jobConfig,
     }
     jobBuffersByName[jobConfig.name] = nil
-    wireUpJob(job, jobGroup)
+    wire_up_job_autocmd(job, jobGroup)
     table.insert(newJobs, job)
   end
 
@@ -224,7 +224,7 @@ if build_jobs == nil then
 end
 
 function api.edit_config()
-  editBuildConfig(build_config, function(newConfig)
+  edit_build_config(build_config, function(newConfig)
     build_config = newConfig
     build_jobs = setup_build_jobs(newConfig, build_jobs)
   end)
