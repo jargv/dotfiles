@@ -20,8 +20,8 @@ local function validateBuildConfig(config)
     -- ensure requried fields are available
     if type(job.dir) ~= "string" then
       error "job.dir is required"
-    elseif type(job.build) ~= "string" then
-      error "job.build is required"
+    elseif type(job.cmd) ~= "string" then
+      error "job.cmd is required"
     end
 
     -- trim the trailing '/' on dir
@@ -31,7 +31,7 @@ local function validateBuildConfig(config)
 
     -- derive a name if none is given
     if job.name == nil then
-      job.name = '['..job.dir..'] '..job.build
+      job.name = '['..job.dir..'] '..job.cmd
     end
   end
 end
@@ -85,6 +85,8 @@ local function stop_job(job)
       error ("ERROR: job %d was not cleared, exit handler was not run!"):format(job.id)
     end
   end
+  job.exit_code = nil
+  job.start_time = nil
 end
 
 local function run_job(job)
@@ -126,7 +128,7 @@ local function run_job(job)
 
   output("starting job "..job_descriptor)
 
-  local id = vim.fn.jobstart(job.config.build, {
+  local id = vim.fn.jobstart(job.config.cmd, {
     cwd = job.config.dir,
     on_exit = function(_, exit_code, _)
       job.exit_code = exit_code
@@ -134,6 +136,7 @@ local function run_job(job)
       local elapsed = vim.fn.localtime() - job.start_time
       output("job "..job_descriptor.." exited with code:".. job.exit_code)
       output("time: "..fmtelapsed(elapsed))
+      vim.cmd [[ doautocmd User BackgroundBuildJobStatusChanged ]]
     end,
     on_stdout = on_out,
     on_stderr = on_out,
@@ -144,7 +147,9 @@ local function run_job(job)
     error "couldn't start job, is command executable?"
   end
 
+  -- signal that the job has started
   job.id = id
+  vim.cmd [[ doautocmd User BackgroundBuildJobStatusChanged ]]
 end
 
 local function wire_up_job_autocmd(job, jobGroup)
@@ -176,14 +181,60 @@ local function wire_up_job_autocmd(job, jobGroup)
   })
 end
 
+local function process_job_pipeline(jobs)
+  -- collect some info about the jobs
+  local jobs_by_name = {}
+  local jobs_to_check = {}
+  for _, job in pairs(jobs) do
+    if job.config.after ~= nil then
+      table.insert(jobs_to_check, job)
+    end
+    jobs_by_name[job.config.name] = job
+  end
+
+  -- run the jobs that are ready
+  for _, job in ipairs(jobs_to_check) do
+    -- grap the names of the dep jobs
+    local after = job.config.after
+    if type(after) ~= "table" then
+      after = {after}
+    end
+
+    -- check status of deps
+    local deps_all_succeeded = true
+    local deps_still_running = true
+    for _, job_name in ipairs(after) do
+      local after_job = jobs_by_name[job_name]
+      if after_job.exit_code ~= 0 then
+        deps_all_succeeded = false
+      end
+
+      if after_job.id == nil then
+        deps_still_running = false
+      end
+    end
+
+    local already_running = job.id ~= nl
+    local already_finished = job.exit_code ~= nil
+
+    if deps_still_running or (already_running and not deps_all_succeeded) then
+      stop_job(job)
+    elseif not already_running and not already_finished and deps_all_succeeded then
+      run_job(job)
+    end
+  end
+end
+
 local function setup_build_jobs(config, oldJobs)
   local jobGroup = vim.api.nvim_create_augroup("background_build.job.autogroup", {clear = true})
 
-  -- collect current buffers so they can be moved to new jobs by name
+  -- collect current valid buffers so they can be moved to new jobs by name
   local jobBuffersByName = {}
   for _,job in ipairs(oldJobs) do
-    jobBuffersByName[job.config.name] = job.buf
-    job.buf = nil
+    if job.buf ~= nil and vim.api.nvim_buf_is_valid(job.buf) then
+      jobBuffersByName[job.config.name] = job.buf
+      job.buf = nil
+    end
   end
 
   -- stop any current jobs
@@ -209,6 +260,15 @@ local function setup_build_jobs(config, oldJobs)
   for _,buf in pairs(jobBuffersByName) do
     vim.api.nvim_buf_delete(buf, {force=true})
   end
+
+  vim.api.nvim_create_autocmd("User BackgroundBuildJobStatusChanged", {
+    group = jobGroup,
+    callback = function ()
+      vim.defer_fn(function()
+        process_job_pipeline(newJobs)
+      end, 0)
+    end
+  })
 
   return newJobs
 end
@@ -265,28 +325,32 @@ function api.view_output()
 end
 
 function api.run_all_not_running()
-  local count_started = 0
   for _,job in pairs(build_jobs) do
-    if job.id == nil then
-      count_started = count_started + 1
+    if job.id == nil and job.config.after == nil then
       run_job(job)
     end
   end
-  print(("started %d jobs"):format(count_started))
 end
 
 function api.stop_all()
-  local count_stopped = 0
   for _,job in pairs(build_jobs) do
-    if job.id ~= nil and job.exit_code == nil then
-      count_stopped = count_stopped + 1
-      stop_job(job)
-    end
+    stop_job(job)
   end
-  print(("stopped %d jobs"):format(count_stopped))
 end
 
 function api.add_from_current_file()
+  local ext = vim.fn.expand("%:e")
+  if ext == "json" then
+    local buf_lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    local script = table.concat(buf_lines)
+    local new_config = vim.fn.json_decode(script)
+    validateBuildConfig(new_config)
+    build_jobs = setup_build_jobs(new_config, build_jobs)
+    build_config = new_config
+    print "loaded as build config"
+    return
+  end
+
   local dir = vim.fn.expand("%:p:h")
   local dir_before_src = dir:match("(.*)/src.*")
 
