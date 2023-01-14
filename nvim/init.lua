@@ -770,12 +770,13 @@ if vim.g.neovide then
   local scale_delta = 0.05
   vim.g.neovide_hide_mouse_when_typing = true
   vim.g.neovide_confirm_quit = true
-  vim.g.neovide_remember_window_size = true
+  vim.g.neovide_remember_window_size = false
   vim.g.neovide_profiler = false
   vim.g.neovide_input_macos_alt_is_meta = true
   vim.g.neovide_cursor_vfx_mode = "railgun"
   vim.g.neovide_scroll_animation_length = 0.0
-  vim.opt.guifont="FiraCode Nerd Font:h12"
+  local font_size = isMac and 14 or 12
+  vim.opt.guifont="FiraCode Nerd Font:h"..font_size
   normal["<C-->"] = function()
     local scale_factor = vim.g.neovide_scale_factor or 1.0
     vim.g.neovide_scale_factor = scale_factor - scale_delta
