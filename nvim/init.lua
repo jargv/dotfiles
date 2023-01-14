@@ -690,6 +690,16 @@ vim.cmd[[
     return dots . join(fileParts[nSame : len(fileParts)], '/')
   endfunc
 
+  func! GetSymlinkTarget()
+    let file = expand("%:p")
+    let target = resolve(file)
+    if file !=# target
+      return "  --> ".fnamemodify(target, ":~")
+    else
+      return ""
+    endif
+  endfunc
+
   "used for build status
   highlight clear User1
   highlight clear User2
@@ -701,6 +711,7 @@ vim.cmd[[
   highlight clear User7
   exec "highlight User6 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Keyword'),'fg')
   exec "highlight User7 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Function'),'fg')
+  exec "highlight User8 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Boolean'),'fg')
 
   " not started
   exec "highlight User1 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('StatusLine'),'fg')
@@ -721,11 +732,13 @@ vim.cmd[[
 -- left side
 vim.opt.statusline = ""
 vim.opt.statusline:append "%y" -- filetype
-vim.opt.statusline:append "%6*" -- User5 highlight
+vim.opt.statusline:append "%6*" -- User6 highlight
 vim.opt.statusline:append " %<" -- truncate here, if needed
 vim.opt.statusline:append " %{fnamemodify(getcwd(),':~')}/" -- current dir
-vim.opt.statusline:append "%7*" -- User6 highlight
+vim.opt.statusline:append "%7*" -- User7 highlight
 vim.opt.statusline:append "%{GetRelativeFilename()}" -- file name relative to cwd
+vim.opt.statusline:append "%8*" -- User8 highlight
+vim.opt.statusline:append "%{GetSymlinkTarget()}" -- file name relative to cwd
 vim.opt.statusline:append "%#StatusLine#" -- regular statusline highlight
 vim.opt.statusline:append " %m" -- modified flag -- regular statusline highlight
 -- vim.opt.statusline:append ":%l:%c" -- line and column
