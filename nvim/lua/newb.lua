@@ -21,7 +21,7 @@ local function live_grep(root)
   telescope.live_grep{cwd = root}
 end
 
-local function find_buffers(root)
+local function find_buffers()
   telescope.buffers{}
 end
 
@@ -31,7 +31,7 @@ local new_buffer_options = {
   {key="d", cmd = ":Explore $dir",            desc="open a directory"},
   {key="f", cmd = find_files,                 desc="search for a file"},
   {key="b", cmd = find_files,                 desc="search buffers by name"},
-  {key="/", cmd = live_grep,                  desc="search buffers by name"},
+  {key="/", cmd = live_grep,                  desc="live grep"},
   {key="h", cmd = ":e term://$dir//tig",      desc="git history (tig)"},
   {key="t", cmd = ":exec ':e '.tempname()",   desc="edit temp file"},
   {key="u", cmd = updir,                      desc="cd .."},
