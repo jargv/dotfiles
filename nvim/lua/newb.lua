@@ -30,7 +30,7 @@ local new_buffer_options = {
   {key=".", cmd = ":e term://$dir///bin/zsh", desc="start a terminal"},
   {key="d", cmd = ":Explore $dir",            desc="open a directory"},
   {key="f", cmd = find_files,                 desc="search for a file"},
-  {key="b", cmd = find_files,                 desc="search buffers by name"},
+  {key="b", cmd = find_buffers,               desc="search buffers by name"},
   {key="/", cmd = live_grep,                  desc="live grep"},
   {key="h", cmd = ":e term://$dir//tig",      desc="git history (tig)"},
   {key="t", cmd = ":exec ':e '.tempname()",   desc="edit temp file"},
