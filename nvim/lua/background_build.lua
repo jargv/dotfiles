@@ -203,6 +203,7 @@ local function process_job_pipeline(jobs)
     -- check status of deps
     local deps_all_succeeded = true
     local deps_still_running = true
+    local deps_not_started = true
     for _, job_name in ipairs(after) do
       local after_job = jobs_by_name[job_name]
       if after_job.exit_code ~= 0 then
@@ -212,12 +213,16 @@ local function process_job_pipeline(jobs)
       if after_job.id == nil then
         deps_still_running = false
       end
+
+      if after_job.id ~= nil or after_job.exit_code ~= nil then
+        deps_not_started = false
+      end
     end
 
     local already_running = job.id ~= nl
     local already_finished = job.exit_code ~= nil
 
-    if deps_still_running or (already_running and not deps_all_succeeded) then
+    if deps_not_started or deps_still_running or (already_running and not deps_all_succeeded) then
       stop_job(job)
     elseif not already_running and not already_finished and deps_all_succeeded then
       run_job(job)
@@ -293,14 +298,14 @@ end
 function api.load_errors()
   local jobToShow = nil
   for _,job in pairs(build_jobs) do
-    if job.buf then
+    if job.buf and job.exit_code ~= nil and job.exit_code ~= 0 then
       jobToShow = job
       break
     end
   end
 
   if jobToShow == nil then
-    print("no jobs to show")
+    vim.cmd [[ cclose ]]
     return
   end
 
