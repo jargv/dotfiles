@@ -1282,11 +1282,21 @@ end
 -- error formats {{{1
 vim.opt.errorformat = {}
 
--- typescript
-vim.opt.errorformat:append "%f(%l%.%c): error TS%n:%m"
+function efmt(str)
+  vim.opt.errorformat:append(str)
+end
 
--- c++ (clang and gcc)
-vim.opt.errorformat:append "%f:%l:%c: error: %m"
+-- typescript
+efmt "%f(%l%.%c): error TS%n:%m"
+
+-- c++
+-- clang and gcc
+efmt "%f:%l:%c: error: %m"
+-- catch2 errors
+efmt "%E%f:%l: FAILED:"
+efmt "%C %#%m"
+efmt "%Z#"
+
 
 -- golang
-vim.opt.errorformat:append "%f:%l:%c: %#%m"
+efmt "%f:%l:%c: %#%m"
