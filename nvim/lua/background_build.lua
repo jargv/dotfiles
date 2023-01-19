@@ -1,10 +1,3 @@
---[[
-TODO:
-- share the output buffer between jobs that form a chain of "after"
-consider:
-- cancelled status instead of "failed"
-]]
-
 local fmtjson = require("fmtjson")
 local fmtelapsed = require("fmtelapsed")
 
@@ -200,17 +193,22 @@ local function process_job_pipeline(jobs)
   -- run the jobs that are ready
   for _, job in ipairs(jobs_to_check) do
     -- grap the names of the dep jobs
-    local after = job.config.after
-    if type(after) ~= "table" then
-      after = {after}
+    local dep_names = job.config.after
+    if type(dep_names) ~= "table" then
+      dep_names = {dep_names}
+    end
+
+    -- get the deps from their names
+    local deps = {}
+    for _, dep_name in ipairs(dep_names) do
+      table.insert(deps, jobs_by_name[dep_name])
     end
 
     -- check status of deps
     local deps_all_succeeded = true
     local deps_still_running = true
     local deps_not_started = true
-    for _, job_name in ipairs(after) do
-      local after_job = jobs_by_name[job_name]
+    for _, after_job in ipairs(deps) do
       if after_job.exit_code ~= 0 then
         deps_all_succeeded = false
       end
@@ -230,6 +228,10 @@ local function process_job_pipeline(jobs)
     if deps_not_started or deps_still_running or (already_running and not deps_all_succeeded) then
       stop_job(job)
     elseif not already_running and not already_finished and deps_all_succeeded then
+      -- share the output buffer from a unique dep
+      if #deps == 1 then
+        job.buf = deps[1].buf
+      end
       run_job(job)
     end
   end
