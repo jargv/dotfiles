@@ -85,6 +85,3 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end
 })
 .
-
-"error format {{{1
-setlocal errorformat="%f:%l:%c:\ %m"

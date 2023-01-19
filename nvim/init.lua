@@ -104,11 +104,11 @@ vim.g.go_template_autocreate = 0
 -- javascript/typescript {{{3
 -- Plug 'ternjs/tern_for_vim'
 -- Plug 'jxnblk/vim-mdx-js'
-Plug 'pangloss/vim-javascript'
+-- Plug 'pangloss/vim-javascript'
 -- Plug 'mxw/vim-jsx'
 -- Plug 'jelera/vim-javascript-syntax'
-vim.g.jsx_ext_required = 0
-Plug 'leafgarland/typescript-vim'
+-- vim.g.jsx_ext_required = 0
+-- Plug 'leafgarland/typescript-vim'
 -- Plug 'peitalin/vim-jsx-typescript'
 -- Plug 'MaxMellon/vim-jsx-pretty'
 -- html {{{3
@@ -127,8 +127,6 @@ Plug 'cespare/vim-toml'
 -- docker {{{3
 -- Plug 'ekalinin/Dockerfile.vim'
 
--- glsl {{{3
-Plug 'vim-scripts/glsl.vim'
 
 -- lua {{{3
 -- Plug 'SpaceVim/vim-swig'
@@ -1280,3 +1278,15 @@ if vim.api.nvim_buf_get_name(0) == "" then
     edit ~/projects
   ]]
 end
+
+-- error formats {{{1
+vim.opt.errorformat = {}
+
+-- typescript
+vim.opt.errorformat:append "%f(%l%.%c): error TS%n:%m"
+
+-- c++ (clang and gcc)
+vim.opt.errorformat:append "%f:%l:%c: error: %m"
+
+-- golang
+vim.opt.errorformat:append "%f:%l:%c: %#%m"
