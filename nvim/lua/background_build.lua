@@ -309,12 +309,16 @@ function api.load_errors()
     return
   end
 
+  local starting_dir = vim.fn.getcwd()
   vim.cmd(([[
+    cd %s
     cclose
     cbuffer %s
     cwindow
     exec "normal \<cr>"
-  ]]):format(jobToShow.buf))
+    cd %s
+  ]]):format(jobToShow.config.dir, jobToShow.buf, starting_dir))
+
 end
 
 function api.view_output()
