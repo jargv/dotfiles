@@ -130,7 +130,7 @@ function gitato.commit(repo_root, post_commit)
 end
 
 
-function gitato.open_viewer()
+function gitato.open_viewer(diff_branch)
   -- find the repo root of the current file
   local git_repo_root = gitato.get_repo_root()
   if git_repo_root == nil then
@@ -161,12 +161,20 @@ function gitato.open_viewer()
   end
 
   local function get_status()
+    if diff_branch ~= nil then
+      return git_cmd(("diff --name-status %s"):format(diff_branch))
+    end
+
     return git_cmd("status -sb")
   end
 
   local function draw_status(status)
     local line_for_help = main_buf_height - #viewer_help
     local lines = {}
+    if diff_branch ~= nil then
+      table.insert(lines, ("## diff vs %s"):format(diff_branch))
+    end
+
     for i = 1,main_buf_height+1 do
       if i <= #status then
         table.insert(lines, status[i])
@@ -242,7 +250,9 @@ function gitato.open_viewer()
       vim.cmd(""..diff_window_width.."vsplit "..git_repo_root..file)
       gitato.diff_off()
       if status ~= "??" then
-        gitato.toggle_diff_against_git_ref("HEAD")
+        gitato.toggle_diff_against_git_ref(
+          diff_branch or "HEAD"
+        )
       end
       vim.cmd("normal ggM")
       current_file_window = vim.fn.win_getid(vim.fn.winnr())
@@ -252,7 +262,9 @@ function gitato.open_viewer()
       vim.cmd("edit "..git_repo_root..file)
       gitato.diff_off()
       if status ~= "??" then
-        gitato.toggle_diff_against_git_ref("HEAD")
+        gitato.toggle_diff_against_git_ref(
+          diff_branch or "HEAD"
+        )
       end
     end
     vim.cmd("normal ggM")

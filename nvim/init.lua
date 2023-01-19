@@ -664,15 +664,9 @@ normal["<leader>."] = newb.create()
 
 
 -- git setup {{{1
--- leader.gd = ":tabedit term://git difftool -w -- %<cr>"
--- leader.gD = ":tabedit term://git difftool -w<cr>"
 local gitato = require "gitato"
--- leader.gm = ":tabedit term://git difftool -w origin/$(git config j.publish) -- %<cr>"
--- leader.gM = ":tabedit term://git difftool -w origin/$(git config j.publish) <cr>"
--- leader.gi = ":tabedit term://git rebase -i<cr>"
--- leader.gc = ":tabedit term://git done<cr>"
--- leader.gg = ":exec ':tabedit term://git '.input('git> ')<cr>"
 leader.gg = function() gitato.open_viewer() end
+leader.GG = function() gitato.open_viewer("origin/main") end
 
 leader.d = function()
   gitato.toggle_diff_against_git_ref("HEAD")
