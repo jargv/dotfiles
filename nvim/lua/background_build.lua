@@ -1,8 +1,7 @@
 --[[
 TODO:
-- run command, but only if build succeeds (consider making this a separate key/feature)
+- share the output buffer between jobs that form a chain of "after"
 consider:
-- more granular control of job stopping and starting
 - cancelled status instead of "failed"
 ]]
 
