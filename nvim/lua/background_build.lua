@@ -222,7 +222,7 @@ local function process_job_pipeline(jobs)
       end
     end
 
-    local already_running = job.id ~= nl
+    local already_running = job.id ~= nil
     local already_finished = job.exit_code ~= nil
 
     if deps_not_started or deps_still_running or (already_running and not deps_all_succeeded) then
