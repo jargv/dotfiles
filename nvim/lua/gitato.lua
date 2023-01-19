@@ -4,6 +4,7 @@ TODOS:
     (but could it ever get longer? wouldn't it always be smaller?)
   - clean up the viewer by using win_execute function
   - Fix bug when status is longer than the window (rare)
+  - Completion help when changing diff_branch
 consider:
   - set the filetype of the diff buffer to match the source buffer
   - ability to push from w/in gitato
@@ -20,6 +21,7 @@ local viewer_help = {
   "## a - Add the file",
   "## R - Restore the file (checkout)",
   "## d - delete the file",
+  "## b - change the diff branch",
   "## c - commit",
   "## q - quit"
 }
@@ -128,7 +130,6 @@ function gitato.commit(repo_root, post_commit)
     end
   })
 end
-
 
 function gitato.open_viewer(diff_branch)
   -- find the repo root of the current file
@@ -388,6 +389,17 @@ function gitato.open_viewer(diff_branch)
       return
     end
 
+    get_and_draw_status()
+  end)
+  keymap('b', '', function()
+    diff_branch = vim.fn.input({
+      prompt = "git ref:",
+    })
+    if diff_branch == "" then
+      diff_branch = nil
+    end
+
+    close_diff_window()
     get_and_draw_status()
   end)
 
