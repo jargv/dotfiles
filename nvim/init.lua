@@ -151,6 +151,10 @@ Plug('sonph/onehalf', { rtp = 'vim' })
 -- }}}
 
 Plug 'nvim-lua/plenary.nvim'
+Plug 'jose-elias-alvarez/null-ls.nvim'
+table.insert(plugin_setup_funcs, function()
+  require("null-ls").setup()
+end)
 
 Plug 'freitass/todo.txt-vim'
 Plug 'junegunn/limelight.vim'
@@ -165,6 +169,7 @@ Plug 'tpope/vim-sleuth'
 Plug 'will133/vim-dirdiff'
 
 Plug 'neovim/nvim-lspconfig'
+Plug ''
 Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
 
 Plug 'hrsh7th/cmp-nvim-lsp'
@@ -173,6 +178,30 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/nvim-cmp'
 
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
+
+-- Plug 'MunifTanjim/eslint.nvim' {{{2
+Plug 'MunifTanjim/eslint.nvim'
+table.insert(plugin_setup_funcs, function()
+  require("eslint").setup({
+    bin = 'eslint_d', -- or `eslint_d`
+    code_actions = {
+      enable = true,
+      apply_on_save = {
+        enable = true,
+        types = { "directive", "problem", "suggestion", "layout" },
+      },
+      disable_rule_comment = {
+        enable = true,
+        location = "separate_line", -- or `same_line`
+      },
+    },
+    diagnostics = {
+      enable = true,
+      report_unused_disable_directives = false,
+      run_on = "type", -- or `save`
+    },
+  })
+end)
 
 -- Plug 'nvim-telescope/telescope.nvim' {{{2
 Plug('nvim-telescope/telescope.nvim', { tag = '0.1.0' })
@@ -653,7 +682,6 @@ end
 
 leader.D = function()
   print("TODO: make this reference the publish branch!")
-  do return end
   gitato.toggle_diff_against_git_ref("main")
 end
 
@@ -781,7 +809,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 -- neovide config {{{1
 if vim.g.neovide then
   local scale_delta = 0.05
-  vim.g.neovide_hide_mouse_when_typing = true
+  vim.g.neovide_hide_mouse_when_typing = isLinux
   vim.g.neovide_confirm_quit = true
   vim.g.neovide_remember_window_size = false
   vim.g.neovide_profiler = false
