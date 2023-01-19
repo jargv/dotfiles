@@ -9,6 +9,12 @@ consider:
 local fmtjson = require("fmtjson")
 local fmtelapsed = require("fmtelapsed")
 
+local starting_points = {
+  cpp = {ext = {"cpp", "hpp"}, cmd = "cmake --build build"},
+  hpp = {ext = {"cpp", "hpp"}, cmd = "cmake --build build"},
+  ts = {cmd = "yarn run build"},
+}
+
 local editgroup = vim.api.nvim_create_augroup("build.edit.autogroup", {clear = true})
 
 local function validateBuildConfig(config)
@@ -363,9 +369,13 @@ function api.add_from_current_file()
   local dir = vim.fn.expand("%:p:h")
   local dir_before_src = dir:match("(.*)/src.*")
 
+  local name = #build_jobs == 0 and "build" or nil
+
   table.insert(build_config.jobs, {
     dir = dir_before_src or dir,
-    ext = vim.fn.expand("%:e")
+    ext = starting_points[ext].extensinos or ext,
+    cmd = starting_points[ext].cmd,
+    name = name
   })
   api.edit_config()
 end
