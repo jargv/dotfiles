@@ -679,8 +679,7 @@ leader.d = function()
 end
 
 leader.D = function()
-  print("TODO: make this reference the publish branch!")
-  gitato.toggle_diff_against_git_ref("main")
+  gitato.toggle_diff_against_git_ref("origin/main")
 end
 
 -- background build setup {{{1
