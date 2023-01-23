@@ -207,16 +207,25 @@ Plug('nvim-telescope/telescope-fzf-native.nvim', {['do'] = 'make'})
 table.insert(plugin_setup_funcs, function()
   local telescope = require "telescope"
   local action = require "telescope.actions"
-  telescope.load_extension('fzf')
-  telescope.setup{
+  telescope.setup {
+    extensions = {
+      fzf = {
+        fuzzy = true,                    -- false will only do exact matching
+        override_generic_sorter = true,  -- override the generic sorter
+        override_file_sorter = true,     -- override the file sorter
+        case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+        -- the default case_mode is "smart_case"
+      },
+    },
     defaults = {
       mappings = {
         i = {
           ["<M-a>"] = action.smart_send_to_qflist + action.open_qflist
-        }
-      }
+        },
+      },
     },
   }
+  telescope.load_extension('fzf')
 end)
 
 -- Plug 'williamboman/mason.nvim' {{{2
