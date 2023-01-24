@@ -1,3 +1,5 @@
+[include]
+  path = ~/.gitconfig.local
 [user]
   name = Jonathan Geddes
 	useconfigonly = true
@@ -44,7 +46,6 @@
   browser = google-chrome
 [alias]
   st = status -sb
-  dt = difftool
   hist = !tig --all
   hist-one = !tig
   fuckit = reset --hard
