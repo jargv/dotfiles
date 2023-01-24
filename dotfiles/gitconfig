@@ -2,16 +2,16 @@
   path = ~/.gitconfig.local
 [user]
   name = Jonathan Geddes
-	useconfigonly = true
+  useconfigonly = true
 [credential]
   helper = cache --timeout=36000
 [core]
   editor = nvim
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
-	autocrlf = input
-	longpaths = true
-	symlinks = true
+  autocrlf = input
+  longpaths = true
+  symlinks = true
 [merge]
   tool = nvimdiff
   state = true
@@ -51,7 +51,6 @@
   fuckit = reset --hard
   pushupforce = ! git push --force-with-lease origin $(git rev-parse --abbrev-ref @)
   pushup = ! git push origin $(git rev-parse --abbrev-ref @)
-  in = ! snapaccess credentials refresh
 [tig]
   main-view-author = abbreviated
   main-view-date = relative-compact
@@ -68,13 +67,11 @@
   status = d !git difftool %(file)
   refs = % !git branch %(prompt "branch name") origin/master
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
 [init]
-	defaultBranch = main
+  defaultBranch = main
 [pull]
-	ff = only
-[url "git@github.snooguts.net:"]
-	insteadOf = https://github.snooguts.net/
+  ff = only
