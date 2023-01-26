@@ -14,6 +14,7 @@ local function updir(dir, chdir)
   chdir(newdir)
 end
 
+
 local function find_files(root)
   telescope.find_files{cwd = root}
 end

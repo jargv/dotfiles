@@ -394,7 +394,7 @@ vim.opt.ttyfast = true
 vim.g.everforest_background = 'soft'
 vim.g.everforest_enable_italic = 1
 vim.g.everforest_cursor = 'orange'
-vim.g.everforest_sign_column_background = 'grey'
+vim.g.everforest_sign_column_background = 'none'
 vim.g.everforest_dim_inactive_windows = 0
 vim.g.everforest_ui_contrast = 'low'
 vim.g.everforest_show_eob = 1
@@ -1137,7 +1137,7 @@ vim.cmd [[
 -- treesitter {{{1
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
-  ensure_installed = { "c", "cpp", "lua", "go", "typescript" },
+  ensure_installed = { "c", "lua", "go", "typescript" },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
@@ -1153,7 +1153,7 @@ require'nvim-treesitter.configs'.setup {
     -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
     -- the name of the parser)
     -- list of language that will be disabled
-    disable = {},
+    disable = {"cpp"},
 
     -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
     -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
@@ -1277,13 +1277,6 @@ cmp.setup({
     { name = 'path' },
   })
 })
--- start in projects dir if no file was specified
-if vim.api.nvim_buf_get_name(0) == "" then
-  vim.cmd [[
-    cd ~/projects
-    edit ~/projects
-  ]]
-end
 
 -- error formats {{{1
 vim.opt.errorformat = {}
@@ -1306,3 +1299,14 @@ efmt "%Z#"
 
 -- golang
 efmt "%f:%l:%c: %#%m"
+
+
+-- starting buffer {{{1
+if vim.api.nvim_buf_get_name(0) == "" then
+  vim.cmd [[
+    cd ~/projects
+    edit ~/projects
+  ]]
+  newb.create()()
+end
+
