@@ -4,6 +4,7 @@
 ]]
 local current_dir = require "current_dir"
 local telescope = require "telescope.builtin"
+local gitato = require "gitato"
 
 local newb = {}
 
@@ -17,6 +18,10 @@ local function find_files(root)
   telescope.find_files{cwd = root}
 end
 
+local function find_git_files(root)
+  telescope.git_files{cwd = root}
+end
+
 local function live_grep(root)
   telescope.live_grep{cwd = root}
 end
@@ -25,17 +30,27 @@ local function find_buffers()
   telescope.buffers{}
 end
 
+local function proj_root(dir, chdir)
+  local git_root = gitato.get_repo_root(dir)
+  if git_root == nil then
+    print "Is this a git repo?"
+    return
+  end
+  chdir(git_root)
+end
 
 local new_buffer_options = {
-  {key=".", cmd = ":e term://$dir///bin/zsh", desc="start a terminal"},
-  {key="d", cmd = ":Explore $dir",            desc="open a directory"},
-  {key="f", cmd = find_files,                 desc="search for a file"},
-  {key="b", cmd = find_buffers,               desc="search buffers by name"},
-  {key="/", cmd = live_grep,                  desc="live grep"},
-  {key="h", cmd = ":e term://$dir//tig",      desc="git history (tig)"},
-  {key="t", cmd = ":exec ':e '.tempname()",   desc="edit temp file"},
-  {key="u", cmd = updir,                      desc="cd .."},
-  {key="q", cmd = ":q!",                      desc="quit"},
+  {key=".", cmd=":e term://$dir///bin/zsh", desc="terminal"},
+  {key="d", cmd=":Explore $dir",            desc="directory"},
+  {key="f", cmd=find_files,                 desc="search for any file"},
+  {key="g", cmd=find_git_files,             desc="search for a file in git"},
+  {key="b", cmd=find_buffers,               desc="search buffers by name"},
+  {key="/", cmd=live_grep,                  desc="live grep"},
+  {key="h", cmd=":e term://$dir//tig",      desc="git history (tig)"},
+  {key="t", cmd=":exec ':e '.tempname()",   desc="edit temp file"},
+  {key="r", cmd=proj_root,                  desc="move to git root"},
+  {key="u", cmd=updir,                      desc="cd .."},
+  {key="q", cmd=":q!",                      desc="quit"},
 }
 
 function newb.create(split_command)

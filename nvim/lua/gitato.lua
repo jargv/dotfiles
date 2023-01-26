@@ -39,8 +39,9 @@ function gitato.diff_off()
   current_diff_buffer = nil
 end
 
-function gitato.get_repo_root()
-  local dir = vim.fn.fnamemodify(vim.fn.resolve(vim.fn.expand("%:p")), ":h")
+function gitato.get_repo_root(dir)
+  dir = dir or vim.fn.expand("%:p")
+  local dir = vim.fn.fnamemodify(vim.fn.resolve(dir), ":h")
   print(dir)
   local result = vim.fn.systemlist("cd "..dir.." && git rev-parse --show-toplevel")
   local error = vim.api.nvim_get_vvar("shell_error")

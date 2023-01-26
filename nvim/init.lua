@@ -1,12 +1,10 @@
 --[[
 
 stuff to look into:
- - null-ls
  - treesitter text objects
 
 TODO:
  - fix up the smart enter key
-
 ]]
 
 -- setup {{{1
@@ -149,10 +147,6 @@ Plug('sonph/onehalf', { rtp = 'vim' })
 -- }}}
 
 Plug 'nvim-lua/plenary.nvim'
-Plug 'jose-elias-alvarez/null-ls.nvim'
-table.insert(plugin_setup_funcs, function()
-  require("null-ls").setup()
-end)
 
 Plug 'freitass/todo.txt-vim'
 Plug 'junegunn/limelight.vim'
@@ -165,18 +159,19 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-sleuth'
 Plug 'will133/vim-dirdiff'
-
 Plug 'neovim/nvim-lspconfig'
-Plug ''
 Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
-
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/nvim-cmp'
-
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
 
+-- Plug 'jose-elias-alvarez/null-ls.nvim' {{{2
+Plug 'jose-elias-alvarez/null-ls.nvim'
+table.insert(plugin_setup_funcs, function()
+  require("null-ls").setup()
+end)
 -- Plug 'MunifTanjim/eslint.nvim' {{{2
 Plug 'MunifTanjim/eslint.nvim'
 table.insert(plugin_setup_funcs, function()
@@ -220,7 +215,8 @@ table.insert(plugin_setup_funcs, function()
     defaults = {
       mappings = {
         i = {
-          ["<M-a>"] = action.smart_send_to_qflist + action.open_qflist
+          ["<M-a>"] = action.smart_send_to_qflist + action.open_qflist,
+          ["<C-f>"] = action.to_fuzzy_refine,
         },
       },
     },
@@ -395,12 +391,20 @@ end
 vim.opt.termguicolors = true
 vim.opt.ttyfast = true
 
-vim.g.everforest_background = 'medium'
+vim.g.everforest_background = 'soft'
 vim.g.everforest_enable_italic = 1
+vim.g.everforest_cursor = 'orange'
+vim.g.everforest_sign_column_background = 'grey'
+vim.g.everforest_dim_inactive_windows = 0
 vim.g.everforest_ui_contrast = 'low'
 vim.g.everforest_show_eob = 1
 vim.g.everforest_diagnostic_text_highlight = 1
-vim.cmd [[ colorscheme everforest | set bg=dark ]]
+vim.g.everforest_diagnostic_line_highlight = 0
+vim.g.everforest_diagnostic_virtual_text = 'grey' -- 'colored'
+vim.g.everforest_disable_terminal_colors = 0
+vim.cmd.colorscheme("everforest")
+vim.cmd [[ highlight LineNr guibg=#000000 guifg=grey ]]
+vim.o.background = "dark"
 
 --:NoMatchParen
 vim.g.loaded_matchparen = 1
@@ -1133,7 +1137,7 @@ vim.cmd [[
 -- treesitter {{{1
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
-  ensure_installed = { "c", "lua", "go", "typescript" },
+  ensure_installed = { "c", "cpp", "lua", "go", "typescript" },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
