@@ -91,7 +91,7 @@ local function run_job(job)
   stop_job(job)
 
   -- create or clear the buffer
-  if job.buf == nil then
+  if job.buf == nil or not vim.api.nvim_buf_is_valid(job.buf) then
     job.buf = vim.api.nvim_create_buf(false, true)
   else
     vim.api.nvim_buf_set_lines(job.buf, 0, -1, false, {})
@@ -368,14 +368,13 @@ function api.add_from_current_file()
   end
 
   local dir = vim.fn.expand("%:p:h")
-  local dir_before_src = dir:match("(.*)/src.*")
 
   local name = #build_jobs == 0 and "build" or nil
 
   table.insert(build_config.jobs, {
-    dir = dir_before_src or dir,
-    ext = starting_points[ext].extensinos or ext,
-    cmd = starting_points[ext].cmd,
+    dir = dir,
+    ext = (starting_points[ext] or {}).extensinos or ext,
+    cmd = (starting_points[ext] or {}).cmd,
     name = name
   })
   api.edit_config()
