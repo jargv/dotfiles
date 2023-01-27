@@ -1048,7 +1048,7 @@ vim.cmd [[
     let g:MySmartQuitDefined = 1
     nnoremap <M-x> :call MySmartQuit()<cr>
     tnoremap <M-x> :call MySmartQuit()<cr>
-    nnoremap <leader><leader> :wall<cr>
+    nnoremap <leader><leader> :wall<cr>:w<cr>
 
   "next and previous location/error/vimgrep {{{2
     nnoremap <expr> <silent> <leader>n ((len(getqflist()) ? ":cn" : ":lnext")."<CR>")
