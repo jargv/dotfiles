@@ -1,3 +1,9 @@
+-- TODO:
+--  * output the job command in the output buffer
+--  * multi-line commands
+--  * cmd_dir that can be different from dir
+--  * bug when multiple afters + ext used for step
+
 local fmtjson = require("fmtjson")
 local fmtelapsed = require("fmtelapsed")
 
