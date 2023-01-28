@@ -406,6 +406,7 @@ function gitato.open_viewer(diff_branch)
     end
   end)
   keymap('c', '', function()
+    close_view_window()
     gitato.commit(git_repo_root, function()
       close_view_window()
       get_and_draw_status()
@@ -471,15 +472,16 @@ function gitato.open_viewer(diff_branch)
 
     get_and_draw_status()
   end)
-  keymap('h', '', function()
-    vim.cmd("topleft vsplit term://".. git_repo_root .."/tig")
-  end)
 
   vim.api.nvim_create_autocmd("CursorMoved", {
     buffer = main_buf,
     group = group,
     callback = function()
       vim.defer_fn(function()
+        if vim.fn.bufnr() ~= main_buf then
+          -- this was a move *out* of the man buf!
+          return
+        end
         on_cursor_moved()
       end, 0)
     end
