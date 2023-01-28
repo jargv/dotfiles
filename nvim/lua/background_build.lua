@@ -1,5 +1,4 @@
 -- TODO:
---  * output the job command in the output buffer
 --  * multi-line commands
 --  * cmd_dir that can be different from dir
 --  * bug when multiple afters + ext used for step
@@ -130,7 +129,9 @@ local function run_job(job)
 
   local job_descriptor = "'"..job.config.name.."'"
 
-  output("starting job "..job_descriptor)
+  output(">>> starting job "..job_descriptor)
+  output(">>> " .. job.config.cmd)
+  output("")
 
   local id = vim.fn.jobstart(job.config.cmd, {
     cwd = job.config.dir,
@@ -138,8 +139,8 @@ local function run_job(job)
       job.exit_code = exit_code
       job.id = nil
       local elapsed = vim.fn.localtime() - job.start_time
-      output("job "..job_descriptor.." exited with code:".. job.exit_code)
-      output("time: "..fmtelapsed(elapsed))
+      output(">>> job "..job_descriptor.." exited with code:".. job.exit_code)
+      output(">>> time: "..fmtelapsed(elapsed))
       vim.cmd [[ doautocmd User BackgroundBuildJobStatusChanged ]]
     end,
     on_stdout = on_out,
