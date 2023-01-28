@@ -586,6 +586,14 @@ leader.Q = function()
   print("nope... bad habit")
 end
 
+leader.u = function()
+  print("nope... use menus")
+end
+
+leader.U = function()
+  print("nope... use menus")
+end
+
 --create the autogroup that we'll use for everything {{{1
 local augroup = "j.config.autogroup"
 vim.api.nvim_create_augroup(augroup, {
@@ -1000,9 +1008,6 @@ vim.cmd [[
     nnoremap <leader>gb :Gitsigns toggle_current_line_blame<cr>
     nnoremap <leader>gB :lua package.loaded.gitsigns.blame_line({full=false,ignore_whitespace=true})<cr>
 
-  "working directory mappings {{{2
-    nnoremap <leader>U :cd %:p:h<CR>:echo<CR>
-    nnoremap <leader>u :cd ..<CR>:echo<CR>
 
 
   "make use of Q for quick system-clipboard copying{{{2
