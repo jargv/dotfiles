@@ -71,7 +71,9 @@ local function edit_build_config(config, callback)
 
       validateBuildConfig(val)
       vim.defer_fn(function()
-        vim.cmd("bwipe! "..buf)
+        if vim.api.nvim_buf_is_valid(buf) then
+          vim.cmd("bwipe! "..buf)
+        end
         callback(val)
       end, 0 )
     end
@@ -213,26 +215,27 @@ local function process_job_pipeline(jobs)
 
     -- check status of deps
     local deps_all_succeeded = true
-    local deps_still_running = true
-    local deps_not_started = true
+    local some_deps_still_running = false
+    local some_deps_not_started = false
+
     for _, after_job in ipairs(deps) do
       if after_job.exit_code ~= 0 then
         deps_all_succeeded = false
       end
 
-      if after_job.id == nil then
-        deps_still_running = false
+      if after_job.id ~= nil then
+        some_deps_still_running = true
       end
 
-      if after_job.id ~= nil or after_job.exit_code ~= nil then
-        deps_not_started = false
+      if after_job.id == nil and after_job.exit_code == nil then
+        some_deps_not_started = true
       end
     end
 
     local already_running = job.id ~= nil
     local already_finished = job.exit_code ~= nil
 
-    if deps_not_started or deps_still_running or (already_running and not deps_all_succeeded) then
+    if some_deps_not_started or some_deps_still_running or (already_running and not deps_all_succeeded) then
       stop_job(job)
     elseif not already_running and not already_finished and deps_all_succeeded then
       -- share the output buffer from a unique dep
