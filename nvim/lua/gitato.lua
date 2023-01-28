@@ -150,7 +150,7 @@ function gitato.open_viewer(diff_branch)
   local main_buf = vim.api.nvim_create_buf(false, true)
   local main_buf_width = 0
   local main_buf_height = 0
-  local current_file_window = nil
+  local current_view_window = nil
   local viewing_log = false
 
   local function cmd(cmd)
@@ -223,13 +223,13 @@ function gitato.open_viewer(diff_branch)
     return get_status_and_file_from_line('.')
   end
 
-  local function close_diff_window()
+  local function close_view_window()
     gitato.diff_off()
-    if current_file_window ~= nil and vim.api.nvim_win_is_valid(current_file_window) then
-      vim.api.nvim_win_close(current_file_window, false)
+    if current_view_window ~= nil and vim.api.nvim_win_is_valid(current_view_window) then
+      vim.api.nvim_win_close(current_view_window, false)
     end
     viewing_log = false
-    current_file_window = nil
+    current_view_window = nil
   end
 
   local function view_diff_for_current_file()
@@ -237,14 +237,14 @@ function gitato.open_viewer(diff_branch)
     local status, file = get_status_and_file_from_current_line()
 
     if file == nil or file == "" then
-      close_diff_window()
+      close_view_window()
       return
     end
 
     -- Don't reload the file that is already loaded for viewing
-    if current_file_window ~= nil and vim.api.nvim_win_is_valid(current_file_window) then
+    if current_view_window ~= nil and vim.api.nvim_win_is_valid(current_view_window) then
       local absolute_file = git_repo_root .. file
-      local current_file_buffer = vim.api.nvim_win_get_buf(current_file_window)
+      local current_file_buffer = vim.api.nvim_win_get_buf(current_view_window)
       local current_file = vim.fn.resolve(vim.api.nvim_buf_get_name(current_file_buffer))
       -- print("current_file: ", current_file, "(", file, ")", "[", absolute_file, "]")
       if absolute_file == current_file then
@@ -253,10 +253,10 @@ function gitato.open_viewer(diff_branch)
     end
 
     -- close the current diff window before opening another
-    close_diff_window()
+    close_view_window()
 
-    if current_file_window == nil
-    or not vim.api.nvim_win_is_valid(current_file_window)
+    if current_view_window == nil
+    or not vim.api.nvim_win_is_valid(current_view_window)
     then
       -- create the window
       local total_width = vim.api.nvim_win_get_width(0)
@@ -269,7 +269,7 @@ function gitato.open_viewer(diff_branch)
         )
       end
       vim.cmd("normal ggM")
-      current_file_window = vim.fn.win_getid(vim.fn.winnr())
+      current_view_window = vim.fn.win_getid(vim.fn.winnr())
     else
       error("unexpected path taken...")
     end
@@ -283,11 +283,11 @@ function gitato.open_viewer(diff_branch)
       return
     end
 
-    close_diff_window()
+    close_view_window()
     local total_width = vim.api.nvim_win_get_width(0)
     local diff_window_width = total_width - main_buf_width
     vim.cmd(""..diff_window_width.."vsplit term://"..git_repo_root.."/tig")
-    current_file_window = vim.fn.win_getid(vim.fn.winnr())
+    current_view_window = vim.fn.win_getid(vim.fn.winnr())
     vim.cmd("normal h")
     vim.cmd.stopinsert()
     viewing_log = true
@@ -407,7 +407,7 @@ function gitato.open_viewer(diff_branch)
   end)
   keymap('c', '', function()
     gitato.commit(git_repo_root, function()
-      close_diff_window()
+      close_view_window()
       get_and_draw_status()
     end)
   end)
@@ -438,7 +438,7 @@ function gitato.open_viewer(diff_branch)
       diff_branch = nil
     end
 
-    close_diff_window()
+    close_view_window()
     get_and_draw_status()
   end)
   keymap('A', '', function()
