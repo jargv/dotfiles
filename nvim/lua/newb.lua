@@ -48,6 +48,18 @@ local function return_to_start_dir(_, chdir, start_dir)
   chdir(start_dir)
 end
 
+local function cd_prompt(dir, chdir)
+  local new_dir = vim.fn.input({
+    prompt = "cd>",
+    default = dir,
+    cancelreturn = nil,
+    completion = "dir",
+  })
+  if new_dir ~= nil then
+    chdir(new_dir)
+  end
+end
+
 local new_buffer_options = {
   {key=".", cmd=":e term://$dir///bin/zsh", desc="terminal"},
   {key="d", cmd=":Explore $dir",            desc="directory"},
@@ -59,6 +71,7 @@ local new_buffer_options = {
   {key="t", cmd=":exec ':e '.tempname()",   desc="edit temp file"},
   {key="r", cmd=proj_root,                  desc="move to git root"},
   {key="u", cmd=updir,                      desc="cd .."},
+  {key="c", cmd=cd_prompt,                  desc="cd <dir>"},
   {key="U", cmd=return_to_start_dir,        desc="cd starting directory"},
   {key=",", cmd=sync_dir,                   desc="sync dir"},
   {key="q", cmd=":q!",                      desc="quit"},
