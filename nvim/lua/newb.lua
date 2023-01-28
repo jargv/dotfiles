@@ -44,6 +44,10 @@ local function sync_dir(dir, chdir)
   chdir(dir)
 end
 
+local function return_to_start_dir(_, chdir, start_dir)
+  chdir(start_dir)
+end
+
 local new_buffer_options = {
   {key=".", cmd=":e term://$dir///bin/zsh", desc="terminal"},
   {key="d", cmd=":Explore $dir",            desc="directory"},
@@ -55,6 +59,7 @@ local new_buffer_options = {
   {key="t", cmd=":exec ':e '.tempname()",   desc="edit temp file"},
   {key="r", cmd=proj_root,                  desc="move to git root"},
   {key="u", cmd=updir,                      desc="cd .."},
+  {key="U", cmd=return_to_start_dir,        desc="cd starting directory"},
   {key=",", cmd=sync_dir,                   desc="sync dir"},
   {key="q", cmd=":q!",                      desc="quit"},
 }
@@ -62,7 +67,8 @@ local new_buffer_options = {
 function newb.create(split_command)
   return function()
     -- the directory starts with buffer *before* the split command
-    local dir = current_dir()
+    local starting_dir = current_dir()
+    local dir = starting_dir
 
     -- remove trailing "/"
     if dir:sub(-1,-1) == "/" then
@@ -102,7 +108,7 @@ function newb.create(split_command)
             nowait=true,
             callback=function()
               local dir_before = dir
-              val.cmd(dir, chdir)
+              val.cmd(dir, chdir, starting_dir)
               if dir_before ~= dir then
                 render()
               end
