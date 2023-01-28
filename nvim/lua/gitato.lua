@@ -5,7 +5,8 @@ TODOS:
   - clean up the viewer code by using win_execute function
   - Fix bug when status is longer than the window (rare)
   - Completion help when changing diff_branch
-  - key for refreshing status
+  - key for refreshing status (r)
+  - key for staging all (A)
 consider:
   - set the filetype of the diff buffer to match the source buffer
   - ability to push from w/in gitato

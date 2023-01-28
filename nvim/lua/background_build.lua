@@ -1,7 +1,10 @@
--- TODO:
---  * multi-line commands
---  * cmd_dir that can be different from dir
---  * bug when multiple afters + ext used for step
+--[[
+TODO:
+Consider:
+ -- Both of these can be done with && in a command... seems fine
+ * multi-line commands
+ * cmd_dir that can be different from dir
+]]
 
 local fmtjson = require("fmtjson")
 local fmtelapsed = require("fmtelapsed")

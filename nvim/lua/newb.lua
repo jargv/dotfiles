@@ -1,6 +1,6 @@
 --[[ TODOS:
 - look into making this work on all new buffers instead of requiring an explicit fn
-- look into collecting a terminal's cwd and using it
+- look into collecting a terminal's cwd and using it (doesn't seem straightforward)
 ]]
 local current_dir = require "current_dir"
 local telescope = require "telescope.builtin"
