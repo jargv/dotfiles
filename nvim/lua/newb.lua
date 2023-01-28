@@ -9,7 +9,8 @@ local gitato = require "gitato"
 local newb = {}
 
 local function updir(dir, chdir)
-  local newdir = vim.fn.fnamemodify(dir, ":h")
+  local newdir = vim.fn.fnamemodify(dir, ":p:h:h")
+  newdir = vim.fn.fnamemodify(newdir, ":~")
   print(newdir)
   chdir(newdir)
 end
@@ -37,6 +38,7 @@ local function proj_root(dir, chdir)
     print "Is this a git repo?"
     return
   end
+  git_root = vim.fn.fnamemodify(git_root, ":~")
   chdir(git_root)
 end
 
@@ -49,8 +51,12 @@ local function return_to_start_dir(_, chdir, start_dir)
 end
 
 local function cd_prompt(dir, chdir)
+  if dir:sub(-1,-1) ~= '/' then
+    dir = dir .. '/'
+  end
+
   local new_dir = vim.fn.input({
-    prompt = "cd>",
+    prompt = "cd ",
     default = dir,
     cancelreturn = nil,
     completion = "dir",
