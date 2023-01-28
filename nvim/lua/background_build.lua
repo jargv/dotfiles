@@ -22,6 +22,7 @@ local function validateBuildConfig(config)
     config.jobs = {}
   end
 
+  local jobs_by_name = {}
   for _,job in pairs(config.jobs) do
     -- ensure requried fields are available
     if type(job.dir) ~= "string" then
@@ -38,6 +39,22 @@ local function validateBuildConfig(config)
     -- derive a name if none is given
     if job.name == nil then
       job.name = '['..job.dir..'] '..job.cmd
+    end
+
+    jobs_by_name[job.name] = job
+  end
+
+  -- ensure each "after" field points to a real job
+  for _,job in pairs(config.jobs) do
+    local dep_names = job.after
+    if type(dep_names) ~= "table" then
+      dep_names = {dep_names}
+    end
+
+    for _,dep_name in ipairs(dep_names) do
+      if jobs_by_name[dep_name] == nil then
+        error("invalid 'after' field job name: '"..dep_name.. "'")
+      end
     end
   end
 end
