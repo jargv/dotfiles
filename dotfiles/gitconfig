@@ -42,8 +42,6 @@
   ui = auto
 [apply]
   whitespace = nowarn
-[instaweb]
-  browser = google-chrome
 [alias]
   st = status -sb
   hist = !tig --all
@@ -52,6 +50,8 @@
   pushupforce = ! git push --force-with-lease origin $(git rev-parse --abbrev-ref @)
   pushup = ! git push origin $(git rev-parse --abbrev-ref @)
 [tig]
+  git-colors = no
+  commit-order = topo
   main-view-author = abbreviated
   main-view-date = relative-compact
   #main-view-line-number = yes,interval=1
@@ -60,6 +60,10 @@
   line-graphics=utf-8
   tab-size=2
   ignore-space=all
+[tig "color"]
+  cursor = red black bold
+  status = cyan default bold
+  title-focus = cyan default bold
 [tig "bind"]
   main = d !git difftool %(commit)~1 %(commit)
   main = y !@clip -s %(commit)
