@@ -24,6 +24,7 @@ local viewer_help = {
   "## R - Restore the file (checkout)",
   "## d - delete the file",
   "## b - change the diff branch",
+  "## h - git log (tig)",
   "## c - commit",
   "## q - quit"
 }
@@ -150,6 +151,7 @@ function gitato.open_viewer(diff_branch)
   local main_buf_width = 0
   local main_buf_height = 0
   local current_file_window = nil
+  local viewing_log = false
 
   local function cmd(cmd)
     local result = vim.fn.systemlist(("cd %s && %s"):format(git_repo_root, cmd))
@@ -226,6 +228,7 @@ function gitato.open_viewer(diff_branch)
     if current_file_window ~= nil and vim.api.nvim_win_is_valid(current_file_window) then
       vim.api.nvim_win_close(current_file_window, false)
     end
+    viewing_log = false
     current_file_window = nil
   end
 
@@ -239,7 +242,7 @@ function gitato.open_viewer(diff_branch)
     end
 
     -- Don't reload the file that is already loaded for viewing
-    if current_file_window ~= nil then
+    if current_file_window ~= nil and vim.api.nvim_win_is_valid(current_file_window) then
       local absolute_file = git_repo_root .. file
       local current_file_buffer = vim.api.nvim_win_get_buf(current_file_window)
       local current_file = vim.fn.resolve(vim.api.nvim_buf_get_name(current_file_buffer))
@@ -248,6 +251,9 @@ function gitato.open_viewer(diff_branch)
         return
       end
     end
+
+    -- close the current diff window before opening another
+    close_diff_window()
 
     if current_file_window == nil
     or not vim.api.nvim_win_is_valid(current_file_window)
@@ -265,19 +271,34 @@ function gitato.open_viewer(diff_branch)
       vim.cmd("normal ggM")
       current_file_window = vim.fn.win_getid(vim.fn.winnr())
     else
-      -- or just move into the window
-      vim.cmd("normal ll")
-      vim.cmd("edit "..git_repo_root..file)
-      gitato.diff_off()
-      if status ~= "??" then
-        gitato.toggle_diff_against_git_ref(
-          diff_branch or "HEAD"
-        )
-      end
+      error("unexpected path taken...")
     end
     vim.cmd("normal ggM")
     vim.cmd("normal hh")
     vim.wo.winfixwidth = true
+  end
+
+  local function view_log()
+    if viewing_log then
+      return
+    end
+
+    close_diff_window()
+    local total_width = vim.api.nvim_win_get_width(0)
+    local diff_window_width = total_width - main_buf_width
+    vim.cmd(""..diff_window_width.."vsplit term://"..git_repo_root.."/tig")
+    current_file_window = vim.fn.win_getid(vim.fn.winnr())
+    vim.cmd("normal h")
+    vim.cmd.stopinsert()
+    viewing_log = true
+  end
+
+  local function on_cursor_moved()
+    if vim.fn.line('.') == 1 then
+      view_log()
+    else
+      view_diff_for_current_file()
+    end
   end
 
   local function init()
@@ -450,13 +471,16 @@ function gitato.open_viewer(diff_branch)
 
     get_and_draw_status()
   end)
+  keymap('h', '', function()
+    vim.cmd("topleft vsplit term://".. git_repo_root .."/tig")
+  end)
 
   vim.api.nvim_create_autocmd("CursorMoved", {
     buffer = main_buf,
     group = group,
     callback = function()
       vim.defer_fn(function()
-        view_diff_for_current_file()
+        on_cursor_moved()
       end, 0)
     end
   })
