@@ -63,13 +63,6 @@ function newb.create(split_command)
   return function()
     -- the directory starts with buffer *before* the split command
     local dir = current_dir()
-    if vim.bo.buftype == "terminal" then
-      local bufname = vim.fn.bufname("%")
-      dir = bufname:match("^%S*//(%S*)//%S*$") or vim.fn.expand("~:p")
-      dir = vim.fn.fnamemodify(dir, ":p")
-    else
-      dir = vim.fn.expand("%:p:h")
-    end
 
     -- remove trailing "/"
     if dir:sub(-1,-1) == "/" then
