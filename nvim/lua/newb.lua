@@ -40,6 +40,10 @@ local function proj_root(dir, chdir)
   chdir(git_root)
 end
 
+local function sync_dir(dir, chdir)
+  chdir(dir)
+end
+
 local new_buffer_options = {
   {key=".", cmd=":e term://$dir///bin/zsh", desc="terminal"},
   {key="d", cmd=":Explore $dir",            desc="directory"},
@@ -51,6 +55,7 @@ local new_buffer_options = {
   {key="t", cmd=":exec ':e '.tempname()",   desc="edit temp file"},
   {key="r", cmd=proj_root,                  desc="move to git root"},
   {key="u", cmd=updir,                      desc="cd .."},
+  {key=",", cmd=sync_dir,                   desc="sync dir"},
   {key="q", cmd=":q!",                      desc="quit"},
 }
 
@@ -84,6 +89,7 @@ function newb.create(split_command)
 
     local function chdir(newdir)
       dir = newdir
+      vim.cmd.chdir(newdir)
     end
 
     local function render()
