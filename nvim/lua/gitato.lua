@@ -2,15 +2,14 @@
 TODOS:
   - recompute gitato view width when status changes
     (but could it ever get longer? wouldn't it always be smaller?)
-  - clean up the viewer code by using win_execute function
   - Fix bug when status is longer than the window (rare)
   - Completion help when changing diff_branch
   - key for refreshing status (r)
+  - hotkeys work with tig view
 consider:
+  - clean up the viewer code by using win_execute function
   - set the filetype of the diff buffer to match the source buffer
   - ability to push from w/in gitato
-  - show log when hovering on first line (instead of empty)
-  - hotkey to open tig in panel (h)
   - hotkey to open terminal pre-populated with "git" (g)
   - move the cursor along with the file when the status updates
 ]]
