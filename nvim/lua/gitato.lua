@@ -6,7 +6,6 @@ TODOS:
   - Fix bug when status is longer than the window (rare)
   - Completion help when changing diff_branch
   - key for refreshing status (r)
-  - key for staging all (A)
 consider:
   - set the filetype of the diff buffer to match the source buffer
   - ability to push from w/in gitato
@@ -21,6 +20,7 @@ local extra_width_in_main_view = 6
 local viewer_help = {
   "## keys",
   "## a - Add the file",
+  "## A - Add all files",
   "## R - Restore the file (checkout)",
   "## d - delete the file",
   "## b - change the diff branch",
@@ -198,8 +198,8 @@ function gitato.open_viewer(diff_branch)
     end
   end
 
-  local function get_status_and_file_from_current_line()
-    local line = vim.fn.getline('.')
+  local function get_status_and_file_from_line(line)
+    local line = vim.fn.getline(line)
 
     -- grab the file and status from the line
     local status, file = string.match(line, "^(..)%s*(%S*)$")
@@ -215,6 +215,10 @@ function gitato.open_viewer(diff_branch)
     end
 
     return status, file
+  end
+
+  local function get_status_and_file_from_current_line()
+    return get_status_and_file_from_line('.')
   end
 
   local function close_diff_window()
@@ -316,6 +320,24 @@ function gitato.open_viewer(diff_branch)
     })
   end
 
+  local function set_file_staged(file)
+    git_cmd("add -- "..file)
+  end
+
+  local function set_file_unstaged(file)
+    git_cmd("reset -- "..file)
+  end
+
+  local function toggle_file_with_status_staged(file, status)
+    if (status and status:sub(2,2) == "M") or status == "??" then
+      set_file_staged(file)
+      print("added!")
+    else
+      set_file_unstaged(file)
+      print("reset!")
+    end
+  end
+
   -- save every file and kick off the process
   vim.cmd("wall")
   init()
@@ -332,14 +354,7 @@ function gitato.open_viewer(diff_branch)
     if file == nil then
       return
     end
-
-    if (status and status:sub(2,2) == "M") or status == "??" then
-      git_cmd("add -- "..file)
-      print("added!")
-    else
-      git_cmd("reset -- "..file)
-      print("reset!")
-    end
+    toggle_file_with_status_staged(file, status)
     get_and_draw_status()
   end)
   keymap('R', '', function()
@@ -403,6 +418,36 @@ function gitato.open_viewer(diff_branch)
     end
 
     close_diff_window()
+    get_and_draw_status()
+  end)
+  keymap('A', '', function()
+    -- stage all that are unstaged
+    local none_were_staged = true
+    for line = 2, main_buf_height do
+      local status, file = get_status_and_file_from_line(line)
+      if file == nil or status == nil then
+        break
+      end
+      if status:sub(2,2) == "M" or status == "??" then
+        none_were_staged = false
+        set_file_staged(file)
+      end
+    end
+
+    -- Make it work like a toggle, unstage all, if none were staged
+    if none_were_staged then
+      for line = 2, main_buf_height do
+        local status, file = get_status_and_file_from_line(line)
+        print("status, file => ", status, file)
+        if file == nil or status == nil then
+          break
+        end
+        if status:sub(1,1) == "M" then
+          set_file_unstaged(file)
+        end
+      end
+    end
+
     get_and_draw_status()
   end)
 
