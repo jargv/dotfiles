@@ -1,8 +1,3 @@
---[[
-TODO:
-- make a user autocommand for every time a command happens
-  - use it to update the status in gitato
-]]
 local shell_hooks = {}
 
 -- global shell_hook function
