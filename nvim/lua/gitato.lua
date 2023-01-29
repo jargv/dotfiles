@@ -11,6 +11,9 @@ consider:
   - set the filetype of the diff buffer to match the source buffer
   - ability to push from w/in gitato
   - move the cursor along with the file when the status updates
+  - is it possible to "watch" the terminal and update the status after each command?
+    (probably possible with nvr...)
+  - history view for single file
 ]]
 local gitato = {}
 local group = "gitato.autogroup"
