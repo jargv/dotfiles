@@ -474,7 +474,7 @@ function gitato.open_viewer(diff_branch)
         if file == nil or status == nil then
           break
         end
-        if status:sub(1,1) == "M" then
+        if status:sub(1,1) == "M" or status:sub(1,1) == "A" then
           set_file_unstaged(file)
         end
       end
