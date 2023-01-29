@@ -1315,3 +1315,10 @@ if vim.api.nvim_buf_get_name(0) == "" then
   newb.create()()
 end
 
+-- shell hooks {{{1
+local hooks = require "shell_hooks"
+hooks.on_change_directory(function(dir)
+  vim.b.current_shell_dir = dir
+  print("yup up dir => <", dir, ">")
+  vim.cmd(("cd %s"):format(dir))
+end)

@@ -51,7 +51,6 @@ KEYTIMEOUT=1
 
 #}}}
 
-
 #{{{1 clang
 export CC=clang
 export CXX=clang++
@@ -125,12 +124,6 @@ export LESS=-RXF
 #export BROWSER=none
 export TIMEFMT=$'\nreal\t%E\nuser\t%U\nsys\t%S'
 
-#{{{1 auto ls every time I cd
-function chpwd() {
-  emulate -LR zsh
-  #ls -F --color=auto
-  ls -F -G
-}
 
 #{{{1 Prompt
 export VIRTUAL_ENV_DISABLE_PROMPT=1
@@ -208,3 +201,22 @@ export kill_gradle=kill_gradle
 #script-added setup {{{1
 
 export AWS_SDK_LOAD_CONFIG=true
+
+# hooks {{{1
+function chpwd() {
+  emulate -LR zsh
+  #ls -F --color=auto
+  ls -F -G
+
+  # signal the cd to nvim
+  if [[ -n "$NVIM" && $(command -v nvr) ]]; then
+    nvr -c "lua shell_hook('$PWD')"
+  fi
+}
+
+function precmd() {
+  # signal the command to nvim
+  if [[ -n "$NVIM" && $(command -v nvr) ]]; then
+    nvr -c "lua shell_hook()"
+  fi
+}
