@@ -31,8 +31,6 @@ local viewer_help = {
   "## q - quit"
 }
 
-vim.api.nvim_create_augroup(group, {clear=true})
-
 local current_diff_buffer = nil
 
 function gitato.diff_off()
@@ -138,6 +136,8 @@ function gitato.commit(repo_root, post_commit)
 end
 
 function gitato.open_viewer(diff_branch)
+  vim.api.nvim_create_augroup(group, {clear=true})
+
   -- find the repo root of the current file
   local git_repo_root = gitato.get_repo_root()
   if git_repo_root == nil then
@@ -504,7 +504,20 @@ function gitato.open_viewer(diff_branch)
   vim.api.nvim_create_autocmd("BufUnload", {
     buffer = main_buf,
     group = group,
-    callback = function() gitato.diff_off() end
+    callback = function()
+      gitato.diff_off()
+      vim.api.nvim_del_augroup_by_name(group)
+    end
+  })
+
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "ShellCommandHappened",
+    group = group,
+    callback = function()
+      vim.defer_fn(function()
+        get_and_draw_status()
+      end, 0)
+    end
   })
 end
 
