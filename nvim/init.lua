@@ -711,11 +711,13 @@ leader.Mc = build.stop_all
 vim.opt.showcmd = true
 vim.cmd[[
   func! GetRelativeFilename()
-    let file = expand("%:p")
-    let parts = split(file, ':')
-    if len(parts) == 3
-      return "[".parts[2]."]"
+    if &buftype == "terminal"
+      let file = luaeval('require"current_dir"()')
+      let file = fnamemodify(file, ":p")
+    else
+      let file = expand("%:p")
     endif
+
     if len(file) == 0
       return "[new file]"
     endif
@@ -733,10 +735,10 @@ vim.cmd[[
   func! GetSymlinkTarget()
     let file = expand("%:p")
     let target = resolve(file)
-    if file !=# target
-      return "  --> ".fnamemodify(target, ":~")
-    else
+    if file == target || &buftype == "terminal"
       return ""
+    else
+      return "  --> ".fnamemodify(target, ":~")
     endif
   endfunc
 
@@ -1319,6 +1321,4 @@ end
 local hooks = require "shell_hooks"
 hooks.on_change_directory(function(dir)
   vim.b.current_shell_dir = dir
-  print("yup up dir => <", dir, ">")
-  vim.cmd(("cd %s"):format(dir))
 end)

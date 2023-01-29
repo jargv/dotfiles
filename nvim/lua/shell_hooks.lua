@@ -1,3 +1,11 @@
+--[[
+TODO:
+- make a user autocommand for every time a command happens
+  - use it to update the status in gitato
+  - use it to update the statusline (especially for terminals on cd)
+CONSIDER:
+- eliminate the callback interface and just do more inline here
+]]
 local shell_hooks = {}
 
 local change_dir_hooks = {}
