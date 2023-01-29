@@ -73,7 +73,6 @@ local new_buffer_options = {
   {key="g", cmd=find_git_files,             desc="search for a file in git"},
   {key="b", cmd=find_buffers,               desc="search buffers by name"},
   {key="/", cmd=live_grep,                  desc="live grep"},
-  {key="h", cmd=":e term://$dir//tig",      desc="git history (tig)"},
   {key="t", cmd=":exec ':e '.tempname()",   desc="edit temp file"},
   {key="r", cmd=proj_root,                  desc="move to git root"},
   {key="u", cmd=updir,                      desc="cd .."},
