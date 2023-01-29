@@ -10,7 +10,6 @@ consider:
   - clean up the viewer code by using win_execute function
   - set the filetype of the diff buffer to match the source buffer
   - ability to push from w/in gitato
-  - hotkey to open terminal pre-populated with "git" (g)
   - move the cursor along with the file when the status updates
 ]]
 local gitato = {}
@@ -24,6 +23,7 @@ local viewer_help = {
   "## d - delete the file",
   "## b - change the diff branch",
   "## h - git log (tig)",
+  "## . - open terminal in the repo root",
   "## c - commit",
   "## q - quit"
 }
@@ -292,6 +292,14 @@ function gitato.open_viewer(diff_branch)
     viewing_log = true
   end
 
+  local function open_terminal_window()
+    close_view_window()
+    local total_width = vim.api.nvim_win_get_width(0)
+    local diff_window_width = total_width - main_buf_width
+    vim.cmd(""..diff_window_width.."vsplit term://"..git_repo_root.."//bin/zsh")
+    current_view_window = vim.fn.win_getid(vim.fn.winnr())
+  end
+
   local function on_cursor_moved()
     if vim.fn.line('.') == 1 then
       view_log()
@@ -470,6 +478,9 @@ function gitato.open_viewer(diff_branch)
     end
 
     get_and_draw_status()
+  end)
+  keymap('.', "", function()
+    open_terminal_window()
   end)
 
   vim.api.nvim_create_autocmd("CursorMoved", {
