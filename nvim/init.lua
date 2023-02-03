@@ -701,8 +701,11 @@ end
 local build = require("background_build")
 leader.Me = build.edit_config
 leader.e = build.load_errors
-leader.E = build.view_output
+leader.E = function()
+  print("moved to <leader>Mw")
+end
 leader.m = build.run_all_not_running
+leader.Mw = build.view_output
 leader.Ma = build.add_from_current_file
 leader.Mq = build.clear_config
 leader.Mc = build.stop_all
