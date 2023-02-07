@@ -2,6 +2,7 @@
 
 stuff to look into:
  - treesitter text objects
+ - display git ignore status in status line
 
 TODO:
  - fix up the smart enter key

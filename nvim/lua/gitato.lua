@@ -1,11 +1,13 @@
 --[[
 TODOS:
+  - hotkey that opens every file in windows or tabs or buffers
   - recompute gitato view width when status changes
     (but could it ever get longer? wouldn't it always be smaller?)
   - Fix bug when status is longer than the window (rare)
   - Completion help when changing diff_branch
   - key for refreshing status (r)
   - hotkeys work with tig view
+  - if not in a git repo, fallback to the cwd and check again
 consider:
   - clean up the viewer code by using win_execute function
   - set the filetype of the diff buffer to match the source buffer
