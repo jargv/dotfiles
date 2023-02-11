@@ -3,10 +3,10 @@ TODOS:
   - recompute gitato view width when status changes
   - Fix bug when status is longer than the window (rare)
   - Completion help when changing diff_branch
-  - key for refreshing status (r)
   - hotkeys work with tig view
   - if not in a git repo, fallback to the cwd and check again
 consider:
+  - key for refreshing status (r)
   - clean up the viewer code by using win_execute function
   - set the filetype of the diff buffer to match the source buffer
   - move the cursor along with the file when the status updates
@@ -39,17 +39,38 @@ function gitato.diff_off()
   current_diff_buffer = nil
 end
 
-function gitato.get_repo_root(dir)
-  dir = dir or vim.fn.expand("%:p")
-  local dir = vim.fn.fnamemodify(vim.fn.resolve(dir), ":h")
-  local result = vim.fn.systemlist("cd "..dir.." && git rev-parse --show-toplevel")
-  local error = vim.api.nvim_get_vvar("shell_error")
-  if error ~= 0 or #result == 0 then
-    print "shell error"
-    return nil
+function gitato.get_repo_root(hinted_dir)
+  local first_dir = hinted_dir or vim.fn.expand("%:p") -- from current file
+  local current_dir = vim.fn.getcwd()
+  local dirs_to_try = {
+    first_dir,
+    vim.fn.fnamemodify(vim.fn.resolve(first_dir), ":h"),
+    current_dir,
+    vim.fn.fnamemodify(vim.fn.resolve(current_dir), ":h"),
+  }
+
+  local repo_root = nil
+  for _,dir in ipairs(dirs_to_try) do
+    if dir == nil then
+      goto continue
+    end
+
+    print("dir => ", dir)
+    local result = vim.fn.systemlist("cd "..dir.." && git rev-parse --show-toplevel")
+    print("result => ", result)
+    local error = vim.api.nvim_get_vvar("shell_error")
+    print("error => ", error)
+    if error == 0 and #result ~= 0 then
+      repo_root = result[1]
+      break
+    end
+
+    ::continue::
   end
 
-  local repo_root = result[1]
+  if repo_root == nil then
+    return nil
+  end
 
   if repo_root:sub(-1,-1) ~= "/" then
     repo_root = repo_root .. "/"
