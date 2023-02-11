@@ -100,8 +100,8 @@ local function parse_status_line(line)
   return status, file
 end
 
-local function shell_cmd(cmd)
-  local root = gitato.get_repo_root()
+local function shell_cmd(cmd, root)
+  root = root or gitato.get_repo_root()
   local result = vim.fn.systemlist(("cd %s && %s"):format(root, cmd))
   if 0 ~= vim.api.nvim_get_vvar("shell_error") then
     print(table.concat(result, '\n'))
@@ -110,21 +110,21 @@ local function shell_cmd(cmd)
   return result
 end
 
-local function git_cmd(c)
-  return shell_cmd("git "..c)
+local function git_cmd(c, root)
+  return shell_cmd("git "..c, root)
 end
 
-function gitato.get_status(diff_branch)
+function gitato.get_status(diff_branch, repo_root)
   if diff_branch ~= nil then
-    return git_cmd(("diff --name-status %s"):format(diff_branch))
+    return git_cmd(("diff --name-status %s"):format(diff_branch), repo_root)
   end
 
-  return git_cmd("status -sb")
+  return git_cmd("status -sb", repo_root)
 end
 
 
-function gitato.status_foreach(diff_branch, cb)
-  local status_lines = gitato.get_status(diff_branch)
+function gitato.status_foreach(diff_branch, cb, repo_root)
+  local status_lines = gitato.get_status(diff_branch, repo_root)
   for _,line in ipairs(status_lines) do
     local status, file = parse_status_line(line)
     if status ~= nil and file ~= nil then
@@ -212,7 +212,7 @@ function gitato.open_viewer(diff_branch)
   end
 
   local function get_and_draw_status()
-    local status = gitato.get_status(diff_branch)
+    local status = gitato.get_status(diff_branch, git_repo_root)
     if status ~= nil then
       draw_status(status)
     end
@@ -323,7 +323,7 @@ function gitato.open_viewer(diff_branch)
   end
 
   local function init()
-    local status = gitato.get_status(diff_branch)
+    local status = gitato.get_status(diff_branch, git_repo_root)
     if status == nil then
       print("ERROR: Is this a git repo?")
       return
@@ -363,11 +363,11 @@ function gitato.open_viewer(diff_branch)
   end
 
   local function set_file_staged(file)
-    git_cmd("add -- "..file)
+    git_cmd("add -- "..file, git_repo_root)
   end
 
   local function set_file_unstaged(file)
-    git_cmd("reset -- "..file)
+    git_cmd("reset -- "..file, git_repo_root)
   end
 
   local function toggle_file_with_status_staged(file, status)
@@ -406,25 +406,12 @@ function gitato.open_viewer(diff_branch)
     end
 
     if (status and status:sub(2,2) == "M") then
-      git_cmd("checkout -- "..file)
+      git_cmd("checkout -- "..file, git_repo_root)
       print("restored!")
     else
       print("not sure what to do with status '"..status.."'")
     end
     get_and_draw_status()
-  end)
-  keymap('d', '', function()
-    local status, file = get_status_and_file_from_current_line()
-    if file then
-      if status and status:sub(2,2) == "D" then
-        git_cmd("rm "..file)
-        print("deleted!")
-      elseif status and status:sub(1,1) == "D" then
-        git_cmd("reset -- "..file)
-        print("undeleted!")
-      end
-      get_and_draw_status()
-    end
   end)
   keymap('c', '', function()
     close_view_window()
@@ -437,14 +424,14 @@ function gitato.open_viewer(diff_branch)
     local status, file = get_status_and_file_from_current_line()
 
     if status == " D" then
-      git_cmd("rm "..file)
+      git_cmd("rm "..file, git_repo_root)
     elseif status == "??" then
       local input = vim.fn.input("really delete '"..file.."'? (type yes):")
       if input ~= "yes" then
         print("you typed '"..input.."' will not deleting")
         return
       end
-      shell_cmd("rm "..file)
+      shell_cmd("rm "..file, git_repo_root)
     else
       print("not sure what to do with status '"..status.."'")
       return
@@ -471,7 +458,7 @@ function gitato.open_viewer(diff_branch)
         none_were_staged = false
         set_file_staged(file)
       end
-    end)
+    end, git_repo_root)
 
     -- Make it work like a toggle, unstage all, if none were staged
     if none_were_staged then
@@ -479,7 +466,7 @@ function gitato.open_viewer(diff_branch)
         if status:sub(1,1) == "M" or status:sub(1,1) == "A" then
           set_file_unstaged(file)
         end
-      end)
+      end, git_repo_root)
     end
 
     get_and_draw_status()
