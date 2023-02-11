@@ -2,7 +2,6 @@
 TODOS:
   - hotkey that opens every file in windows or tabs or buffers
   - recompute gitato view width when status changes
-    (but could it ever get longer? wouldn't it always be smaller?)
   - Fix bug when status is longer than the window (rare)
   - Completion help when changing diff_branch
   - key for refreshing status (r)
@@ -11,10 +10,7 @@ TODOS:
 consider:
   - clean up the viewer code by using win_execute function
   - set the filetype of the diff buffer to match the source buffer
-  - ability to push from w/in gitato
   - move the cursor along with the file when the status updates
-  - is it possible to "watch" the terminal and update the status after each command?
-    (probably possible with nvr...)
   - history view for single file
 ]]
 local gitato = {}
@@ -47,7 +43,6 @@ end
 function gitato.get_repo_root(dir)
   dir = dir or vim.fn.expand("%:p")
   local dir = vim.fn.fnamemodify(vim.fn.resolve(dir), ":h")
-  print(dir)
   local result = vim.fn.systemlist("cd "..dir.." && git rev-parse --show-toplevel")
   local error = vim.api.nvim_get_vvar("shell_error")
   if error ~= 0 or #result == 0 then
@@ -92,6 +87,42 @@ function gitato.toggle_diff_against_git_ref(ref)
   vim.cmd(":diffthis")
   vim.cmd("normal l")
   vim.cmd(":diffthis")
+end
+
+local function parse_status_line(line)
+  local status, file = string.match(line, "^(..)%s*(%S*)$")
+  return status, file
+end
+
+local function shell_cmd(cmd)
+  local root = gitato.get_repo_root()
+  local result = vim.fn.systemlist(("cd %s && %s"):format(root, cmd))
+  if 0 ~= vim.api.nvim_get_vvar("shell_error") then
+    print(table.concat(result, '\n'))
+    return nil
+  end
+  return result
+end
+
+local function git_cmd(c)
+  return shell_cmd("git "..c)
+end
+
+function gitato.get_status(diff_branch)
+  if diff_branch ~= nil then
+    return git_cmd(("diff --name-status %s"):format(diff_branch))
+  end
+
+  return git_cmd("status -sb")
+end
+
+
+function gitato.status_foreach(diff_branch, cb)
+  local status_lines = gitato.get_status(diff_branch)
+  for _,line in ipairs(status_lines) do
+    local status, file = parse_status_line(line)
+    cb(status, file)
+  end
 end
 
 function gitato.commit(repo_root, post_commit)
@@ -157,27 +188,6 @@ function gitato.open_viewer(diff_branch)
   local current_view_window = nil
   local viewing_log = false
 
-  local function cmd(cmd)
-    local result = vim.fn.systemlist(("cd %s && %s"):format(git_repo_root, cmd))
-    if 0 ~= vim.api.nvim_get_vvar("shell_error") then
-      print(table.concat(result, '\n'))
-      return nil
-    end
-    return result
-  end
-
-  local function git_cmd(c)
-    return cmd("git "..c)
-  end
-
-  local function get_status()
-    if diff_branch ~= nil then
-      return git_cmd(("diff --name-status %s"):format(diff_branch))
-    end
-
-    return git_cmd("status -sb")
-  end
-
   local function draw_status(status)
     local line_for_help = main_buf_height - #viewer_help
     local lines = {}
@@ -198,7 +208,7 @@ function gitato.open_viewer(diff_branch)
   end
 
   local function get_and_draw_status()
-    local status = get_status()
+    local status = gitato.get_status(diff_branch)
     if status ~= nil then
       draw_status(status)
     end
@@ -208,7 +218,7 @@ function gitato.open_viewer(diff_branch)
     local line = vim.fn.getline(line)
 
     -- grab the file and status from the line
-    local status, file = string.match(line, "^(..)%s*(%S*)$")
+    local status, file = parse_status_line(line)
 
     -- skip comment lines
     if string.match(line, "^#") then
@@ -314,7 +324,7 @@ function gitato.open_viewer(diff_branch)
   end
 
   local function init()
-    local status = get_status()
+    local status = gitato.get_status(diff_branch)
     if status == nil then
       print("ERROR: Is this a git repo?")
       return
@@ -435,7 +445,7 @@ function gitato.open_viewer(diff_branch)
         print("you typed '"..input.."' will not deleting")
         return
       end
-      cmd("rm "..file)
+      shell_cmd("rm "..file)
     else
       print("not sure what to do with status '"..status.."'")
       return
@@ -457,29 +467,20 @@ function gitato.open_viewer(diff_branch)
   keymap('A', '', function()
     -- stage all that are unstaged
     local none_were_staged = true
-    for line = 2, main_buf_height do
-      local status, file = get_status_and_file_from_line(line)
-      if file == nil or status == nil then
-        break
-      end
+    gitato.status_foreach(diff_branch, function(status, file)
       if status:sub(2,2) == "M" or status == "??" then
         none_were_staged = false
         set_file_staged(file)
       end
-    end
+    end)
 
     -- Make it work like a toggle, unstage all, if none were staged
     if none_were_staged then
-      for line = 2, main_buf_height do
-        local status, file = get_status_and_file_from_line(line)
-        print("status, file => ", status, file)
-        if file == nil or status == nil then
-          break
-        end
+      gitato.status_foreach(diff_branch, function(status, file)
         if status:sub(1,1) == "M" or status:sub(1,1) == "A" then
           set_file_unstaged(file)
         end
-      end
+      end)
     end
 
     get_and_draw_status()
