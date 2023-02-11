@@ -12,6 +12,7 @@ consider:
   - move the cursor along with the file when the status updates
   - history view for single file
 ]]
+local current_dir = require("current_dir")
 local gitato = {}
 local group = "gitato.autogroup"
 local extra_width_in_main_view = 6
@@ -39,14 +40,18 @@ function gitato.diff_off()
   current_diff_buffer = nil
 end
 
-function gitato.get_repo_root(hinted_dir)
-  local first_dir = hinted_dir or vim.fn.expand("%:p") -- from current file
-  local current_dir = vim.fn.getcwd()
+function gitato.get_repo_root(arg)
+  if arg ~= nil then
+    error("gitato.get_repo_root takes zero args...")
+  end
+
+  local first_dir = vim.fn.expand("%:p") -- from current file
+  local current = current_dir()
   local dirs_to_try = {
     first_dir,
     vim.fn.fnamemodify(vim.fn.resolve(first_dir), ":h"),
-    current_dir,
-    vim.fn.fnamemodify(vim.fn.resolve(current_dir), ":h"),
+    current,
+    vim.fn.fnamemodify(vim.fn.resolve(current), ":h"),
   }
 
   local repo_root = nil
@@ -148,7 +153,7 @@ function gitato.status_foreach(diff_branch, cb, repo_root)
   local status_lines = gitato.get_status(diff_branch, repo_root)
   for _,line in ipairs(status_lines) do
     local status, file = parse_status_line(line)
-    if status ~= nil and file ~= nil then
+    if status ~= nil and status ~= "##" and file ~= nil then
       cb(status, file)
     end
   end
