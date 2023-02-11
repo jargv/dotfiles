@@ -689,6 +689,7 @@ normal["<leader>."] = newb.create()
 
 -- git setup {{{1
 local gitato = require "gitato"
+local default_upstream = "origin/main"
 leader.gg = function() gitato.open_viewer() end
 leader.GG = function() gitato.open_viewer("origin/main") end
 
@@ -697,8 +698,32 @@ leader.d = function()
 end
 
 leader.D = function()
-  gitato.toggle_diff_against_git_ref("origin/main")
+  gitato.toggle_diff_against_git_ref(default_upstream)
 end
+
+leader.gb = ":Gitsigns toggle_current_line_blame<cr>"
+leader.gB = function()
+  package.loaded.gitsigns.blame_line({full=false,ignore_whitespace=true})
+end
+
+-- git open buffers
+function git_open(diff_branch)
+  return function()
+    local first = true
+    local repo_root = gitato.get_repo_root()
+    gitato.status_foreach(diff_branch, function(_status, file)
+      if first then
+        vim.cmd.tabnew(repo_root .. file)
+      else
+        vim.cmd.vsplit(repo_root .. file)
+      end
+      first = false
+    end)
+  end
+end
+
+leader.go = git_open()
+leader.Go = git_open(default_upstream)
 
 -- background build setup {{{1
 local build = require("background_build")
@@ -1012,9 +1037,6 @@ vim.cmd [[
   "control-move text{{{2
     xnoremap <C-j> xp'[V']
     xnoremap <C-k> xkP'[V']
-  "git mappings {{{2
-    nnoremap <leader>gb :Gitsigns toggle_current_line_blame<cr>
-    nnoremap <leader>gB :lua package.loaded.gitsigns.blame_line({full=false,ignore_whitespace=true})<cr>
 
 
 

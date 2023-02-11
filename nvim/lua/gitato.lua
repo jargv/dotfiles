@@ -1,6 +1,5 @@
 --[[
 TODOS:
-  - hotkey that opens every file in windows or tabs or buffers
   - recompute gitato view width when status changes
   - Fix bug when status is longer than the window (rare)
   - Completion help when changing diff_branch
@@ -49,7 +48,14 @@ function gitato.get_repo_root(dir)
     print "shell error"
     return nil
   end
-  return result[1]
+
+  local repo_root = result[1]
+
+  if repo_root:sub(-1,-1) ~= "/" then
+    repo_root = repo_root .. "/"
+  end
+
+  return repo_root
 end
 
 function gitato.toggle_diff_against_git_ref(ref)
@@ -66,7 +72,7 @@ function gitato.toggle_diff_against_git_ref(ref)
 
   local file = vim.fn.resolve(vim.fn.expand("%:p"))
   if file:sub(1, #git_root) == git_root then
-    file = file:sub(#git_root + 2)
+    file = file:sub(#git_root + 1)
   else
     file = "./"..file
   end
@@ -121,7 +127,9 @@ function gitato.status_foreach(diff_branch, cb)
   local status_lines = gitato.get_status(diff_branch)
   for _,line in ipairs(status_lines) do
     local status, file = parse_status_line(line)
-    cb(status, file)
+    if status ~= nil and file ~= nil then
+      cb(status, file)
+    end
   end
 end
 
@@ -176,10 +184,6 @@ function gitato.open_viewer(diff_branch)
   if git_repo_root == nil then
     print("ERROR: Is this a git repo?")
     return
-  end
-
-  if git_repo_root:sub(-1,-1) ~= "/" then
-    git_repo_root = git_repo_root .. "/"
   end
 
   local main_buf = vim.api.nvim_create_buf(false, true)
@@ -269,24 +273,19 @@ function gitato.open_viewer(diff_branch)
     -- close the current diff window before opening another
     close_view_window()
 
-    if current_view_window == nil
-    or not vim.api.nvim_win_is_valid(current_view_window)
-    then
-      -- create the window
-      local total_width = vim.api.nvim_win_get_width(0)
-      local diff_window_width = total_width - main_buf_width
-      vim.cmd(""..diff_window_width.."vsplit "..git_repo_root..file)
-      gitato.diff_off()
-      if status ~= "??" then
-        gitato.toggle_diff_against_git_ref(
-          diff_branch or "HEAD"
-        )
-      end
-      vim.cmd("normal ggM")
-      current_view_window = vim.fn.win_getid(vim.fn.winnr())
-    else
-      error("unexpected path taken...")
+    -- create the window
+    local total_width = vim.api.nvim_win_get_width(0)
+    local diff_window_width = total_width - main_buf_width
+    vim.cmd(""..diff_window_width.."vsplit "..git_repo_root..file)
+    gitato.diff_off()
+    if status ~= "??" then
+      gitato.toggle_diff_against_git_ref(
+        diff_branch or "HEAD"
+      )
     end
+    vim.cmd("normal ggM")
+    current_view_window = vim.fn.win_getid(vim.fn.winnr())
+
     vim.cmd("normal ggM")
     vim.cmd("normal hh")
     vim.wo.winfixwidth = true
