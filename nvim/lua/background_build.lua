@@ -1,6 +1,5 @@
 --[[
 TODO:
-  * "disabled" field for job for quick toggles
 Consider:
  -- Both of these can be done with && in a command... seems fine
  * multi-line commands
@@ -288,6 +287,9 @@ local function setup_build_jobs(config, oldJobs)
   -- set up the new job objects
   local newJobs = {}
   for _,jobConfig in ipairs(config.jobs) do
+    if jobConfig.skip then
+      goto continue
+    end
     local job = {
       id = nil,
       buf = jobBuffersByName[jobConfig.name],
@@ -297,6 +299,7 @@ local function setup_build_jobs(config, oldJobs)
     jobBuffersByName[jobConfig.name] = nil
     wire_up_job_autocmd(job, jobGroup)
     table.insert(newJobs, job)
+    ::continue::
   end
 
   -- clean up any buffers that weren't reused
