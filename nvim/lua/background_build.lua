@@ -4,6 +4,8 @@ Consider:
  -- Both of these can be done with && in a command... seems fine
  * multi-line commands
  * cmd_dir that can be different from dir
+
+ * "disabled" field for job for quick toggles
 ]]
 
 local fmtjson = require("fmtjson")

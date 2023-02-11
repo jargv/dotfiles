@@ -294,6 +294,8 @@ vim.cmd [[
 ]]
 
 
+
+
 -- Plug 'dense-analysis/ale' {{{2
 vim.g.ale_fixers = {
   javascript = {'prettier'},
@@ -1034,6 +1036,7 @@ vim.cmd [[
           set nonumber
       else
         set relativenumber
+        set number
       endif
       echo
     endfunc
@@ -1258,6 +1261,8 @@ if lsp_configured == nil then
       },
     }
   }
+
+  require'lspconfig'.bufls.setup{}
 
   vim.diagnostic.config({signs = false, virtual_text = false, underline = false})
   require'toggle_lsp_diagnostics'.init({signs = false, virtual_text = true, underline = true})
