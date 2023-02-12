@@ -1,5 +1,5 @@
 snippet new "new project" !b
-cmake_minimum_required (VERSION 3.12 FATAL_ERROR)
+cmake_minimum_required (VERSION 3.25 FATAL_ERROR)
 project (${1:`!v expand("%:p:h:t")`} VERSION 0.0 LANGUAGES CXX C)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
