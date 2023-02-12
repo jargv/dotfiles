@@ -322,6 +322,7 @@ Plug 'dense-analysis/ale'
 -- Plug 'stevearc/oil.nvim' {{{2
 Plug 'stevearc/oil.nvim'
 table.insert(plugin_setup_funcs, function()
+  vim.keymap.set("n", "-", require("oil").open, { desc = "Open parent directory" })
   require("oil").setup({
     -- Id is automatically added at the beginning, and name at the end
     -- See :help oil-columns
@@ -359,6 +360,7 @@ table.insert(plugin_setup_funcs, function()
     keymaps = {
       ["g?"] = "actions.show_help",
       ["<C-l>"] = "actions.refresh",
+      ["<cr>"] = "actions.select",
       ["-"] = "actions.parent",
       ["_"] = "actions.open_cwd",
       ["g."] = "actions.toggle_hidden",
