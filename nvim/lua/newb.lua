@@ -120,6 +120,11 @@ function newb.create(split_command)
 
     local function setup()
       -- set up the key bindings and collect the instructions
+      vim.api.nvim_buf_set_keymap(buf, "n", "u", "",  {
+        callback = function()
+          print("use '-' key instead!")
+        end
+      })
       for _,val in ipairs(new_buffer_options) do
         if type(val.cmd) == 'function' then
           vim.api.nvim_buf_set_keymap(buf, "n", val.key, "",  {
