@@ -1,4 +1,5 @@
 --[[ TODOS:
+- make the buffer immutable
 - look into making this work on all new buffers instead of requiring an explicit fn
 ]]
 local current_dir = require "current_dir"
@@ -67,16 +68,16 @@ end
 
 local new_buffer_options = {
   {key=".", cmd=":e term://$dir///bin/zsh", desc="terminal"},
-  {key="d", cmd=":Explore $dir",            desc="directory"},
+  {key="d", cmd=":Oil $dir",                desc="directory"},
   {key="f", cmd=find_files,                 desc="search for any file"},
   {key="g", cmd=find_git_files,             desc="search for a file in git"},
   {key="b", cmd=find_buffers,               desc="search buffers by name"},
   {key="/", cmd=live_grep,                  desc="live grep"},
   {key="t", cmd=":exec ':e '.tempname()",   desc="edit temp file"},
   {key="r", cmd=proj_root,                  desc="move to git root"},
-  {key="u", cmd=updir,                      desc="cd .."},
+  {key="-", cmd=updir,                      desc="cd .."},
   {key="c", cmd=cd_prompt,                  desc="cd <dir>"},
-  {key="U", cmd=return_to_start_dir,        desc="cd starting directory"},
+  {key="_", cmd=return_to_start_dir,        desc="cd starting directory"},
   {key=",", cmd=sync_dir,                   desc="sync dir"},
   {key="q", cmd=":q!",                      desc="quit"},
 }

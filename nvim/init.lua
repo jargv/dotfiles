@@ -316,8 +316,14 @@ Plug 'dense-analysis/ale'
 -- Plug 'junegunn/fzf'
 -- Plug 'junegunn/fzf.vim'
 
--- Plug 'tpope/vim-vinegar' {{{2
-Plug 'tpope/vim-vinegar'
+-- Plug 'tpope/vim-vinegar' (unused, using oil instead) {{{2
+-- Plug 'tpope/vim-vinegar'
+
+-- Plug 'stevearc/oil.nvim' {{{2
+Plug 'stevearc/oil.nvim'
+table.insert(plugin_setup_funcs, function()
+  require("oil").setup()
+end)
 
 -- Plug  'SirVer/UltiSnips' {{{2
 Plug 'SirVer/UltiSnips'
@@ -415,7 +421,6 @@ vim.g.loaded_matchparen = 1
 -- prototype settings {{{1
 visual.v = "`[o`]"
 vim.opt.updatetime = 300
-vim.opt.laststatus = 3 -- only one statusline at bottom
 local telescope = require("telescope.builtin")
 leader.jf = function()
   local dir = require("current_dir")()
@@ -739,10 +744,11 @@ leader.Mq = build.clear_config
 leader.Mc = build.stop_all
 
 -- statusline setup {{{1
+vim.opt.laststatus = 3 -- only one statusline at bottom
 vim.opt.showcmd = true
 vim.cmd[[
   func! GetRelativeFilename()
-    if &buftype == "terminal"
+    if &buftype == "terminal" || &filetype == "oil"
       let file = luaeval('require"current_dir"()')
       let file = fnamemodify(file, ":p")
     else
@@ -766,7 +772,7 @@ vim.cmd[[
   func! GetSymlinkTarget()
     let file = expand("%:p")
     let target = resolve(file)
-    if file == target || &buftype == "terminal"
+    if file == target || &buftype == "terminal" || &filetype == "oil"
       return ""
     else
       return "  --> ".fnamemodify(target, ":~")
