@@ -29,6 +29,8 @@ local viewer_help = {
   "## q - quit"
 }
 
+local not_a_repo_error_msg = "ERROR: Is this a git repo?"
+
 local current_diff_buffer = nil
 
 function gitato.diff_off()
@@ -92,7 +94,7 @@ function gitato.toggle_diff_against_git_ref(ref)
 
   local git_root = gitato.get_repo_root()
   if git_root == nil then
-    print("ERROR: Is this a git repo?")
+    print(not_a_repo_error_msg)
     return
   end
 
@@ -107,7 +109,7 @@ function gitato.toggle_diff_against_git_ref(ref)
   local error = vim.api.nvim_get_vvar("shell_error")
   if error ~= 0 then
     print(table.concat(diff_contents, "\n"))
-    print("ERROR: Is this a git repo root?")
+    print(not_a_repo_error_msg)
     return
   end
 
@@ -151,6 +153,11 @@ end
 
 function gitato.status_foreach(diff_branch, cb, repo_root)
   local status_lines = gitato.get_status(diff_branch, repo_root)
+  if status_lines == nil then
+    print(not_a_repo_error_msg)
+    return
+  end
+
   for _,line in ipairs(status_lines) do
     local status, file = parse_status_line(line)
     if status ~= nil and status ~= "##" and file ~= nil then
@@ -208,7 +215,7 @@ function gitato.open_viewer(diff_branch)
   -- find the repo root of the current file
   local git_repo_root = gitato.get_repo_root()
   if git_repo_root == nil then
-    print("ERROR: Is this a git repo?")
+    print(not_a_repo_error_msg)
     return
   end
 
@@ -351,7 +358,7 @@ function gitato.open_viewer(diff_branch)
   local function init()
     local status = gitato.get_status(diff_branch, git_repo_root)
     if status == nil then
-      print("ERROR: Is this a git repo?")
+      print(not_a_repo_error_msg)
       return
     end
 
