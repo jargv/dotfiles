@@ -794,11 +794,9 @@ leader.Go = git_open(default_upstream)
 local build = require("background_build")
 leader.Me = build.edit_config
 leader.e = build.load_errors
-leader.E = function()
-  print("moved to <leader>Mw")
-end
+leader.E = build.open_error_output_buffers
 leader.m = build.run_all_not_running
-leader.Mw = build.view_output
+leader.Mw = build.open_all_output_buffers
 leader.Ma = build.add_from_current_file
 leader.Mq = build.clear_config
 leader.Mc = build.stop_all
@@ -1331,7 +1329,9 @@ if lsp_configured == nil then
       },
     },
   }
+
   lspconfig.sumneko_lua.setup {
+    capabilities = capabilities,
     settings = {
       Lua = {
         runtime = {
@@ -1350,7 +1350,9 @@ if lsp_configured == nil then
     }
   }
 
-  require'lspconfig'.bufls.setup{}
+  require'lspconfig'.bufls.setup{
+    capabilities = capabilities,
+  }
 
   vim.diagnostic.config({signs = false, virtual_text = false, underline = false})
   require'toggle_lsp_diagnostics'.init({signs = false, virtual_text = true, underline = true})
@@ -1403,6 +1405,10 @@ efmt "%Z#"
 
 -- golang
 efmt "%f:%l:%c: %#%m"
+
+-- lua
+efmt "/usr/bin/lua: %f:%l: %m"
+efmt "%f:%l:%m"
 
 
 -- starting buffer {{{1

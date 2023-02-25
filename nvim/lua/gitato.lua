@@ -5,6 +5,7 @@ TODOS:
   - Completion help when changing diff_branch
   - hotkeys work with tig view
   - if not in a git repo, fallback to the cwd and check again
+  - make it work with symlinks
 consider:
   - key for refreshing status (r)
   - clean up the viewer code by using win_execute function

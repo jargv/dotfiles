@@ -1,8 +1,6 @@
 snippet new "new project" !b
 cmake_minimum_required (VERSION 3.25 FATAL_ERROR)
-project (${1:`!v expand("%:p:h:t")`} VERSION 0.0 LANGUAGES CXX C)
-
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+project (${1:`!v expand("%:p:h:t")`} VERSION 0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -20,12 +18,23 @@ PRIVATE
 endsnippet
 
 snippet lib "add a library" !b
-add_library(${1:lib}
-  $1.hpp$0
-  $1.cpp$0
+add_library(${1:`!v expand("%:p:h:t")`}
+  src/$1.cpp
 )
+target_include_directories($1 PUBLIC .)
 endsnippet
-snippet test "Add catch2 tests to the project" !b
+snippet test "Description" !b
+add_executable(${1:`!v expand("%:p:h:t")`}_test
+  src/$1.test.cpp
+)
+
+target_link_libraries($1_test
+PRIVATE
+  Catch2::Catch2WithMain
+)
+
+endsnippet
+snippet catch "Add catch2 tests to the project" !b
 # Test
 add_executable(test
   test_main.cpp
@@ -36,7 +45,7 @@ Include(FetchContent)
 FetchContent_Declare(
   Catch2
   GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-  GIT_TAG        v3.0.0-preview5
+  GIT_TAG        v3.0.1
 )
 
 FetchContent_MakeAvailable(Catch2)
@@ -137,5 +146,5 @@ else()
 endif()
 endsnippet
 snippet l "log a variable" !b
-  message("$1: \${${1}}")
+message("$1: \${${1}}")
 endsnippet

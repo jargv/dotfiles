@@ -10,8 +10,8 @@ local fmtjson = require("fmtjson")
 local fmtelapsed = require("fmtelapsed")
 
 local starting_points = {
-  cpp = {ext = {"cpp", "hpp"}, cmd = "cmake --build build"},
-  hpp = {ext = {"cpp", "hpp"}, cmd = "cmake --build build"},
+  cpp = {ext = {"cpp", "hpp"}, cmd = "cmake --build build", run = "build/exe"},
+  hpp = {ext = {"cpp", "hpp"}, cmd = "cmake --build build", run = "build/exe"},
   ts = {cmd = "yarn run build"},
 }
 
@@ -346,7 +346,7 @@ function api.load_errors()
   end
 
   if jobToShow == nil then
-    vim.cmd [[ cclose ]]
+    vim.cmd.cclose()
     return
   end
 
@@ -359,10 +359,40 @@ function api.load_errors()
     exec "normal \<cr>"
     cd %s
   ]]):format(jobToShow.config.dir, jobToShow.buf, starting_dir))
-
 end
 
-function api.view_output()
+function api.open_error_output_buffers()
+  for _, job in ipairs(build_jobs) do
+    if job.buf then
+      local failed = job.exit_code ~= nil and job.exit_code ~= 0
+      local info = vim.fn.getbufinfo(job.buf)
+      -- close all windows. Failed jobs will be reopened later
+      if #info ~= 0 then
+        for _,win in ipairs(info[1].windows) do
+          vim.api.nvim_win_close(win, {force=true})
+        end
+      end
+    end
+  end
+
+  for _, job in ipairs(build_jobs) do
+    local failed = job.exit_code ~= nil and job.exit_code ~= 0
+    if job.buf and failed then
+      if job.buf and failed then
+        vim.cmd(([[
+          botright vertical sbuffer %d
+          normal G
+          setlocal nonumber
+        ]]):format(job.buf))
+      end
+    end
+  end
+  vim.cmd [[
+    wincmd =
+  ]]
+end
+
+function api.open_all_output_buffers()
   for _,job in pairs(build_jobs) do
     if job.buf then
       vim.cmd(([[
@@ -403,14 +433,20 @@ function api.add_from_current_file()
 
   local dir = vim.fn.expand("%:p:h")
 
-  local name = #build_jobs == 0 and "build" or nil
+  table.insert(build_config.jobs, {
+    name = "build",
+    dir = dir,
+    ext = (starting_points[ext] or {}).ext or ext,
+    cmd = (starting_points[ext] or {}).cmd,
+  })
 
   table.insert(build_config.jobs, {
+    name = "run",
     dir = dir,
-    ext = (starting_points[ext] or {}).extensinos or ext,
-    cmd = (starting_points[ext] or {}).cmd,
-    name = name
+    after = "build",
+    cmd = (starting_points[ext] or {}).run,
   })
+
   api.edit_config()
 end
 
