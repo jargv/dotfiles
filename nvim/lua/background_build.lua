@@ -304,7 +304,9 @@ local function setup_build_jobs(config, oldJobs)
 
   -- clean up any buffers that weren't reused
   for _,buf in pairs(jobBuffersByName) do
-    vim.api.nvim_buf_delete(buf, {force=true})
+    if vim.api.nvim_buf_is_valid(buf) then
+      vim.api.nvim_buf_delete(buf, {force=true})
+    end
   end
 
   vim.api.nvim_create_autocmd("User BackgroundBuildJobStatusChanged", {
