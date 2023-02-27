@@ -671,6 +671,7 @@ vim.api.nvim_create_augroup(augroup, {
 
 -- terminal config {{{1
 terminal["<A-u>"] = "<esc>icd ..<cr>"
+terminal["<C-->"] = "<esc>icd ..<cr>"
 terminal["<A-r>"] = "<c-r>"
 terminal["<A-p>"] = "p"
 terminal["<A-y>"] = ""
