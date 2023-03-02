@@ -125,6 +125,11 @@ function newb.create(split_command)
           print("use '-' key instead!")
         end
       })
+      vim.api.nvim_buf_set_keymap(buf, "n", "<bs>", "",  {
+        callback = function()
+          vim.cmd[[ exec "normal \<c-o>" ]]
+        end
+      })
       for _,val in ipairs(new_buffer_options) do
         if type(val.cmd) == 'function' then
           vim.api.nvim_buf_set_keymap(buf, "n", val.key, "",  {

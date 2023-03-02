@@ -749,7 +749,10 @@ normal["<leader>-"] = newb.create("new")
 normal["<leader>="]= newb.create("vnew")
 terminal["<M-->"] = newb.create("new")
 terminal["<M-=>"] = newb.create("vnew")
-normal["<leader>."] = newb.create()
+leader["."] = function()
+  print("remapped to <bs>!")
+end
+normal["<bs>"] = newb.create()
 
 
 
