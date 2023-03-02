@@ -14,14 +14,23 @@ if ${1:false} then
 end
 
 endsnippet
-snippet class "Make a class" !b
-local method = {}
-local meta = {__index=method}
-local function ${1:foo}()
-  return setmetatable({
-    $0
-  }, meta)
-end
+snippet class "make a 'class'" !b
+local ${1:`!v expand('%:t:r')`} = setmetatable({__name = "$1"}, {
+  __call = function($1, config)
+    if getmetatable(config[1]) == $1 then
+      return config[1]
+    end
+    return setmetatable({
+      $2
+    }, $1)
+  end
+})
+$1.__index = $1
+
+return $1
+endsnippet
+snippet sm "setmetatable" !b
+setmetatable({$1},{$2})
 endsnippet
 snippet r "require something" !b
 local ${1:module} = require "$3${2:$1}"
@@ -38,7 +47,7 @@ endsnippet
 snippet log "print text" !b
 print "$1"
 endsnippet
-snippet type "type assert" !b
+snippet ta "type assert" !b
 assert(type($1) == '$2', 1)
 endsnippet
 
