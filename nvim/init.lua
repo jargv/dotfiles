@@ -1399,6 +1399,8 @@ end
 efmt "%f(%l%.%c): error TS%n:%m"
 
 -- c++
+-- asserts
+efmt "%[%^:]%#: %f:%l: %m"
 -- clang and gcc
 efmt "%f:%l:%c: error: %m"
 -- catch2 errors
