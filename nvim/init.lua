@@ -484,6 +484,17 @@ vim.o.background = "dark"
 vim.g.loaded_matchparen = 1
 
 -- prototype settings {{{1
+leader.l = function()
+  local pos = vim.fn.getpos('.')
+  vim.defer_fn(function()
+    vim.cmd[[
+      :silent :windo if &buftype != "nofile" | :e! | endif
+    ]]
+    vim.defer_fn(function()
+      vim.fn.setpos('.', pos)
+    end, 0)
+  end, 0)
+end
 visual.v = function()
   vim.cmd.normal("`[o`]")
 end
