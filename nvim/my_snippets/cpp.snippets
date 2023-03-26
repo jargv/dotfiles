@@ -102,24 +102,31 @@ endsnippet
 
 snippet def "default all the sepcial member functions" !b
 ${1:`!v
-	get(matchlist(getline(search('^\s*class\s*\([A-Z]\w*\)', 'bWn')), '\s*class\s*\([A-Z]\w*\)'), 1, '')
-`}() = default;
-$1($1&&) = default;
-$1($1 const&) = default;
-$1& operator= ($1&&) = default;
-$1& operator= ($1 const&) = default;
-~$1() = default;
+get(matchlist(getline(search('^\s*\(class\|struct\)\s*\(\w*\)', 'bWn')), '\s*\(class\|struct\)\s*\(\w*\)'), 2, '')
+`}($1&&) = def;
+$1($1 const&) = def;
+$1& operator= ($1&&) = def;
+$1& operator= ($1 const&) = def;
 endsnippet
+
 snippet del "delete all the special member functions" !b
 ${1:`!v
-	get(matchlist(getline(search('^\s*class\s*\([A-Z]\w*\)', 'bWn')), '\s*class\s*\([A-Z]\w*\)'), 1, '')
-`}() = delete;
-$1($1&&) = delete;
+get(matchlist(getline(search('^\s*\(class\|struct\)\s*\(\w*\)', 'bWn')), '\s*\(class\|struct\)\s*\(\w*\)'), 2, '')
+`}($1&&) = delete;
 $1($1 const&) = delete;
 $1& operator= ($1&&) = delete;
 $1& operator= ($1 const&) = delete;
-~$1() = delete;
 endsnippet
+
+snippet mov "move-only special member functions" !b
+${1:`!v
+get(matchlist(getline(search('^\s*\(class\|struct\)\s*\(\w*\)', 'bWn')), '\s*\(class\|struct\)\s*\(\w*\)'), 2, '')
+`}($1&&) = default;
+$1& operator= ($1&&) = default;
+$1($1 const&) = delete;
+$1& operator= ($1 const&) = delete;
+endsnippet
+
 snippet base "special members for a base class" !b
 ${1:`!v
   get(matchlist(getline(search('^\s*class\s*\([A-Z]\w*\)', 'bWn')), '\s*class\s*\([A-Z]\w*\)'), 1, '')
