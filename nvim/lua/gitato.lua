@@ -439,7 +439,12 @@ function gitato.open_viewer(diff_branch)
       return
     end
 
-    if (status and status:sub(2,2) == "M") then
+    if
+      status and (
+        status:sub(2,2) == "M" or
+        status:sub(2,2) == "D"
+      )
+    then
       git_cmd("checkout -- "..file, git_repo_root)
       print("restored!")
     else
