@@ -1,10 +1,11 @@
 --[[
 
 stuff to look into:
+ - better autocomplete (after commas, things like that)
  - treesitter text objects
  - display git ignore status in status line
- - better autocomplete (after commas, things like that)
  - DAP setup, workflow, use
+ - move to lazy.nvim for plugins (config next to plugin)
 
 TODO:
  - fix up the smart enter key
@@ -21,7 +22,7 @@ local mapping = require("mapping")
 
 local leader = mapping.withPrefix("<leader>")
 local normal = mapping()
-local visual = mapping.inMode("v")
+local visual = mapping.inMode("x")
 local terminal = mapping.inMode("t")
 
 -- plugins {{{1
@@ -483,7 +484,9 @@ vim.o.background = "dark"
 vim.g.loaded_matchparen = 1
 
 -- prototype settings {{{1
-visual.v = "`[o`]"
+visual.v = function()
+  vim.cmd.normal("`[o`]")
+end
 vim.opt.updatetime = 300
 local telescope = require("telescope.builtin")
 leader.jf = function()
@@ -1281,23 +1284,27 @@ normal.gd = function()
   vim.cmd("normal z<cr>")
 end
 
-vim.cmd [[
-nnoremap <silent> <leader>Y
-      \ <cmd>wall<cr>
-      \ <cmd>ToggleDiagOff<cr>
-      \ <cmd>cclose<cr>
+leader.Y = function()
+  vim.cmd.wall()
+  vim.cmd.ToggleDiagOff()
+  vim.cmd.cclose()
+end
 
-nnoremap <silent> <leader>y <cmd>call FollowLspErrors()<cr>
-func! FollowLspErrors()
-  ToggleDiagDefault
-  cclose
-  lua vim.diagnostic.setqflist({open = false})
-  cwindow
-  if &ft == "qf"
-    normal 
-  endif
-endfunction
-]]
+leader.y = function()
+  vim.cmd.w()
+  vim.defer_fn(function()
+    vim.cmd.ToggleDiagDefault()
+    vim.defer_fn(function()
+      vim.cmd.lclose()
+      vim.diagnostic.setloclist({open = false})
+      vim.cmd.lwindow()
+
+      if vim.bo.filetype == "qf" then
+        vim.cmd[[ exec "normal \<cr>" ]]
+      end
+    end, 100)
+  end, 100)
+end
 
 normal.gD = function() vim.lsp.buf.declaration() end
 normal.gi = function() vim.lsp.buf.implementation() end
