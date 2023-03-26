@@ -3,6 +3,8 @@
 stuff to look into:
  - treesitter text objects
  - display git ignore status in status line
+ - better autocomplete (after commas, things like that)
+ - DAP setup, workflow, use
 
 TODO:
  - fix up the smart enter key
@@ -165,6 +167,8 @@ Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 Plug 'hrsh7th/nvim-cmp'
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
 
@@ -637,7 +641,7 @@ vim.opt.switchbuf = "useopen,usetab"
 vim.opt.undofile = true
 vim.opt.hidden = true
 vim.opt.history = 10000
-vim.opt.completeopt = "menuone,noinsert"
+vim.opt.completeopt = "menuone,noinsert,noselect"
 vim.opt.infercase = true
 vim.opt.mouse = "a"
 if vim.fn.has("mouse_sgr") ~= 0 then
@@ -1369,22 +1373,49 @@ end
 local cmp = require 'cmp'
 cmp.setup({
   snippet = {
+    expand = function(args)
+      vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+    end,
   },
   window = {
     completion = cmp.config.window.bordered(),
     documentation = cmp.config.window.bordered(),
   },
   mapping = cmp.mapping.preset.insert({
-    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-k>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-j>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.abort(),
-    ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    ['<CR>'] = cmp.mapping.confirm({ select = false }),
   }),
   sources = cmp.config.sources({
-    { name = 'nvim_lsp' },
+    {
+      name = 'nvim_lsp',
+      entry_filter = function(entry, ctx)
+        return entry:get_kind() ~= cmp.lsp.CompletionItemKind.Text and entry:get_kind() ~= cmp.lsp.CompletionItemKind.Snippet
+      end
+    },
     { name = 'buffer' },
     { name = 'path' },
+  }, {
+    { name = 'snippet', max_item_count = 0 },
+  })
+})
+
+-- `/` cmdline setup.
+cmp.setup.cmdline('/', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'buffer' }
+  }
+})
+
+-- `:` cmdline setup.
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
   })
 })
 
