@@ -804,7 +804,11 @@ leader.Go = git_open(default_upstream)
 -- background build setup {{{1
 local build = require("background_build")
 leader.Me = build.edit_config
-leader.e = build.load_errors
+leader.e = function()
+  vim.fn.setloclist(0, {})
+  vim.cmd.lclose()
+  build.load_errors()
+end
 leader.E = build.open_error_output_buffers
 leader.m = build.run_all_not_running
 leader.Mw = build.open_all_output_buffers
@@ -1161,11 +1165,6 @@ vim.cmd [[
     tnoremap <M-x> :call MySmartQuit()<cr>
     nnoremap <leader><leader> :wall<cr>:w<cr>
 
-  "next and previous location/error/vimgrep {{{2
-    nnoremap <expr> <silent> <leader>n ((len(getqflist()) ? ":cn" : ":lnext")."<CR>")
-    nnoremap <expr> <silent> <leader>p ((len(getqflist()) ? ":cp" : ":lprev")."<CR>")
-    nnoremap <expr> <silent> <leader>N ((len(getqflist()) ? ":cnf" : ":lnf")."<CR>")
-    nnoremap <expr> <silent> <leader>P ((len(getqflist()) ? ":cpf" : ":lpf")."<CR>")
   "K as the opposite of Join {{{2
     xnoremap <silent> K <Nop>
     nnoremap <silent> K :call MyLineFormat() <CR>
@@ -1225,6 +1224,28 @@ vim.cmd [[
             \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
   "}}}
 ]]
+
+-- next and previous location/error {{{2
+;(function()
+  function make_move_fn(qf, ll, close)
+    return function()
+      local isqf = #vim.fn.getloclist(0) == 0
+      local ok = pcall(isqf and qf or ll)
+      if not ok then
+        if isqf then
+          vim.cmd.cclose()
+        else
+          vim.cmd.lclose()
+        end
+      end
+    end
+  end
+
+  leader.n = make_move_fn(vim.cmd.cn, vim.cmd.lnext)
+  leader.p = make_move_fn(vim.cmd.cp, vim.cmd.lprev)
+  leader.N = make_move_fn(vim.cmd.cnf, vim.cmd.lnf)
+  leader.P = make_move_fn(vim.cmd.cpf, vim.cmd.lpf)
+end)()
 
 -- zoom {{{1
 vim.opt.winminheight = 1
@@ -1291,19 +1312,16 @@ leader.Y = function()
 end
 
 leader.y = function()
+  vim.cmd.cclose()
   vim.cmd.w()
-  vim.defer_fn(function()
-    vim.cmd.ToggleDiagDefault()
-    vim.defer_fn(function()
-      vim.cmd.lclose()
-      vim.diagnostic.setloclist({open = false})
-      vim.cmd.lwindow()
+  vim.cmd.ToggleDiagDefault()
+  vim.cmd.lclose()
+  vim.diagnostic.setloclist({open = false})
+  vim.cmd.lwindow()
 
-      if vim.bo.filetype == "qf" then
-        vim.cmd[[ exec "normal \<cr>" ]]
-      end
-    end, 100)
-  end, 100)
+  if vim.bo.filetype == "qf" then
+    vim.cmd[[ exec "normal \<cr>" ]]
+  end
 end
 
 normal.gD = function() vim.lsp.buf.declaration() end
