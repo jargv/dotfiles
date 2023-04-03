@@ -148,6 +148,7 @@ Plug 'trevordmiller/nova-vim'
 Plug 'AlessandroYorba/Arcadia'
 Plug 'jnurmine/Zenburn'
 Plug('sonph/onehalf', { rtp = 'vim' })
+Plug 'ntk148v/vim-horizon'
 -- }}}
 
 Plug 'nvim-lua/plenary.nvim'
@@ -477,6 +478,7 @@ vim.g.everforest_diagnostic_line_highlight = 0
 vim.g.everforest_diagnostic_virtual_text = 'grey' -- 'colored'
 vim.g.everforest_disable_terminal_colors = 0
 vim.cmd.colorscheme("everforest")
+--vim.cmd.colorscheme("horizon")
 vim.cmd [[ highlight LineNr guibg=#000000 guifg=grey ]]
 vim.o.background = "dark"
 
@@ -776,7 +778,15 @@ normal["<bs>"] = newb.create()
 
 -- git setup {{{1
 local gitato = require "gitato"
-local default_upstream = "origin/main"
+
+local function default_upstream()
+  local result = vim.fn.system("git config j.publish")
+  if vim.api.nvim_get_vvar("shell_error") ~= 0 then
+    return "origin/main"
+  end
+  return ("origin/%s"):format(result)
+end
+
 leader.gg = function() gitato.open_viewer() end
 leader.GG = function() gitato.open_viewer("origin/main") end
 
@@ -785,7 +795,7 @@ leader.d = function()
 end
 
 leader.D = function()
-  gitato.toggle_diff_against_git_ref(default_upstream)
+  gitato.toggle_diff_against_git_ref(default_upstream())
 end
 
 leader.gb = ":Gitsigns toggle_current_line_blame<cr>"
@@ -810,7 +820,7 @@ function git_open(diff_branch)
 end
 
 leader.go = git_open()
-leader.Go = git_open(default_upstream)
+leader.Go = git_open(default_upstream())
 
 -- background build setup {{{1
 local build = require("background_build")
