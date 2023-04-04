@@ -780,15 +780,15 @@ normal["<bs>"] = newb.create()
 local gitato = require "gitato"
 
 local function default_upstream()
-  local result = vim.fn.system("git config j.publish")
-  if vim.api.nvim_get_vvar("shell_error") ~= 0 then
+  local result = vim.fn.systemlist("git config j.publish")
+  if vim.api.nvim_get_vvar("shell_error") ~= 0 or #result == 0 then
     return "origin/main"
   end
-  return ("origin/%s"):format(result)
+  return ("origin/%s"):format(result[1])
 end
 
 leader.gg = function() gitato.open_viewer() end
-leader.GG = function() gitato.open_viewer("origin/main") end
+leader.GG = function() gitato.open_viewer(default_upstream()) end
 
 leader.d = function()
   gitato.toggle_diff_against_git_ref("HEAD")
