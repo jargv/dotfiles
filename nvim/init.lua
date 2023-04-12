@@ -1,14 +1,13 @@
 --[[
 
 stuff to look into:
- - better autocomplete (after commas, things like that)
  - treesitter text objects
- - display git ignore status in status line
  - DAP setup, workflow, use
  - move to lazy.nvim for plugins (config next to plugin)
 
 TODO:
- - fix up the smart enter key
+  - display git ignore status in status line
+ - fix up the smart enter key (and maybe smart tab)
 ]]
 
 -- setup {{{1
