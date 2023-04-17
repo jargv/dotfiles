@@ -206,7 +206,7 @@ export AWS_SDK_LOAD_CONFIG=true
 function chpwd() {
   emulate -LR zsh
   #ls -F --color=auto
-  ls -F -G
+  #ls -F -G
 
   # signal the cd to nvim
   if [[ -n "$NVIM" && $(command -v nvr) ]]; then

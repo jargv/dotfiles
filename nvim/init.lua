@@ -7,7 +7,8 @@ stuff to look into:
 
 TODO:
   - display git ignore status in status line
- - fix up the smart enter key (and maybe smart tab)
+  - fix up the smart enter key (and maybe smart tab)
+  - Make ==== underline not pollute the clipboard (some register?)
 ]]
 
 -- setup {{{1

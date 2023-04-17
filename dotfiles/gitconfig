@@ -49,6 +49,7 @@
   fuckit = reset --hard
   pushupforce = ! git push --force-with-lease origin $(git rev-parse --abbrev-ref @)
   pushup = ! git push origin $(git rev-parse --abbrev-ref @)
+  sub = ! git submodule update --init --recursive
 [tig]
   git-colors = no
   commit-order = topo
