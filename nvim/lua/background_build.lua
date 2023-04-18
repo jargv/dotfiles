@@ -12,6 +12,7 @@ local fmtelapsed = require("fmtelapsed")
 local starting_points = {
   cpp = {ext = {"cpp", "hpp"}, cmd = "cmake --build build", run = "build/exe"},
   hpp = {ext = {"cpp", "hpp"}, cmd = "cmake --build build", run = "build/exe"},
+  go = {cmd = "go build", run = "ls"},
   ts = {cmd = "yarn run build"},
 }
 

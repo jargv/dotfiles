@@ -16,18 +16,13 @@ end
 endsnippet
 snippet class "make a 'class'" !b
 local ${1:`!v expand('%:t:r')`} = setmetatable({__name = "$1"}, {
-  __call = function($1, config)
-    if getmetatable(config[1]) == $1 then
-      return config[1]
-    end
+  __call = function($1, args)
     return setmetatable({
       $2
     }, $1)
   end
 })
 $1.__index = $1
-
-return $1
 endsnippet
 snippet sm "setmetatable" !b
 setmetatable({$1},{$2})
@@ -37,7 +32,7 @@ local ${1:module} = require "$3${2:$1}"
 $0
 endsnippet
 snippet for "for loop" !b
-for ${3:i}, ${2:val} in $4pairs($1) do
+for ${3:key}, ${2:val} in $4pairs($1) do
   $0
 end
 endsnippet
