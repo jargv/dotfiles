@@ -149,6 +149,7 @@ Plug 'AlessandroYorba/Arcadia'
 Plug 'jnurmine/Zenburn'
 Plug('sonph/onehalf', { rtp = 'vim' })
 Plug 'ntk148v/vim-horizon'
+Plug 'navarasu/onedark.nvim'
 -- }}}
 
 Plug 'nvim-lua/plenary.nvim'
@@ -466,24 +467,41 @@ end
 vim.opt.termguicolors = true
 vim.opt.ttyfast = true
 
-vim.g.everforest_background = 'soft'
-vim.g.everforest_enable_italic = 1
-vim.g.everforest_cursor = 'orange'
-vim.g.everforest_sign_column_background = 'none'
-vim.g.everforest_dim_inactive_windows = 0
-vim.g.everforest_ui_contrast = 'low'
-vim.g.everforest_show_eob = 1
-vim.g.everforest_diagnostic_text_highlight = 1
-vim.g.everforest_diagnostic_line_highlight = 0
-vim.g.everforest_diagnostic_virtual_text = 'grey' -- 'colored'
-vim.g.everforest_disable_terminal_colors = 0
-vim.cmd.colorscheme("everforest")
---vim.cmd.colorscheme("horizon")
-vim.cmd [[ highlight LineNr guibg=#000000 guifg=grey ]]
-vim.o.background = "dark"
+if false then
+  vim.g.everforest_background = 'soft'
+  vim.g.everforest_enable_italic = 1
+  vim.g.everforest_cursor = 'orange'
+  vim.g.everforest_sign_column_background = 'none'
+  vim.g.everforest_dim_inactive_windows = 0
+  vim.g.everforest_ui_contrast = 'low'
+  vim.g.everforest_show_eob = 1
+  vim.g.everforest_diagnostic_text_highlight = 1
+  vim.g.everforest_diagnostic_line_highlight = 0
+  vim.g.everforest_diagnostic_virtual_text = 'grey' -- 'colored'
+  vim.g.everforest_disable_terminal_colors = 0
+  vim.cmd.colorscheme("everforest")
+  --vim.cmd.colorscheme("horizon")
+  vim.cmd [[ highlight LineNr guibg=#000000 guifg=grey ]]
+  vim.o.background = "dark"
 
---:NoMatchParen
-vim.g.loaded_matchparen = 1
+  --:NoMatchParen
+  vim.g.loaded_matchparen = 1
+else
+  vim.g.onedark_config = {
+    style = 'warm',
+    term_colors = true,
+    code_style = {
+      comments = "italic"
+    },
+    diagnostics = {
+      darker = true,
+      undercurl = true,
+      background = true,
+    }
+  }
+  vim.cmd.colorscheme("onedark")
+end
+
 
 -- prototype settings {{{1
 leader.l = function()
@@ -878,10 +896,13 @@ vim.cmd[[
   highlight clear User2
   highlight clear User3
   highlight clear User4
-
-  "used for current dir
+  highlight clear User5
   highlight clear User6
   highlight clear User7
+  highlight clear User8
+  highlight clear User9
+
+  "used for current dir
   exec "highlight User7 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Keyword'),'fg')
   exec "highlight User8 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Function'),'fg')
   exec "highlight User9 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Boolean'),'fg')
@@ -890,13 +911,13 @@ vim.cmd[[
   exec "highlight User1 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('StatusLine'),'fg')
 
   " running
-  exec "highlight User2 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Blue'),'fg')
+  exec "highlight User2 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Function'),'fg')
 
   " success
-  exec "highlight User3 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Green'),'fg')
+  exec "highlight User3 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('String'),'fg')
 
   " failed
-  exec "highlight User4 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Red'),'fg')
+  exec "highlight User4 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Identifier'),'fg')
 
   " separator
   exec "highlight User5 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Comment'),'fg')
