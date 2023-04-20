@@ -139,6 +139,9 @@ local function run_job(job)
     end
 
     vim.api.nvim_buf_set_lines(job.buf, -1, -1, false, output)
+    if job.config.stream then
+      job.stream_available = true
+    end
 
     for _, win in ipairs(wins_to_scroll) do
       vim.fn.win_execute(win, "normal G")
@@ -155,11 +158,16 @@ local function run_job(job)
   output(">>> starting job "..job_descriptor)
   output(">>> " .. job.config.cmd)
   output("")
+  job.stream_available = false
 
   local id = vim.fn.jobstart(job.config.cmd, {
     cwd = job.config.dir,
     on_exit = function(_, exit_code, _)
       job.exit_code = exit_code
+      if job.config.stream then
+        -- streaming jobs should stop
+        job.exit_code = 1
+      end
       job.id = nil
       local elapsed = vim.fn.localtime() - job.start_time
       output(">>> job "..job_descriptor.." exited with code:".. job.exit_code)
@@ -342,7 +350,10 @@ end
 function api.load_errors()
   local jobToShow = nil
   for _,job in pairs(build_jobs) do
-    if job.buf and job.exit_code ~= nil and job.exit_code ~= 0 then
+    local failed = job.exit_code ~= nil and job.exit_code ~= 0
+    local stream_available = job.config.stream and job.stream_available
+    local should_open = job.buf and (failed or stream_available)
+    if should_open then
       jobToShow = job
       break
     end
@@ -362,12 +373,17 @@ function api.load_errors()
     exec "normal \<cr>"
     cd %s
   ]]):format(jobToShow.config.dir, jobToShow.buf, starting_dir))
+
+  if jobToShow.config.stream then
+    -- clear the buffer
+    jobToShow.stream_available = false
+    vim.api.nvim_buf_set_lines(jobToShow.buf, 0, -1, false, {})
+  end
 end
 
 function api.open_error_output_buffers()
   for _, job in ipairs(build_jobs) do
     if job.buf then
-      local failed = job.exit_code ~= nil and job.exit_code ~= 0
       local info = vim.fn.getbufinfo(job.buf)
       -- close all windows. Failed jobs will be reopened later
       if #info ~= 0 then
@@ -380,14 +396,14 @@ function api.open_error_output_buffers()
 
   for _, job in ipairs(build_jobs) do
     local failed = job.exit_code ~= nil and job.exit_code ~= 0
-    if job.buf and failed then
-      if job.buf and failed then
-        vim.cmd(([[
-          botright vertical sbuffer %d
-          normal G
-          setlocal nonumber
-        ]]):format(job.buf))
-      end
+    local stream_available = job.config.stream and job.stream_available
+    local should_open = job.buf and (failed or stream_available)
+    if should_open then
+      vim.cmd(([[
+        botright vertical sbuffer %d
+        normal G
+        setlocal nonumber
+      ]]):format(job.buf))
     end
   end
   vim.cmd [[
@@ -459,7 +475,22 @@ function api.statusline()
   for _,job in pairs(build_jobs) do
     table.insert(parts, sep)
     sep = "%5* | "
-    if job.start_time == nil then
+    if job.config.stream then
+      if job.exit_code then
+        -- stream jobs should never stop
+        table.insert(parts, "%4*")
+        table.insert(parts, job.config.name..": stream stopped")
+      elseif job.id == nil then
+        table.insert(parts, "%1*")
+        table.insert(parts, job.config.name..": stream not started")
+      elseif job.stream_available then
+        table.insert(parts, "%6*")
+        table.insert(parts, job.config.name..": stream available")
+      else
+        table.insert(parts, "%3*")
+        table.insert(parts, job.config.name..": stream pending")
+      end
+    elseif job.start_time == nil then
       table.insert(parts, "%1*")
       table.insert(parts, job.config.name..": not started")
     elseif job.exit_code == nil then

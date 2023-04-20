@@ -882,9 +882,9 @@ vim.cmd[[
   "used for current dir
   highlight clear User6
   highlight clear User7
-  exec "highlight User6 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Keyword'),'fg')
-  exec "highlight User7 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Function'),'fg')
-  exec "highlight User8 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Boolean'),'fg')
+  exec "highlight User7 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Keyword'),'fg')
+  exec "highlight User8 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Function'),'fg')
+  exec "highlight User9 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Boolean'),'fg')
 
   " not started
   exec "highlight User1 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('StatusLine'),'fg')
@@ -900,17 +900,20 @@ vim.cmd[[
 
   " separator
   exec "highlight User5 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Comment'),'fg')
+
+  " awaiting stream
+  exec "highlight User6 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Operator'),'fg')
 ]]
 
 -- left side
 vim.opt.statusline = ""
 vim.opt.statusline:append "%y" -- filetype
-vim.opt.statusline:append "%6*" -- User6 highlight
+vim.opt.statusline:append "%7*" -- User6 highlight
 vim.opt.statusline:append " %<" -- truncate here, if needed
 vim.opt.statusline:append " %{fnamemodify(getcwd(),':~')}/" -- current dir
-vim.opt.statusline:append "%7*" -- User7 highlight
+vim.opt.statusline:append "%8*" -- User7 highlight
 vim.opt.statusline:append "%{GetRelativeFilename()}" -- file name relative to cwd
-vim.opt.statusline:append "%8*" -- User8 highlight
+vim.opt.statusline:append "%9*" -- User8 highlight
 vim.opt.statusline:append "%{GetSymlinkTarget()}" -- file name relative to cwd
 vim.opt.statusline:append "%#StatusLine#" -- regular statusline highlight
 vim.opt.statusline:append " %m" -- modified flag -- regular statusline highlight
@@ -1484,7 +1487,6 @@ efmt "%f:%l:%c: error: %m"
 efmt "%E%f:%l: FAILED:"
 efmt "%C %#%m"
 efmt "%Z#"
-
 
 -- golang
 efmt "%f:%l:%c: %#%m"
