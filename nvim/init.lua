@@ -467,7 +467,8 @@ end
 vim.opt.termguicolors = true
 vim.opt.ttyfast = true
 
-if false then
+local colorscheme = "onedark"
+if colorscheme == "everforest" then
   vim.g.everforest_background = 'soft'
   vim.g.everforest_enable_italic = 1
   vim.g.everforest_cursor = 'orange'
@@ -480,13 +481,11 @@ if false then
   vim.g.everforest_diagnostic_virtual_text = 'grey' -- 'colored'
   vim.g.everforest_disable_terminal_colors = 0
   vim.cmd.colorscheme("everforest")
-  --vim.cmd.colorscheme("horizon")
   vim.cmd [[ highlight LineNr guibg=#000000 guifg=grey ]]
   vim.o.background = "dark"
-
   --:NoMatchParen
   vim.g.loaded_matchparen = 1
-else
+elseif colorscheme == "onedark" then
   vim.g.onedark_config = {
     style = 'warm',
     term_colors = true,
@@ -500,6 +499,8 @@ else
     }
   }
   vim.cmd.colorscheme("onedark")
+elseif colorscheme == "horizon" then
+  vim.cmd.colorscheme("horizon")
 end
 
 
