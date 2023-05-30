@@ -68,6 +68,23 @@ local function cd_prompt(dir, chdir)
   end
 end
 
+local function autojump_prompt(_, chdir)
+  local autojump_input = vim.fn.input({
+    prompt = "cd ",
+    cancelreturn = nil,
+  })
+
+  if autojump_input == nil then
+    return
+  end
+
+  local output = vim.fn.systemlist("autojump "..autojump_input)
+
+  if #output ~= 0 then
+    chdir(output[1])
+  end
+end
+
 local new_buffer_options = {
   {key=".", cmd=":e term://$dir///bin/zsh", desc="terminal"},
   {key="d", cmd=":Oil $dir",                desc="directory"},
@@ -79,6 +96,7 @@ local new_buffer_options = {
   {key="r", cmd=proj_root,                  desc="move to git root"},
   {key="-", cmd=updir,                      desc="cd .."},
   {key="c", cmd=cd_prompt,                  desc="cd <dir>"},
+  {key="j", cmd=autojump_prompt,            desc="autojump <dir>"},
   {key="_", cmd=return_to_start_dir,        desc="cd starting directory"},
   {key=",", cmd=sync_dir,                   desc="sync dir"},
   {key="q", cmd=":q!",                      desc="quit"},
