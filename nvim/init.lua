@@ -505,17 +505,6 @@ end
 
 
 -- prototype settings {{{1
-leader.l = function()
-  local pos = vim.fn.getpos('.')
-  vim.defer_fn(function()
-    vim.cmd[[
-      :silent :windo if &buftype != "nofile" | :e! | endif
-    ]]
-    vim.defer_fn(function()
-      vim.fn.setpos('.', pos)
-    end, 0)
-  end, 0)
-end
 visual.v = function()
   vim.cmd.normal("`[o`]")
 end
@@ -1375,7 +1364,7 @@ normal.gi = function() vim.lsp.buf.implementation() end
 normal.gu = function() vim.lsp.buf.references() end
 normal.gh = function() vim.lsp.buf.hover() end
 leader.rn = function() vim.lsp.buf.rename(vim.fn.input('>')) end
-leader.rf = function() vim.lsp.buf.code_action() end
+leader.rf = function() vim.lsp.buf.code_action{apply = true} end
 
 if lsp_configured == nil then
   local lspconfig = require "lspconfig"
