@@ -30,6 +30,19 @@ local viewer_help = {
   "## q - quit"
 }
 
+local unsupported_diff_extensions = {
+  ".aseprite", ".png"
+}
+
+local function file_diff_not_supported(name)
+  for _, ext in ipairs(unsupported_diff_extensions) do
+    if name:sub(-#ext) == ext then
+      return true
+    end
+  end
+  return false
+end
+
 local not_a_repo_error_msg = "ERROR: Is this a git repo?"
 
 local current_diff_buffer = nil
@@ -288,7 +301,7 @@ function gitato.open_viewer(diff_branch)
     -- if nil, clean up the current diff windows
     local status, file = get_status_and_file_from_current_line()
 
-    if file == nil or file == "" then
+    if file == nil or file == "" or file_diff_not_supported(file) then
       close_view_window()
       return
     end
