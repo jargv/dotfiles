@@ -1063,11 +1063,15 @@ vim.cmd[[
 -- tabline {{{1
 vim.cmd [[
   func! MyTabLabel(n)
+    let setName = gettabvar(a:n, "tabname")
+    if setName != ""
+      return setName
+    end
     let buflist = tabpagebuflist(a:n)
     let winnr = tabpagewinnr(a:n)
     let current = fnamemodify(bufname(buflist[winnr - 1]),':t')
     if current == ""
-	let current = '[new file]'
+      let current = '[new file]'
     endif
     return current
   endfunction
@@ -1515,3 +1519,9 @@ end
 
 -- shell hooks {{{1
 require "shell_hooks"
+
+-- tab names {{{1
+normal["<A-n>"] = function()
+  vim.t.tabname = vim.fn.input(">", vim.t.tabname or "")
+  vim.o.tabline = vim.o.tabline -- force a redraw to pick up the name
+end
