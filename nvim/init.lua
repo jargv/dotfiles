@@ -1386,7 +1386,11 @@ if lsp_configured == nil then
       navic.attach(client, buffnr)
     end
   }
-  lspconfig.tsserver.setup{capabilities = capabilities}
+
+  lspconfig.tsserver.setup{
+    capabilities = capabilities,
+    filetypes = {"typescript", "typescriptreact", "typescript.tsx" }
+  }
 
   lspconfig.gopls.setup{
     capabilities = capabilities,
@@ -1423,7 +1427,15 @@ if lsp_configured == nil then
     }
   }
 
-  require'lspconfig'.bufls.setup{
+  lspconfig.bashls.setup {
+    capabilities = capabilities,
+  }
+
+  lspconfig.bufls.setup{
+    capabilities = capabilities,
+  }
+
+  lspconfig.flow.setup{
     capabilities = capabilities,
   }
 
