@@ -22,4 +22,7 @@ endsnippet
 snippet script "start a new script" !b
 #!/usr/bin/env bash
 set -euo pipefail
+pushd "$(dirname "$0")"
+
+popd
 endsnippet

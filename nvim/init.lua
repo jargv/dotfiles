@@ -711,6 +711,7 @@ vim.api.nvim_create_autocmd({"TermOpen", "BufEnter", "BufLeave"}, {
     if cmd.event == "TermOpen" then
       vim.bo.bufhidden = 'wipe'
       vim.wo.number = false
+      vim.wo.spell = false
     end
 
     -- insert mode shouldn't be affected by terminals
