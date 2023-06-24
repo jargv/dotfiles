@@ -377,6 +377,7 @@ function gitato.open_viewer(diff_branch)
     end
 
     vim.cmd("-tabnew")
+    vim.t.tabname = "gitato"
     main_buf_height = vim.api.nvim_win_get_height(0)
 
     local tmp_buf = vim.fn.bufnr("%")
