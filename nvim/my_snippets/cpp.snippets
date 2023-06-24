@@ -103,10 +103,10 @@ endsnippet
 snippet def "default all the sepcial member functions" !b
 ${1:`!v
 get(matchlist(getline(search('^\s*\(class\|struct\)\s*\(\w*\)', 'bWn')), '\s*\(class\|struct\)\s*\(\w*\)'), 2, '')
-`}($1&&) = def;
-$1($1 const&) = def;
-$1& operator= ($1&&) = def;
-$1& operator= ($1 const&) = def;
+`}($1&&) = default;
+$1($1 const&) = default;
+$1& operator= ($1&&) = default;
+$1& operator= ($1 const&) = default;
 endsnippet
 
 snippet del "delete all the special member functions" !b
@@ -302,4 +302,7 @@ struct ${1}View : ui::ViewBase<$1View, $1ViewConfig> {
     .text = "$1View is cool",
   });
 };
+endsnippet
+snippet dump_size "dump the size of a type at compile time" !b
+char* (*thing)[sizeof($1)] = 1;
 endsnippet
