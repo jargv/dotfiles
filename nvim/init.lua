@@ -514,9 +514,6 @@ leader.jf = function()
   local dir = require("current_dir")()
   telescope.find_files({cwd = dir})
 end
-leader.jb = function()
-  telescope.buffers()
-end
 leader.jt = function()
   telescope.treesitter()
 end
@@ -544,6 +541,10 @@ end
 leader['j/'] = function()
   local dir = require("current_dir")()
   telescope.live_grep({cwd = dir})
+end
+
+leader['/'] = function()
+  telescope.lsp_document_symbols({fname_width=70, show_line=true})
 end
 
 -- settings {{{1
@@ -1370,6 +1371,10 @@ normal.gu = function() vim.lsp.buf.references() end
 normal.gh = function() vim.lsp.buf.hover() end
 leader.rn = function() vim.lsp.buf.rename(vim.fn.input('>')) end
 leader.rf = function() vim.lsp.buf.code_action{apply = true} end
+normal["<cr>"] = function()
+  pcall(vim.lsp.buf.code_action, {apply = true})
+  pcall(vim.cmd.lnext)
+end
 
 if lsp_configured == nil then
   local lspconfig = require "lspconfig"
