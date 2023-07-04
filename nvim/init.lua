@@ -6,7 +6,6 @@ stuff to look into:
  - move to lazy.nvim for plugins (config next to plugin)
 
 TODO:
-  - statusline updates regularly instead of on-demand (for build)
   - display git ignore status in status line
   - fix up the smart enter key (and maybe smart tab)
   - Make ==== underline not pollute the clipboard (some register?)
@@ -1546,3 +1545,17 @@ normal["<A-n>"] = function()
   vim.t.tabname = vim.fn.input(">", vim.t.tabname or "")
   vim.o.tabline = vim.o.tabline -- force a redraw to pick up the name
 end
+
+-- statusline update {{{1
+if statusline_timer ~= nil then
+  statusline_timer:stop()
+end
+
+statusline_timer = vim.loop.new_timer();
+statusline_timer:start(100, 100, function()
+  -- schedule a function to be run on the main thread
+  vim.defer_fn(function()
+      -- setting the option forces an update
+    vim.o.statusline = vim.o.statusline
+  end, 0)
+end)

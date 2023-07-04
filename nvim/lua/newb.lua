@@ -69,7 +69,7 @@ end
 
 local function autojump_prompt(_, chdir)
   local autojump_input = vim.fn.input({
-    prompt = "cd ",
+    prompt = "jump ",
     cancelreturn = nil,
   })
 
