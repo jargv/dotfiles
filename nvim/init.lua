@@ -6,6 +6,7 @@ stuff to look into:
  - move to lazy.nvim for plugins (config next to plugin)
 
 TODO:
+  - statusline updates regularly instead of on-demand (for build)
   - display git ignore status in status line
   - fix up the smart enter key (and maybe smart tab)
   - Make ==== underline not pollute the clipboard (some register?)
@@ -310,7 +311,8 @@ vim.g.ale_fixers = {
   javascriptreact = {'prettier'},
   css  = {'prettier'},
   go  = {'goimports'},
-  -- c = {'clang-format', 'clangtidy'},
+  -- c = {'clang-format'},
+  -- cpp = {'clang-format'},
 }
 
 vim.g.ale_linters_explicit = 1
@@ -805,7 +807,7 @@ leader.d = function()
 end
 
 leader.D = function()
-  gitato.toggle_diff_against_git_ref(default_upstream())
+  gitato.toggle_diff_against_git_ref(vim.fn.input(">", default_upstream()))
 end
 
 leader.gb = ":Gitsigns toggle_current_line_blame<cr>"

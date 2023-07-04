@@ -1,5 +1,6 @@
 --[[
 TODOS:
+  - view for a single file, going back through its revisions
   - recompute gitato view width when status changes
   - Fix bug when status is longer than the window (rare)
   - Completion help when changing diff_branch
