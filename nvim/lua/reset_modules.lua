@@ -11,6 +11,8 @@ return function()
   -- "unload" each package to ensure it's reloaded on next require
   for file in module_dir_ls:gmatch("[^\r\n]+") do
     local pkg_name = file:match("^(.*).lua")
-    package.loaded[pkg_name] = nil
+    if pkg_name ~= nil then
+      package.loaded[pkg_name] = nil
+    end
   end
 end
