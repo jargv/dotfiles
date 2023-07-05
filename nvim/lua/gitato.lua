@@ -237,6 +237,7 @@ function gitato.open_viewer(diff_branch)
   end
 
   local main_buf = vim.api.nvim_create_buf(false, true)
+  local main_window
   local main_buf_width = 0
   local main_buf_height = 0
   local current_view_window = nil
@@ -263,9 +264,28 @@ function gitato.open_viewer(diff_branch)
 
   local function get_and_draw_status()
     local status = gitato.get_status(diff_branch, git_repo_root)
-    if status ~= nil then
-      draw_status(status)
+
+    if status == nil then
+      return
     end
+
+    main_buf_width = 0
+    for _,line in ipairs(status) do
+      if #line > main_buf_width then
+        main_buf_width = #line
+      end
+    end
+
+    for _,line in ipairs(viewer_help) do
+      if #line > main_buf_width then
+        main_buf_width = #line
+      end
+    end
+
+    -- add some padding and account for line numbers
+    main_buf_width = main_buf_width + extra_width_in_main_view
+    vim.api.nvim_win_set_width(main_window, main_buf_width)
+    draw_status(status)
   end
 
   local function get_status_and_file_from_line(line)
@@ -373,12 +393,6 @@ function gitato.open_viewer(diff_branch)
   end
 
   local function init()
-    local status = gitato.get_status(diff_branch, git_repo_root)
-    if status == nil then
-      print(not_a_repo_error_msg)
-      return
-    end
-
     vim.cmd("-tabnew")
     vim.t.tabname = "gitato"
     main_buf_height = vim.api.nvim_win_get_height(0)
@@ -389,21 +403,9 @@ function gitato.open_viewer(diff_branch)
     vim.cmd("set syntax=gitcommit")
     vim.bo.bufhidden = "wipe"
 
-    for _,line in ipairs(status) do
-      if #line > main_buf_width then
-        main_buf_width = #line
-      end
-    end
+    main_window = vim.api.nvim_get_current_win()
 
-    for _,line in ipairs(viewer_help) do
-      if #line > main_buf_width then
-        main_buf_width = #line
-      end
-    end
-
-    -- add some padding and account for line numbers
-    main_buf_width = main_buf_width + extra_width_in_main_view
-    draw_status(status)
+    get_and_draw_status()
   end
 
   local function keymap(key, action, callback)
@@ -419,6 +421,10 @@ function gitato.open_viewer(diff_branch)
 
   local function set_file_unstaged(file)
     git_cmd("reset -- "..file, git_repo_root)
+  end
+
+  local function set_file_deleted(file)
+    git_cmd("rm "..file, git_repo_root)
   end
 
   local function toggle_file_with_status_staged(file, status)
@@ -476,13 +482,18 @@ function gitato.open_viewer(diff_branch)
       get_and_draw_status()
     end)
   end)
+  keymap('D', '', function()
+    -- Not mapped to anything, but I keep doing it an accident :D
+  end)
   keymap('d', '', function()
     local status, file = get_status_and_file_from_current_line()
 
     if status == " D" then
-      git_cmd("rm "..file, git_repo_root)
+      set_file_deleted(file)
+    elseif status == "D " then
+      set_file_unstaged(file)
     elseif status == "??" then
-      local input = vim.fn.input("really delete '"..file.."'? (type yes):")
+      local input = vim.fn.input("really delete untracked filed '"..file.."'? (type yes):")
       if input ~= "yes" then
         print("you typed '"..input.."' will not deleting")
         return
@@ -513,6 +524,8 @@ function gitato.open_viewer(diff_branch)
       if status:sub(2,2) == "M" or status == "??" then
         none_were_staged = false
         set_file_staged(file)
+      elseif status:sub(2) == "D" then
+        set_file_deleted(file)
       end
     end, git_repo_root)
 
