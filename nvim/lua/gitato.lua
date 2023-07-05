@@ -57,12 +57,14 @@ function gitato.diff_off()
   current_diff_buffer = nil
 end
 
-function gitato.get_repo_root(arg)
-  if arg ~= nil then
-    error("gitato.get_repo_root takes zero args...")
+function gitato.get_repo_root(dir)
+  local first_dir
+  if dir ~= nil then
+    first_dir = dir
+  else
+    first_dir = vim.fn.expand("%:p") -- from current file
   end
 
-  local first_dir = vim.fn.expand("%:p") -- from current file
   local current = current_dir()
   local dirs_to_try = {
     first_dir,
