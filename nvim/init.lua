@@ -7,7 +7,7 @@ stuff to look into:
 
 TODO:
   - display git ignore status in status line
-  - fix up the smart enter key (and maybe smart tab)
+  - fix up smart tab
   - Make ==== underline not pollute the clipboard (some register?)
 ]]
 
@@ -21,7 +21,7 @@ local isMac = uname == "Darwin\n"
 local mapping = require("mapping")
 
 local leader = mapping.withPrefix("<leader>")
-local normal = mapping()
+local normal = mapping.inMode("n")
 local visual = mapping.inMode("x")
 local terminal = mapping.inMode("t")
 
@@ -1218,54 +1218,50 @@ vim.cmd [[
     noremap  :w<CR>
     noremap  :w<CR>
 
-  "smart enter key (TODO: fix){{{2
-    "inoremap <expr> <CR> SmartEnter()
-    func! SmartEnter()
-      let isLua = &ft == 'lua'
-      let isCpp = &ft == 'cpp'
-
-      "select from the popup menu if it's visible
-      " if pumvisible()
-      "   return '<cr>'
-      " endif
-
-      let line = getline('.')
-      let p = getpos('.')[2]
-      let lastChar = line[p-2]
-      let restOfLine = (line[p-1:])
-      let tab = repeat(' ', &sw)
-
-      if (len(restOfLine) >= 1)
-        let nextToLastChar  = line[p-1]
-        let brackets = lastChar == '{' && nextToLastChar == '}'
-        let parens   = lastChar == '(' && nextToLastChar == ')'
-        let squares  = lastChar == '[' && nextToLastChar == ']'
-        if brackets || parens || squares
-          if isCpp && brackets && line =~ '\v^\s*(class)|(struct)'
-            return 'A;\<esc>O'
-          endif
-          return '<cr>\<esc>O'
-        else
-          return '<cr>'
-        endif
-      elseif len(restOfLine) == 0
-        if     lastChar == '{' | return '<cr>}\<esc>O'
-        elseif lastChar == '(' | return '<cr>)\<esc>O'
-        elseif lastChar == '[' | return '<cr>]\<esc>O'
-        elseif isLua && pumvisible() && (line[-4:] == 'then' || line[-2:] == 'do') | return '<cr><cr>end\<esc>O'
-        elseif isLua && (line[-4:] == 'then' || line[-2:] == 'do') | return '<cr>end\<esc>O'
-        else
-          return '<cr>'
-        endif
-      endif
-      return "<cr>" "'<cr>\<esc>O'
-    endfunc
   "get the styles under the cursor {{{2
     map <leader>S :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
             \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
             \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
   "}}}
 ]]
+
+-- smart enter {{{2
+vim.api.nvim_set_keymap('i', '<cr>', '', {
+  expr = true,
+  replace_keycodes = true,
+  noremap = true,
+  nowait = true,
+  callback = function()
+    local is_lua = vim.bo.filetype == "lua"
+    local is_cpp = vim.bo.filetype == "cpp"
+
+    local line = vim.fn.getline('.')
+    local p = vim.fn.getpos('.')[3]
+    local lastChar = line:sub(p-1,p-1)
+    local restOfLine = line:sub(p)
+    local firstWord = line:match("%s*(%a*)")
+    local lastWord = line:match("(%a*)%s*$")
+    local lineIsType = is_cpp and (firstWord == 'struct' or firstWord == 'class')
+
+    if #restOfLine >= 1 then
+      local nextToLastChar = restOfLine:sub(1,1)
+      local brackets = lastChar == '{' and nextToLastChar == '}'
+      local parens   = lastChar == '(' and nextToLastChar == ')'
+      local squares  = lastChar == '[' and nextToLastChar == ']'
+      if is_cpp and brackets and lineIsType then
+        return '<cr><esc>A;<esc>O'
+      elseif brackets or parens or squares then
+        return '<cr><esc>O'
+      end
+    elseif is_cpp and lastChar == '{' and lineIsType then
+      return '<cr>};<esc>O'
+    elseif is_lua and (lastWord == "then" or lastWord == "do") then
+      return '<cr><esc>Aend<esc>O'
+    end
+
+    return '<cr>'
+  end
+})
 
 -- next and previous location/error {{{2
 ;(function()
@@ -1288,6 +1284,7 @@ vim.cmd [[
   leader.N = make_move_fn(vim.cmd.cnf, vim.cmd.lnf)
   leader.P = make_move_fn(vim.cmd.cpf, vim.cmd.lpf)
 end)()
+-- }}}
 
 -- zoom {{{1
 vim.opt.winminheight = 1
@@ -1555,7 +1552,7 @@ statusline_timer = vim.loop.new_timer();
 statusline_timer:start(100, 100, function()
   -- schedule a function to be run on the main thread
   vim.defer_fn(function()
-      -- setting the option forces an update
-    vim.o.statusline = vim.o.statusline
+    -- setting the option forces an update
+    -- vim.opt.statusline = vim.opt.statusline
   end, 0)
 end)

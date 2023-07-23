@@ -8,7 +8,6 @@ local function createMappingObject(mode, prefix)
     end,
     __newindex = function(map, key, val)
       local str = ""
-      local callback = nil
       local config = {
         noremap=true
       }
@@ -23,10 +22,6 @@ local function createMappingObject(mode, prefix)
       vim.api.nvim_set_keymap(mode, prefix..key, str, config)
     end
   })
-end
-
-function mapping.__call()
-  return createMappingObject("n", nil)
 end
 
 function mapping.withPrefix(prefix)

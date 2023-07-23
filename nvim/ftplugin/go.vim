@@ -65,23 +65,3 @@ nnoremap <buffer> <leader>;sh :call HighlightEmbedded('html', '`', '`')<cr>
 
 "error folding {{{1
 nnoremap <buffer> <leader>;f :ToggleGoErrorFolding<cr>
-
-"run goimports on save {{{1
-lua <<
-vim.api.nvim_create_autocmd("BufWritePre", {
-  group = vim.api.nvim_create_augroup("goimportsgroup", {clear = true}),
-  pattern = "*.go",
-  callback = function()
-    local cursor = vim.fn.getpos(".")
-    local last_line = vim.fn.getpos("$")[2]
-    vim.cmd [[silent :%!goimports]]
-    if 0 ~= vim.api.nvim_get_vvar("shell_error") then
-      vim.cmd[[ :undo ]]
-    end
-    local new_last_line = vim.fn.getpos("$")[2]
-    local lines_added = new_last_line - last_line
-    cursor[2] = cursor[2] + new_last_line - last_line
-    vim.fn.setpos('.', cursor)
-  end
-})
-.
