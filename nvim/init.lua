@@ -6,9 +6,8 @@ stuff to look into:
  - move to lazy.nvim for plugins (config next to plugin)
 
 TODO:
-  - display git ignore status in status line
-  - fix up smart tab
   - Make ==== underline not pollute the clipboard (some register?)
+  - display git ignore status in status line
 ]]
 
 -- setup {{{1
@@ -395,9 +394,9 @@ end)
 
 -- Plug  'SirVer/UltiSnips' {{{2
 Plug 'SirVer/UltiSnips'
-vim.g.UltiSnipsExpandTrigger="<tab>"
-vim.g.UltiSnipsJumpForwardTrigger="<tab>"
-vim.g.UltiSnipsJumpBackwardTrigger="<s-tab>"
+vim.g.UltiSnipsExpandTrigger=""
+vim.g.UltiSnipsJumpForwardTrigger=""
+vim.g.UltiSnipsJumpBackwardTrigger=""
 
 vim.g.UltiSnipsEditSplit = 'vertical'
 vim.g.UltiSnipsSnippetsDir = '~/config/nvim/my_snippets'
@@ -1263,6 +1262,47 @@ vim.api.nvim_set_keymap('i', '<cr>', '', {
   end
 })
 
+;(function()
+  local cmp = require "cmp"
+  vim.api.nvim_set_keymap('i', '<tab>', '', {
+    callback = function()
+      if 1 == vim.fn["UltiSnips#CanExpandSnippet"]() then
+        vim.fn["UltiSnips#ExpandSnippet"]()
+        return
+      end
+
+      if 1 == vim.fn["UltiSnips#CanJumpForwards"]() then
+        vim.fn["UltiSnips#JumpForwards"]()
+        return
+      end
+
+      local column = vim.fn.getpos('.')[3]
+      local lineBeforeCursor = vim.fn.getline('.'):sub(0,column-1)
+      if lineBeforeCursor:match('%S') then
+        cmp.complete()
+        return
+      end
+
+      local tabkey = vim.api.nvim_replace_termcodes("<tab>", true, false, true)
+      vim.api.nvim_feedkeys(tabkey, 'n', false)
+    end
+  })
+end)()
+
+vim.api.nvim_set_keymap('s', '<tab>', '', {
+  noremap = true,
+  callback = function()
+    if 1 == vim.fn["UltiSnips#CanJumpForwards"]() then
+      local seq = vim.api.nvim_replace_termcodes("<esc>a<tab>", true, false, true)
+      vim.api.nvim_feedkeys(seq, 'm', false)
+      return
+    end
+
+    local tabkey = vim.api.nvim_replace_termcodes("<tab>", true, false, true)
+    vim.api.nvim_feedkeys(tabkey, 'n', false)
+  end
+})
+
 -- next and previous location/error {{{2
 ;(function()
   function make_move_fn(qf, ll, close)
@@ -1464,6 +1504,8 @@ cmp.setup({
   mapping = cmp.mapping.preset.insert({
     ['<C-k>'] = cmp.mapping.scroll_docs(-4),
     ['<C-j>'] = cmp.mapping.scroll_docs(4),
+    ['<C-n>'] = cmp.mapping.select_next_item(),
+    ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<CR>'] = cmp.mapping.confirm({ select = false }),
   }),
