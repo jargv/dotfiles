@@ -28,6 +28,7 @@ local viewer_help = {
   "## h - git log (tig)",
   "## . - open terminal in the repo root",
   "## c - commit",
+  "## f - commit --amend",
   "## q - quit"
 }
 
@@ -183,7 +184,7 @@ function gitato.status_foreach(diff_branch, cb, repo_root)
   end
 end
 
-function gitato.commit(repo_root, post_commit)
+function gitato.commit(repo_root, post_commit, amend)
   -- first get the git status
   local git_status = vim.fn.systemlist(
     ("cd %s && git commit -v -v --dry-run"):format(repo_root)
@@ -211,11 +212,27 @@ function gitato.commit(repo_root, post_commit)
   end
   vim.api.nvim_buf_set_lines(buffer, -1, -1, false, message)
 
+  -- if we're doing an ammend, but the previous commit message in there
+  if amend then
+    -- first get the git status
+    local last_message = vim.fn.systemlist(
+    ("cd %s && git log -1 --pretty='%%B'"):format(repo_root)
+    )
+    if 0 ~= vim.api.nvim_get_vvar("shell_error") then
+      print("error getting last commit message...")
+      return
+    end
+    vim.api.nvim_buf_set_lines(buffer, 0, 0, false, {last_message[1]})
+  end
+
   -- commit when the buffer is written
   vim.api.nvim_create_autocmd("BufWritePost", {
     buffer = buffer,
     callback = function()
-      local cmd = ("cd %s && git commit --cleanup=strip --file=%s"):format(repo_root, file_name)
+      local ammend_str = amend and " --amend " or ""
+      local cmd = ("cd %s && git commit %s --cleanup=strip --file=%s"):format(
+        repo_root, ammend_str, file_name
+      )
       vim.fn.termopen(cmd, {
         on_exit = function()
           vim.cmd("bwipe! ".. buffer)
@@ -481,6 +498,13 @@ function gitato.open_viewer(diff_branch)
       close_view_window()
       get_and_draw_status()
     end)
+  end)
+  keymap('f', '', function()
+    close_view_window()
+    gitato.commit(git_repo_root, function()
+      close_view_window()
+      get_and_draw_status()
+    end, true)
   end)
   keymap('D', '', function()
     -- Not mapped to anything, but I keep doing it an accident :D
