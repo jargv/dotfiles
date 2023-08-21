@@ -1591,10 +1591,11 @@ if statusline_timer ~= nil then
 end
 
 statusline_timer = vim.loop.new_timer();
+statusline_setting = vim.opt.statusline
 statusline_timer:start(100, 100, function()
   -- schedule a function to be run on the main thread
   vim.defer_fn(function()
     -- setting the option forces an update
-    -- vim.opt.statusline = vim.opt.statusline
+    vim.opt.statusline = statusline_setting
   end, 0)
 end)
