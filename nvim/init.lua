@@ -170,8 +170,8 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
-Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th /cmp-nvim-lsp-signature-help'
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
 
 -- Plug 'jose-elias-alvarez/null-ls.nvim' {{{2
@@ -392,17 +392,29 @@ table.insert(plugin_setup_funcs, function()
   })
 end)
 
--- Plug  'SirVer/UltiSnips' {{{2
-Plug 'SirVer/UltiSnips'
-vim.g.UltiSnipsExpandTrigger=""
-vim.g.UltiSnipsJumpForwardTrigger=""
-vim.g.UltiSnipsJumpBackwardTrigger=""
+-- Plug "L3MON4D3/LuaSnip" {{{2
+Plug("L3MON4D3/LuaSnip", {tag = 'v2.*', ['do'] = 'make install_jsregexp'})
+table.insert(plugin_setup_funcs, function()
+  local ls = require "luasnip"
+  ls.config.set_config{
+    history = true,
+    updateevents = "TextChanged,TextChangedI",
+    --autosnippets = true
+  }
+  require("luasnip.loaders.from_lua").load({paths = "./snippets"})
+end)
 
-vim.g.UltiSnipsEditSplit = 'vertical'
-vim.g.UltiSnipsSnippetsDir = '~/config/nvim/my_snippets'
+-- Plug  'SirVer/UltiSnips' (unused) {{{2
+-- Plug 'SirVer/UltiSnips'
+-- vim.g.UltiSnipsExpandTrigger=""
+-- vim.g.UltiSnipsJumpForwardTrigger=""
+-- vim.g.UltiSnipsJumpBackwardTrigger=""
 
-vim.g.UltiSnipsSnippetDirectories = {"my_snippets"}
-leader.s = ":UltiSnipsEdit<CR>"
+-- vim.g.UltiSnipsEditSplit = 'vertical'
+-- vim.g.UltiSnipsSnippetsDir = '~/config/nvim/my_snippets'
+
+-- vim.g.UltiSnipsSnippetDirectories = {"my_snippets"}
+-- leader.s = ":UltiSnipsEdit<CR>"
 
 -- Plug 'phaazon/hop.nvim' {{{2
 Plug 'phaazon/hop.nvim'
@@ -1264,16 +1276,15 @@ vim.api.nvim_set_keymap('i', '<cr>', '', {
 
 ;(function()
   local cmp = require "cmp"
+  local luasnip = require "luasnip"
   vim.api.nvim_set_keymap('i', '<tab>', '', {
+    silent = true,
     callback = function()
-      if 1 == vim.fn["UltiSnips#CanExpandSnippet"]() then
-        vim.fn["UltiSnips#ExpandSnippet"]()
-        return
-      end
-
-      if 1 == vim.fn["UltiSnips#CanJumpForwards"]() then
-        vim.fn["UltiSnips#JumpForwards"]()
-        return
+      if luasnip.expand_or_locally_jumpable() then
+        local did_jump = luasnip.expand_or_jump()
+        if did_jump then
+          return
+        end
       end
 
       local column = vim.fn.getpos('.')[3]
@@ -1287,21 +1298,44 @@ vim.api.nvim_set_keymap('i', '<cr>', '', {
       vim.api.nvim_feedkeys(tabkey, 'n', false)
     end
   })
+
+  vim.api.nvim_set_keymap('i', '<C-j>', '', {
+    silent = true,
+    callback = function()
+      luasnip.change_choice(1)
+    end
+  })
+
+  vim.api.nvim_set_keymap('i', '<C-k>', '', {
+    silent = true,
+    callback = function()
+      luasnip.change_choice(-1)
+    end
+  })
+
+  vim.api.nvim_set_keymap('s', '<tab>', '', {
+    noremap = true,
+    silent = true,
+    callback = function()
+      if luasnip.jumpable() then
+        local seq = vim.api.nvim_replace_termcodes("<esc>a<tab>", true, false, true)
+        vim.api.nvim_feedkeys(seq, 'm', false)
+        return
+      end
+
+      local tabkey = vim.api.nvim_replace_termcodes("<tab>", true, false, true)
+      vim.api.nvim_feedkeys(tabkey, 'n', false)
+    end
+  })
+
 end)()
 
-vim.api.nvim_set_keymap('s', '<tab>', '', {
-  noremap = true,
-  callback = function()
-    if 1 == vim.fn["UltiSnips#CanJumpForwards"]() then
-      local seq = vim.api.nvim_replace_termcodes("<esc>a<tab>", true, false, true)
-      vim.api.nvim_feedkeys(seq, 'm', false)
-      return
-    end
+leader.s = function()
+  local filetype = vim.bo.filetype
+  vim.cmd.vsplit(("~/config/nvim/snippets/%s.lua"):format(filetype))
+  vim.cmd.vsplit(("~/config/nvim/my_snippets/%s.snippets"):format(filetype))
+end
 
-    local tabkey = vim.api.nvim_replace_termcodes("<tab>", true, false, true)
-    vim.api.nvim_feedkeys(tabkey, 'n', false)
-  end
-})
 
 -- next and previous location/error {{{2
 ;(function()
@@ -1482,6 +1516,8 @@ if lsp_configured == nil then
     capabilities = capabilities,
   }
 
+  lspconfig.pyright.setup{}
+
   vim.diagnostic.config({signs = false, virtual_text = false, underline = false})
   require'toggle_lsp_diagnostics'.init({signs = false, virtual_text = true, underline = true})
 
@@ -1494,7 +1530,7 @@ local cmp = require 'cmp'
 cmp.setup({
   snippet = {
     expand = function(args)
-      vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+      require('luasnip').lsp_expand(args.body)
     end,
   },
   window = {
@@ -1507,7 +1543,7 @@ cmp.setup({
     ['<C-n>'] = cmp.mapping.select_next_item(),
     ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-Space>'] = cmp.mapping.complete(),
-    ['<CR>'] = cmp.mapping.confirm({ select = false }),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
   }),
   sources = cmp.config.sources({
     {
@@ -1516,6 +1552,7 @@ cmp.setup({
         return entry:get_kind() ~= cmp.lsp.CompletionItemKind.Text and entry:get_kind() ~= cmp.lsp.CompletionItemKind.Snippet
       end
     },
+    { name = 'nvim_lsp_signature_help' },
     { name = 'buffer' },
     { name = 'path' },
   }, {
