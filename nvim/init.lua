@@ -395,13 +395,27 @@ end)
 -- Plug "L3MON4D3/LuaSnip" {{{2
 Plug("L3MON4D3/LuaSnip", {tag = 'v2.*', ['do'] = 'make install_jsregexp'})
 table.insert(plugin_setup_funcs, function()
-  local ls = require "luasnip"
-  ls.config.set_config{
-    history = true,
+  local luasnip = require "luasnip"
+  luasnip.config.set_config{
+    history = false,
     updateevents = "TextChanged,TextChangedI",
     --autosnippets = true
   }
   require("luasnip.loaders.from_lua").load({paths = "./snippets"})
+
+  vim.api.nvim_create_autocmd('ModeChanged', {
+    group = vim.api.nvim_create_augroup('UnlinkSnippetOnModeChange', { clear = true }),
+    pattern = {'s:n', 'i:*'},
+    desc = 'Forget the current snippet when leaving the insert mode',
+    callback = function(evt)
+      if  luasnip.session
+      and luasnip.session.current_nodes[evt.buf]
+      and not luasnip.session.jump_active
+      then
+        luasnip.unlink_current()
+      end
+    end,
+  })
 end)
 
 -- Plug  'SirVer/UltiSnips' (unused) {{{2
