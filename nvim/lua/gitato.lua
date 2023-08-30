@@ -13,6 +13,7 @@ consider:
   - set the filetype of the diff buffer to match the source buffer
   - move the cursor along with the file when the status updates
   - history view for single file
+  - key for pushup, since I do it so much
 ]]
 local current_dir = require("current_dir")
 local gitato = {}
@@ -33,7 +34,7 @@ local viewer_help = {
 }
 
 local unsupported_diff_extensions = {
-  ".aseprite", ".png", ".spl"
+  ".aseprite", ".png", ".spl", ".wav", ".mp3"
 }
 
 local function file_diff_not_supported(name)
