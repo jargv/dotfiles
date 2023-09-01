@@ -73,12 +73,7 @@
         "location": "right",
         "categories": ["modifier"]
       },
-      {
-        "code": 228,
-        "label": {"base": {"full": "Control", "1u": "Ctrl"}},
-        "location": "right",
-        "categories": ["modifier"]
-      },
+      {"code": 76, "label": {"base": {"full": "Delete", "1u": "Del"}}},
       {"code": 11, "label": {"base": "h", "shifted": "H"}},
       {"code": 13, "label": {"base": "j", "shifted": "J"}},
       {"code": 14, "label": {"base": "k", "shifted": "K"}},
