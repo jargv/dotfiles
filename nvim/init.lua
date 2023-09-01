@@ -139,6 +139,9 @@ vim.g.zig_fmt_autosave = 0
 -- java {{{3
 Plug 'mfussenegger/nvim-jdtls'
 
+-- glsl {{{3
+Plug 'tikhomirov/vim-glsl'
+
 -- colorschemes {{{2
 -- Plug 'flazz/vim-colorschemes'
 Plug 'arcticicestudio/nord-vim'
@@ -171,7 +174,7 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th /cmp-nvim-lsp-signature-help'
+Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
 
 -- Plug 'jose-elias-alvarez/null-ls.nvim' {{{2
