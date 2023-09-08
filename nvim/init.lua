@@ -1197,21 +1197,19 @@ vim.cmd [[
     nnoremap <c-u> gUiw
 
   "toggle relative linenumbers {{{2
-    "set relativenumber
     nnoremap <leader>3 :call ToggleRelative()<CR>
     func! ToggleRelative()
       if &relativenumber
-        set number
+        set nonumber
         set norelativenumber
       elseif &number
-          set nonumber
-      else
         set relativenumber
+      else
         set number
       endif
       echo
     endfunc
-    set number
+    set nonumber
 
   "fast saving/quitting {{{2
     if !exists("g:MySmartQuitDefined")
