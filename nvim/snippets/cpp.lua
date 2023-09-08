@@ -6,7 +6,7 @@ return {
     }
   ]], {i(1, "true"), i(0)})),
 
-  -- For {{{1
+  -- for {{{1
   s("for", fmta([[
     for(<>){
       <>
@@ -14,8 +14,8 @@ return {
   ]], {
     c(1, {
       fmt("size_t {} = 0; {} < {}; {}++", {rep(2), i(2, "i"), i(1), rep(2)}),
-      fmt("auto& {} : {}", {i(2, "item"), i(1, "items")}),
-      fmt("auto {} : {}", {i(2, "item"), i(1, "items")}),
+      fmt("auto& {} : {}", {i(1, "item"), i(2, "items")}),
+      fmt("auto {} : {}", {i(1, "item"), i(2, "items")}),
     }),
     i(0)
   })),
@@ -45,7 +45,7 @@ return {
 
   -- l {{{1
   s('l', fmt([[
-    std::cout << "{}" << {} << std::endl;
+    std::cout << "{}: " << {} << std::endl;
   ]], {
     i(1),
     f(function (args)
@@ -54,10 +54,15 @@ return {
       local res = ""
       for _, val in ipairs(parts) do
         res = res .. sep .. val
-        sep = " << "
+        sep = " << ',' << "
       end
       return res
     end, {1})
   })),
+
+  -- log {{{1
+  s('log', fmt([[
+    std::cout << "{}" << std::endl;
+  ]], {i(1)})),
 
 }
