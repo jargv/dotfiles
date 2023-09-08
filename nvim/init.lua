@@ -534,17 +534,29 @@ end
 
 
 -- prototype settings {{{1
+vim.o.signcolumn = "yes:1"
+local sign_bg = "#27282b"
+for key, val in pairs({
+  Add = "#225522",
+  Change = "#225588",
+  Delete = "#aa5555",
+}) do
+  vim.cmd(([[
+    highlight GitSigns%s guifg='%s' guibg='%s'
+  ]]):format(key, val, sign_bg))
+end
+vim.cmd(([[
+  highlight SignColumn guibg='%s'
+]]):format(sign_bg))
+
 visual.v = function()
   vim.cmd.normal("`[o`]")
 end
-vim.opt.updatetime = 300
+vim.opt.updatetime = 3000
 local telescope = require("telescope.builtin")
 leader.jf = function()
   local dir = require("current_dir")()
   telescope.find_files({cwd = dir})
-end
-leader.jt = function()
-  telescope.treesitter()
 end
 leader.jm = function()
   telescope.marks()
