@@ -20,6 +20,12 @@ return {
     i(0)
   })),
 
+  -- while {{{1
+  s('while', fmta([[
+    while (<>) {
+      <>
+    }
+  ]], {i(1), i(0)})),
   -- fn {{{1
   s('fn', fmta([[
     auto <> = [<>](<>){

@@ -1470,9 +1470,19 @@ normal.gu = function() vim.lsp.buf.references() end
 normal.gh = function() vim.lsp.buf.hover() end
 leader.rn = function() vim.lsp.buf.rename(vim.fn.input('>')) end
 leader.rf = function() vim.lsp.buf.code_action{apply = true} end
+leader.rF = function()
+  local fname = vim.fn.expand('%')
+  local new_fname = vim.fn.input('new file name>', fname)
+  vim.lsp.util.rename(fname, new_fname)
+end
+
 normal["<cr>"] = function()
   pcall(vim.lsp.buf.code_action, {apply = true})
   pcall(vim.cmd.lnext)
+end
+
+normal["<tab>"] = function()
+  pcall(vim.lsp.buf.code_action, {apply = false})
 end
 
 if lsp_configured == nil then
