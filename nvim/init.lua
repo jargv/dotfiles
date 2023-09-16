@@ -835,7 +835,7 @@ leader.gg = function() gitato.open_viewer() end
 leader.GG = function() gitato.open_viewer(default_upstream()) end
 
 leader.d = function()
-  gitato.toggle_diff_against_git_ref("HEAD")
+  gitato.toggle_diff_against_git_ref()
 end
 
 leader.D = function()

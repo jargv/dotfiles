@@ -1,5 +1,8 @@
 --[[
 TODOS:
+  - Add a hotkey to toggle the log widtht (globally)
+  - Make the hokeys for navagating log lines global
+  - Add a hotkey to open the viewer from a diff, using the current log line as rev
   - recompute gitato view width when status changes
   - Fix bug when status is longer than the window (rare)
   - Completion help when changing diff_branch
@@ -138,14 +141,17 @@ function gitato.toggle_diff_against_git_ref(ref)
   end
 
   local log_cursor_line = 0
-  local diff_against = "HEAD"
+  local diff_against = ref == nil and "HEAD" or ref
+  local doing_log = ref == nil
 
-  -- set up the log window
-  vim.cmd("vnew")
-  vim.bo.buftype = "nofile"
-  vim.bo.bufhidden = "wipe"
-  current_diff_log_buffer = vim.fn.bufnr("%")
-  vim.cmd("normal h")
+  if doing_log then
+    -- set up the log window
+    vim.cmd("vnew")
+    vim.bo.buftype = "nofile"
+    vim.bo.bufhidden = "wipe"
+    current_diff_log_buffer = vim.fn.bufnr("%")
+    vim.cmd("normal h")
+  end
 
   -- set up the diff window
   vim.cmd("leftabove vnew")
@@ -157,6 +163,9 @@ function gitato.toggle_diff_against_git_ref(ref)
   vim.cmd(":diffthis")
 
   local function draw_log_buffer()
+    if not doing_log then
+      return
+    end
     local max_length = 0
     local log_lines = {
       log_cursor_line == 0 and "> HEAD" or "  HEAD"
@@ -177,11 +186,10 @@ function gitato.toggle_diff_against_git_ref(ref)
     error = vim.api.nvim_get_vvar("shell_error")
     if error ~= 0 then
       print(table.concat(diff_contents, "\n"))
-      print(not_a_repo_error_msg)
-      return
+      error(not_a_repo_error_msg)
     end
     vim.api.nvim_buf_set_lines(current_diff_buffer, 0, 1, false, diff_contents)
-    vim.fn.win_execute(vim.fn.win_findbuf(current_diff_log_buffer)[1], "diffu")
+    vim.fn.win_execute(vim.fn.win_findbuf(current_diff_buffer)[1], "diffu")
   end
 
   local function move_log_cursor(amount)
