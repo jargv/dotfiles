@@ -26,10 +26,11 @@ local viewer_help = {
   "## R - Restore the file (checkout)",
   "## d - delete the file",
   "## b - change the diff branch",
-  "## h - git log (tig)",
   "## . - open terminal in the repo root",
   "## c - commit",
   "## f - commit --amend",
+  "## p - git pushup",
+  "## P - git pushupforce",
   "## q - quit"
 }
 
@@ -394,6 +395,18 @@ function gitato.open_viewer(diff_branch)
     viewing_log = true
   end
 
+  local function dopushup(force)
+    close_view_window()
+    local total_width = vim.api.nvim_win_get_width(0)
+    local diff_window_width = total_width - main_buf_width
+    local maybe_force = force and "force" or ""
+    vim.cmd(""..diff_window_width.."vsplit term://"..git_repo_root.."/git\\ pushup"..maybe_force)
+    current_view_window = vim.fn.win_getid(vim.fn.winnr())
+    vim.cmd("normal h")
+    vim.cmd.stopinsert()
+    viewing_log = true
+  end
+
   local function open_terminal_window()
     close_view_window()
     local total_width = vim.api.nvim_win_get_width(0)
@@ -465,7 +478,6 @@ function gitato.open_viewer(diff_branch)
   keymap('gn', 'llgnhh')
   keymap('gp', 'llgphh')
   keymap('l', 'llgnhh')
-  keymap('h', 'llgphh')
   keymap('a', '', function()
     local status, file = get_status_and_file_from_current_line()
     if file == nil then
@@ -567,6 +579,12 @@ function gitato.open_viewer(diff_branch)
   end)
   keymap('.', "", function()
     open_terminal_window()
+  end)
+  keymap('p', "", function ()
+    dopushup()
+  end)
+  keymap('P', "", function ()
+    dopushup(true)
   end)
 
   vim.api.nvim_create_autocmd("CursorMoved", {
