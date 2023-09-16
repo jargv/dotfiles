@@ -1,6 +1,5 @@
 --[[
 TODOS:
-  - view for a single file, going back through its revisions
   - recompute gitato view width when status changes
   - Fix bug when status is longer than the window (rare)
   - Completion help when changing diff_branch
@@ -12,8 +11,6 @@ consider:
   - clean up the viewer code by using win_execute function
   - set the filetype of the diff buffer to match the source buffer
   - move the cursor along with the file when the status updates
-  - history view for single file
-  - key for pushup, since I do it so much
 ]]
 local current_dir = require("current_dir")
 local gitato = {}
@@ -50,14 +47,20 @@ end
 local not_a_repo_error_msg = "ERROR: Is this a git repo?"
 
 local current_diff_buffer = nil
+local current_diff_log_buffer = nil
 
 function gitato.diff_off()
   vim.cmd("diffoff!")
   if current_diff_buffer ~= nil
-    and vim.api.nvim_buf_is_valid(current_diff_buffer) then
+  and vim.api.nvim_buf_is_valid(current_diff_buffer) then
     vim.cmd("bwipe! "..current_diff_buffer)
   end
+  if current_diff_log_buffer ~= nil
+  and vim.api.nvim_buf_is_valid(current_diff_log_buffer) then
+    vim.cmd("bwipe! "..current_diff_log_buffer)
+  end
   current_diff_buffer = nil
+  current_diff_log_buffer = nil
 end
 
 function gitato.get_repo_root(dir)
@@ -125,22 +128,87 @@ function gitato.toggle_diff_against_git_ref(ref)
     file = "./"..file
   end
 
-  local diff_contents = vim.fn.systemlist("cd "..git_root.." && git show ".. ref..':'..file)
+  -- get the log contents
+  local log_contents = vim.fn.systemlist("cd "..git_root.." && git log --oneline ".. file)
   local error = vim.api.nvim_get_vvar("shell_error")
   if error ~= 0 then
-    print(table.concat(diff_contents, "\n"))
+    print(table.concat(log_contents, "\n"))
     print(not_a_repo_error_msg)
-    return
+    error()
   end
 
+  local log_cursor_line = 0
+  local diff_against = "HEAD"
+
+  -- set up the log window
+  vim.cmd("vnew")
+  vim.bo.buftype = "nofile"
+  vim.bo.bufhidden = "wipe"
+  current_diff_log_buffer = vim.fn.bufnr("%")
+  vim.cmd("normal h")
+
+  -- set up the diff window
   vim.cmd("leftabove vnew")
   vim.bo.buftype = "nofile"
   vim.bo.bufhidden = "wipe"
   current_diff_buffer = vim.fn.bufnr("%")
-  vim.api.nvim_buf_set_lines(current_diff_buffer, 0, 1, false, diff_contents)
   vim.cmd(":diffthis")
   vim.cmd("normal l")
   vim.cmd(":diffthis")
+
+  local function draw_log_buffer()
+    local max_length = 0
+    local log_lines = {
+      log_cursor_line == 0 and "> HEAD" or "  HEAD"
+    }
+    for line_number, contents in ipairs(log_contents) do
+      if #contents > max_length then
+        max_length = #contents
+      end
+      local indent = line_number == log_cursor_line and "> " or "  "
+      table.insert(log_lines, indent..contents)
+    end
+
+    vim.api.nvim_buf_set_lines(current_diff_log_buffer, 0, 1, false, log_lines)
+  end
+
+  local function load_diff_contents()
+    local diff_contents = vim.fn.systemlist("cd "..git_root.." && git show ".. diff_against..':'..file)
+    error = vim.api.nvim_get_vvar("shell_error")
+    if error ~= 0 then
+      print(table.concat(diff_contents, "\n"))
+      print(not_a_repo_error_msg)
+      return
+    end
+    vim.api.nvim_buf_set_lines(current_diff_buffer, 0, 1, false, diff_contents)
+    vim.fn.win_execute(vim.fn.win_findbuf(current_diff_log_buffer)[1], "diffu")
+  end
+
+  local function move_log_cursor(amount)
+    log_cursor_line = log_cursor_line + amount
+    draw_log_buffer()
+    local contents = log_contents[log_cursor_line]
+    local words = vim.fn.split(contents, " ")
+    diff_against = words[1]
+    load_diff_contents()
+  end
+
+  draw_log_buffer()
+  load_diff_contents()
+
+  vim.api.nvim_buf_set_keymap(-1, 'n', "<leader>j", "", {
+    nowait=true,
+    callback=function ()
+      move_log_cursor(1)
+    end
+  })
+
+  vim.api.nvim_buf_set_keymap(-1, 'n', "<leader>k", "", {
+    nowait=true,
+    callback=function ()
+      move_log_cursor(-1)
+    end
+  })
 end
 
 local function parse_status_line(line)

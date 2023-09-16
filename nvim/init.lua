@@ -554,32 +554,29 @@ visual.v = function()
 end
 vim.opt.updatetime = 3000
 local telescope = require("telescope.builtin")
-leader.jf = function()
+leader.tf = function()
   local dir = require("current_dir")()
   telescope.find_files({cwd = dir})
 end
-leader.jm = function()
+leader.tm = function()
   telescope.marks()
 end
-leader.jk = function()
-  telescope.keymaps()
-end
-leader.ja = function()
+leader.ta = function()
   telescope.autocommands()
 end
-leader.jo = function()
+leader.tI = function()
   telescope.lsp_outgoing_calls()
 end
-leader.ji = function()
+leader.ti = function()
   telescope.lsp_incoming_calls()
 end
-leader.jh = function()
+leader.th = function()
   telescope.help_tags()
 end
-leader.jj = function()
+leader.tt = function()
   telescope.resume()
 end
-leader['j/'] = function()
+leader['t/'] = function()
   local dir = require("current_dir")()
   telescope.live_grep({cwd = dir})
 end
@@ -820,11 +817,7 @@ normal["<leader>-"] = newb.create("new")
 normal["<leader>="]= newb.create("vnew")
 terminal["<M-->"] = newb.create("new")
 terminal["<M-=>"] = newb.create("vnew")
-leader["."] = function()
-  print("remapped to <bs>!")
-end
 normal["<bs>"] = newb.create()
-
 
 
 -- git setup {{{1
