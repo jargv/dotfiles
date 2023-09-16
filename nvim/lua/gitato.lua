@@ -648,10 +648,10 @@ function gitato.open_viewer(diff_branch)
     open_terminal_window()
   end)
   keymap('p', "", function ()
-    open_terminal_window("git pushup && exit")
+    open_terminal_window("git pushup")
   end)
   keymap('P', "", function ()
-    open_terminal_window("git pushupforce && exit")
+    open_terminal_window("git pushupforce")
   end)
 
   vim.api.nvim_create_autocmd("CursorMoved", {
