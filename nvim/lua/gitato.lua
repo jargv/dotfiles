@@ -395,24 +395,15 @@ function gitato.open_viewer(diff_branch)
     viewing_log = true
   end
 
-  local function dopushup(force)
-    close_view_window()
-    local total_width = vim.api.nvim_win_get_width(0)
-    local diff_window_width = total_width - main_buf_width
-    local maybe_force = force and "force" or ""
-    vim.cmd(""..diff_window_width.."vsplit term://"..git_repo_root.."/git\\ pushup"..maybe_force)
-    current_view_window = vim.fn.win_getid(vim.fn.winnr())
-    vim.cmd("normal h")
-    vim.cmd.stopinsert()
-    viewing_log = true
-  end
-
-  local function open_terminal_window()
+  local function open_terminal_window(input)
     close_view_window()
     local total_width = vim.api.nvim_win_get_width(0)
     local diff_window_width = total_width - main_buf_width
     vim.cmd(""..diff_window_width.."vsplit term://"..git_repo_root.."//bin/zsh")
     current_view_window = vim.fn.win_getid(vim.fn.winnr())
+    if input then
+      vim.api.nvim_feedkeys(input, "i", false);
+    end
   end
 
   local function on_cursor_moved()
@@ -581,10 +572,10 @@ function gitato.open_viewer(diff_branch)
     open_terminal_window()
   end)
   keymap('p', "", function ()
-    dopushup()
+    open_terminal_window("git pushup")
   end)
   keymap('P', "", function ()
-    dopushup(true)
+    open_terminal_window("git pushupforce")
   end)
 
   vim.api.nvim_create_autocmd("CursorMoved", {
