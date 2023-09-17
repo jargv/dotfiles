@@ -1,7 +1,5 @@
 --[[
 TODOS:
-  - Add a hotkey to toggle the log widtht (globally)
-  - Make the hokeys for navagating log lines global
   - Add a hotkey to open the viewer from a diff, using the current log line as rev
   - recompute gitato view width when status changes
   - Fix bug when status is longer than the window (rare)
@@ -51,6 +49,15 @@ local not_a_repo_error_msg = "ERROR: Is this a git repo?"
 
 local current_diff_buffer = nil
 local current_diff_log_buffer = nil
+local on_move_log_cursor = function(_amount) end
+gitato.move_log_cursor = function(amount)
+  on_move_log_cursor(amount)
+end
+
+local on_toggle_diff_log_width = function() end
+gitato.toggle_diff_log_width = function()
+  on_toggle_diff_log_width()
+end
 
 function gitato.diff_off()
   vim.cmd("diffoff!")
@@ -146,9 +153,10 @@ function gitato.toggle_diff_against_git_ref(ref)
 
   if doing_log then
     -- set up the log window
-    vim.cmd("vnew")
+    vim.cmd("0vnew")
     vim.bo.buftype = "nofile"
     vim.bo.bufhidden = "wipe"
+    vim.opt.wrap = false
     current_diff_log_buffer = vim.fn.bufnr("%")
     vim.cmd("normal h")
   end
@@ -162,6 +170,7 @@ function gitato.toggle_diff_against_git_ref(ref)
   vim.cmd("normal l")
   vim.cmd(":diffthis")
 
+  local log_style = "none"
   local function draw_log_buffer()
     if not doing_log then
       return
@@ -178,7 +187,14 @@ function gitato.toggle_diff_against_git_ref(ref)
       table.insert(log_lines, indent..contents)
     end
 
+    if log_style == "slim" then
+      max_length = 12
+    elseif log_style == "none" then
+      max_length = 0
+    end
+
     vim.api.nvim_buf_set_lines(current_diff_log_buffer, 0, 1, false, log_lines)
+    vim.api.nvim_win_set_width(vim.fn.win_findbuf(current_diff_log_buffer)[1], max_length)
   end
 
   local function load_diff_contents()
@@ -192,7 +208,14 @@ function gitato.toggle_diff_against_git_ref(ref)
     vim.fn.win_execute(vim.fn.win_findbuf(current_diff_buffer)[1], "diffu")
   end
 
-  local function move_log_cursor(amount)
+  draw_log_buffer()
+  load_diff_contents()
+
+  on_move_log_cursor = function(amount)
+    if current_diff_buffer ~= nil
+    and not vim.api.nvim_buf_is_valid(current_diff_buffer) then
+      return
+    end
     log_cursor_line = log_cursor_line + amount
     draw_log_buffer()
     local contents = log_contents[log_cursor_line]
@@ -201,22 +224,20 @@ function gitato.toggle_diff_against_git_ref(ref)
     load_diff_contents()
   end
 
-  draw_log_buffer()
-  load_diff_contents()
-
-  vim.api.nvim_buf_set_keymap(-1, 'n', "<leader>j", "", {
-    nowait=true,
-    callback=function ()
-      move_log_cursor(1)
+  on_toggle_diff_log_width = function()
+    if current_diff_buffer ~= nil
+    and not vim.api.nvim_buf_is_valid(current_diff_buffer) then
+      return
     end
-  })
-
-  vim.api.nvim_buf_set_keymap(-1, 'n', "<leader>k", "", {
-    nowait=true,
-    callback=function ()
-      move_log_cursor(-1)
+    if log_style == "none" then
+      log_style = "wide"
+    elseif log_style == "wide" then
+      log_style = "slim"
+    elseif log_style == "slim" then
+      log_style = "none"
     end
-  })
+    draw_log_buffer()
+  end
 end
 
 local function parse_status_line(line)

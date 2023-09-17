@@ -834,6 +834,17 @@ end
 leader.gg = function() gitato.open_viewer() end
 leader.GG = function() gitato.open_viewer(default_upstream()) end
 
+leader.j = function()
+  gitato.move_log_cursor(1)
+end
+leader.k = function()
+  gitato.move_log_cursor(-1)
+end
+
+leader.l = function()
+  gitato.toggle_diff_log_width(-1)
+end
+
 leader.d = function()
   gitato.toggle_diff_against_git_ref()
 end
