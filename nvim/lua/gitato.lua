@@ -204,7 +204,7 @@ function gitato.toggle_diff_against_git_ref(ref)
       print(table.concat(diff_contents, "\n"))
       error(not_a_repo_error_msg)
     end
-    vim.api.nvim_buf_set_lines(current_diff_buffer, 0, 1, false, diff_contents)
+    vim.api.nvim_buf_set_lines(current_diff_buffer, 0, -1, false, diff_contents)
     vim.fn.win_execute(vim.fn.win_findbuf(current_diff_buffer)[1], "diffu")
   end
 
