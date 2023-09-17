@@ -1,5 +1,6 @@
 --[[
 TODOS:
+  - Ability to long against commit before instead of current file (maybe both?)
   - Add a hotkey to open the viewer from a diff, using the current log line as rev
   - recompute gitato view width when status changes
   - Fix bug when status is longer than the window (rare)
