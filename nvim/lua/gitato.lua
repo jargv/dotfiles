@@ -147,7 +147,7 @@ function gitato.toggle_diff_against_git_ref(ref)
     error()
   end
 
-  local log_cursor_line = 0
+  local log_cursor_line = 1
   local diff_against = ref == nil and "HEAD" or ref
   local doing_log = ref == nil
 
@@ -177,9 +177,10 @@ function gitato.toggle_diff_against_git_ref(ref)
     end
     local max_length = 0
     local log_lines = {
-      log_cursor_line == 0 and "> HEAD" or "  HEAD"
+      log_cursor_line == 1 and "> HEAD" or "  HEAD"
     }
-    for line_number, contents in ipairs(log_contents) do
+    for i, contents in ipairs(log_contents) do
+      local line_number = i + 1
       if #contents > max_length then
         max_length = #contents
       end
@@ -218,10 +219,17 @@ function gitato.toggle_diff_against_git_ref(ref)
       return
     end
     log_cursor_line = log_cursor_line + amount
+    if log_cursor_line < 1 then
+      log_cursor_line = 1
+    end
     draw_log_buffer()
-    local contents = log_contents[log_cursor_line]
-    local words = vim.fn.split(contents, " ")
-    diff_against = words[1]
+    if log_cursor_line == 1 then
+      diff_against = "HEAD"
+    else
+      local contents = log_contents[log_cursor_line]
+      local words = vim.fn.split(contents, " ")
+      diff_against = words[1]
+    end
     load_diff_contents()
   end
 
