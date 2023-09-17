@@ -212,8 +212,9 @@ function gitato.toggle_diff_against_git_ref(ref)
   load_diff_contents()
 
   on_move_log_cursor = function(amount)
-    if current_diff_buffer ~= nil
-    and not vim.api.nvim_buf_is_valid(current_diff_buffer) then
+    if current_diff_buffer == nil
+    or not vim.api.nvim_buf_is_valid(current_diff_buffer)
+    then
       return
     end
     log_cursor_line = log_cursor_line + amount
@@ -225,8 +226,9 @@ function gitato.toggle_diff_against_git_ref(ref)
   end
 
   on_toggle_diff_log_width = function()
-    if current_diff_buffer ~= nil
-    and not vim.api.nvim_buf_is_valid(current_diff_buffer) then
+    if current_diff_buffer == nil
+    or not vim.api.nvim_buf_is_valid(current_diff_buffer)
+    then
       return
     end
     if log_style == "none" then
