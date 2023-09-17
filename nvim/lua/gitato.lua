@@ -194,7 +194,7 @@ function gitato.toggle_diff_against_git_ref(ref)
       max_length = 0
     end
 
-    vim.api.nvim_buf_set_lines(current_diff_log_buffer, 0, 1, false, log_lines)
+    vim.api.nvim_buf_set_lines(current_diff_log_buffer, 0, -1, false, log_lines)
     vim.api.nvim_win_set_width(vim.fn.win_findbuf(current_diff_log_buffer)[1], max_length)
   end
 
@@ -212,13 +212,8 @@ function gitato.toggle_diff_against_git_ref(ref)
   draw_log_buffer()
   load_diff_contents()
 
-  on_move_log_cursor = function(amount)
-    if current_diff_buffer == nil
-    or not vim.api.nvim_buf_is_valid(current_diff_buffer)
-    then
-      return
-    end
-    log_cursor_line = log_cursor_line + amount
+  local function update_log_cursor(line)
+    log_cursor_line = line
     if log_cursor_line < 1 then
       log_cursor_line = 1
     end
@@ -231,6 +226,15 @@ function gitato.toggle_diff_against_git_ref(ref)
       diff_against = words[1]
     end
     load_diff_contents()
+  end
+
+  on_move_log_cursor = function(amount)
+    if current_diff_buffer == nil
+    or not vim.api.nvim_buf_is_valid(current_diff_buffer)
+    then
+      return
+    end
+    update_log_cursor(log_cursor_line + amount)
   end
 
   on_toggle_diff_log_width = function()
@@ -248,6 +252,17 @@ function gitato.toggle_diff_against_git_ref(ref)
     end
     draw_log_buffer()
   end
+
+  if doing_log then
+    vim.api.nvim_buf_set_keymap(current_diff_log_buffer, 'n', '<cr>', "", {
+      nowait=true,
+      callback=function()
+        local line = vim.fn.line('.')
+        update_log_cursor(line)
+      end
+    })
+  end
+
 end
 
 local function parse_status_line(line)
