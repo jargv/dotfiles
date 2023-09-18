@@ -891,6 +891,7 @@ leader.Mw = build.open_all_output_buffers
 leader.Ma = build.add_from_current_file
 leader.Mq = build.clear_config
 leader.Mc = build.stop_all
+leader.Mr = build.toggle_run_step
 
 -- statusline setup {{{1
 vim.opt.laststatus = 3 -- only one statusline at bottom

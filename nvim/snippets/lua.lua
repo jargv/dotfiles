@@ -28,14 +28,14 @@ return {
     i(1)
   })),
 
-  -- lambda {{{1
+  -- lm {{{1
   s('lm', fmt([[
     function({})
       {}
     end
   ]], {i(1), i(2)})),
 
-  -- function {{{1
+  -- fn {{{1
   s('fn', fmt([[
     {}function {}({})
       {}
@@ -43,7 +43,7 @@ return {
   ]], {
     f(function (arg)
       local name = arg[1][1]
-      if name:find(":") ~= nil then
+      if name:find(":") ~= nil or name:find("%.") ~= nil then
         return ""
       end
       return "local "

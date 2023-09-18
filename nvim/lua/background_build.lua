@@ -517,4 +517,13 @@ function api.clear_config()
   print "build config cleared"
 end
 
+function api.toggle_run_step()
+  for _,job in ipairs(build_config.jobs) do
+    if job.name == "run" then
+      job.skip = not job.skip
+    end
+  end
+  build_jobs = setup_build_jobs(build_config, build_jobs)
+end
+
 return api
