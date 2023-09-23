@@ -4,9 +4,9 @@ set -euo pipefail
 rm -rf build
 mkdir -p build
 pushd build
+#-DCMAKE_BUILD_TYPE=DEBUG \
 cmake \
-  -GNinja \
-  -DCMAKE_BUILD_TYPE=DEBUG \
+  -G"Ninja Multi-Config"  \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   ..
 popd

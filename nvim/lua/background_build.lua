@@ -1,5 +1,6 @@
 --[[
 TODO:
+ - Variables in the strings with ${} syntax
 Consider:
  -- Both of these can be done with && in a command... seems fine
  * multi-line commands
