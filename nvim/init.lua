@@ -8,6 +8,8 @@ stuff to look into:
 TODO:
   - Make ==== underline not pollute the clipboard (some register?)
   - display git ignore status in status line
+  - make newb relative to the project by default, different key for file relative
+  - fix issues with autocomplete and snippet keys being ambiguous
 ]]
 
 -- setup {{{1
@@ -842,7 +844,7 @@ leader.k = function()
 end
 
 leader.l = function()
-  gitato.toggle_diff_log_width(-1)
+  gitato.toggle_diff_log_width()
 end
 
 leader.d = function()
@@ -887,7 +889,7 @@ leader.e = function()
 end
 leader.E = build.open_error_output_buffers
 leader.m = build.run_all_not_running
-leader.Mw = build.open_all_output_buffers
+leader.Mw = build.toggle_open_all_output_buffers
 leader.Ma = build.add_from_current_file
 leader.Mq = build.clear_config
 leader.Mc = build.stop_all

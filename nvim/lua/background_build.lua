@@ -1,10 +1,7 @@
 --[[
 TODO:
  - Variables in the strings with ${} syntax
-Consider:
- -- Both of these can be done with && in a command... seems fine
- * multi-line commands
- * cmd_dir that can be different from dir
+ - hotkey to close just the build windows and nothing else
 ]]
 
 local fmtjson = require("fmtjson")
@@ -412,16 +409,49 @@ function api.open_error_output_buffers()
   ]]
 end
 
-function api.open_all_output_buffers()
+function api.toggle_open_all_output_buffers()
+  local starting_win = vim.api.nvim_get_current_win()
+  local windows_to_close = {}
+  local any_opened = false
+  local current_tabpage = vim.api.nvim_get_current_tabpage()
   for _,job in pairs(build_jobs) do
-    if job.buf then
-      vim.cmd(([[
-        botright vertical sbuffer %d
-        normal G
-        setlocal nonumber
-      ]]):format(job.buf))
+    if not job.buf then
+      goto continue
+    end
+
+    local buf_list = vim.fn.getbufinfo(job.buf)
+    local win_on_current_tab = nil
+
+    for _, win_id in pairs(buf_list[1].windows) do
+      if vim.api.nvim_win_get_tabpage(win_id) == current_tabpage then
+        win_on_current_tab = win_id
+        break;
+      end
+    end
+
+    if win_on_current_tab then
+      table.insert(windows_to_close, win_on_current_tab)
+      goto continue
+    end
+
+    any_opened = true
+    vim.cmd(([[
+      botright vertical sbuffer %d
+      normal G
+      setlocal nonumber
+    ]]):format(job.buf))
+
+    ::continue::
+  end
+
+  if not any_opened then
+    for _, win_id in ipairs(windows_to_close) do
+      if vim.api.nvim_win_is_valid(win_id) then
+        vim.api.nvim_win_close(win_id, true)
+      end
     end
   end
+  vim.api.nvim_set_current_win(starting_win)
 end
 
 function api.run_all_not_running()
