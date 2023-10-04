@@ -92,7 +92,7 @@ local new_buffer_options = {
   {key="b", cmd=find_buffers,               desc="search buffers by name"},
   {key="/", cmd=live_grep,                  desc="live grep"},
   {key="t", cmd=":exec ':e '.tempname()",   desc="edit temp file"},
-  {key="r", cmd=proj_root,                  desc="move to git root"},
+  {key="p", cmd=proj_root,                  desc="move to project (git) root"},
   {key="-", cmd=updir,                      desc="cd .."},
   {key="c", cmd=cd_prompt,                  desc="cd <dir>"},
   {key="j", cmd=autojump_prompt,            desc="autojump <dir>"},

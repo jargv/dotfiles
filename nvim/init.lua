@@ -8,7 +8,6 @@ stuff to look into:
 TODO:
   - Make ==== underline not pollute the clipboard (some register?)
   - display git ignore status in status line
-  - make newb relative to the project by default, different key for file relative
   - fix issues with autocomplete and snippet keys being ambiguous
 ]]
 
