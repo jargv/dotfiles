@@ -1571,6 +1571,7 @@ end
 -- nvim-cmp {{{1
 local cmp = require 'cmp'
 cmp.setup({
+  completeopt = 'menu,menuone,noinsert,noselect',
   snippet = {
     expand = function(args)
       require('luasnip').lsp_expand(args.body)
@@ -1586,7 +1587,7 @@ cmp.setup({
     ['<C-n>'] = cmp.mapping.select_next_item(),
     ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-Space>'] = cmp.mapping.complete(),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ['<CR>'] = cmp.mapping.confirm({ select = false }),
   }),
   sources = cmp.config.sources({
     {
@@ -1595,7 +1596,7 @@ cmp.setup({
         return entry:get_kind() ~= cmp.lsp.CompletionItemKind.Text and entry:get_kind() ~= cmp.lsp.CompletionItemKind.Snippet
       end
     },
-    { name = 'nvim_lsp_signature_help' },
+    -- { name = 'nvim_lsp_signature_help' },
     { name = 'buffer' },
     { name = 'path' },
   }, {
