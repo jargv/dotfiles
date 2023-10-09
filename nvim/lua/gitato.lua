@@ -592,6 +592,7 @@ function gitato.open_viewer(diff_branch)
   keymap('gn', 'llgnhh')
   keymap('gp', 'llgphh')
   keymap('l', 'llgnhh')
+  keymap('h', 'llgphh')
   keymap('a', '', function()
     local status, file = get_status_and_file_from_current_line()
     if file == nil then
