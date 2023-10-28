@@ -316,7 +316,8 @@ local function setup_build_jobs(config, oldJobs)
     end
   end
 
-  vim.api.nvim_create_autocmd("User BackgroundBuildJobStatusChanged", {
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "BackgroundBuildJobStatusChanged",
     group = jobGroup,
     callback = function ()
       vim.defer_fn(function()

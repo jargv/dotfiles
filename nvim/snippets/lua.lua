@@ -28,28 +28,34 @@ return {
     i(1)
   })),
 
-  -- lm {{{1
-  s('lm', fmt([[
-    function({})
-      {}
-    end
-  ]], {i(1), i(2)})),
-
   -- fn {{{1
-  s('fn', fmt([[
-    {}function {}({})
-      {}
-    end
-  ]], {
-    f(function (arg)
-      local name = arg[1][1]
-      if name:find(":") ~= nil or name:find("%.") ~= nil then
-        return ""
+  s('fn', {
+    d(1, function()
+      local line = vim.fn.getline('.')
+      if line:match("%S") then
+        return sn(nil, fmt([[
+          function({})
+            {}
+          end
+        ]], {i(1), i(2)}))
+      else
+        return sn(nil, fmt([[
+          {}function{}({})
+            {}
+          end
+        ]], {
+          f(function (arg)
+            local name = arg[1][1]
+            if name:find(":") ~= nil or name:find("%.") ~= nil then
+              return ""
+            end
+            return "local "
+          end, {1}),
+          i(1), i(2), i(0)
+        }))
       end
-      return "local "
-    end, {1}),
-    i(1), i(2), i(0)
-  })),
+    end)
+  }),
 
   -- for {{{1
   s('for', fmt([[
@@ -60,7 +66,7 @@ return {
     c(1, {
       fmt("{}, {} in pairs({})", {i(2, "key"), i(3, "val"), i(1, "items")}),
       fmt("{}, {} in ipairs({})", {i(2, "i"), i(3, "val"), i(1, "items")}),
-      fmt("{} = {}..{}", {i(3,"x"), i(2,"1"), i(1,"10")}),
+      fmt("{} = {},{}", {i(3,"x"), i(2,"1"), i(1,"10")}),
     }),
     i(2),
   })),

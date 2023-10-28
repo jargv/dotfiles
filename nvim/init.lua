@@ -208,7 +208,7 @@ table.insert(plugin_setup_funcs, function()
 end)
 
 -- Plug 'nvim-telescope/telescope.nvim' {{{2
-Plug('nvim-telescope/telescope.nvim', { tag = '0.1.0' })
+Plug('nvim-telescope/telescope.nvim')
 Plug('nvim-telescope/telescope-fzf-native.nvim', {['do'] = 'make'})
 table.insert(plugin_setup_funcs, function()
   local telescope = require "telescope"
@@ -1527,7 +1527,7 @@ if lsp_configured == nil then
     },
   }
 
-  lspconfig.sumneko_lua.setup {
+  lspconfig.lua_ls.setup {
     capabilities = capabilities,
     settings = {
       Lua = {
