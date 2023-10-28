@@ -407,19 +407,19 @@ table.insert(plugin_setup_funcs, function()
   }
   require("luasnip.loaders.from_lua").load({paths = "./snippets"})
 
-  vim.api.nvim_create_autocmd('ModeChanged', {
-    group = vim.api.nvim_create_augroup('UnlinkSnippetOnModeChange', { clear = true }),
-    pattern = {'s:n', 'i:*'},
-    desc = 'Forget the current snippet when leaving the insert mode',
-    callback = function(evt)
-      if  luasnip.session
-      and luasnip.session.current_nodes[evt.buf]
-      and not luasnip.session.jump_active
-      then
-        luasnip.unlink_current()
-      end
-    end,
-  })
+  -- vim.api.nvim_create_autocmd('ModeChanged', {
+  --   group = vim.api.nvim_create_augroup('UnlinkSnippetOnModeChange', {clear = true}),
+  --   pattern = {'s:n', 'i:*'},
+  --   desc = 'Forget the current snippet when leaving the insert mode',
+  --   callback = function(evt)
+  --     -- if  luasnip.session
+  --     -- and luasnip.session.current_nodes[evt.buf]
+  --     -- and not luasnip.session.jump_active
+  --     -- then
+  --     --   luasnip.unlink_current()
+  --     -- end
+  --   end,
+  -- })
 end)
 
 -- Plug  'SirVer/UltiSnips' (unused) {{{2
@@ -1346,6 +1346,13 @@ vim.api.nvim_set_keymap('i', '<cr>', '', {
     end
   })
 
+  vim.api.nvim_set_keymap('i', '<C-l>', '', {
+    silent = true,
+    callback = function()
+      luasnip.unlink_current()
+    end
+  })
+
   vim.api.nvim_set_keymap('s', '<tab>', '', {
     noremap = true,
     silent = true,
@@ -1582,8 +1589,8 @@ cmp.setup({
     documentation = cmp.config.window.bordered(),
   },
   mapping = cmp.mapping.preset.insert({
-    ['<C-k>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-j>'] = cmp.mapping.scroll_docs(4),
+    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-d>'] = cmp.mapping.scroll_docs(4),
     ['<C-n>'] = cmp.mapping.select_next_item(),
     ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-Space>'] = cmp.mapping.complete(),
