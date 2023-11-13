@@ -8,6 +8,7 @@ TODOS:
   - hotkeys work with tig view
   - if not in a git repo, fallback to the cwd and check again
   - make it work with symlinks
+  - Fix diff hork on delete/created files
 consider:
   - key for refreshing status (r)
   - clean up the viewer code by using win_execute function

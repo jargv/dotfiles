@@ -8,7 +8,7 @@ return {
 
   -- for {{{1
   s("for", fmta([[
-    for(<>){
+    for (<>){
       <>
     }
   ]], {

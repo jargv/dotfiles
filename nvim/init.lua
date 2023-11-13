@@ -178,6 +178,26 @@ Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
 
+ -- Plug 'mfussenegger/nvim-dap' {{{2
+Plug 'mfussenegger/nvim-dap'
+table.insert(plugin_setup_funcs, function()
+  local dap = require('dap')
+
+  dap.adapters.gdb = {
+    type "executable",
+    command = "gdb",
+    args = {"-i", "dap"}
+  }
+
+  dap.configurations.gdb = {
+    name = "Attach to process",
+    type = 'gdb',
+    request = 'attach',
+    pid = require('dap.utils').pick_process,
+    args = {},
+  }
+end)
+
 -- Plug 'jose-elias-alvarez/null-ls.nvim' {{{2
 Plug 'jose-elias-alvarez/null-ls.nvim'
 table.insert(plugin_setup_funcs, function()
@@ -618,7 +638,14 @@ vim.opt.smartcase = true
 vim.opt.incsearch = true
 vim.opt.hlsearch = true
 vim.opt.wrapscan = true
-normal["<C-L>"] = ":nohlsearch<cr>:syn sync minlines=99999<cr><C-L>"
+normal["<C-L>"] = function()
+  vim.cmd [[
+    nohlsearch
+    syn sync minlines=99999
+    normal! "<C-L>"
+  ]]
+  require'luasnip'.unlink_current()
+end
 
 -- folds
 vim.opt.fillchars:append "fold: " --don't do dashes in the fold lines
