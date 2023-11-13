@@ -8,7 +8,6 @@ TODOS:
   - hotkeys work with tig view
   - if not in a git repo, fallback to the cwd and check again
   - make it work with symlinks
-  - Fix diff hork on delete/created files
 consider:
   - key for refreshing status (r)
   - clean up the viewer code by using win_execute function
@@ -142,8 +141,8 @@ function gitato.toggle_diff_against_git_ref(ref)
 
   -- get the log contents
   local log_contents = vim.fn.systemlist("cd "..git_root.." && git log --oneline ".. file)
-  local error = vim.api.nvim_get_vvar("shell_error")
-  if error ~= 0 then
+  local err = vim.api.nvim_get_vvar("shell_error")
+  if err ~= 0 then
     print(table.concat(log_contents, "\n"))
     print(not_a_repo_error_msg)
     error()
@@ -481,6 +480,11 @@ function gitato.open_viewer(diff_branch)
       if absolute_file == current_file then
         return
       end
+    end
+
+    -- no diff on deleted files
+    if status == " D" or status == "D " then
+      return
     end
 
     -- close the current diff window before opening another

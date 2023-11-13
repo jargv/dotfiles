@@ -181,6 +181,8 @@ Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
  -- Plug 'mfussenegger/nvim-dap' {{{2
 Plug 'mfussenegger/nvim-dap'
 table.insert(plugin_setup_funcs, function()
+  -- TODO: get this working once gdb 14 is easily available
+  do return end
   local dap = require('dap')
 
   dap.adapters.gdb = {
