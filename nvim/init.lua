@@ -43,8 +43,8 @@ local function checkPluginSetup()
   local result = vim.fn.system {
     "curl", "-fLo", plugFile, "--create-dirs", plugUrl
   }
-  local error = vim.api.nvim_get_vvar("shell_error")
-  if error ~= 0 or #result == 0 then
+  local err = vim.api.nvim_get_vvar("shell_error")
+  if err ~= 0 or #result == 0 then
     print "error downloading plug, no plugins will be installed"
     return false
   end
@@ -177,6 +177,60 @@ Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
+
+-- Plug "zbirenbaum/copilot.lua" {{
+Plug "zbirenbaum/copilot.lua"
+leader.ac = function()
+  require('copilot').setup{
+    panel = {
+      enabled = true,
+      auto_refresh = false,
+      keymap = {
+        jump_prev = "[[",
+        jump_next = "]]",
+        accept = "<CR>",
+        refresh = "gr",
+        open = nil,
+      },
+      layout = {
+        position = "bottom", -- | top | left | right
+        ratio = 0.4
+      },
+    },
+    suggestion = {
+      enabled = true,
+      auto_trigger = true,
+      debounce = 75,
+      keymap = {
+        accept = "<M-i>",
+        accept_word = "<M-u>",
+        accept_line = "<M-y>",
+        next = "<M-h>",
+        prev = "<M-H>",
+        dismiss = "<C-y>",
+      },
+    },
+    filetypes = {
+      lua = true,
+      cpp = true,
+      yaml = false,
+      markdown = false,
+      help = false,
+      gitcommit = true,
+      gitrebase = false,
+      hgcommit = false,
+      svn = false,
+      cvs = false,
+      ["."] = false,
+    },
+    copilot_node_command = 'node', -- Node.js version must be > 18.x
+    server_opts_overrides = {},
+  }
+  leader.ac = function()
+    require("copilot.suggestion").toggle_auto_trigger()
+    vim.notify("copilot:" .. (vim.b.copilot_suggestion_auto_trigger and "yes" or "no"))
+  end
+end
 
  -- Plug 'mfussenegger/nvim-dap' {{{2
 Plug 'mfussenegger/nvim-dap'
@@ -810,14 +864,14 @@ terminal["<A-k>"] = "k"
 terminal["<A-l>"] = "l"
 
 -- window resize
-leader["<Down>"] = "<C-W>+"
-leader["<Up>"] = "<C-W>-"
-leader["<Left>"] = "<C-W><"
-leader["<Right>"] = "<C-W>>"
-normal["<Down>"] = "5<C-W>+"
-normal["<Up>"] = "5<C-W>-"
-normal["<Left>"] = "5<C-W><"
-normal["<Right>"] = "5<C-W>>"
+-- leader["<Down>"] = "<C-W>+"
+-- leader["<Up>"] = "<C-W>-"
+-- leader["<Left>"] = "<C-W><"
+-- leader["<Right>"] = "<C-W>>"
+-- normal["<Down>"] = "5<C-W>+"
+-- normal["<Up>"] = "5<C-W>-"
+-- normal["<Left>"] = "5<C-W><"
+-- normal["<Right>"] = "5<C-W>>"
 
 -- rearrange windows
 leader.H = "<C-W>H"

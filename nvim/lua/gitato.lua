@@ -201,8 +201,8 @@ function gitato.toggle_diff_against_git_ref(ref)
 
   local function load_diff_contents()
     local diff_contents = vim.fn.systemlist("cd "..git_root.." && git show ".. diff_against..':'..file)
-    error = vim.api.nvim_get_vvar("shell_error")
-    if error ~= 0 then
+    local err = vim.api.nvim_get_vvar("shell_error")
+    if err ~= 0 then
       print(table.concat(diff_contents, "\n"))
       error(not_a_repo_error_msg)
     end
