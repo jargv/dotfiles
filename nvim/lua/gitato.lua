@@ -7,7 +7,6 @@ TODOS:
 consider:
   - key for refreshing status (r)
   - clean up the viewer code by using win_execute function
-  - set the filetype of the diff buffer to match the source buffer
 ]]
 local current_dir = require("current_dir")
 local gitato = {}
@@ -148,8 +147,10 @@ function gitato.toggle_diff_against_git_ref(ref)
   local log_cursor_line = 1
   local diff_against = ref == nil and "HEAD" or ref
 
+  local filetype = vim.bo.filetype
   -- set up the diff window
   vim.cmd("leftabove vnew")
+  vim.bo.filetype = filetype
   vim.bo.buftype = "nofile"
   vim.bo.bufhidden = "wipe"
   current_diff_buffer = vim.fn.bufnr("%")
