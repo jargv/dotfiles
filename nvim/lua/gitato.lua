@@ -7,6 +7,7 @@ TODOS:
 consider:
   - key for refreshing status (r)
   - clean up the viewer code by using win_execute function
+  - reload a buffer after "R" changes it
 ]]
 local current_dir = require("current_dir")
 local gitato = {}
@@ -28,7 +29,7 @@ local viewer_help = {
 }
 
 local unsupported_diff_extensions = {
-  ".aseprite", ".png", ".spl", ".wav", ".mp3"
+  ".aseprite", ".png", ".spl", ".wav", ".mp3", ".spv"
 }
 
 local function file_diff_not_supported(name)
@@ -232,7 +233,7 @@ function gitato.toggle_diff_against_git_ref(ref)
     local err = vim.api.nvim_get_vvar("shell_error")
     if err ~= 0 then
       print(table.concat(diff_contents, "\n"))
-      diff_contents = ""
+      diff_contents = {}
     end
     if #diff_contents then
       vim.api.nvim_buf_set_lines(current_diff_buffer, 0, -1, false, diff_contents)
