@@ -203,9 +203,9 @@ leader.ac = function()
       debounce = 75,
       keymap = {
         accept = "<M-i>",
-        accept_word = "<M-u>",
+        accept_word = "<M-;>",
         accept_line = "<M-y>",
-        next = "<M-h>",
+        next = "<M-u>",
         prev = "<M-H>",
         dismiss = "<C-y>",
       },
@@ -918,22 +918,23 @@ end
 leader.gg = function() gitato.open_viewer() end
 leader.GG = function() gitato.open_viewer(default_upstream()) end
 
-leader.j = function()
+leader.dj = function()
   gitato.move_log_cursor(1)
 end
-leader.k = function()
+
+leader.dk = function()
   gitato.move_log_cursor(-1)
 end
 
-leader.l = function()
-  gitato.toggle_diff_log_width()
+leader.dl = function()
+  gitato.toggle_diff_log()
 end
 
-leader.d = function()
+leader.dd = function()
   gitato.toggle_diff_against_git_ref()
 end
 
-leader.D = function()
+leader.da = function()
   gitato.toggle_diff_against_git_ref(vim.fn.input(">", default_upstream()))
 end
 
