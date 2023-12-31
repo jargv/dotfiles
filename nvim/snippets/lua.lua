@@ -51,7 +51,7 @@ return {
             end
             return "local "
           end, {1}),
-          i(1), i(2), i(0)
+          i(1), i(2), i(3)
         }))
       end
     end)
@@ -77,5 +77,27 @@ return {
       {}
     end
   ]], {i(1), i(2)})),
+  --}}}
+  -- l {{{1
+  s('l', fmt([[
+  print("{}:" .. {})
+  ]], {
+    i(1),
+    f(function (args)
+      local parts = vim.fn.split(args[1][1], "\\,")
+      local sep = ""
+      local res = ""
+      for _, val in ipairs(parts) do
+        res = res .. sep .. val
+        sep = " .. ',' .. "
+      end
+      return res
+    end, {1})
+  })),
+
+  -- log {{{1
+  s('log', fmt([[
+    print("{}")
+  ]], {i(1)})),
   --}}}
 }

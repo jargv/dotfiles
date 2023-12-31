@@ -15,7 +15,7 @@ for dotfile in dotfiles/* ; do
   ")
 
   if [[ -d $dotfile ]]; then
-    ln -snf $dir/$dotfile $DOT_CONFIG/$dest
+    ln -snf $dir/$dotfile $DOT_CONFIG/$dest/
   else
     ln -snf $dir/$dotfile $HOME/.$dest
   fi

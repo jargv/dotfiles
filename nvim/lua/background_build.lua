@@ -8,8 +8,9 @@ local fmtjson = require("fmtjson")
 local fmtelapsed = require("fmtelapsed")
 
 local starting_points = {
-  cpp = {ext = {"cpp", "hpp"}, cmd = "cmake --build build", run = "build/Debug/exe"},
-  hpp = {ext = {"cpp", "hpp"}, cmd = "cmake --build build", run = "build/Debug/exe"},
+  cpp = {ext = {"cpp", "hpp", "cxx"}, cmd = "cmake --build build", run = "build/Debug/exe"},
+  hpp = {ext = {"cpp", "hpp", "cxx"}, cmd = "cmake --build build", run = "build/Debug/exe"},
+  cxx = {ext = {"cpp", "hpp", "cxx"}, cmd = "cmake --build build", run = "build/Debug/exe"},
   go = {cmd = "go build", run = "ls"},
   ts = {cmd = "yarn run build"},
 }
@@ -381,6 +382,7 @@ function api.load_errors()
 end
 
 function api.open_error_output_buffers()
+  local starting_win = vim.api.nvim_get_current_win()
   for _, job in ipairs(build_jobs) do
     if job.buf then
       local info = vim.fn.getbufinfo(job.buf)
@@ -395,8 +397,7 @@ function api.open_error_output_buffers()
 
   for _, job in ipairs(build_jobs) do
     local failed = job.exit_code ~= nil and job.exit_code ~= 0
-    local stream_available = job.config.stream and job.stream_available
-    local should_open = job.buf and (failed or stream_available)
+    local should_open = job.buf and failed
     if should_open then
       vim.cmd(([[
         botright vertical sbuffer %d
@@ -408,6 +409,7 @@ function api.open_error_output_buffers()
   vim.cmd [[
     wincmd =
   ]]
+  vim.api.nvim_set_current_win(starting_win)
 end
 
 function api.toggle_open_all_output_buffers()
