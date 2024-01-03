@@ -90,6 +90,7 @@ local new_buffer_options = {
   {key="f", cmd=find_files,                 desc="search for any file"},
   {key="g", cmd=find_git_files,             desc="search for a file in git"},
   {key="b", cmd=find_buffers,               desc="search buffers by name"},
+  {key="w", cmd=":e ~/notes/work.txt",      desc="edit work notes"},
   {key="/", cmd=live_grep,                  desc="live grep"},
   {key="t", cmd=":exec ':e '.tempname()",   desc="edit temp file"},
   {key="r", cmd=proj_root,                  desc="move to git root"},

@@ -70,6 +70,10 @@ return {
   s('log', fmt([[
     std::cout << "{}" << std::endl;
   ]], {i(1)})),
+  -- req {{{1
+  s('req', fmt([[
+    REQUIRE({});
+  ]], {i(1, "false")})),
 
   --}}}
 }
