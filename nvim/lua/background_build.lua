@@ -551,13 +551,33 @@ function api.clear_config()
   print "build config cleared"
 end
 
-function api.toggle_run_step()
+local function get_step_named_run()
   for _,job in ipairs(build_config.jobs) do
     if job.name == "run" then
-      job.skip = not job.skip
+      return job
     end
   end
-  build_jobs = setup_build_jobs(build_config, build_jobs)
+  return nil
+end
+
+function api.toggle_run_step()
+  local run_job = get_step_named_run()
+  if run_job then
+    run_job.skip = not run_job.skip
+    build_jobs = setup_build_jobs(build_config, build_jobs)
+  end
+end
+
+function api.debug_run_step()
+  local run_job = get_step_named_run()
+  if not run_job then
+    return
+  end
+
+  -- vim.cmd("tabnew term://"..run_job.dir.."///bin/zsh")
+  -- vim.api.nvim_feedkeys("gdb "..run_job.cmd, "i", false)
+
+  vim.cmd("tabnew term://"..run_job.dir.."///usr/bin/gdb "..run_job.cmd)
 end
 
 return api
