@@ -29,3 +29,5 @@ executables
 shader
 reticle
 unintuitive
+Aseprite
+coroutines

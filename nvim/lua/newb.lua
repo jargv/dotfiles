@@ -1,7 +1,7 @@
 --[[ TODOS:
 - make the buffer immutable
 - look into making this work on all new buffers instead of requiring an explicit fn
-- consider making it a bit prettier...
+- consider making it a bit prettier... (filetype + highlighting)
 ]]
 local current_dir = require "current_dir"
 local telescope = require "telescope.builtin"

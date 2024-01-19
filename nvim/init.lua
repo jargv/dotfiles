@@ -9,6 +9,7 @@ TODO:
   - Make ==== underline not pollute the clipboard (some register?)
   - display git ignore status in status line
   - fix issues with autocomplete and snippet keys being ambiguous
+  - make sizing not janky when changing log mode
 ]]
 
 -- setup {{{1
@@ -534,10 +535,10 @@ vim.cmd [[
       endif
     else
       if a:next
-        lua package.loaded.gitsigns.next_hunk()
+        lua require('gitsigns').next_hunk()
         normal zz
       else
-        lua package.loaded.gitsigns.prev_hunk()
+        lua require('gitsigns').prev_hunk()
         normal zz
       endif
     endif
@@ -798,23 +799,6 @@ if vim.fn.has("mouse_sgr") ~= 0 then
 end
 
 
--- warning on old habit keybinds {{{1
-leader.q = function()
-  print("nope... bad habit")
-end
-
-leader.Q = function()
-  print("nope... bad habit")
-end
-
-leader.u = function()
-  print("nope... use menus")
-end
-
-leader.U = function()
-  print("nope... use menus")
-end
-
 --create the autogroup that we'll use for everything {{{1
 local augroup = "j.config.autogroup"
 vim.api.nvim_create_augroup(augroup, {
@@ -979,6 +963,7 @@ leader.Ma = build.add_from_current_file
 leader.Mq = build.clear_config
 leader.Mc = build.stop_all
 leader.Mr = build.toggle_run_step
+leader.Md = build.debug_run_step
 
 -- statusline setup {{{1
 vim.opt.laststatus = 3 -- only one statusline at bottom
