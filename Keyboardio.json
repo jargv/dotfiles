@@ -464,15 +464,7 @@
       {"code": 60, "label": {"base": "F3"}},
       {"code": 61, "label": {"base": "F4"}},
       {"code": 62, "label": {"base": "F5"}},
-      {
-        "code": 18543,
-        "legacyCode": 23663,
-        "label": {
-          "hint": {"full": "Brightness", "1u": "Brght."},
-          "base": {"full": "Up", "1u": "🔆"}
-        },
-        "categories": ["consumer"]
-      },
+      {"code": 63, "label": {"base": "F6"}},
       {
         "code": 65535,
         "label": {"base": {"full": "Transparent", "1u": " "}},
@@ -528,20 +520,12 @@
         "label": {"base": {"full": "Transparent", "1u": " "}},
         "categories": ["blanks"]
       },
-      {"code": 63, "label": {"base": "F6"}},
       {"code": 64, "label": {"base": "F7"}},
       {"code": 65, "label": {"base": "F8"}},
       {"code": 66, "label": {"base": "F9"}},
       {"code": 67, "label": {"base": "F10"}},
-      {
-        "code": 18544,
-        "legacyCode": 23664,
-        "label": {
-          "hint": {"full": "Brightness", "1u": "Brght."},
-          "base": {"full": "Down", "1u": "🔅"}
-        },
-        "categories": ["consumer"]
-      },
+      {"code": 68, "label": {"base": "F11"}},
+      {"code": 69, "label": {"base": "F12"}},
       {
         "code": 65535,
         "label": {"base": {"full": "Transparent", "1u": " "}},
@@ -579,21 +563,34 @@
       {"code": 47, "label": {"base": "[", "shifted": "{"}},
       {"code": 48, "label": {"base": "]", "shifted": "}"}},
       {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
+        "code": 17498,
+        "label": {"hint": "MoveTo", "base": "#6"},
+        "target": 6,
+        "rangeStart": 17492,
+        "categories": ["layer", "movetolayer"]
       },
       {
         "code": 65535,
         "label": {"base": {"full": "Transparent", "1u": " "}},
         "categories": ["blanks"]
       },
-      {"code": 68, "label": {"base": "F11"}},
-      {"code": 69, "label": {"base": "F12"}},
       {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
+        "code": 260,
+        "label": {"hint": {"full": "Ctrl+", "1u": "C+"}, "base": "a"},
+        "categories": ["with-modifiers", "ctrl"],
+        "baseCode": 4
+      },
+      {
+        "code": 278,
+        "label": {"hint": {"full": "Ctrl+", "1u": "C+"}, "base": "s"},
+        "categories": ["with-modifiers", "ctrl"],
+        "baseCode": 22
+      },
+      {
+        "code": 263,
+        "label": {"hint": {"full": "Ctrl+", "1u": "C+"}, "base": "d"},
+        "categories": ["with-modifiers", "ctrl"],
+        "baseCode": 7
       },
       {
         "code": 265,
@@ -602,15 +599,10 @@
         "baseCode": 9
       },
       {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
-      {
-        "code": 227,
-        "label": {"base": {"full": "Super", "1u": "Sup.", "short": "Su"}},
-        "location": "left",
-        "categories": ["modifier"]
+        "code": 266,
+        "label": {"hint": {"full": "Ctrl+", "1u": "C+"}, "base": "g"},
+        "categories": ["with-modifiers", "ctrl"],
+        "baseCode": 10
       },
       {
         "code": 65535,
@@ -627,6 +619,7 @@
         "label": {"base": {"full": "Transparent", "1u": " "}},
         "categories": ["blanks"]
       },
+      {"code": 76, "label": {"base": {"full": "Delete", "1u": "Del"}}},
       {"code": 80, "label": {"base": {"full": "Left Arrow", "1u": "←"}}},
       {"code": 81, "label": {"base": {"full": "Down Arrow", "1u": "↓"}}},
       {"code": 82, "label": {"base": {"full": "Up Arrow", "1u": "↑"}}},
@@ -732,11 +725,7 @@
         "label": {"base": {"full": "Transparent", "1u": " "}},
         "categories": ["blanks"]
       },
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      }
+      {"code": 70, "label": {"base": {"full": "Print Screen", "1u": "PrSc"}}}
     ],
     [
       {
@@ -751,15 +740,7 @@
       {"code": 60, "label": {"base": "F3"}},
       {"code": 61, "label": {"base": "F4"}},
       {"code": 62, "label": {"base": "F5"}},
-      {
-        "code": 18543,
-        "legacyCode": 23663,
-        "label": {
-          "hint": {"full": "Brightness", "1u": "Brght."},
-          "base": {"full": "Up", "1u": "🔆"}
-        },
-        "categories": ["consumer"]
-      },
+      {"code": 63, "label": {"base": "F6"}},
       {
         "code": 65535,
         "label": {"base": {"full": "Transparent", "1u": " "}},
@@ -813,20 +794,12 @@
         "label": {"base": {"full": "Transparent", "1u": " "}},
         "categories": ["blanks"]
       },
-      {"code": 63, "label": {"base": "F6"}},
       {"code": 64, "label": {"base": "F7"}},
       {"code": 65, "label": {"base": "F8"}},
       {"code": 66, "label": {"base": "F9"}},
       {"code": 67, "label": {"base": "F10"}},
-      {
-        "code": 18544,
-        "legacyCode": 23664,
-        "label": {
-          "hint": {"full": "Brightness", "1u": "Brght."},
-          "base": {"full": "Down", "1u": "🔅"}
-        },
-        "categories": ["consumer"]
-      },
+      {"code": 68, "label": {"base": "F11"}},
+      {"code": 69, "label": {"base": "F12"}},
       {
         "code": 65535,
         "label": {"base": {"full": "Transparent", "1u": " "}},
@@ -873,12 +846,23 @@
         "label": {"base": {"full": "Transparent", "1u": " "}},
         "categories": ["blanks"]
       },
-      {"code": 68, "label": {"base": "F11"}},
-      {"code": 69, "label": {"base": "F12"}},
       {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
+        "code": 4100,
+        "label": {"hint": {"full": "Super+", "1u": "Su+"}, "base": "a"},
+        "categories": ["with-modifiers", "gui"],
+        "baseCode": 4
+      },
+      {
+        "code": 4118,
+        "label": {"hint": {"full": "Super+", "1u": "Su+"}, "base": "s"},
+        "categories": ["with-modifiers", "gui"],
+        "baseCode": 22
+      },
+      {
+        "code": 4103,
+        "label": {"hint": {"full": "Super+", "1u": "Su+"}, "base": "d"},
+        "categories": ["with-modifiers", "gui"],
+        "baseCode": 7
       },
       {
         "code": 4105,
@@ -887,15 +871,15 @@
         "baseCode": 9
       },
       {
+        "code": 4106,
+        "label": {"hint": {"full": "Super+", "1u": "Su+"}, "base": "g"},
+        "categories": ["with-modifiers", "gui"],
+        "baseCode": 10
+      },
+      {
         "code": 65535,
         "label": {"base": {"full": "Transparent", "1u": " "}},
         "categories": ["blanks"]
-      },
-      {
-        "code": 227,
-        "label": {"base": {"full": "Super", "1u": "Sup.", "short": "Su"}},
-        "location": "left",
-        "categories": ["modifier"]
       },
       {
         "code": 65535,
@@ -1044,10 +1028,26 @@
         "label": {"base": {"full": "Transparent", "1u": " "}},
         "categories": ["blanks"]
       },
-      {"code": 63, "label": {"base": "F6"}},
-      {"code": 64, "label": {"base": "F7"}},
-      {"code": 65, "label": {"base": "F8"}},
-      {"code": 66, "label": {"base": "F9"}},
+      {
+        "code": 65535,
+        "label": {"base": {"full": "Transparent", "1u": " "}},
+        "categories": ["blanks"]
+      },
+      {
+        "code": 65535,
+        "label": {"base": {"full": "Transparent", "1u": " "}},
+        "categories": ["blanks"]
+      },
+      {
+        "code": 65535,
+        "label": {"base": {"full": "Transparent", "1u": " "}},
+        "categories": ["blanks"]
+      },
+      {
+        "code": 65535,
+        "label": {"base": {"full": "Transparent", "1u": " "}},
+        "categories": ["blanks"]
+      },
       {
         "code": 17497,
         "label": {"hint": "MoveTo", "base": "#5"},
@@ -1200,34 +1200,29 @@
     ],
     [
       {"code": 53, "label": {"base": "`", "shifted": "~"}},
-      {"code": 58, "label": {"base": "F1"}},
-      {"code": 59, "label": {"base": "F2"}},
-      {"code": 60, "label": {"base": "F3"}},
-      {"code": 61, "label": {"base": "F4"}},
-      {"code": 62, "label": {"base": "F5"}},
-      {
-        "code": 0,
-        "label": {"base": {"full": "Blocked", "1u": "Blkd"}},
-        "categories": ["blanks"]
-      },
       {"code": 30, "label": {"base": "1", "shifted": "!"}},
+      {"code": 31, "label": {"base": "2", "shifted": "@"}},
+      {"code": 32, "label": {"base": "3", "shifted": "#"}},
+      {"code": 33, "label": {"base": "4", "shifted": "$"}},
+      {"code": 34, "label": {"base": "5", "shifted": "%"}},
+      {"code": 35, "label": {"base": "6", "shifted": "^"}},
+      {
+        "code": 226,
+        "label": {"base": "Alt"},
+        "location": "left",
+        "categories": ["modifier"]
+      },
       {"code": 41, "label": {"base": "Esc"}},
       {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
+        "code": 17152,
+        "label": {"hint": {"full": "LEDEffect", "1u": "LED"}, "base": "Next"},
+        "categories": ["ledkeys"]
       },
-      {"code": 63, "label": {"base": "F6"}},
-      {"code": 64, "label": {"base": "F7"}},
-      {"code": 65, "label": {"base": "F8"}},
-      {"code": 66, "label": {"base": "F9"}},
-      {
-        "code": 17496,
-        "label": {"hint": "MoveTo", "base": "#4"},
-        "target": 4,
-        "rangeStart": 17492,
-        "categories": ["layer", "movetolayer"]
-      },
+      {"code": 35, "label": {"base": "6", "shifted": "^"}},
+      {"code": 36, "label": {"base": "7", "shifted": "&"}},
+      {"code": 37, "label": {"base": "8", "shifted": "*"}},
+      {"code": 38, "label": {"base": "9", "shifted": "("}},
+      {"code": 39, "label": {"base": "0", "shifted": ")"}},
       {
         "code": 17492,
         "label": {"hint": "MoveTo", "base": "#0"},
@@ -1236,93 +1231,47 @@
         "categories": ["layer", "movetolayer"]
       },
       {"code": 43, "label": {"base": "Tab"}},
-      {"code": 6, "label": {"base": "c", "shifted": "C"}},
       {"code": 20, "label": {"base": "q", "shifted": "Q"}},
-      {"code": 82, "label": {"base": {"full": "Up Arrow", "1u": "↑"}}},
+      {"code": 26, "label": {"base": "w", "shifted": "W"}},
       {"code": 8, "label": {"base": "e", "shifted": "E"}},
       {"code": 21, "label": {"base": "r", "shifted": "R"}},
-      {
-        "code": 226,
-        "label": {"base": "Alt"},
-        "location": "left",
-        "categories": ["modifier"]
-      },
-      {
-        "code": 224,
-        "label": {"base": {"full": "Control", "1u": "Ctrl"}},
-        "location": "left",
-        "categories": ["modifier"]
-      },
+      {"code": 23, "label": {"base": "t", "shifted": "T"}},
+      {"code": 36, "label": {"base": "7", "shifted": "&"}},
       {"code": 44, "label": {"base": "Space"}},
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
-      {"code": 41, "label": {"base": "Esc"}},
-      {"code": 34, "label": {"base": "5", "shifted": "%"}},
-      {"code": 80, "label": {"base": {"full": "Left Arrow", "1u": "←"}}},
-      {"code": 81, "label": {"base": {"full": "Down Arrow", "1u": "↓"}}},
-      {"code": 79, "label": {"base": {"full": "Right Arrow", "1u": "→"}}},
-      {"code": 9, "label": {"base": "f", "shifted": "F"}},
+      {"code": 42, "label": {"base": {"full": "Backspace", "1u": "Bksp"}}},
+      {"code": 40, "label": {"base": "Enter"}},
+      {"code": 28, "label": {"base": "y", "shifted": "Y"}},
+      {"code": 24, "label": {"base": "u", "shifted": "U"}},
+      {"code": 12, "label": {"base": "i", "shifted": "I"}},
+      {"code": 18, "label": {"base": "o", "shifted": "O"}},
+      {"code": 19, "label": {"base": "p", "shifted": "P"}},
+      {"code": 46, "label": {"base": "=", "shifted": "+"}},
       {
         "code": 225,
         "label": {"base": "Shift"},
         "location": "left",
         "categories": ["modifier"]
-      },
-      {"code": 40, "label": {"base": "Enter"}},
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
       },
       {"code": 4, "label": {"base": "a", "shifted": "A"}},
-      {"code": 26, "label": {"base": "w", "shifted": "W"}},
-      {"code": 6, "label": {"base": "c", "shifted": "C"}},
-      {"code": 27, "label": {"base": "x", "shifted": "X"}},
-      {"code": 29, "label": {"base": "z", "shifted": "Z"}},
+      {"code": 22, "label": {"base": "s", "shifted": "S"}},
+      {"code": 7, "label": {"base": "d", "shifted": "D"}},
+      {"code": 9, "label": {"base": "f", "shifted": "F"}},
+      {"code": 10, "label": {"base": "g", "shifted": "G"}},
+      {"code": 37, "label": {"base": "8", "shifted": "*"}},
+      {"code": 40, "label": {"base": "Enter"}},
       {
-        "code": 225,
-        "label": {"base": "Shift"},
-        "location": "left",
+        "code": 230,
+        "label": {"base": {"full": "AltGr", "1u": "AGr"}},
+        "location": "right",
         "categories": ["modifier"]
       },
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
+      {"code": 76, "label": {"base": {"full": "Delete", "1u": "Del"}}},
+      {"code": 11, "label": {"base": "h", "shifted": "H"}},
+      {"code": 13, "label": {"base": "j", "shifted": "J"}},
+      {"code": 14, "label": {"base": "k", "shifted": "K"}},
+      {"code": 15, "label": {"base": "l", "shifted": "L"}},
+      {"code": 51, "label": {"base": ";", "shifted": ":"}},
+      {"code": 52, "label": {"base": "'", "shifted": "\""}},
       {
         "code": 224,
         "label": {"base": {"full": "Control", "1u": "Ctrl"}},
@@ -1331,44 +1280,41 @@
       },
       {"code": 29, "label": {"base": "z", "shifted": "Z"}},
       {"code": 27, "label": {"base": "x", "shifted": "X"}},
-      {"code": 37, "label": {"base": "8", "shifted": "*"}},
-      {"code": 38, "label": {"base": "9", "shifted": "("}},
-      {"code": 39, "label": {"base": "0", "shifted": ")"}},
-      {"code": 44, "label": {"base": "Space"}},
-      {"code": 33, "label": {"base": "4", "shifted": "$"}},
+      {"code": 6, "label": {"base": "c", "shifted": "C"}},
+      {"code": 25, "label": {"base": "v", "shifted": "V"}},
+      {"code": 5, "label": {"base": "b", "shifted": "B"}},
       {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
+        "code": 17452,
+        "label": {"hint": "ShiftTo", "base": "#2"},
+        "target": 2,
+        "rangeStart": 17450,
+        "categories": ["layer", "shifttolayer"]
       },
       {
-        "code": 225,
+        "code": 229,
         "label": {"base": "Shift"},
-        "location": "left",
+        "location": "right",
         "categories": ["modifier"]
       },
-      {"code": 22, "label": {"base": "s", "shifted": "S"}},
-      {"code": 7, "label": {"base": "d", "shifted": "D"}},
       {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
+        "code": 229,
+        "label": {"base": "Shift"},
+        "location": "right",
+        "categories": ["modifier"]
       },
       {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
+        "code": 17452,
+        "label": {"hint": "ShiftTo", "base": "#2"},
+        "target": 2,
+        "rangeStart": 17450,
+        "categories": ["layer", "shifttolayer"]
       },
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      },
-      {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
-      }
+      {"code": 17, "label": {"base": "n", "shifted": "N"}},
+      {"code": 16, "label": {"base": "m", "shifted": "M"}},
+      {"code": 54, "label": {"base": ",", "shifted": "<"}},
+      {"code": 55, "label": {"base": ".", "shifted": ">"}},
+      {"code": 56, "label": {"base": "/", "shifted": "?"}},
+      {"code": 49, "label": {"base": "\\", "shifted": "|"}}
     ],
     [
       {
@@ -1642,9 +1588,11 @@
         "categories": ["blanks"]
       },
       {
-        "code": 65535,
-        "label": {"base": {"full": "Transparent", "1u": " "}},
-        "categories": ["blanks"]
+        "code": 17457,
+        "label": {"hint": "ShiftTo", "base": "#7"},
+        "target": 7,
+        "rangeStart": 17450,
+        "categories": ["layer", "shifttolayer"]
       },
       {
         "code": 65535,
@@ -2324,7 +2272,7 @@
       15,
       15,
       15,
-      15,
+      3,
       15,
       15,
       0,
@@ -2351,38 +2299,34 @@
       15,
       15,
       15,
-      15,
-      15,
-      3,
-      3,
-      3,
-      0,
-      15,
-      15,
-      15,
-      0,
-      0,
-      3,
-      3,
-      0,
-      15,
-      15,
-      15,
-      15,
+      1,
       15,
       3,
       15,
       15,
+      0,
+      15,
+      1,
+      1,
+      0,
+      0,
+      15,
+      15,
+      0,
+      15,
+      1,
+      1,
+      15,
+      15,
+      15,
+      1,
+      1,
+      1,
+      15,
       15,
       3,
-      0,
-      3,
       3,
       15,
-      0,
-      15,
-      15,
-      0,
       15,
       15,
       15,
@@ -2393,20 +2337,24 @@
       15,
       15,
       15,
-      0,
-      15,
-      15,
-      0,
       15,
       15,
       15,
       15,
-      0,
+      3,
       15,
       15,
-      0,
+      3,
       15,
-      2,
+      15,
+      15,
+      15,
+      3,
+      15,
+      15,
+      3,
+      15,
+      15,
       2,
       15,
       15,
@@ -2467,8 +2415,8 @@
       15,
       15,
       15,
-      15,
-      15,
+      3,
+      3,
       15,
       15,
       15,
@@ -2533,8 +2481,8 @@
       15,
       15,
       15,
-      0,
-      0,
+      3,
+      3,
       15,
       15,
       15,
