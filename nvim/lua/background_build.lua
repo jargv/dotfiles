@@ -574,10 +574,10 @@ function api.debug_run_step()
     return
   end
 
-  -- vim.cmd("tabnew term://"..run_job.dir.."///bin/zsh")
-  -- vim.api.nvim_feedkeys("gdb "..run_job.cmd, "i", false)
+  local cmd = run_job.cmd
+  cmd = cmd:gsub(">.*$", "") -- strip off any redirection, it breaks gdb tui
 
-  vim.cmd("tabnew term://"..run_job.dir.."///usr/bin/gdb "..run_job.cmd)
+  vim.cmd("tabnew term://"..run_job.dir.."///usr/bin/gdb --tui "..cmd)
 end
 
 return api

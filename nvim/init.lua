@@ -965,6 +965,12 @@ leader.Mc = build.stop_all
 leader.Mr = build.toggle_run_step
 leader.Md = build.debug_run_step
 
+-- Pomodoro {{{1
+local neodoro = require "neodoro"
+leader.x = function()
+  neodoro.start_thing()
+end
+
 -- statusline setup {{{1
 vim.opt.laststatus = 3 -- only one statusline at bottom
 vim.opt.showcmd = true
@@ -1553,8 +1559,7 @@ normal.gi = function() vim.lsp.buf.implementation() end
 normal.gu = function() vim.lsp.buf.references() end
 normal.gh = function() vim.lsp.buf.hover() end
 leader.rn = function() vim.lsp.buf.rename(vim.fn.input('>')) end
-leader.rf = function() vim.lsp.buf.code_action{apply = true} end
-leader.rF = function()
+leader.rf = function()
   local fname = vim.fn.expand('%')
   local new_fname = vim.fn.input('new file name>', fname)
   vim.lsp.util.rename(fname, new_fname)
@@ -1563,10 +1568,6 @@ end
 normal["<cr>"] = function()
   pcall(vim.lsp.buf.code_action, {apply = true})
   pcall(vim.cmd.lnext)
-end
-
-normal["<tab>"] = function()
-  pcall(vim.lsp.buf.code_action, {apply = false})
 end
 
 if lsp_configured == nil then
@@ -1743,8 +1744,8 @@ efmt "%f:%l:%m"
 -- starting buffer {{{1
 if vim.api.nvim_buf_get_name(0) == "" then
   vim.cmd.cd('~/projects')
-  -- newb.create()()
-  vim.cmd.e("term://~/projects///bin/zsh")
+  newb.create()()
+  -- vim.cmd.e("term://~/projects///bin/zsh")
 end
 
 -- shell hooks {{{1
