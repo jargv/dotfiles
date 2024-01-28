@@ -1691,7 +1691,7 @@ cmp.setup({
         return entry:get_kind() ~= cmp.lsp.CompletionItemKind.Text and entry:get_kind() ~= cmp.lsp.CompletionItemKind.Snippet
       end
     },
-    -- { name = 'nvim_lsp_signature_help' },
+    { name = 'nvim_lsp_signature_help' },
     { name = 'buffer' },
     { name = 'path' },
   }, {
