@@ -9,8 +9,11 @@ end
 
 local namespace_name = "neodoro"
 local pomo_seconds = 25 * 60
+pomo_seconds = 10
 
 local function finish()
+  local pos = vim.api.nvim_win_get_cursor(0)
+  local tab = vim.api.nvim_win_get_tabpage(0)
   neodoro.pomo_timer:stop()
   vim.cmd("-tabnew")
   vim.t.tabname = "🍅 Pomodoro Done!"
@@ -29,9 +32,14 @@ end
 local function get_status()
   local elapsed = vim.fn.reltimefloat(vim.fn.reltime(neodoro.start_time))
   local remaining = pomo_seconds - elapsed
+  local negative = false
+  if remaining < 0 then
+    negative = true
+    remaining = remaining * -1
+  end
   local minutes = math.floor(remaining / 60)
   local seconds = remaining % 60
-  return ("🍅 %d:%02.0f"):format(minutes, seconds)
+  return ("🍅 %s%d:%02.0f"):format(negative and "-" or "", minutes, seconds)
 end
 
 local function update()
@@ -47,7 +55,8 @@ local function update()
   local elapsed = vim.fn.reltimefloat(vim.fn.reltime(neodoro.start_time))
   local remaining = pomo_seconds - elapsed
 
-  if remaining < 0 then
+  if remaining < -10 then
+    finish()
     vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
       virt_text_pos = "eol",
       sign_text = "🍅",
@@ -55,16 +64,26 @@ local function update()
         {"🍅 Pomodoro Done!", "Error"}
       },
     })
-    finish()
     return
+  elseif remaining < 0 then
+    vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
+      virt_text_pos = "eol",
+      sign_text = "🍅",
+      virt_text = {
+        {"🍅 Pomodoro Done!", "Error"}
+      },
+    })
+
+    neodoro.task = (math.floor(-remaining) % 2 == 0) and "POMODORO DONE!!!" or ""
+  else
+    vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
+      virt_text_pos = "eol",
+      sign_text = "🍅",
+      virt_text = {
+        {get_status(), "Error"}
+      },
+    })
   end
-  vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
-    virt_text_pos = "eol",
-    sign_text = "🍅",
-    virt_text = {
-      {get_status(), "Error"}
-    },
-  })
 end
 
 function m.statusline()
