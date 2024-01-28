@@ -11,6 +11,22 @@ local namespace_name = "neodoro"
 local pomo_seconds = 25 * 60
 pomo_seconds = 5
 
+local function finish()
+  neodoro.pomo_timer:stop()
+  vim.cmd("-tabnew")
+  vim.t.tabname = "🍅 Pomodoro Done!"
+  vim.t.is_pomo_tab = true
+
+  local tmp_buf = vim.fn.bufnr("%")
+  vim.cmd("b "..neodoro.pomo_buf)
+  vim.cmd("silent bwipe! "..tmp_buf)
+
+  local scratch_buffer = vim.api.nvim_create_buf(false, true)
+  vim.cmd("vertical sbuffer" .. scratch_buffer)
+  vim.api.nvim_buf_set_lines(scratch_buffer, 0, -1, false, {"🍅 Pomodoro Done!",""})
+  vim.bo.bufhidden = "wipe"
+end
+
 local function update()
   local namespace = vim.api.nvim_create_namespace(namespace_name)
   local current_marks = vim.api.nvim_buf_get_extmarks(neodoro.pomo_buf, namespace, 0, -1, {})
@@ -25,14 +41,14 @@ local function update()
   local remaining = pomo_seconds - elapsed
 
   if remaining < 0 then
-    neodoro.pomo_timer:stop()
     vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
       virt_text_pos = "eol",
       sign_text = "🍅",
       virt_text = {
-        {"🍅 Done!", "Error"}
+        {"🍅 Pomodoro Done!", "Error"}
       },
     })
+    finish()
     return
   end
 
@@ -42,7 +58,7 @@ local function update()
     virt_text_pos = "eol",
     sign_text = "🍅",
     virt_text = {
-      {("🍅 %s:%-02.0f"):format(minutes, seconds), "Error"}
+      {("🍅 %d:%02.0f"):format(minutes, seconds), "Error"}
     },
   })
 end
@@ -62,12 +78,16 @@ function m.start_thing()
     virt_text_pos = "eol",
     sign_text = "P",
     virt_text = {
-      {"Pomodoro starting...:", "Error"}
+      {"🍅 25:00", "Error"}
     },
   })
 
   if neodoro.pomo_timer then
     neodoro.pomo_timer:stop()
+  end
+
+  if vim.t.is_pomo_tab and vim.fn.tabpagenr('$') > 1 then
+    vim.cmd.tabclose()
   end
 
   neodoro.start_time = vim.fn.reltime()
