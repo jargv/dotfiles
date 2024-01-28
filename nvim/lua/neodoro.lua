@@ -9,7 +9,6 @@ end
 
 local namespace_name = "neodoro"
 local pomo_seconds = 25 * 60
-pomo_seconds = 5
 
 local function finish()
   neodoro.pomo_timer:stop()
@@ -25,6 +24,14 @@ local function finish()
   vim.cmd("vertical sbuffer" .. scratch_buffer)
   vim.api.nvim_buf_set_lines(scratch_buffer, 0, -1, false, {"🍅 Pomodoro Done!",""})
   vim.bo.bufhidden = "wipe"
+end
+
+local function get_status()
+  local elapsed = vim.fn.reltimefloat(vim.fn.reltime(neodoro.start_time))
+  local remaining = pomo_seconds - elapsed
+  local minutes = math.floor(remaining / 60)
+  local seconds = remaining % 60
+  return ("🍅 %d:%02.0f"):format(minutes, seconds)
 end
 
 local function update()
@@ -51,19 +58,39 @@ local function update()
     finish()
     return
   end
-
-  local minutes = math.floor(remaining / 60)
-  local seconds = remaining % 60
   vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
     virt_text_pos = "eol",
     sign_text = "🍅",
     virt_text = {
-      {("🍅 %d:%02.0f"):format(minutes, seconds), "Error"}
+      {get_status(), "Error"}
     },
   })
 end
 
-function m.start_thing()
+function m.statusline()
+  local task = ""
+  if neodoro.task then
+    task = "%1* "..neodoro.task
+  end
+  return "%2*"..get_status()..task
+end
+
+local function process_task(task)
+  local function strip_spaces()
+    local first_non_space = task:find("%S")
+    task = task:sub(first_non_space)
+  end
+
+  strip_spaces()
+  if task:sub(1,1) == "-" then
+    task = task:sub(2)
+  end
+  strip_spaces()
+
+  return task
+end
+
+function m.start_pomodoro()
   local namespace = vim.api.nvim_create_namespace(namespace_name)
 
   if neodoro.pomo_buf then
@@ -76,11 +103,13 @@ function m.start_thing()
   vim.api.nvim_buf_clear_namespace(neodoro.pomo_buf, namespace, 1, -1)
   vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
     virt_text_pos = "eol",
-    sign_text = "P",
+    sign_text = "🍅",
     virt_text = {
       {"🍅 25:00", "Error"}
     },
   })
+
+  neodoro.task = process_task(vim.fn.getline('.'))
 
   if neodoro.pomo_timer then
     neodoro.pomo_timer:stop()

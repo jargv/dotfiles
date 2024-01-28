@@ -968,7 +968,7 @@ leader.Md = build.debug_run_step
 -- Pomodoro {{{1
 local neodoro = require "neodoro"
 leader.x = function()
-  neodoro.start_thing()
+  neodoro.start_pomodoro()
 end
 
 -- statusline setup {{{1
@@ -1058,7 +1058,8 @@ vim.opt.statusline:append " %m" -- modified flag -- regular statusline highlight
 
 -- right side
 vim.opt.statusline:append "%=" -- separator to indicate right side
-vim.opt.statusline:append "%{%v:lua.require'background_build'.statusline()%} " -- file name relative to cwd
+vim.opt.statusline:append "%{%v:lua.require'background_build'.statusline()%} "
+vim.opt.statusline:append " %{%v:lua.require'neodoro'.statusline()%} " -- file name relative to cwd
 
 -- fast config {{{1
 
