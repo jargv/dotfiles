@@ -9,7 +9,7 @@ end
 
 local namespace_name = "neodoro"
 local pomo_seconds = 25 * 60
-pomo_seconds = 10
+local warning_seconds = 30
 
 local function finish()
   local pos = vim.api.nvim_win_get_cursor(0)
@@ -55,7 +55,7 @@ local function update()
   local elapsed = vim.fn.reltimefloat(vim.fn.reltime(neodoro.start_time))
   local remaining = pomo_seconds - elapsed
 
-  if remaining < -10 then
+  if remaining < -warning_seconds then
     finish()
     vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
       virt_text_pos = "eol",
@@ -87,6 +87,9 @@ local function update()
 end
 
 function m.statusline()
+  if neodoro.pomo_buf == nil then
+    return vim.fn.strftime("%l:%M")
+  end
   local task = ""
   if neodoro.task then
     task = "%1* "..neodoro.task
@@ -109,12 +112,21 @@ local function process_task(task)
   return task
 end
 
-function m.start_pomodoro()
+function m.stop_pomodoro()
   local namespace = vim.api.nvim_create_namespace(namespace_name)
-
   if neodoro.pomo_buf then
     vim.api.nvim_buf_clear_namespace(neodoro.pomo_buf, namespace, 1, -1)
   end
+  if neodoro.pomo_timer then
+   neodoro.pomo_timer:stop()
+  end
+  neodoro = {}
+end
+
+function m.start_pomodoro()
+  m.stop_pomodoro()
+  local namespace = vim.api.nvim_create_namespace(namespace_name)
+
   neodoro.pomo_buf = vim.fn.bufnr('%')
 
   local pos = vim.fn.getcurpos('.')
@@ -130,10 +142,6 @@ function m.start_pomodoro()
 
   neodoro.task = process_task(vim.fn.getline('.'))
 
-  if neodoro.pomo_timer then
-    neodoro.pomo_timer:stop()
-  end
-
   if vim.t.is_pomo_tab and vim.fn.tabpagenr('$') > 1 then
     vim.cmd.tabclose()
   end
@@ -144,7 +152,9 @@ function m.start_pomodoro()
     local ok, res = pcall(update)
     if not ok then
       print(res)
-      neodoro.pomo_timer:stop()
+      if neodoro.pomo_timer then
+        neodoro.pomo_timer:stop()
+      end
     end
   end))
 end

@@ -970,6 +970,9 @@ local neodoro = require "neodoro"
 leader.x = function()
   neodoro.start_pomodoro()
 end
+leader.X = function()
+  neodoro.stop_pomodoro()
+end
 
 -- statusline setup {{{1
 vim.opt.laststatus = 3 -- only one statusline at bottom
