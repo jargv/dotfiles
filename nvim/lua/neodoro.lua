@@ -11,6 +11,11 @@ local namespace_name = "neodoro"
 local pomo_seconds = 25 * 60
 local warning_seconds = 30
 
+local function trim_spaces(str)
+  local first_non_space = str:find("%S")
+  return str:sub(first_non_space)
+end
+
 local function finish()
   local pos = vim.api.nvim_win_get_cursor(0)
   local tab = vim.api.nvim_win_get_tabpage(0)
@@ -88,26 +93,21 @@ end
 
 function m.statusline()
   if neodoro.pomo_buf == nil then
-    return vim.fn.strftime("%l:%M")
+    return trim_spaces(vim.fn.strftime("%l:%M"))
   end
   local task = ""
   if neodoro.task then
-    task = "%1* "..neodoro.task
+    task = " %1*"..neodoro.task
   end
   return "%2*"..get_status()..task
 end
 
 local function process_task(task)
-  local function strip_spaces()
-    local first_non_space = task:find("%S")
-    task = task:sub(first_non_space)
-  end
-
-  strip_spaces()
+  task = trim_spaces(task)
   if task:sub(1,1) == "-" then
     task = task:sub(2)
   end
-  strip_spaces()
+  task = trim_spaces(task)
 
   return task
 end

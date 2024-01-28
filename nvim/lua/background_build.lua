@@ -505,10 +505,7 @@ end
 
 function api.statusline()
   local parts = {}
-  local sep = ""
   for _,job in pairs(build_jobs) do
-    table.insert(parts, sep)
-    sep = "%5* | "
     if job.config.stream then
       if job.exit_code then
         -- stream jobs should never stop
@@ -538,6 +535,7 @@ function api.statusline()
       table.insert(parts, "%4*")
       table.insert(parts, job.config.name..": failed")
     end
+    table.insert(parts, "%5* | ")
   end
 
   table.insert(parts, "%#StatusLine#")

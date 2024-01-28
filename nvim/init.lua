@@ -1062,7 +1062,7 @@ vim.opt.statusline:append " %m" -- modified flag -- regular statusline highlight
 -- right side
 vim.opt.statusline:append "%=" -- separator to indicate right side
 vim.opt.statusline:append "%{%v:lua.require'background_build'.statusline()%} "
-vim.opt.statusline:append " %{%v:lua.require'neodoro'.statusline()%} " -- file name relative to cwd
+vim.opt.statusline:append "%{%v:lua.require'neodoro'.statusline()%}  " -- file name relative to cwd
 
 -- fast config {{{1
 
