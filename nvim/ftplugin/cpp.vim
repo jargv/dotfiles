@@ -150,4 +150,4 @@ func! SplitArgs()
   call setpos('.', cursor)
 endfunc
 
-
+noreab <local> assert check
