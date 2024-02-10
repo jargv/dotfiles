@@ -1,6 +1,9 @@
 local m = {}
 
 local uv = vim.uv or vim.loop
+local estimate = "◯"
+local complete = "⬤"
+local tomato = "🍅"
 
 -- make this a global so it will survive config reloads
 if neodoro == nil then
@@ -21,7 +24,7 @@ local function finish()
   local tab = vim.api.nvim_win_get_tabpage(0)
   neodoro.pomo_timer:stop()
   vim.cmd("-tabnew")
-  vim.t.tabname = "🍅 Pomodoro Done!"
+  vim.t.tabname = tomato.." Pomodoro Done!"
   vim.t.is_pomo_tab = true
 
   local tmp_buf = vim.fn.bufnr("%")
@@ -30,7 +33,7 @@ local function finish()
 
   local scratch_buffer = vim.api.nvim_create_buf(false, true)
   vim.cmd("vertical sbuffer" .. scratch_buffer)
-  vim.api.nvim_buf_set_lines(scratch_buffer, 0, -1, false, {"🍅 Pomodoro Done!",""})
+  vim.api.nvim_buf_set_lines(scratch_buffer, 0, -1, false, {tomato.." Pomodoro Done!",""})
   vim.bo.bufhidden = "wipe"
 end
 
@@ -44,7 +47,7 @@ local function get_status()
   end
   local minutes = math.floor(remaining / 60)
   local seconds = remaining % 60
-  return ("🍅 %s%d:%02.0f"):format(negative and "-" or "", minutes, seconds)
+  return (tomato .. " %s%d:%02.0f"):format(negative and "-" or "", minutes, seconds)
 end
 
 local function update()
@@ -64,18 +67,18 @@ local function update()
     finish()
     vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
       virt_text_pos = "eol",
-      sign_text = "🍅",
+      sign_text = tomato,
       virt_text = {
-        {"🍅 Pomodoro Done!", "Error"}
+        {tomato.." Pomodoro Done!", "Error"}
       },
     })
     return
   elseif remaining < 0 then
     vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
       virt_text_pos = "eol",
-      sign_text = "🍅",
+      sign_text = tomato,
       virt_text = {
-        {"🍅 Pomodoro Done!", "Error"}
+        {tomato.." Pomodoro Done!", "Error"}
       },
     })
 
@@ -83,7 +86,7 @@ local function update()
   else
     vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
       virt_text_pos = "eol",
-      sign_text = "🍅",
+      sign_text = tomato,
       virt_text = {
         {get_status(), "Error"}
       },
@@ -134,9 +137,9 @@ function m.start_pomodoro()
   vim.api.nvim_buf_clear_namespace(neodoro.pomo_buf, namespace, 1, -1)
   vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
     virt_text_pos = "eol",
-    sign_text = "🍅",
+    sign_text = tomato,
     virt_text = {
-      {"🍅 25:00", "Error"}
+      {tomato.." 25:00", "Error"}
     },
   })
 
@@ -157,6 +160,30 @@ function m.start_pomodoro()
       end
     end
   end))
+end
+
+function m.increase_estimate()
+  local line = vim.fn.getline('.')
+  local new_line = line .. estimate
+  vim.fn.setline('.', new_line)
+end
+
+function m.decrease_estimate()
+  local line = vim.fn.getline('.')
+  local new_line = line:gsub(estimate, "", 1)
+  vim.fn.setline('.', new_line)
+end
+
+function m.increase_complete()
+  local line = vim.fn.getline('.')
+  local new_line = line:gsub(estimate, complete, 1)
+  vim.fn.setline('.', new_line)
+end
+
+function m.decrease_complete()
+  local line = vim.fn.getline('.')
+  local new_line = line:reverse():gsub(complete:reverse(), estimate:reverse(), 1):reverse()
+  vim.fn.setline('.', new_line)
 end
 
 return m

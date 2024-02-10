@@ -967,12 +967,26 @@ leader.Md = build.debug_run_step
 
 -- Pomodoro {{{1
 local neodoro = require "neodoro"
-leader.x = function()
+leader.xg = function()
   neodoro.start_pomodoro()
 end
-leader.X = function()
+leader.xs = function()
   neodoro.stop_pomodoro()
 end
+
+leader.xk = function()
+  neodoro.increase_estimate()
+end
+leader.xj = function()
+  neodoro.decrease_estimate()
+end
+leader.xl = function()
+  neodoro.increase_complete()
+end
+leader.xh = function()
+  neodoro.decrease_complete()
+end
+
 
 -- statusline setup {{{1
 vim.opt.laststatus = 3 -- only one statusline at bottom
