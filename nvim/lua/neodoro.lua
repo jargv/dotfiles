@@ -1,8 +1,11 @@
 local m = {}
 
 local uv = vim.uv or vim.loop
-local estimate = "◯"
-local complete = "⬤"
+--local estimate = "◯"
+--local complete = "⬤"
+--
+local estimate = "□"
+local complete = "■"
 local tomato = "🍅"
 
 -- make this a global so it will survive config reloads
@@ -164,13 +167,13 @@ end
 
 function m.increase_estimate()
   local line = vim.fn.getline('.')
-  local new_line = line .. estimate
+  local new_line = line .. " " .. estimate
   vim.fn.setline('.', new_line)
 end
 
 function m.decrease_estimate()
   local line = vim.fn.getline('.')
-  local new_line = line:gsub(estimate, "", 1)
+  local new_line = line:gsub(estimate.."%s*", "", 1)
   vim.fn.setline('.', new_line)
 end
 
