@@ -6,6 +6,7 @@ local uv = vim.uv or vim.loop
 --
 local estimate = "□"
 local complete = "■"
+local miss = "ⅹ"
 local tomato = "🍅"
 
 -- make this a global so it will survive config reloads
@@ -180,6 +181,9 @@ end
 function m.increase_complete()
   local line = vim.fn.getline('.')
   local new_line = line:gsub(estimate, complete, 1)
+  if new_line == line then
+    new_line = line .. " " .. miss
+  end
   vim.fn.setline('.', new_line)
 end
 
