@@ -573,9 +573,9 @@ function api.debug_run_step()
   end
 
   local cmd = run_job.cmd
-  cmd = cmd:gsub(">.*$", "") -- strip off any redirection, it breaks gdb tui
+  cmd = cmd:gsub("%d?>.*$", "") -- strip off any redirection, it breaks gdb tui
 
-  vim.cmd("tabnew term://"..run_job.dir.."///usr/bin/gdb --tui "..cmd)
+  vim.cmd("tabnew term://"..run_job.dir.."///usr/bin/gdb --tui --args " .. cmd)
 end
 
 return api
