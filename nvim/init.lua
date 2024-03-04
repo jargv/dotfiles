@@ -794,6 +794,8 @@ vim.opt.history = 10000
 vim.opt.completeopt = "menuone,noinsert,noselect"
 vim.opt.infercase = true
 vim.opt.mouse = "a"
+vim.opt.mousemodel="extend"
+
 if vim.fn.has("mouse_sgr") ~= 0 then
   vim.opt.ttymouse = "sgr"
 end

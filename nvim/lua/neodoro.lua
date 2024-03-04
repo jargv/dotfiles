@@ -189,7 +189,10 @@ end
 
 function m.decrease_complete()
   local line = vim.fn.getline('.')
-  local new_line = line:reverse():gsub(complete:reverse(), estimate:reverse(), 1):reverse()
+  local new_line = line:reverse():gsub(miss:reverse(), estimate:reverse(), 1):reverse()
+  if new_line == line then
+    new_line = line:reverse():gsub(complete:reverse(), estimate:reverse(), 1):reverse()
+  end
   vim.fn.setline('.', new_line)
 end
 
