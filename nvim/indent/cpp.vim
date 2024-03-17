@@ -34,9 +34,9 @@ func! CppIndentCalc(lnum)
       elseif codeAbove =~ '\[[^\]]*$'
          let ind = 1
       endif
-   elseif codeHere =~ '^\s*:'
+    elseif codeHere =~ '^\s*[:\?]' && codeAbove !~ '^\s*[:\?]'
      let ind += 1
-    elseif codeHere =~ '^\s*{' && codeAbove =~ '^\s*[,:]'
+    elseif codeHere =~ '^\s*{' && codeAbove =~ '^\s*[,:\?]'
       let ind -= 1
    endif
 
