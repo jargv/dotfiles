@@ -29,10 +29,8 @@ executables
 shader
 reticle
 unintuitive
-Aseprite
-coroutines
-coroutine
-playtests
-playtest
-timeboxed
-cooldown
+slimes
+reclaimables
+bindable
+respawn
+phsx
