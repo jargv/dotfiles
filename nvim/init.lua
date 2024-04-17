@@ -961,6 +961,7 @@ end
 leader.E = build.open_error_output_buffers
 leader.m = build.run_all_not_running
 leader.Mw = build.toggle_open_all_output_buffers
+leader.MW = function() build.toggle_open_all_output_buffers(true) end
 leader.Ma = build.add_from_current_file
 leader.Mq = build.clear_config
 leader.Mc = build.stop_all

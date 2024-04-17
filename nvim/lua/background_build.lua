@@ -412,11 +412,13 @@ function api.open_error_output_buffers()
   vim.api.nvim_set_current_win(starting_win)
 end
 
-function api.toggle_open_all_output_buffers()
+function api.toggle_open_all_output_buffers(stacked)
   local starting_win = vim.api.nvim_get_current_win()
   local windows_to_close = {}
   local any_opened = false
   local current_tabpage = vim.api.nvim_get_current_tabpage()
+
+  local vertical = "vertical"
   for _,job in pairs(build_jobs) do
     if not job.buf then
       goto continue
@@ -439,10 +441,14 @@ function api.toggle_open_all_output_buffers()
 
     any_opened = true
     vim.cmd(([[
-      botright vertical sbuffer %d
+      %s sbuffer %d
       normal G
       setlocal nonumber
-    ]]):format(job.buf))
+    ]]):format(vertical, job.buf))
+
+    if stacked then
+      vertical = ""
+    end
 
     ::continue::
   end
