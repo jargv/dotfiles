@@ -978,16 +978,16 @@ leader.xs = function()
 end
 
 leader.xk = function()
-  neodoro.increase_estimate()
-end
-leader.xj = function()
-  neodoro.decrease_estimate()
-end
-leader.xl = function()
   neodoro.increase_complete()
 end
-leader.xh = function()
+leader.xj = function()
   neodoro.decrease_complete()
+end
+leader.xl = function()
+  neodoro.increase_estimate()
+end
+leader.xh = function()
+  neodoro.decrease_estimate()
 end
 
 
