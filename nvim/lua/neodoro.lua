@@ -15,6 +15,7 @@ if neodoro == nil then
 end
 
 local namespace_name = "neodoro"
+local namespace = vim.api.nvim_create_namespace(namespace_name)
 local pomo_seconds = 25 * 60
 local warning_seconds = 30
 
@@ -55,7 +56,6 @@ local function get_status()
 end
 
 local function update()
-  local namespace = vim.api.nvim_create_namespace(namespace_name)
   local current_marks = vim.api.nvim_buf_get_extmarks(neodoro.pomo_buf, namespace, 0, -1, {})
   vim.api.nvim_buf_clear_namespace(neodoro.pomo_buf, namespace, 0, -1)
   if #current_marks == 0 then
@@ -69,7 +69,8 @@ local function update()
 
   if remaining < -warning_seconds then
     finish()
-    vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
+    neodoro.mark_id = vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
+      id = neodoro.mark_id,
       virt_text_pos = "eol",
       sign_text = tomato,
       virt_text = {
@@ -78,7 +79,8 @@ local function update()
     })
     return
   elseif remaining < 0 then
-    vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
+    neodoro.mark_id = vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
+      id = neodoro.mark_id,
       virt_text_pos = "eol",
       sign_text = tomato,
       virt_text = {
@@ -88,7 +90,8 @@ local function update()
 
     neodoro.task = (math.floor(-remaining) % 2 == 0) and "POMODORO DONE!!!" or ""
   else
-    vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
+    neodoro.mark_id = vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
+      id = neodoro.mark_id,
       virt_text_pos = "eol",
       sign_text = tomato,
       virt_text = {
@@ -132,14 +135,14 @@ end
 
 function m.start_pomodoro()
   m.stop_pomodoro()
-  local namespace = vim.api.nvim_create_namespace(namespace_name)
 
   neodoro.pomo_buf = vim.fn.bufnr('%')
 
   local pos = vim.fn.getcurpos('.')
   local line = pos[2] - 1
   vim.api.nvim_buf_clear_namespace(neodoro.pomo_buf, namespace, 1, -1)
-  vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
+  neodoro.mark_id = vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
+    id = neodoro.mark_id,
     virt_text_pos = "eol",
     sign_text = tomato,
     virt_text = {
@@ -164,6 +167,22 @@ function m.start_pomodoro()
       end
     end
   end))
+end
+
+function m.move_task()
+  neodoro.pomo_buf = vim.fn.bufnr('%')
+  local pos = vim.fn.getcurpos('.')
+  local line = pos[2] - 1
+  vim.api.nvim_buf_clear_namespace(neodoro.pomo_buf, namespace, 0, -1)
+  neodoro.task = process_task(vim.fn.getline('.'))
+  neodoro.mark_id = vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
+    id = neodoro.mark_id,
+    virt_text_pos = "eol",
+    sign_text = tomato,
+    virt_text = {
+      {tomato.." Moving...", "Error"}
+    },
+  })
 end
 
 function m.increase_estimate()

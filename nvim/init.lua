@@ -989,6 +989,9 @@ end
 leader.xh = function()
   neodoro.decrease_estimate()
 end
+leader.xm = function()
+  neodoro.move_task()
+end
 
 
 -- statusline setup {{{1
