@@ -26,6 +26,7 @@ local viewer_help = {
   "## . - open terminal in the repo root",
   "## c - commit",
   "## f - commit --amend",
+  "## u - git 'update'",
   "## p - git pushup",
   "## P - git pushupforce",
   "## q - quit"
@@ -709,6 +710,9 @@ function gitato.open_viewer(diff_branch)
   end)
   keymap('p', "", function ()
     open_terminal_window("git pushup")
+  end)
+  keymap('u', "", function ()
+    open_terminal_window("git stash && git pull --rebase && git stash pop")
   end)
   keymap('P', "", function ()
     open_terminal_window("git pushupforce")
