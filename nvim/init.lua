@@ -160,7 +160,6 @@ Plug 'navarasu/onedark.nvim'
 
 Plug 'nvim-lua/plenary.nvim'
 
-Plug 'freitass/todo.txt-vim'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'Raimondi/delimitMate'
