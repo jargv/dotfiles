@@ -712,7 +712,12 @@ function gitato.open_viewer(diff_branch)
     open_terminal_window("git pushup")
   end)
   keymap('u', "", function ()
-    open_terminal_window("git stash && git pull --rebase && git stash pop")
+    local status = gitato.get_status(diff_branch, git_repo_root)
+    if #status == 1 then
+      open_terminal_window("git pull")
+    else
+      open_terminal_window("git stash push --include-untracked && git pull --rebase && git stash pop")
+    end
   end)
   keymap('P', "", function ()
     open_terminal_window("git pushupforce")
