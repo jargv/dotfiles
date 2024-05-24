@@ -16,7 +16,7 @@ func! CppIndentCalc(lnum)
 
    "todo: add comment handling as well
    "
-   if codeHereStart =~ '[\]})]' && lineAboveEnd !~ '[{(\[]'
+   if codeHereStart =~ '[\]});]' && lineAboveEnd !~ '[{(\[]'
       let ind -= 1
    elseif codeHere =~ '^\s*->'
      let ind += 1
