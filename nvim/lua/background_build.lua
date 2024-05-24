@@ -173,6 +173,7 @@ local function run_job(job)
       output(">>> time: "..fmtelapsed(elapsed))
       vim.cmd [[ doautocmd User BackgroundBuildJobStatusChanged ]]
     end,
+    pty = true,
     on_stdout = on_out,
     on_stderr = on_out,
   })
