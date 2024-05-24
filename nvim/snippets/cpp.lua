@@ -50,25 +50,26 @@ return {
   })),
 
   -- l {{{1
-  s('l', fmt([[
-    std::cout << "{}: " << {} << std::endl;
+  s('l', fmta([[
+    std::print("<>: <>\n", <>);
   ]], {
-    i(1),
+    rep(1),
     f(function (args)
       local parts = vim.fn.split(args[1][1], "\\,")
       local sep = ""
       local res = ""
-      for _, val in ipairs(parts) do
-        res = res .. sep .. val
-        sep = " << ',' << "
+      for _ in ipairs(parts) do
+        res = res .. sep .. "{}"
+        sep = " "
       end
       return res
-    end, {1})
+    end, {1}),
+    i(1),
   })),
 
   -- log {{{1
-  s('log', fmt([[
-    std::cout << "{}" << std::endl;
+  s('log', fmta([[
+    std::print("<>\n");
   ]], {i(1)})),
   -- req {{{1
   s('req', fmt([[
