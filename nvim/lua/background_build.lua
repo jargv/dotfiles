@@ -137,6 +137,10 @@ local function run_job(job)
       end
     end
 
+    for i, line in pairs(output) do
+      output[i] = line:gsub("\r", "")
+    end
+
     vim.api.nvim_buf_set_lines(job.buf, -1, -1, false, output)
     if job.config.stream then
       job.stream_available = true
