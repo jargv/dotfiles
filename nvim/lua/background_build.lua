@@ -138,7 +138,7 @@ local function run_job(job)
     end
 
     for i, line in pairs(output) do
-      output[i] = line:gsub("\r", "")
+      output[i] = line:gsub("[\r\n]", "")
     end
 
     vim.api.nvim_buf_set_lines(job.buf, -1, -1, false, output)
@@ -424,7 +424,8 @@ function api.toggle_open_all_output_buffers(stacked)
   local current_tabpage = vim.api.nvim_get_current_tabpage()
 
   local vertical = "vertical"
-  for _,job in pairs(build_jobs) do
+  local dir = (stacked or #build_jobs == 1) and "botright" or "topleft"
+  for i,job in pairs(build_jobs) do
     if not job.buf then
       goto continue
     end
@@ -446,12 +447,18 @@ function api.toggle_open_all_output_buffers(stacked)
 
     any_opened = true
     vim.cmd(([[
-      %s sbuffer %d
+      %s %s sbuffer %d
       normal G
       setlocal nonumber
-    ]]):format(vertical, job.buf))
+    ]]):format(dir, vertical, job.buf))
 
     if stacked then
+      vertical = ""
+      dir = "belowright"
+    elseif i == 1 then
+      dir = "botright"
+    elseif i == 2 then
+      dir = "belowright"
       vertical = ""
     end
 
