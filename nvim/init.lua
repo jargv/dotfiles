@@ -966,6 +966,7 @@ leader.Mq = build.clear_config
 leader.Mc = build.stop_all
 leader.Mr = build.toggle_run_step
 leader.Md = build.debug_run_step
+leader.MD = function() build.debug_run_step(true) end
 
 -- Pomodoro {{{1
 local neodoro = require "neodoro"

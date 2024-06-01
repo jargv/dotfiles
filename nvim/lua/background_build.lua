@@ -584,7 +584,7 @@ function api.toggle_run_step()
   end
 end
 
-function api.debug_run_step()
+function api.debug_run_step(break_first)
   local run_job = get_step_named_run()
   if not run_job then
     return
@@ -593,7 +593,14 @@ function api.debug_run_step()
   local cmd = run_job.cmd
   cmd = cmd:gsub("%d?>.*$", "") -- strip off any redirection, it breaks gdb tui
 
-  vim.cmd("tabnew term://"..run_job.dir.."///usr/bin/gdb --tui --args " .. cmd)
+  local break_option = ""
+  if break_first then
+    local fname = vim.fn.expand("%:p")
+    local line = vim.fn.line(".")
+    break_option = ('-ex \\"break %s:%d\\"'):format(fname, line)
+  end
+
+  vim.cmd("tabnew term://"..run_job.dir.."///usr/bin/gdb --tui "..break_option.." --args ".. cmd)
 end
 
 return api
