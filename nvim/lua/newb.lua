@@ -85,7 +85,6 @@ local function autojump_prompt(_, chdir)
 end
 
 local function edit_notes(dir)
-  vim.cmd[[e ~/notes/work.txt]]
   local git_root = gitato.get_repo_root(dir)
   if not git_root then
     return
@@ -94,7 +93,7 @@ local function edit_notes(dir)
   if not vim.fn.filereadable(todo_file) then
     return
   end
-  vim.cmd(("split %s"):format(todo_file))
+  vim.cmd(("e %s"):format(todo_file))
 end
 
 local new_buffer_options = {
