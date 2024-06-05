@@ -96,6 +96,11 @@ local function edit_notes(dir)
   vim.cmd(("e %s"):format(todo_file))
 end
 
+local function pstree(dir)
+  local pid = vim.fn.getpid()
+  vim.cmd(("e term://%s///usr/bin/pstree %s"):format(dir, pid))
+end
+
 local new_buffer_options = {
   {key=".", cmd=":e term://$dir///bin/zsh", desc="terminal"},
   {key="d", cmd=":Oil $dir",                desc="directory"},
@@ -111,6 +116,7 @@ local new_buffer_options = {
   {key="j", cmd=autojump_prompt,            desc="autojump <dir>"},
   {key="_", cmd=return_to_start_dir,        desc="cd starting directory"},
   {key=",", cmd=sync_dir,                   desc="sync dir"},
+  {key="p", cmd=pstree, desc="show process tree"},
   {key="q", cmd=":q!",                      desc="quit"},
 }
 
