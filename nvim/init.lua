@@ -575,13 +575,13 @@ end
 vim.opt.termguicolors = true
 vim.opt.ttyfast = true
 
-local colorscheme = "onedark"
+local colorscheme = "everforest"
 if colorscheme == "everforest" then
   vim.g.everforest_background = 'soft'
   vim.g.everforest_enable_italic = 1
   vim.g.everforest_cursor = 'orange'
   vim.g.everforest_sign_column_background = 'none'
-  vim.g.everforest_dim_inactive_windows = 0
+  vim.g.everforest_dim_inactive_windows = 1
   vim.g.everforest_ui_contrast = 'low'
   vim.g.everforest_show_eob = 1
   vim.g.everforest_diagnostic_text_highlight = 1
@@ -589,7 +589,7 @@ if colorscheme == "everforest" then
   vim.g.everforest_diagnostic_virtual_text = 'grey' -- 'colored'
   vim.g.everforest_disable_terminal_colors = 0
   vim.cmd.colorscheme("everforest")
-  vim.cmd [[ highlight LineNr guibg=#000000 guifg=grey ]]
+  --vim.cmd [[ highlight LineNr guibg=#000000 guifg=grey ]]
   vim.o.background = "dark"
   --:NoMatchParen
   vim.g.loaded_matchparen = 1
@@ -614,7 +614,7 @@ end
 
 -- prototype settings {{{1
 vim.o.signcolumn = "yes:1"
-local sign_bg = "#212121"
+local sign_bg = "#293136"
 for key, val in pairs({
   Add = "#229955",
   Change = "#3377AA",
@@ -627,7 +627,7 @@ for key, val in pairs({
 end
 vim.cmd(([[
   highlight SignColumn guibg='%s'
-  highlight WinSeparator guifg=#202020 guibg=#2C2D30
+  highlight WinSeparator guifg=#202020 guibg=#293136
 ]]):format(sign_bg))
 
 visual.v = function()
