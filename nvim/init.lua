@@ -614,11 +614,12 @@ end
 
 -- prototype settings {{{1
 vim.o.signcolumn = "yes:1"
-local sign_bg = "#27282b"
+local sign_bg = "#212121"
 for key, val in pairs({
-  Add = "#225522",
-  Change = "#225588",
-  Delete = "#aa5555",
+  Add = "#229955",
+  Change = "#3377AA",
+  ChangeDelete = "#cc5555",
+  Delete = "#cc5555",
 }) do
   vim.cmd(([[
     highlight GitSigns%s guifg='%s' guibg='%s'
@@ -626,6 +627,7 @@ for key, val in pairs({
 end
 vim.cmd(([[
   highlight SignColumn guibg='%s'
+  highlight WinSeparator guifg=#202020 guibg=#2C2D30
 ]]):format(sign_bg))
 
 visual.v = function()
