@@ -1,1 +1,5 @@
 set debuginfod enabled off
+set confirm off
+set verbose off
+set prompt \033[31m> \033[0m
+set $64BITS = 1
