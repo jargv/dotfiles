@@ -141,7 +141,7 @@ function gitato.toggle_diff_against_git_ref(ref)
   end
 
   -- get the log contents
-  local log_contents = vim.fn.systemlist("cd "..git_root.." && git log --oneline ".. file)
+  local log_contents = vim.fn.systemlist("cd "..git_root.." && git log --follow --oneline ".. file)
   local err = vim.api.nvim_get_vvar("shell_error")
   if err ~= 0 then
     print(table.concat(log_contents, "\n"))
