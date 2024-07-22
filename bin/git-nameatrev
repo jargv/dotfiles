@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#set -euo
+
+# Check if correct number of arguments are provided
+if [ "$#" -ne 2 ]; then
+    echo "Usage: $0 <file_path> <commit>" >&2
+    exit 1
+fi
+
+file="$1"
+commit=$(git rev-parse "$2")
+
+# Verify if the commit exists
+if ! git rev-parse --quiet --verify "$commit^{commit}" >/dev/null 2>&1; then
+    echo "Invalid commit: $commit" >&2
+    exit 1
+fi
+
+# Use git log --follow to get the file name at the specific commit
+filename=$(
+  git log --follow --format=%H --name-only --remove-empty -- "$file" |
+  awk -v hash="$commit" '$0 == hash {getline; getline; print; exit 0;}'
+)
+
+ if [ -z "$filename" ]; then
+     echo "File not found at the specified commit or unable to determine filename" >&2
+     exit 1
+ fi
+
+echo "$filename"
