@@ -8,9 +8,9 @@ local fmtjson = require("fmtjson")
 local fmtelapsed = require("fmtelapsed")
 
 local starting_points = {
-  cpp = {ext = {"cpp", "hpp", "cxx"}, cmd = "cmake --build build", run = "build/Debug/exe"},
-  hpp = {ext = {"cpp", "hpp", "cxx"}, cmd = "cmake --build build", run = "build/Debug/exe"},
-  cxx = {ext = {"cpp", "hpp", "cxx"}, cmd = "cmake --build build", run = "build/Debug/exe"},
+  cpp = {ext = {"cpp", "hpp", "cxx"}, cmd = "cmake --build build", run = "build/exe"},
+  hpp = {ext = {"cpp", "hpp", "cxx"}, cmd = "cmake --build build", run = "build/exe"},
+  cxx = {ext = {"cpp", "hpp", "cxx"}, cmd = "cmake --build build", run = "build/exe"},
   go = {cmd = "go build", run = "ls"},
   ts = {cmd = "yarn run build"},
 }
@@ -354,14 +354,22 @@ end
 
 function api.load_errors()
   local jobToShow = nil
+  local buildJob = nil
   for _,job in pairs(build_jobs) do
     local failed = job.exit_code ~= nil and job.exit_code ~= 0
     local stream_available = job.config.stream and job.stream_available
     local should_open = job.buf and (failed or stream_available)
+    if job.config.name == "build" then
+      buildJob = job
+    end
     if should_open then
       jobToShow = job
       break
     end
+  end
+
+  if jobToShow == nil and buildJob ~= nil then
+    jobToShow = buildJob
   end
 
   if jobToShow == nil then
