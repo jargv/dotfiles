@@ -50,10 +50,6 @@ nnoremap <buffer> <leader>;G :let g:reg=@x<cr>:let @x=''<cr>:%g/^###/d X<cr>gg"x
 " outline folding {{{1
 
 " just use the text for foldtext
-setlocal foldtext=TextOutlineFoldText()
-function! TextOutlineFoldText()
-  return getline(v:foldstart)
-endfunction
 set debug=msg
 
 nnoremap <buffer> <leader>;f :set foldmethod=expr<cr>:echo "folding in outline mode"<cr>

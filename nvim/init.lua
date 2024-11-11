@@ -522,6 +522,7 @@ end)
 
 -- Plug 'lewis6991/gitsigns.nvim' {{{2
 Plug 'lewis6991/gitsigns.nvim'
+
 vim.cmd [[
   func! GitAdjacentChange(next)
     if &diff
@@ -712,7 +713,7 @@ vim.opt.fillchars:append "fold: " --don't do dashes in the fold lines
 vim.cmd [[
 set foldtext=MyFoldText()
 function! MyFoldText()
-  let sub = substitute(foldtext(), '+-*\s*\d*\s*lines:\s*', '', 'g')
+  let sub = substitute(foldtext(), '+-\+\s*\d*\s*lines:\s*', '', 'g')
   return repeat(' ', &sw * (v:foldlevel - 1)) . sub
 endfunction
 ]]
@@ -927,7 +928,7 @@ leader.da = function()
   gitato.toggle_diff_against_git_ref(vim.fn.input(">", default_upstream()))
 end
 
-leader.gb = ":Gitsigns toggle_current_line_blame<cr>"
+leader.gb = ":Gitsigns blame_line<cr>"
 leader.gB = function()
   package.loaded.gitsigns.blame_line({full=false,ignore_whitespace=true})
 end
@@ -1611,10 +1612,10 @@ if lsp_configured == nil then
     end
   }
 
-  lspconfig.tsserver.setup{
-    capabilities = capabilities,
-    filetypes = {"typescript", "typescriptreact", "typescript.tsx" }
-  }
+  -- lspconfig.tsserver.setup{
+  --   capabilities = capabilities,
+  --   filetypes = {"typescript", "typescriptreact", "typescript.tsx" }
+  -- }
 
   lspconfig.gopls.setup{
     capabilities = capabilities,
@@ -1663,11 +1664,11 @@ if lsp_configured == nil then
     end
   }
 
-  lspconfig.bashls.setup {
-    capabilities = capabilities,
-  }
+  -- lspconfig.bashls.setup {
+  --   capabilities = capabilities,
+  -- }
 
-  lspconfig.bufls.setup{
+  lspconfig.buf_ls.setup{
     capabilities = capabilities,
   }
 
