@@ -575,25 +575,34 @@ function api.clear_config()
   print "build config cleared"
 end
 
-local function get_step_named_run()
+local function get_step_config_by_name(name)
   for _,job in ipairs(build_config.jobs) do
-    if job.name == "run" then
+    if job.name == name then
       return job
     end
   end
   return nil
 end
 
-function api.toggle_run_step()
-  local run_job = get_step_named_run()
-  if run_job then
-    run_job.skip = not run_job.skip
+local function get_job_by_name(name)
+  for _,job in ipairs(build_jobs) do
+    if job.config.name == name then
+      return job
+    end
+  end
+end
+
+function api.toggle_step_by_name(name)
+  local job = get_step_config_by_name(name)
+  if job then
+    job.skip = not job.skip
     build_jobs = setup_build_jobs(build_config, build_jobs)
   end
 end
 
+
 function api.debug_run_step(break_first)
-  local run_job = get_step_named_run()
+  local run_job = get_step_config_by_name("run")
   if not run_job then
     return
   end
@@ -609,6 +618,33 @@ function api.debug_run_step(break_first)
   end
 
   vim.cmd("tabnew term://"..run_job.dir.."///usr/bin/gdb --tui "..break_option.." --args ".. cmd)
+end
+
+function api.attach_debugger_to_running_step(step_name)
+  local job = get_job_by_name(step_name)
+  if not job then
+    return
+  end
+
+  if not job.id then
+    return
+  end
+
+  local cmd = job.config.cmd
+  cmd = cmd:gsub("%d?>.*$", "") -- strip off any redirection, it breaks gdb tui
+
+  -- this only gets us the parent pid because the job is running in a shell
+  local parent_pid = vim.fn.jobpid(job.id)
+  local output = vim.fn.systemlist("pgrep -P "..parent_pid)
+  if #output == 0 then
+    return
+  end
+  local pid = output[1]
+  vim.cmd("tabnew term://"..job.config.dir.."///usr/bin/gdb --tui -p ".. pid .. " " .. cmd)
+end
+
+function api.show_jobs()
+  vim.sendkeys(":print(vim.inspect(build_jobs))")
 end
 
 return api
