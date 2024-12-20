@@ -52,6 +52,8 @@ nnoremap <buffer> <leader>;G :let g:reg=@x<cr>:let @x=''<cr>:%g/^###/d X<cr>gg"x
 " just use the text for foldtext
 set debug=msg
 
+set foldmethod=marker
+
 nnoremap <buffer> <leader>;f :set foldmethod=expr<cr>:echo "folding in outline mode"<cr>
 setlocal foldexpr=TextOutlineFold(v:lnum)
 func! TextOutlineFold(lnum)

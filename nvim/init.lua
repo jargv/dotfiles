@@ -168,7 +168,6 @@ Plug 'reedes/vim-pencil'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-sleuth'
 Plug 'will133/vim-dirdiff'
 Plug 'neovim/nvim-lspconfig'
 Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
@@ -361,7 +360,7 @@ table.insert(plugin_setup_funcs, function()
       Event         = "",
       Operator      = "",
       TypeParameter = "",
-      },
+    },
     highlight = false,
     separator = " ➤ ",
     depth_limit = 0,
@@ -966,9 +965,11 @@ leader.MW = function() build.toggle_open_all_output_buffers(true) end
 leader.Ma = build.add_from_current_file
 leader.Mq = build.clear_config
 leader.Mc = build.stop_all
-leader.Mr = build.toggle_run_step
+leader.Mr = function() build.toggle_step_by_name("run") end
+leader.Mt = function() build.toggle_step_by_name("test") end
 leader.Md = build.debug_run_step
 leader.MD = function() build.debug_run_step(true) end
+leader.Ma = function() build.attach_debugger_to_running_step("run") end
 
 -- Pomodoro {{{1
 local neodoro = require "neodoro"
@@ -1607,6 +1608,7 @@ if lsp_configured == nil then
 
   lspconfig.clangd.setup{
     capabilities = capabilities,
+    cmd = {"clangd", "--experimental-modules-support"},
     on_attach = function(client, buffnr)
       navic.attach(client, buffnr)
     end
