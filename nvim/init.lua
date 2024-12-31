@@ -969,7 +969,7 @@ leader.Mr = function() build.toggle_step_by_name("run") end
 leader.Mt = function() build.toggle_step_by_name("test") end
 leader.Md = build.debug_run_step
 leader.MD = function() build.debug_run_step(true) end
-leader.Ma = function() build.attach_debugger_to_running_step("run") end
+leader.MA = function() build.attach_debugger_to_running_step("run") end
 
 -- Pomodoro {{{1
 local neodoro = require "neodoro"
