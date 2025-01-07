@@ -166,6 +166,7 @@ local function run_job(job)
   local id = vim.fn.jobstart(job.config.cmd, {
     cwd = job.config.dir,
     on_exit = function(_, exit_code, _)
+      output(">>> job "..job_descriptor.." starting to exit")
       job.exit_code = exit_code
       if job.config.stream then
         -- streaming jobs should stop
@@ -512,18 +513,23 @@ function api.add_from_current_file()
 
   local dir = vim.fn.expand("%:p:h")
 
-  table.insert(build_config.jobs, {
-    name = "build",
-    dir = dir,
-    ext = (starting_points[ext] or {}).ext or ext,
-    cmd = (starting_points[ext] or {}).cmd,
-  })
+  local has_build = starting_points[ext] ~= nil
+
+  if has_build then
+    table.insert(build_config.jobs, {
+      name = "build",
+      dir = dir,
+      ext = (starting_points[ext] or {}).ext or ext,
+      cmd = (starting_points[ext] or {}).cmd,
+    })
+  end
 
   table.insert(build_config.jobs, {
     name = "run",
     dir = dir,
-    after = "build",
-    cmd = (starting_points[ext] or {}).run,
+    after = has_build and "build" or nil,
+    ext = (not has_build) and ext,
+    cmd = (starting_points[ext] or {run = ("./%s"):format(vim.fn.expand("%:t"))}).run,
   })
 
   api.edit_config()
@@ -640,7 +646,7 @@ function api.attach_debugger_to_running_step(step_name)
     return
   end
   local pid = output[1]
-  vim.cmd("tabnew term://"..job.config.dir.."///usr/bin/gdb --tui -p ".. pid .. " " .. cmd)
+  print("tabnew term://"..job.config.dir.."///usr/bin/gdb --tui -p ".. pid .. " " .. cmd)
 end
 
 function api.show_jobs()
