@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [ "$EUID" -ne 0 ]; then
+  sudo $(which gdb_allow)
+  exit
+fi
+
+echo 0 >| /proc/sys/kernel/yama/ptrace_scope
