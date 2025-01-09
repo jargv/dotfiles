@@ -1,7 +1,5 @@
 #! /usr/bin/env bash
 set -euo pipefail
-set -v
-set -o xtrace
 
 DOT_CONFIG=${XDG_CONFIG_HOME:-~/.config}
 
@@ -23,4 +21,4 @@ for dotfile in dotfiles/* ; do
 done;
 
 echo config installed
-echo "don't forget tpm ~/config/setup/tpm.sh"
+# echo "don't forget tpm ~/config/setup/tpm.sh"

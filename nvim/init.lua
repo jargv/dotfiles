@@ -577,12 +577,12 @@ vim.opt.ttyfast = true
 
 local colorscheme = "everforest"
 if colorscheme == "everforest" then
-  vim.g.everforest_background = 'soft'
+  vim.g.everforest_background = 'hard'
   vim.g.everforest_enable_italic = 1
   vim.g.everforest_cursor = 'orange'
   vim.g.everforest_sign_column_background = 'none'
   vim.g.everforest_dim_inactive_windows = 1
-  vim.g.everforest_ui_contrast = 'low'
+  vim.g.everforest_ui_contrast = 'high'
   vim.g.everforest_show_eob = 1
   vim.g.everforest_diagnostic_text_highlight = 1
   vim.g.everforest_diagnostic_line_highlight = 0
