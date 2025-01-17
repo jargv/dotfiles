@@ -98,7 +98,7 @@ end
 
 local function pstree(dir)
   local pid = vim.fn.getpid()
-  vim.cmd(("e term://%s///usr/bin/pstree %s"):format(dir, pid))
+  vim.cmd(("e term://%s///usr/bin/pstree -p %s"):format(dir, pid))
 end
 
 local new_buffer_options = {
