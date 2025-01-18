@@ -1,5 +1,5 @@
 #export TERM=screen-256color
-export TERM=xterm-kitty
+export TERM=xterm
 
 if [[ -f ~/.zshlocal ]]; then
   source ~/.zshlocal
