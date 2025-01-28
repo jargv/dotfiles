@@ -41,6 +41,7 @@ live_config_reload = true
 decorations = "Full"
 dynamic_padding = true
 title = "terminal"
+startup_mode = "Maximized"
 
 [window.padding]
 x = 0

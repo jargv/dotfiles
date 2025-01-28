@@ -105,9 +105,9 @@ end
 local function stop_job(job)
   if job.id then
     vim.fn.jobstop(job.id)
-    vim.fn.jobwait({job.id}, 0)
+    local statuses = vim.fn.jobwait({job.id or nil}, 0)
     if job.id ~= nil then
-      error(("ERROR: job %d was not cleared, exit handler was not run!"):format(job.id))
+      print(("Warning: job %d (status %d) was not cleared, exit handler was not run!"):format(job.id, statuses[1]))
     end
   end
   job.exit_code = nil
@@ -646,7 +646,7 @@ function api.attach_debugger_to_running_step(step_name)
     return
   end
   local pid = output[1]
-  print("tabnew term://"..job.config.dir.."///usr/bin/gdb --tui -p ".. pid .. " " .. cmd)
+  vim.cmd("tabnew term://"..job.config.dir.."///usr/bin/gdb --tui -p ".. pid .. " " .. cmd)
 end
 
 function api.show_jobs()
