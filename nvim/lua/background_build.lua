@@ -105,9 +105,13 @@ end
 local function stop_job(job)
   if job.id then
     vim.fn.jobstop(job.id)
-    local statuses = vim.fn.jobwait({job.id or nil}, 0)
+    if job.config.nowait then
+      job.id = nil
+    else
+      vim.fn.jobwait({job.id}, 0)
+    end
     if job.id ~= nil then
-      print(("Warning: job %d (status %d) was not cleared, exit handler was not run!"):format(job.id, statuses[1]))
+      print(("WARNING: job %d was not cleared, exit handler was not run!"):format(job.id))
     end
   end
   job.exit_code = nil
