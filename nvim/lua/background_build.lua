@@ -633,10 +633,12 @@ end
 function api.attach_debugger_to_running_step(step_name)
   local job = get_job_by_name(step_name)
   if not job then
+    print "not a job"
     return
   end
 
   if not job.id then
+    print "no id"
     return
   end
 
@@ -647,10 +649,12 @@ function api.attach_debugger_to_running_step(step_name)
   local parent_pid = vim.fn.jobpid(job.id)
   local output = vim.fn.systemlist("pgrep -P "..parent_pid)
   if #output == 0 then
-    return
+    output = {parent_pid}
   end
   local pid = output[1]
-  vim.cmd("tabnew term://"..job.config.dir.."///usr/bin/gdb --tui -p ".. pid .. " " .. cmd)
+  local cmd = "tabnew term://"..job.config.dir.."///usr/bin/gdb --tui -p ".. pid .. " " .. cmd
+  print(cmd)
+  vim.cmd(cmd)
 end
 
 function api.show_jobs()
