@@ -315,7 +315,9 @@ local function setup_build_jobs(config, oldJobs)
       config = jobConfig,
     }
     jobBuffersByName[jobConfig.name] = nil
-    wire_up_job_autocmd(job, jobGroup)
+    if config.build_on_save ~= false then
+      wire_up_job_autocmd(job, jobGroup)
+    end
     table.insert(newJobs, job)
     ::continue::
   end
