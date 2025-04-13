@@ -23,6 +23,7 @@ local mapping = require("mapping")
 
 local leader = mapping.withPrefix("<leader>")
 local normal = mapping.inMode("n")
+local insert = mapping.inMode("i")
 local visual = mapping.inMode("x")
 local terminal = mapping.inMode("t")
 
@@ -179,58 +180,70 @@ Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
 
--- Plug "zbirenbaum/copilot.lua" {{
+-- Plug 'augmentcode/augment.vim' {{{
+  vim.g.augment_workspace_folders = {'~/projects/game/'}
+  vim.g.augment_disable_tab_mapping = true
+  insert["<M-y>"] = function()
+    vim.call("augment#Accept")
+  end
+  leader.au = function()
+    vim.g.augment_disable_completions = not vim.g.augment_disable_completions
+    vim.notify("augment completions:" .. (vim.g.augment_disable_completions and "no" or "yes"))
+  end
+  Plug 'augmentcode/augment.vim'
+--}}}
+-- Plug "zbirenbaum/copilot.lua" (not in use) {{{
 Plug "zbirenbaum/copilot.lua"
 leader.ac = function()
-  require('copilot').setup{
-    panel = {
-      enabled = true,
-      auto_refresh = false,
-      keymap = {
-        jump_prev = "[[",
-        jump_next = "]]",
-        accept = "<CR>",
-        refresh = "gr",
-        open = nil,
-      },
-      layout = {
-        position = "bottom", -- | top | left | right
-        ratio = 0.4
-      },
-    },
-    suggestion = {
-      enabled = true,
-      auto_trigger = true,
-      debounce = 75,
-      keymap = {
-        accept = "<M-i>",
-        accept_word = "<M-;>",
-        accept_line = "<M-y>",
-        next = "<M-u>",
-        prev = "<M-H>",
-        dismiss = "<C-y>",
-      },
-    },
-    filetypes = {
-      lua = true,
-      cpp = true,
-      yaml = false,
-      markdown = false,
-      help = false,
-      gitcommit = true,
-      gitrebase = false,
-      hgcommit = false,
-      svn = false,
-      cvs = false,
-      ["."] = false,
-    },
-    copilot_node_command = 'node', -- Node.js version must be > 18.x
-    server_opts_overrides = {},
-  }
-  leader.ac = function()
-    require("copilot.suggestion").toggle_auto_trigger()
-    vim.notify("copilot:" .. (vim.b.copilot_suggestion_auto_trigger and "yes" or "no"))
-  end
+  -- require('copilot').setup{
+  --   panel = {
+  --     enabled = true,
+  --     auto_refresh = false,
+  --     keymap = {
+  --       jump_prev = "[[",
+  --       jump_next = "]]",
+  --       accept = "<CR>",
+  --       refresh = "gr",
+  --       open = nil,
+  --     },
+  --     layout = {
+  --       position = "bottom", -- | top | left | right
+  --       ratio = 0.4
+  --     },
+  --   },
+  --   suggestion = {
+  --     enabled = true,
+  --     auto_trigger = true,
+  --     debounce = 75,
+  --     keymap = {
+  --       accept = "<M-i>",
+  --       accept_word = "<M-;>",
+  --       accept_line = "<M-y>",
+  --       next = "<M-u>",
+  --       prev = "<M-H>",
+  --       dismiss = "<C-y>",
+  --     },
+  --   },
+  --   filetypes = {
+  --     lua = true,
+  --     cpp = true,
+  --     yaml = false,
+  --     markdown = false,
+  --     help = false,
+  --     gitcommit = true,
+  --     gitrebase = false,
+  --     hgcommit = false,
+  --     svn = false,
+  --     cvs = false,
+  --     ["."] = false,
+  --   },
+  --   copilot_node_command = 'node', -- Node.js version must be > 18.x
+  --   server_opts_overrides = {},
+  -- }
+  -- leader.ac = function()
+  --   require("copilot.suggestion").toggle_auto_trigger()
+  --   vim.notify("copilot:" .. (vim.b.copilot_suggestion_auto_trigger and "yes" or "no"))
+  -- end
 end
 
  -- Plug 'mfussenegger/nvim-dap' {{{2
