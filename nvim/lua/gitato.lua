@@ -236,10 +236,8 @@ function gitato.toggle_diff_against_git_ref(ref)
     local name_back_then = vim.fn.system(
       ("cd %s && ~/config/bin/git-nameatrev %s %s"):format(git_root, file, diff_against)
     )
-    print(name_back_then)
     local err = vim.api.nvim_get_vvar("shell_error")
     if err ~= 0 then
-      print("failing: "..name_back_then)
       name_back_then = file -- give up if it failed, but maybe nbd...
     end
     local diff_contents = vim.fn.systemlist("cd "..git_root.." && git show ".. diff_against..':'..name_back_then)
