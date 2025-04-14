@@ -171,7 +171,6 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'will133/vim-dirdiff'
 Plug 'neovim/nvim-lspconfig'
-Plug 'WhoIsSethDaniel/toggle-lsp-diagnostics.nvim'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
@@ -1580,14 +1579,14 @@ end
 
 leader.Y = function()
   vim.cmd.wall()
-  vim.cmd.ToggleDiagOff()
+  vim.diagnostic.enable(not vim.diagnostic.is_enabled())
   vim.cmd.cclose()
 end
 
 leader.y = function()
   vim.cmd.cclose()
   vim.cmd.w()
-  vim.cmd.ToggleDiagDefault()
+  vim.diagnostic.enable(true)
   vim.cmd.lclose()
   vim.diagnostic.setloclist({open = false})
   vim.cmd.lwindow()
@@ -1696,8 +1695,12 @@ if lsp_configured == nil then
 
   lspconfig.pyright.setup{}
 
-  vim.diagnostic.config({signs = false, virtual_text = false, underline = false})
-  require'toggle_lsp_diagnostics'.init({signs = false, virtual_text = true, underline = true})
+  vim.diagnostic.config({
+    signs = false,
+    virtual_text = true,
+    virtual_lines = false,
+    underline = true
+  })
 
   lsp_configured = true
 end
