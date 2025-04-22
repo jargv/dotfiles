@@ -556,7 +556,7 @@ vim.cmd [[
   endfunc
   nnoremap gn :call GitAdjacentChange(1)<cr>
   nnoremap gp :call GitAdjacentChange(0)<cr>
-  nnoremap gr :Gitsigns reset_hunk<cr>
+  nnoremap <nowait> gr :Gitsigns reset_hunk<cr>
   nnoremap gs :Gitsigns stage_hunk<cr>
   nnoremap gS :Gitsigns undo_stage_hunk<cr>
   onoremap ih :<C-U>Gitsigns select_hunk<cr>
