@@ -1785,6 +1785,7 @@ efmt "%f:%l:%c: %#%m"
 
 -- lua
 efmt "/usr/bin/lua: %f:%l: %m"
+efmt "lua: %f:%l: %m"
 efmt "%f:%l:%m"
 
 
