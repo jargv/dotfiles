@@ -566,6 +566,7 @@ end
 
 function api.statusline()
   local parts = {}
+  table.insert(parts, "%5* | ")
   for _,job in pairs(build_jobs) do
     if job.config.stream then
       if job.exit_code then

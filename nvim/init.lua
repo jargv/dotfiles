@@ -1093,22 +1093,25 @@ vim.cmd[[
 
 -- left side
 vim.opt.statusline = ""
-vim.opt.statusline:append "%y" -- filetype
-vim.opt.statusline:append "%7*" -- User6 highlight
-vim.opt.statusline:append " %<" -- truncate here, if needed
-vim.opt.statusline:append " %{fnamemodify(getcwd(),':~')}/" -- current dir
-vim.opt.statusline:append "%8*" -- User7 highlight
-vim.opt.statusline:append "%{GetRelativeFilename()}" -- file name relative to cwd
-vim.opt.statusline:append "%9*" -- User8 highlight
-vim.opt.statusline:append "%{GetSymlinkTarget()}" -- file name relative to cwd
-vim.opt.statusline:append "%#StatusLine#" -- regular statusline highlight
-vim.opt.statusline:append " %m" -- modified flag -- regular statusline highlight
--- vim.opt.statusline:append ":%l:%c" -- line and column
+vim.opt.statusline:append "%{%v:lua.require'background_build'.statusline()%} "
+
+-- middle
+-- vim.opt.statusline:append "%=" -- separator to indicate right side
+-- vim.opt.statusline:append "%{%v:lua.require'neodoro'.statusline()%}  " -- file name relative to cwd
 
 -- right side
 vim.opt.statusline:append "%=" -- separator to indicate right side
-vim.opt.statusline:append "%{%v:lua.require'background_build'.statusline()%} "
-vim.opt.statusline:append "%{%v:lua.require'neodoro'.statusline()%}  " -- file name relative to cwd
+vim.opt.statusline:append "%7*" -- User highlight
+vim.opt.statusline:append " %<" -- truncate here, if needed
+vim.opt.statusline:append " %{fnamemodify(getcwd(),':~')}/" -- current dir
+vim.opt.statusline:append "%8*" -- User highlight
+vim.opt.statusline:append "%{GetRelativeFilename()}" -- file name relative to cwd
+vim.opt.statusline:append "%9*" -- User highlight
+vim.opt.statusline:append " %y" -- filetype
+vim.opt.statusline:append " %7*%l%8*/%7*%L" -- line and column
+vim.opt.statusline:append "%{GetSymlinkTarget()}" -- file name relative to cwd
+vim.opt.statusline:append "%#StatusLine#" -- regular statusline highlight
+vim.opt.statusline:append " %m" -- modified flag -- regular statusline highlight
 
 -- fast config {{{1
 
