@@ -120,35 +120,36 @@ local function get_buf_current_window(buf, tabpage)
 end
 
 local function stop_job(job)
-  local oldbuf = job.buf
-  job.buf = nil -- set to nil berfore killing so the exit callback has the right state
-  job.id = nil
-  job.exit_code = nil
-  job.start_time = nil
-
-  -- clean up the old buffer
-  if oldbuf and vim.api.nvim_buf_is_valid(oldbuf) then
-    vim.api.nvim_buf_delete(oldbuf, {force=true})
-  end
-end
-
-local function run_job(job, buffer_to_take_window_from)
-  -- arrange for the window to stick around since we're restarting
-  local old_window = get_buf_current_window(buffer_to_take_window_from or job.buf)
+  -- Keep the window by making a new buffer for the job
+  local old_window = get_buf_current_window(job.buf)
   local new_buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_var(new_buf, "BackgroundBuildBuffer", true)
   if old_window then
     vim.api.nvim_win_set_buf(old_window, new_buf)
   end
 
-  -- stop the job, but window should be preserved from the previous lines
+  local oldbuf = job.buf
+  job.buf = new_buf
+  job.id = nil
+  job.exit_code = nil
+  job.start_time = nil
+
+  -- clean up the old buffer (and process)
+  if oldbuf and vim.api.nvim_buf_is_valid(oldbuf) then
+    vim.api.nvim_buf_delete(oldbuf, {force=true})
+  end
+end
+
+local function run_job(job)
+  -- stop the job first
   stop_job(job)
 
   -- a nil exit code with a start_time means "running"
   job.start_time = vim.fn.localtime()
   job.stream_available = false
 
-  job.buf = new_buf
+  local old_window = get_buf_current_window(job.buf)
+
   local output_window
   local tmp_floating_window
   if old_window and vim.api.nvim_win_is_valid(old_window) then
@@ -159,7 +160,7 @@ local function run_job(job, buffer_to_take_window_from)
       relative = 'win',
       row = 0,
       col = 0,
-      width = 80,
+      width = 200,
       height = 600,
     });
     output_window = tmp_floating_window
@@ -183,11 +184,12 @@ local function run_job(job, buffer_to_take_window_from)
     end
   end
 
+  local starting_buf = job.buf
   local id = vim.api.nvim_win_call(output_window, function()
     return vim.fn.jobstart(job.config.cmd, {
       cwd = job.config.dir,
       on_exit = function(_, exit_code, _)
-        if job.buf ~= new_buf then
+        if job.buf ~= starting_buf then
           return -- there's been a new version of the job created since this callback was created!
         end
         job.id = nil
@@ -308,12 +310,7 @@ local function process_job_pipeline(jobs)
     if some_deps_missing or some_deps_not_started or some_deps_still_running or (already_running and not deps_all_succeeded) then
       stop_job(job)
     elseif not already_running and not already_finished and deps_all_succeeded then
-      -- share the output buffer from a unique dep
-      local buffer_to_take_window_from
-      if #deps == 1 then
-        buffer_to_take_window_from = deps[1].buf
-      end
-      run_job(job, buffer_to_take_window_from)
+      run_job(job)
     end
   end
 end
@@ -471,10 +468,12 @@ function api.toggle_open_all_output_buffers(stacked)
   local current_tabpage = vim.api.nvim_get_current_tabpage()
 
   local vertical = "vertical"
-  local dir = (stacked or #build_jobs == 1) and "botright" or "topleft"
-  for i,job in pairs(build_jobs) do
+  local dir = stacked and "topleft" or "botright"
+  for _,job in pairs(build_jobs) do
+
     if not job.buf or not vim.api.nvim_buf_is_valid(job.buf) then
-      goto continue
+      -- make a buffer so we can open a window
+      job.buf = vim.api.nvim_create_buf(false, true)
     end
 
     local win_on_current_tab = get_buf_current_window(job.buf, current_tabpage)
@@ -493,11 +492,6 @@ function api.toggle_open_all_output_buffers(stacked)
     if stacked then
       vertical = ""
       dir = "belowright"
-    elseif i == 1 then
-      dir = "botright"
-    elseif i == 2 then
-      dir = "belowright"
-      vertical = ""
     end
 
     ::continue::
