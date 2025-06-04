@@ -832,17 +832,28 @@ vim.api.nvim_create_autocmd({"TermOpen", "BufEnter", "BufLeave"}, {
   pattern = "term://*",
   callback = function(cmd)
     -- no numbers or hidden buffers
+
+    local success, result = pcall(function()
+      return vim.api.nvim_buf_get_var(cmd.buf, "BackgroundBuildBuffer") == true
+    end)
+
+    local is_background_build_buffer = success and result
+
     if cmd.event == "TermOpen" then
-      vim.bo.bufhidden = 'wipe'
+      if not is_background_build_buffer then
+        vim.bo.bufhidden = 'wipe'
+      end
       vim.wo.number = false
       vim.wo.spell = false
     end
 
     -- insert mode shouldn't be affected by terminals
-    if cmd.event == "BufLeave" then
-      vim.cmd("stopinsert")
-    else
-      vim.cmd("startinsert")
+    if not is_background_build_buffer then
+      if cmd.event == "BufLeave" then
+        vim.cmd("stopinsert")
+      else
+        vim.cmd("startinsert")
+      end
     end
   end
 })
