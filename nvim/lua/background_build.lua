@@ -390,43 +390,49 @@ function api.edit_config()
 end
 
 function api.load_errors()
-  local job_to_show = nil
-  local buildJob = nil
+  local jobs_to_show = {}
+  local build_job = nil
   for _,job in pairs(build_jobs) do
     local failed = job.exit_code ~= nil and job.exit_code ~= 0
     local stream_available = job.config.stream and job.stream_available
     local should_open = job.buf and (failed or stream_available)
     if job.config.name == "build" then
-      buildJob = job
+      build_job = job
     end
     if should_open then
-      job_to_show = job
-      break
+      table.insert(jobs_to_show, job)
     end
   end
 
-  if job_to_show == nil and buildJob ~= nil then
-    job_to_show = buildJob
+  if #jobs_to_show == 0 and build_job ~= nil then
+    table.insert(jobs_to_show, build_job)
   end
 
-  if job_to_show == nil then
+  if #jobs_to_show == 0 then
     vim.cmd.cclose()
     return
   end
 
-  local starting_dir = vim.fn.getcwd()
-  vim.cmd(([[
-    cd %s
-    cclose
-    cbuffer %s
-    cwindow
-    exec "normal \<cr>"
-    cd %s
-  ]]):format(job_to_show.config.dir, job_to_show.buf, starting_dir))
+  for _, job_to_show in ipairs(jobs_to_show) do
+    local starting_dir = vim.fn.getcwd()
+    vim.cmd(([[
+      cd %s
+      cclose
+      cbuffer %s
+      cwindow
+      exec "normal \<cr>"
+      cd %s
+    ]]):format(job_to_show.config.dir, job_to_show.buf, starting_dir))
 
-  if job_to_show.config.stream then
-    -- clear the buffer
-    run_job(job_to_show)
+    -- if that opened any errors, we are done, otherwise have to keep looking!
+    if #vim.fn.getqflist() > 0 then
+      if job_to_show.config.stream then
+        -- streams need to be restarted when errors are collected from them
+        -- or the same errors will be collected next time!
+        run_job(job_to_show)
+      end
+      break
+    end
   end
 end
 

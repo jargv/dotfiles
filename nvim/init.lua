@@ -1505,8 +1505,8 @@ end
 
 
 -- next and previous location/error {{{2
-;(function()
-  function make_move_fn(qf, ll, close)
+do
+  local function make_move_fn(qf, ll)
     return function()
       local isqf = #vim.fn.getloclist(0) == 0
       local ok = pcall(isqf and qf or ll)
@@ -1524,7 +1524,7 @@ end
   leader.p = make_move_fn(vim.cmd.cp, vim.cmd.lprev)
   leader.N = make_move_fn(vim.cmd.cnf, vim.cmd.lnf)
   leader.P = make_move_fn(vim.cmd.cpf, vim.cmd.lpf)
-end)()
+end
 -- }}}
 
 -- zoom {{{1
