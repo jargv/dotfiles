@@ -179,6 +179,18 @@ Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
 
+-- Plug 'stevearc/aerial.nvim' {{{
+  Plug 'stevearc/aerial.nvim'
+  table.insert(plugin_setup_funcs, function()
+    require("aerial").setup{
+      autojump = true,
+      show_guides = true,
+    }
+  end)
+  leader.vo = function()
+    vim.cmd.AerialToggle()
+  end
+--- }}}
 -- Plug 'augmentcode/augment.vim' {{{
   vim.g.augment_workspace_folders = {'~/projects/game/'}
   vim.g.augment_disable_tab_mapping = true
@@ -335,7 +347,7 @@ end)
 -- Plug 'SmiteshP/nvim-navic' {{{2
 Plug 'SmiteshP/nvim-navic'
 vim.g.winbarShown = 0
-leader.v = function()
+leader.vp = function()
   vim.g.winbarShown = not vim.g.winbarShown
   if vim.g.winbarShown then
     vim.opt.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"

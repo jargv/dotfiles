@@ -121,11 +121,12 @@ end
 
 local function stop_job(job)
   -- Keep the window by making a new buffer for the job
-  local old_window = get_buf_current_window(job.buf)
+  local window = get_buf_current_window(job.buf)
   local new_buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_var(new_buf, "BackgroundBuildBuffer", true)
-  if old_window then
-    vim.api.nvim_win_set_buf(old_window, new_buf)
+  if window then
+    vim.api.nvim_win_set_buf(window, new_buf)
+    vim.wo[window].winbar = "%#StatusLine#%=%9*"..job.config.name.."%=%#StatusLine#"
   end
 
   local oldbuf = job.buf
@@ -494,6 +495,7 @@ function api.toggle_open_all_output_buffers(stacked)
       normal G
       setlocal nonumber
     ]]):format(dir, vertical, job.buf))
+    vim.wo.winbar = "%#StatusLine#%=%9*"..job.config.name.."%=%#StatusLine#"
 
     if stacked then
       vertical = ""
