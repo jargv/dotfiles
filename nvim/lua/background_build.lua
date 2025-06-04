@@ -102,94 +102,121 @@ local function edit_build_config(config, callback)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 end
 
-local function stop_job(job)
-  if job.id then
-    vim.fn.jobstop(job.id)
-    if job.config.nowait then
-      job.id = nil
-    else
-      vim.fn.jobwait({job.id}, 0)
-    end
-    if job.id ~= nil then
-      print(("WARNING: job %d was not cleared, exit handler was not run!"):format(job.id))
+local function get_buf_current_window(buf, tabpage)
+  if buf == nil or not vim.api.nvim_buf_is_valid(buf) then
+    return nil
+  end
+
+  local buf_list = vim.fn.getbufinfo(buf)
+  if #buf_list == 0 then
+    return nil
+  end
+  for _, win_id in pairs(buf_list[1].windows) do
+    if not tabpage or vim.api.nvim_win_get_tabpage(win_id) == tabpage then
+      return win_id
     end
   end
+  return nil
+end
+
+local function stop_job(job)
+  -- Keep the window by making a new buffer for the job
+  local old_window = get_buf_current_window(job.buf)
+  local new_buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_var(new_buf, "BackgroundBuildBuffer", true)
+  if old_window then
+    vim.api.nvim_win_set_buf(old_window, new_buf)
+  end
+
+  local oldbuf = job.buf
+  job.buf = new_buf
+  job.id = nil
   job.exit_code = nil
   job.start_time = nil
+
+  -- clean up the old buffer (and process)
+  if oldbuf and vim.api.nvim_buf_is_valid(oldbuf) then
+    vim.api.nvim_buf_delete(oldbuf, {force=true})
+  end
 end
 
 local function run_job(job)
+  -- stop the job first
   stop_job(job)
 
-  -- create or clear the buffer
-  if job.buf == nil or not vim.api.nvim_buf_is_valid(job.buf) then
-    job.buf = vim.api.nvim_create_buf(false, true)
+  -- a nil exit code with a start_time means "running"
+  job.start_time = vim.fn.localtime()
+  job.stream_available = false
+
+  local old_window = get_buf_current_window(job.buf)
+
+  local output_window
+  local tmp_floating_window
+  if old_window and vim.api.nvim_win_is_valid(old_window) then
+    output_window = old_window
   else
-    vim.api.nvim_buf_set_lines(job.buf, 0, -1, false, {})
+    -- there isn't an old window to use, use a tmp one
+    tmp_floating_window = vim.api.nvim_open_win(job.buf, true, {
+      relative = 'win',
+      row = 0,
+      col = 0,
+      width = 200,
+      height = 600,
+    });
+    output_window = tmp_floating_window
   end
 
-  -- output helpers
-  local function on_out(_, output)
-    local wins_to_scroll = {}
-    local windows = vim.fn.win_findbuf(job.buf)
-    for _, win in ipairs(windows) do
+  -- callback
+  local function on_out(_)
+    local current_tabpage = vim.api.nvim_get_current_tabpage()
+    local win = get_buf_current_window(job.buf, current_tabpage)
+    if win then
       local pos = vim.api.nvim_win_get_cursor(win)
       local line = pos[1]
       local last_line = vim.fn.line("$", win)
       if line == last_line then
-        table.insert(wins_to_scroll, win)
+        vim.fn.win_execute(win, "normal G")
       end
     end
 
-    for i, line in pairs(output) do
-      output[i] = line:gsub("[\r\n]", "")
-    end
-
-    vim.api.nvim_buf_set_lines(job.buf, -1, -1, false, output)
     if job.config.stream then
       job.stream_available = true
     end
-
-    for _, win in ipairs(wins_to_scroll) do
-      vim.fn.win_execute(win, "normal G")
-    end
   end
-  local function output(str) on_out(nil, {str}) end
 
-  -- a nil exit code means "running"
-  job.exit_code = nil
-  job.start_time = vim.fn.localtime()
+  local starting_buf = job.buf
+  local id = vim.api.nvim_win_call(output_window, function()
+    return vim.fn.jobstart(job.config.cmd, {
+      cwd = job.config.dir,
+      on_exit = function(_, exit_code, _)
+        if job.buf ~= starting_buf then
+          return -- there's been a new version of the job created since this callback was created!
+        end
+        job.id = nil
+        job.exit_code = exit_code
+        if job.config.stream then
+          -- streaming jobs should not stop
+          job.exit_code = 1
+        end
+        vim.cmd [[ doautocmd User BackgroundBuildJobStatusChanged ]]
+      end,
+      term = true,
+      on_stdout = on_out,
+      on_stderr = on_out,
+    })
+  end)
 
-  local job_descriptor = "'"..job.config.name.."'"
+  -- clean up the tmp window, if any
+  if tmp_floating_window then
+    vim.api.nvim_win_close(tmp_floating_window, {force=true})
+  end
 
-  output(">>> starting job "..job_descriptor)
-  output(">>> " .. job.config.cmd)
-  output("")
-  job.stream_available = false
-
-  local id = vim.fn.jobstart(job.config.cmd, {
-    cwd = job.config.dir,
-    on_exit = function(_, exit_code, _)
-      output(">>> job "..job_descriptor.." starting to exit")
-      job.exit_code = exit_code
-      if job.config.stream then
-        -- streaming jobs should stop
-        job.exit_code = 1
-      end
-      job.id = nil
-      local elapsed = vim.fn.localtime() - job.start_time
-      output(">>> job "..job_descriptor.." exited with code:".. job.exit_code)
-      output(">>> time: "..fmtelapsed(elapsed))
-      vim.cmd [[ doautocmd User BackgroundBuildJobStatusChanged ]]
-    end,
-    pty = true,
-    on_stdout = on_out,
-    on_stderr = on_out,
-  })
   if id == 0 then
     error "couldn't start job, invalid arguments (or job table is full!)"
   elseif id == -1 then
     error "couldn't start job, is command executable?"
+  elseif id == nil then
+    error "no job id!"
   end
 
   -- signal that the job has started
@@ -239,24 +266,30 @@ local function process_job_pipeline(jobs)
 
   -- run the jobs that are ready
   for _, job in ipairs(jobs_to_check) do
-    -- grap the names of the dep jobs
+    -- grab the names of the dep jobs
     local dep_names = job.config.after
     if type(dep_names) ~= "table" then
       dep_names = {dep_names}
     end
 
-    -- get the deps from their names
+    -- get the deps from their names, replacing nil with false
     local deps = {}
     for _, dep_name in ipairs(dep_names) do
-      table.insert(deps, jobs_by_name[dep_name])
+      table.insert(deps, jobs_by_name[dep_name] or false)
     end
 
     -- check status of deps
     local deps_all_succeeded = true
+    local some_deps_missing = false
     local some_deps_still_running = false
     local some_deps_not_started = false
 
     for _, after_job in ipairs(deps) do
+      if after_job == false then
+        some_deps_missing = false
+        goto continue
+      end
+
       if after_job.exit_code ~= 0 then
         deps_all_succeeded = false
       end
@@ -268,18 +301,15 @@ local function process_job_pipeline(jobs)
       if after_job.id == nil and after_job.exit_code == nil then
         some_deps_not_started = true
       end
+      ::continue::
     end
 
     local already_running = job.id ~= nil
     local already_finished = job.exit_code ~= nil
 
-    if some_deps_not_started or some_deps_still_running or (already_running and not deps_all_succeeded) then
+    if some_deps_missing or some_deps_not_started or some_deps_still_running or (already_running and not deps_all_succeeded) then
       stop_job(job)
     elseif not already_running and not already_finished and deps_all_succeeded then
-      -- share the output buffer from a unique dep
-      if #deps == 1 then
-        job.buf = deps[1].buf
-      end
       run_job(job)
     end
   end
@@ -360,44 +390,49 @@ function api.edit_config()
 end
 
 function api.load_errors()
-  local jobToShow = nil
-  local buildJob = nil
+  local jobs_to_show = {}
+  local build_job = nil
   for _,job in pairs(build_jobs) do
     local failed = job.exit_code ~= nil and job.exit_code ~= 0
     local stream_available = job.config.stream and job.stream_available
     local should_open = job.buf and (failed or stream_available)
     if job.config.name == "build" then
-      buildJob = job
+      build_job = job
     end
     if should_open then
-      jobToShow = job
-      break
+      table.insert(jobs_to_show, job)
     end
   end
 
-  if jobToShow == nil and buildJob ~= nil then
-    jobToShow = buildJob
+  if #jobs_to_show == 0 and build_job ~= nil then
+    table.insert(jobs_to_show, build_job)
   end
 
-  if jobToShow == nil then
+  if #jobs_to_show == 0 then
     vim.cmd.cclose()
     return
   end
 
-  local starting_dir = vim.fn.getcwd()
-  vim.cmd(([[
-    cd %s
-    cclose
-    cbuffer %s
-    cwindow
-    exec "normal \<cr>"
-    cd %s
-  ]]):format(jobToShow.config.dir, jobToShow.buf, starting_dir))
+  for _, job_to_show in ipairs(jobs_to_show) do
+    local starting_dir = vim.fn.getcwd()
+    vim.cmd(([[
+      cd %s
+      cclose
+      cbuffer %s
+      cwindow
+      exec "normal \<cr>"
+      cd %s
+    ]]):format(job_to_show.config.dir, job_to_show.buf, starting_dir))
 
-  if jobToShow.config.stream then
-    -- clear the buffer
-    jobToShow.stream_available = false
-    vim.api.nvim_buf_set_lines(jobToShow.buf, 0, -1, false, {})
+    -- if that opened any errors, we are done, otherwise have to keep looking!
+    if #vim.fn.getqflist() > 0 then
+      if job_to_show.config.stream then
+        -- streams need to be restarted when errors are collected from them
+        -- or the same errors will be collected next time!
+        run_job(job_to_show)
+      end
+      break
+    end
   end
 end
 
@@ -439,22 +474,15 @@ function api.toggle_open_all_output_buffers(stacked)
   local current_tabpage = vim.api.nvim_get_current_tabpage()
 
   local vertical = "vertical"
-  local dir = (stacked or #build_jobs == 1) and "botright" or "topleft"
-  for i,job in pairs(build_jobs) do
-    if not job.buf then
-      goto continue
+  local dir = stacked and "topleft" or "botright"
+  for _,job in pairs(build_jobs) do
+
+    if not job.buf or not vim.api.nvim_buf_is_valid(job.buf) then
+      -- make a buffer so we can open a window
+      job.buf = vim.api.nvim_create_buf(false, true)
     end
 
-    local buf_list = vim.fn.getbufinfo(job.buf)
-    local win_on_current_tab = nil
-
-    for _, win_id in pairs(buf_list[1].windows) do
-      if vim.api.nvim_win_get_tabpage(win_id) == current_tabpage then
-        win_on_current_tab = win_id
-        break;
-      end
-    end
-
+    local win_on_current_tab = get_buf_current_window(job.buf, current_tabpage)
     if win_on_current_tab then
       table.insert(windows_to_close, win_on_current_tab)
       goto continue
@@ -470,11 +498,6 @@ function api.toggle_open_all_output_buffers(stacked)
     if stacked then
       vertical = ""
       dir = "belowright"
-    elseif i == 1 then
-      dir = "botright"
-    elseif i == 2 then
-      dir = "belowright"
-      vertical = ""
     end
 
     ::continue::
@@ -548,7 +571,7 @@ function api.statusline()
       if job.exit_code then
         -- stream jobs should never stop
         table.insert(parts, "%4*")
-        table.insert(parts, job.config.name..": stream stopped")
+        table.insert(parts, job.config.name..": stream stopped" .. job.exit_code)
       elseif job.id == nil then
         table.insert(parts, "%1*")
         table.insert(parts, job.config.name..": stream not started")
@@ -654,7 +677,7 @@ function api.attach_debugger_to_running_step(step_name)
     output = {parent_pid}
   end
   local pid = output[1]
-  local cmd = "tabnew term://"..job.config.dir.."///usr/bin/gdb --tui -p ".. pid .. " " .. cmd
+  cmd = "tabnew term://"..job.config.dir.."///usr/bin/gdb --tui -p ".. pid .. " " .. cmd
   print(cmd)
   vim.cmd(cmd)
 end

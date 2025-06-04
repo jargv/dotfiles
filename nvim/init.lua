@@ -832,17 +832,28 @@ vim.api.nvim_create_autocmd({"TermOpen", "BufEnter", "BufLeave"}, {
   pattern = "term://*",
   callback = function(cmd)
     -- no numbers or hidden buffers
+
+    local success, result = pcall(function()
+      return vim.api.nvim_buf_get_var(cmd.buf, "BackgroundBuildBuffer") == true
+    end)
+
+    local is_background_build_buffer = success and result
+
     if cmd.event == "TermOpen" then
-      vim.bo.bufhidden = 'wipe'
+      if not is_background_build_buffer then
+        vim.bo.bufhidden = 'wipe'
+      end
       vim.wo.number = false
       vim.wo.spell = false
     end
 
     -- insert mode shouldn't be affected by terminals
-    if cmd.event == "BufLeave" then
-      vim.cmd("stopinsert")
-    else
-      vim.cmd("startinsert")
+    if not is_background_build_buffer then
+      if cmd.event == "BufLeave" then
+        vim.cmd("stopinsert")
+      else
+        vim.cmd("startinsert")
+      end
     end
   end
 })
@@ -972,8 +983,8 @@ leader.e = function()
   build.load_errors()
 end
 leader.m = build.run_all_not_running
-leader.Mw = build.toggle_open_all_output_buffers
-leader.MW = function() build.toggle_open_all_output_buffers(true) end
+leader.MW = build.toggle_open_all_output_buffers
+leader.Mw = function() build.toggle_open_all_output_buffers(true) end
 leader.Ma = build.add_from_current_file
 leader.Mq = build.clear_config
 leader.Mc = build.stop_all
@@ -1494,8 +1505,8 @@ end
 
 
 -- next and previous location/error {{{2
-;(function()
-  function make_move_fn(qf, ll, close)
+do
+  local function make_move_fn(qf, ll)
     return function()
       local isqf = #vim.fn.getloclist(0) == 0
       local ok = pcall(isqf and qf or ll)
@@ -1513,7 +1524,7 @@ end
   leader.p = make_move_fn(vim.cmd.cp, vim.cmd.lprev)
   leader.N = make_move_fn(vim.cmd.cnf, vim.cmd.lnf)
   leader.P = make_move_fn(vim.cmd.cpf, vim.cmd.lpf)
-end)()
+end
 -- }}}
 
 -- zoom {{{1
