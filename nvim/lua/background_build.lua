@@ -102,16 +102,6 @@ local function edit_build_config(config, callback)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 end
 
-local function stop_job(job)
-  if job.buf and vim.api.nvim_buf_is_valid(job.buf) then
-    vim.api.nvim_buf_delete(job.buf, {force=true})
-  end
-  job.id = nil
-  job.buf = nil
-  job.exit_code = nil
-  job.start_time = nil
-end
-
 local function get_buf_current_window(buf, tabpage)
   if buf == nil or not vim.api.nvim_buf_is_valid(buf) then
     return nil
@@ -127,6 +117,19 @@ local function get_buf_current_window(buf, tabpage)
     end
   end
   return nil
+end
+
+local function stop_job(job)
+  local oldbuf = job.buf
+  job.buf = nil -- set to nil berfore killing so the exit callback has the right state
+  job.id = nil
+  job.exit_code = nil
+  job.start_time = nil
+
+  -- clean up the old buffer
+  if oldbuf and vim.api.nvim_buf_is_valid(oldbuf) then
+    vim.api.nvim_buf_delete(oldbuf, {force=true})
+  end
 end
 
 local function run_job(job, buffer_to_take_window_from)
@@ -162,38 +165,37 @@ local function run_job(job, buffer_to_take_window_from)
     output_window = tmp_floating_window
   end
 
-  -- output helpers
+  -- callback
   local function on_out(_)
-    local wins_to_scroll = {}
-    local windows = vim.fn.win_findbuf(job.buf)
-    for _, win in ipairs(windows) do
+    local current_tabpage = vim.api.nvim_get_current_tabpage()
+    local win = get_buf_current_window(job.buf, current_tabpage)
+    if win then
       local pos = vim.api.nvim_win_get_cursor(win)
       local line = pos[1]
       local last_line = vim.fn.line("$", win)
       if line == last_line then
-        table.insert(wins_to_scroll, win)
+        vim.fn.win_execute(win, "normal G")
       end
     end
 
     if job.config.stream then
       job.stream_available = true
     end
-
-    for _, win in ipairs(wins_to_scroll) do
-      vim.fn.win_execute(win, "normal G")
-    end
   end
 
   local id = vim.api.nvim_win_call(output_window, function()
-    vim.fn.jobstart(job.config.cmd, {
+    return vim.fn.jobstart(job.config.cmd, {
       cwd = job.config.dir,
       on_exit = function(_, exit_code, _)
+        if job.buf ~= new_buf then
+          return -- there's been a new version of the job created since this callback was created!
+        end
+        job.id = nil
         job.exit_code = exit_code
         if job.config.stream then
           -- streaming jobs should not stop
           job.exit_code = 1
         end
-        job.id = nil
         vim.cmd [[ doautocmd User BackgroundBuildJobStatusChanged ]]
       end,
       term = true,
@@ -211,6 +213,8 @@ local function run_job(job, buffer_to_take_window_from)
     error "couldn't start job, invalid arguments (or job table is full!)"
   elseif id == -1 then
     error "couldn't start job, is command executable?"
+  elseif id == nil then
+    error "no job id!"
   end
 
   -- signal that the job has started
@@ -389,7 +393,7 @@ function api.edit_config()
 end
 
 function api.load_errors()
-  local jobToShow = nil
+  local job_to_show = nil
   local buildJob = nil
   for _,job in pairs(build_jobs) do
     local failed = job.exit_code ~= nil and job.exit_code ~= 0
@@ -399,16 +403,16 @@ function api.load_errors()
       buildJob = job
     end
     if should_open then
-      jobToShow = job
+      job_to_show = job
       break
     end
   end
 
-  if jobToShow == nil and buildJob ~= nil then
-    jobToShow = buildJob
+  if job_to_show == nil and buildJob ~= nil then
+    job_to_show = buildJob
   end
 
-  if jobToShow == nil then
+  if job_to_show == nil then
     vim.cmd.cclose()
     return
   end
@@ -421,13 +425,11 @@ function api.load_errors()
     cwindow
     exec "normal \<cr>"
     cd %s
-  ]]):format(jobToShow.config.dir, jobToShow.buf, starting_dir))
+  ]]):format(job_to_show.config.dir, job_to_show.buf, starting_dir))
 
-  if jobToShow.config.stream then
+  if job_to_show.config.stream then
     -- clear the buffer
-    jobToShow.stream_available = false
-    -- TODO: fix this with the new term output
-    vim.api.nvim_buf_set_lines(jobToShow.buf, 0, -1, false, {})
+    run_job(job_to_show)
   end
 end
 
@@ -592,7 +594,7 @@ function api.statusline()
       table.insert(parts, job.config.name..": success")
     else
       table.insert(parts, "%4*")
-      table.insert(parts, job.config.name..": failed ("..tostring(job.exit_code)..")")
+      table.insert(parts, job.config.name..": failed")
     end
     table.insert(parts, "%5* | ")
   end
