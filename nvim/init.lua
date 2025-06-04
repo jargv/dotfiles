@@ -185,6 +185,7 @@ Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
     require("aerial").setup{
       autojump = true,
       show_guides = true,
+      close_automatic_events = {"unfocus", "unsupported"}
     }
   end)
   leader.vo = function()
