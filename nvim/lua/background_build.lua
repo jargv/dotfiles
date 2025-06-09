@@ -1,7 +1,8 @@
 --[[
 TODO:
  - Variables in the strings with ${} syntax
- - hotkey to close just the build windows and nothing else
+ - Mark a job as not producing errors so it can be skipped
+   when checking for errors (like the asset pipeline)
 ]]
 
 local fmtjson = require("fmtjson")
@@ -171,13 +172,11 @@ local function run_job(job)
   local function on_out(_)
     local current_tabpage = vim.api.nvim_get_current_tabpage()
     local win = get_buf_current_window(job.buf, current_tabpage)
-    if win then
-      local pos = vim.api.nvim_win_get_cursor(win)
-      local line = pos[1]
-      local last_line = vim.fn.line("$", win)
-      if line == last_line then
-        vim.fn.win_execute(win, "normal G")
-      end
+    local current_win = vim.api.nvim_get_current_win()
+
+    -- if the cursor isn't in the window... scroll the window to follow the new text
+    if win and win ~= current_win then
+      vim.fn.win_execute(win, "normal G")
     end
 
     if job.config.stream then
@@ -403,10 +402,6 @@ function api.load_errors()
     if should_open then
       table.insert(jobs_to_show, job)
     end
-  end
-
-  if #jobs_to_show == 0 and build_job ~= nil then
-    table.insert(jobs_to_show, build_job)
   end
 
   if #jobs_to_show == 0 then
