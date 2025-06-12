@@ -1104,27 +1104,31 @@ vim.cmd[[
   exec "highlight User6 gui=NONE guibg=".synIDattr(hlID('StatusLine'),'bg')." guifg=".synIDattr(hlID('Operator'),'fg')
 ]]
 
--- left side
-vim.opt.statusline = ""
-vim.opt.statusline:append "%{%v:lua.require'background_build'.statusline()%} "
+local function setup_statusline()
+  -- left side
 
--- middle
--- vim.opt.statusline:append "%=" -- separator to indicate right side
--- vim.opt.statusline:append "%{%v:lua.require'neodoro'.statusline()%}  " -- file name relative to cwd
+  -- the first one is a hard set to clear what's already there
+  vim.opt.statusline = "%{%v:lua.require'background_build'.statusline()%} "
 
--- right side
-vim.opt.statusline:append "%=" -- separator to indicate right side
-vim.opt.statusline:append "%7*" -- User highlight
-vim.opt.statusline:append " %<" -- truncate here, if needed
-vim.opt.statusline:append " %{fnamemodify(getcwd(),':~')}/" -- current dir
-vim.opt.statusline:append "%8*" -- User highlight
-vim.opt.statusline:append "%{GetRelativeFilename()}" -- file name relative to cwd
-vim.opt.statusline:append "%9*" -- User highlight
-vim.opt.statusline:append " %y" -- filetype
-vim.opt.statusline:append " %7*%l%8*/%7*%L" -- line and column
-vim.opt.statusline:append "%{GetSymlinkTarget()}" -- file name relative to cwd
-vim.opt.statusline:append "%#StatusLine#" -- regular statusline highlight
-vim.opt.statusline:append " %m" -- modified flag -- regular statusline highlight
+  -- middle
+  -- vim.opt.statusline:append "%=" -- separator to indicate right side
+  -- vim.opt.statusline:append "%{%v:lua.require'neodoro'.statusline()%}  " -- file name relative to cwd
+
+  -- right side
+  vim.opt.statusline:append "%=" -- separator to indicate right side
+  vim.opt.statusline:append "%7*" -- User highlight
+  vim.opt.statusline:append " %<" -- truncate here, if needed
+  vim.opt.statusline:append " %{fnamemodify(getcwd(),':~')}/" -- current dir
+  vim.opt.statusline:append "%8*" -- User highlight
+  vim.opt.statusline:append "%{GetRelativeFilename()}" -- file name relative to cwd
+  vim.opt.statusline:append "%9*" -- User highlight
+  vim.opt.statusline:append " %y" -- filetype
+  vim.opt.statusline:append " %7*%l%8*/%7*%L" -- line and column
+  vim.opt.statusline:append "%{GetSymlinkTarget()}" -- file name relative to cwd
+  vim.opt.statusline:append "%#StatusLine#" -- regular statusline highlight
+  vim.opt.statusline:append " %m" -- modified flag -- regular statusline highlight
+end
+setup_statusline()
 
 -- fast config {{{1
 
@@ -1838,11 +1842,9 @@ if statusline_timer ~= nil then
 end
 
 statusline_timer = vim.loop.new_timer();
-statusline_setting = vim.opt.statusline
 statusline_timer:start(100, 100, function()
   -- schedule a function to be run on the main thread
   vim.defer_fn(function()
-    -- setting the option forces an update
-    vim.opt.statusline = statusline_setting
+    setup_statusline()
   end, 0)
 end)
