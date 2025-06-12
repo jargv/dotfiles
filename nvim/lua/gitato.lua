@@ -124,7 +124,9 @@ end
 function gitato.toggle_diff_against_git_ref(ref)
   if current_diff_buffer ~= nil then
     gitato.diff_off()
-    return
+    if ref == nil then
+      return
+    end
   end
 
   local git_root = gitato.get_repo_root()
