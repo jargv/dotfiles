@@ -356,6 +356,14 @@ leader.vp = function()
     vim.opt.winbar = ""
   end
 end
+leader.vf = function()
+  vim.g.winbarShown = not vim.g.winbarShown
+  if vim.g.winbarShown then
+    vim.opt.winbar = "%=%f%="
+  else
+    vim.opt.winbar = ""
+  end
+end
 table.insert(plugin_setup_funcs, function()
   require"nvim-navic".setup {
     icons = {
