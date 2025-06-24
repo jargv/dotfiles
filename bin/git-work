@@ -68,21 +68,9 @@ fi
 
 echo ""
 echo "Worktree created successfully!"
-<<<<<<< HEAD
 echo "Path: $WORKTREE_PATH"
 echo "Branch: $NEW_BRANCH"
-=======
-echo "Branch: $NEW_BRANCH"
-echo ""
->>>>>>> 3bbf27c (merge)
 
 # Copy the worktree path to clipboard
 echo -n "$WORKTREE_PATH" | clip
 echo "Worktree path copied to clipboard!"
-<<<<<<< HEAD
-=======
-
-echo "Changing to worktree directory..."
-cd "$WORKTREE_PATH"
-echo "Now in: $(pwd)"
->>>>>>> 3bbf27c (merge)
