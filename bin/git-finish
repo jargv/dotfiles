@@ -57,9 +57,47 @@ git checkout "$MAIN_BRANCH"
 echo "Pulling latest changes..."
 git pull
 
-# Rebase the worktree branch onto main
-echo "Rebasing branch: $CURRENT_BRANCH onto $MAIN_BRANCH"
-git rebase "$CURRENT_BRANCH"
+# Check if the branch can be merged cleanly (fast-forward or clean rebase)
+echo "Verifying that $CURRENT_BRANCH can be integrated cleanly..."
+
+# Check if this would be a fast-forward merge
+MERGE_BASE=$(git merge-base "$MAIN_BRANCH" "$CURRENT_BRANCH")
+MAIN_HEAD=$(git rev-parse "$MAIN_BRANCH")
+
+if [ "$MERGE_BASE" = "$MAIN_HEAD" ]; then
+    echo "✓ Fast-forward merge possible - no merge conflicts expected"
+    INTEGRATION_METHOD="fast-forward"
+else
+    echo "Checking for potential rebase conflicts..."
+    
+    # Perform a dry-run rebase to check for conflicts
+    if git rebase --onto "$MAIN_BRANCH" "$MERGE_BASE" "$CURRENT_BRANCH" --dry-run 2>/dev/null; then
+        echo "✓ Clean rebase possible - no merge conflicts expected"
+        INTEGRATION_METHOD="rebase"
+    else
+        # Try a more thorough check using merge-tree
+        if git merge-tree "$MERGE_BASE" "$MAIN_BRANCH" "$CURRENT_BRANCH" | grep -q '<<<<<<<'; then
+            echo "✗ Error: Merge conflicts detected!"
+            echo "The following conflicts would occur:"
+            git merge-tree "$MERGE_BASE" "$MAIN_BRANCH" "$CURRENT_BRANCH" | grep -A5 -B5 '<<<<<<<'
+            echo ""
+            echo "Please resolve conflicts manually in the worktree first, then try again."
+            exit 1
+        else
+            echo "✓ Clean rebase should be possible"
+            INTEGRATION_METHOD="rebase"
+        fi
+    fi
+fi
+
+# Integrate the branch based on the determined method
+if [ "$INTEGRATION_METHOD" = "fast-forward" ]; then
+    echo "Performing fast-forward merge of $CURRENT_BRANCH onto $MAIN_BRANCH"
+    git merge --ff-only "$CURRENT_BRANCH"
+else
+    echo "Rebasing branch: $CURRENT_BRANCH onto $MAIN_BRANCH"
+    git rebase "$CURRENT_BRANCH"
+fi
 
 # Remove the worktree
 echo "Removing worktree: $WORKTREE_PATH"
