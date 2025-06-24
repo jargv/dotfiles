@@ -72,7 +72,3 @@ BRANCH_HASH=$(git rev-parse "$CURRENT_BRANCH")
 echo "Deleting branch: $CURRENT_BRANCH"
 git branch -d "$CURRENT_BRANCH"
 echo "Deleted branch hash: $BRANCH_HASH"
-
-echo ""
-echo "Worktree merge and cleanup completed!"
-echo "Now in: $(pwd)"

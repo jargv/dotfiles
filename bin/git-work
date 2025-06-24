@@ -68,9 +68,5 @@ fi
 
 echo ""
 echo "Worktree created successfully!"
-echo "Path: $WORKTREE_PATH"
 echo "Branch: $NEW_BRANCH"
-echo ""
-echo "Changing to worktree directory..."
-cd "$WORKTREE_PATH"
-echo "Now in: $(pwd)"
+echo "Path: $WORKTREE_PATH"
