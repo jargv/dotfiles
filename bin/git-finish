@@ -1,0 +1,78 @@
+#!/bin/bash
+
+# Script to merge worktree branch and clean up worktree
+# Usage: git finish (when inside a worktree)
+
+set -e
+
+# Check if we're in the worktrees directory or one of its descendants
+CURRENT_PATH=$(pwd)
+if [[ ! "$CURRENT_PATH" =~ ^$HOME/projects/worktrees/ ]]; then
+    echo "Error: This command must be run from within a worktree directory"
+    echo "Current path: $CURRENT_PATH"
+    echo "Expected to be in: $HOME/projects/worktrees/"
+    exit 1
+fi
+
+# Get the current worktree path
+WORKTREE_PATH=$(pwd)
+echo "Current worktree: $WORKTREE_PATH"
+
+# Get the current branch name
+CURRENT_BRANCH=$(git branch --show-current)
+echo "Current branch: $CURRENT_BRANCH"
+
+# Find the source repository (common worktree root)
+SOURCE_REPO=$(git worktree list | head -1 | awk '{print $1}')
+echo "Source repository: $SOURCE_REPO"
+
+# Change to source repository
+echo "Changing to source repository..."
+cd "$SOURCE_REPO"
+
+# Check if source repo has uncommitted changes
+if ! git diff-index --quiet HEAD --; then
+    echo "Error: Source repository has uncommitted changes. Please commit or stash them first."
+    git status --porcelain
+    exit 1
+fi
+
+# Check if there are untracked files
+if [ -n "$(git ls-files --others --exclude-standard)" ]; then
+    echo "Warning: Source repository has untracked files:"
+    git ls-files --others --exclude-standard
+    echo ""
+fi
+
+# Switch to main branch (or master if main doesn't exist)
+MAIN_BRANCH="main"
+if ! git show-ref --verify --quiet refs/heads/main; then
+    MAIN_BRANCH="master"
+fi
+
+echo "Switching to $MAIN_BRANCH branch..."
+git checkout "$MAIN_BRANCH"
+
+# Pull latest changes
+echo "Pulling latest changes..."
+git pull
+
+# Rebase the worktree branch onto main
+echo "Rebasing branch: $CURRENT_BRANCH onto $MAIN_BRANCH"
+git rebase "$CURRENT_BRANCH"
+
+# Remove the worktree
+echo "Removing worktree: $WORKTREE_PATH"
+git worktree remove "$WORKTREE_PATH"
+
+# Get the commit hash before deleting the branch
+BRANCH_HASH=$(git rev-parse "$CURRENT_BRANCH")
+
+# Delete the branch
+echo "Deleting branch: $CURRENT_BRANCH"
+git branch -d "$CURRENT_BRANCH"
+echo "Deleted branch hash: $BRANCH_HASH"
+
+echo ""
+echo "Worktree merge and cleanup completed!"
+echo "Now in: $(pwd)"
