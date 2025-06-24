@@ -1120,7 +1120,6 @@ local function setup_statusline()
 
   -- middle
   -- vim.opt.statusline:append "%=" -- separator to indicate right side
-  -- vim.opt.statusline:append "%{%v:lua.require'neodoro'.statusline()%}  " -- file name relative to cwd
 
   -- right side
   vim.opt.statusline:append "%=" -- separator to indicate right side
@@ -1134,7 +1133,8 @@ local function setup_statusline()
   vim.opt.statusline:append " %7*%l%8*/%7*%L" -- line and column
   vim.opt.statusline:append "%{GetSymlinkTarget()}" -- file name relative to cwd
   vim.opt.statusline:append "%#StatusLine#" -- regular statusline highlight
-  vim.opt.statusline:append " %m" -- modified flag -- regular statusline highlight
+  vim.opt.statusline:append " %m " -- modified flag -- regular statusline highlight
+  vim.opt.statusline:append "%{%v:lua.require'neodoro'.statusline()%}  " -- file name relative to cwd
 end
 setup_statusline()
 
