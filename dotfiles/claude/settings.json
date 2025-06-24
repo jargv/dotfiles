@@ -2,5 +2,6 @@
   "permissions": {
     "allow": [],
     "deny": []
-  }
+  },
+  "preferredNotifChannel": "terminal_bell"
 }
