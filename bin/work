@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# Script to create git worktrees in ~/projects/worktrees with structured naming
+# Usage: create-worktree [description]
+# Example: create-worktree "rework sound effects"
+
+set -e
+
+# Check if we're in a git repository
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "Error: Not in a git repository"
+    exit 1
+fi
+
+# Get the repository name (current directory name)
+REPO_NAME=$(basename "$(pwd)")
+
+# Get description from argument or prompt user
+if [ $# -eq 0 ]; then
+    echo "Enter a short description for this worktree:"
+    read -r DESCRIPTION
+else
+    DESCRIPTION="$*"
+fi
+
+# Convert description to directory-safe format (lowercase, spaces to underscores)
+SAFE_DESCRIPTION=$(echo "$DESCRIPTION" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/_/g' | sed 's/__*/_/g' | sed 's/^_\|_$//g')
+
+# Create worktree directory name
+WORKTREE_NAME="${REPO_NAME}_${SAFE_DESCRIPTION}"
+WORKTREE_PATH="$HOME/projects/worktrees/$WORKTREE_NAME"
+
+# Create worktrees directory if it doesn't exist
+mkdir -p "$HOME/projects/worktrees"
+
+# Check if worktree already exists
+if [ -d "$WORKTREE_PATH" ]; then
+    echo "Error: Worktree already exists at $WORKTREE_PATH"
+    exit 1
+fi
+
+# Get current branch name
+CURRENT_BRANCH=$(git branch --show-current)
+
+# Create a new branch name based on the description
+BRANCH_NAME="${SAFE_DESCRIPTION}"
+
+# Check if branch already exists
+if git show-ref --verify --quiet refs/heads/"$BRANCH_NAME"; then
+    echo "Branch '$BRANCH_NAME' already exists. Using existing branch."
+    NEW_BRANCH="$BRANCH_NAME"
+else
+    echo "Creating new branch '$BRANCH_NAME' from current branch '$CURRENT_BRANCH'"
+    NEW_BRANCH="$BRANCH_NAME"
+fi
+
+# Create the worktree
+echo "Creating worktree at: $WORKTREE_PATH"
+echo "Branch: $NEW_BRANCH"
+
+if git show-ref --verify --quiet refs/heads/"$BRANCH_NAME"; then
+    # Branch exists, create worktree with existing branch
+    git worktree add "$WORKTREE_PATH" "$NEW_BRANCH"
+else
+    # Branch doesn't exist, create worktree with new branch
+    git worktree add -b "$NEW_BRANCH" "$WORKTREE_PATH"
+fi
+
+echo ""
+echo "Worktree created successfully!"
+echo "Path: $WORKTREE_PATH"
+echo "Branch: $NEW_BRANCH"
+echo ""
+echo "Changing to worktree directory..."
+cd "$WORKTREE_PATH"
+echo "Now in: $(pwd)"
