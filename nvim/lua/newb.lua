@@ -118,6 +118,7 @@ local new_buffer_options = {
   {key=",", cmd=sync_dir,                      desc="sync dir"},
   {key="p", cmd=pstree,                        desc="show process tree"},
   {key="B", cmd=":e term://$dir///usr/bin/btop", desc="run btop command"},
+  {key="C", cmd=":e term://$dir///bin/claude", desc="run claude command"},
   {key="q", cmd=":q!",                         desc="quit"},
 }
 
