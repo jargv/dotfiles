@@ -69,7 +69,7 @@ if [ "$MERGE_BASE" = "$MAIN_HEAD" ]; then
     INTEGRATION_METHOD="fast-forward"
 else
     echo "Checking for potential rebase conflicts..."
-    
+
     # Perform a dry-run rebase to check for conflicts
     if git rebase --onto "$MAIN_BRANCH" "$MERGE_BASE" "$CURRENT_BRANCH" --dry-run 2>/dev/null; then
         echo "✓ Clean rebase possible - no merge conflicts expected"
@@ -110,3 +110,7 @@ BRANCH_HASH=$(git rev-parse "$CURRENT_BRANCH")
 echo "Deleting branch: $CURRENT_BRANCH"
 git branch -d "$CURRENT_BRANCH"
 echo "Deleted branch hash: $BRANCH_HASH"
+
+# Copy the worktree path to clipboard
+echo -n "$SOURCE_REPO" | clip
+echo "Source repo path copied to clipboard!"
