@@ -63,3 +63,6 @@ export FZF_DEFAULT_COMMAND='
 export EMSDK_QUIET=${EMSDK_QUIET:-1}
 [ ${USE_EMSDK:-0} -ne "0" ] && [ -f ~/projects/emsdk/emsdk_env.sh ] && \
   source ~/projects/emsdk/emsdk_env.sh
+
+# cpm
+export CPM_SOURCE_CACHE=$HOME/.cache/CPM
