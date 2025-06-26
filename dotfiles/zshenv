@@ -48,10 +48,8 @@ export PATH=$PATH:~/Library/Python/3.8/bin
 export PATH=/opt/homebrew/bin:$PATH
 
 # fzf setup
-fzf_keybindings=~/config/nvim/plug/fzf/shell/key-bindings.zsh
-fzf_completion=~/config/nvim/plug/fzf/shell/completion.zsh
-bindkey '^R' fzf-history-widget
-bindkey -M vicmd '^R' fzf-history-widget
+fzf_keybindings=/usr/share/fzf/key-bindings.zsh
+fzf_completion=/usr/share/fzf/completion.zsh
 [ -f $fzf_keybindings ] && source $fzf_keybindings
 [ -f $fzf_completion ] && source $fzf_completion
 export FZF_DEFAULT_COMMAND='
