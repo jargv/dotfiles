@@ -22,6 +22,34 @@ echo "Current worktree: $WORKTREE_PATH"
 CURRENT_BRANCH=$(git branch --show-current)
 echo "Current branch: $CURRENT_BRANCH"
 
+# Check for uncommitted changes in worktree and auto-commit if needed
+AUTO_COMMIT_HASH=""
+if ! git diff-index --quiet HEAD --; then
+    echo "Found uncommitted changes in worktree. Auto-committing..."
+    
+    # Convert branch name to commit message (underscores to spaces)
+    COMMIT_MESSAGE="${CURRENT_BRANCH//_/ }"
+    
+    # Add all changes and commit
+    git add -A
+    git commit -m "$COMMIT_MESSAGE"
+    AUTO_COMMIT_HASH=$(git rev-parse HEAD)
+    echo "Auto-committed changes with hash: $AUTO_COMMIT_HASH"
+elif [ -n "$(git ls-files --others --exclude-standard)" ]; then
+    echo "Found untracked files in worktree. Auto-committing..."
+    
+    # Convert branch name to commit message (underscores to spaces)
+    COMMIT_MESSAGE="${CURRENT_BRANCH//_/ }"
+    
+    # Add all changes and commit
+    git add -A
+    git commit -m "$COMMIT_MESSAGE"
+    AUTO_COMMIT_HASH=$(git rev-parse HEAD)
+    echo "Auto-committed untracked files with hash: $AUTO_COMMIT_HASH"
+else
+    echo "No uncommitted changes in worktree"
+fi
+
 # Find the source repository (common worktree root)
 SOURCE_REPO=$(git worktree list | head -1 | awk '{print $1}')
 echo "Source repository: $SOURCE_REPO"
@@ -90,13 +118,46 @@ else
     fi
 fi
 
+# Function to rollback auto-commit if needed
+rollback_auto_commit() {
+    if [ -n "$AUTO_COMMIT_HASH" ]; then
+        echo "Rolling back auto-commit due to merge failure..."
+        cd "$WORKTREE_PATH"
+        git reset --hard HEAD~1
+        echo "Auto-commit $AUTO_COMMIT_HASH has been rolled back"
+    fi
+}
+
 # Integrate the branch based on the determined method
+echo "Attempting to integrate branch..."
+INTEGRATION_SUCCESS=false
+
 if [ "$INTEGRATION_METHOD" = "fast-forward" ]; then
     echo "Performing fast-forward merge of $CURRENT_BRANCH onto $MAIN_BRANCH"
-    git merge --ff-only "$CURRENT_BRANCH"
+    if git merge --ff-only "$CURRENT_BRANCH"; then
+        INTEGRATION_SUCCESS=true
+    else
+        echo "Error: Fast-forward merge failed"
+        rollback_auto_commit
+        exit 1
+    fi
 else
     echo "Rebasing branch: $CURRENT_BRANCH onto $MAIN_BRANCH"
-    git rebase "$CURRENT_BRANCH"
+    if git rebase "$CURRENT_BRANCH"; then
+        INTEGRATION_SUCCESS=true
+    else
+        echo "Error: Rebase failed"
+        rollback_auto_commit
+        exit 1
+    fi
+fi
+
+if [ "$INTEGRATION_SUCCESS" = true ]; then
+    echo "✓ Branch integration successful"
+else
+    echo "✗ Branch integration failed"
+    rollback_auto_commit
+    exit 1
 fi
 
 # Remove the worktree
