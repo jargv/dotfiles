@@ -391,7 +391,6 @@ end
 
 function api.load_errors()
   local jobs_to_show = {}
-  local build_job = nil
   for _,job in pairs(build_jobs) do
     local failed = job.exit_code ~= nil and job.exit_code ~= 0
     local stream_available = job.config.stream and job.stream_available
@@ -407,13 +406,14 @@ function api.load_errors()
     return
   end
 
+  local errors_found = false
   for _, job_to_show in ipairs(jobs_to_show) do
     local starting_dir = vim.fn.getcwd()
     vim.cmd.cd(job_to_show.config.dir)
     vim.cmd.cclose()
-    vim.cmd.cbuffer(job_to_show.buf)
+    vim.cmd("silent cbuffer " .. job_to_show.buf)
     vim.cmd.cwindow()
-    local has_errors = #vim.fn.getqflist() > 0
+    local has_errors = vim.fn.getqflist({winid=true}).winid ~= 0
     if has_errors then
       vim.cmd [[exec "normal! \<cr>" ]]
     end

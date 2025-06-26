@@ -998,11 +998,7 @@ leader.Go = git_open(default_upstream())
 -- background build setup {{{1
 local build = require("background_build")
 leader.Me = build.edit_config
-leader.e = function()
-  vim.fn.setloclist(0, {})
-  vim.cmd.lclose()
-  build.load_errors()
-end
+leader.e = build.load_errors
 leader.m = build.run_all_not_running
 leader.MW = build.toggle_open_all_output_buffers
 leader.Mw = function() build.toggle_open_all_output_buffers(true) end
