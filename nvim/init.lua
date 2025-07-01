@@ -192,7 +192,7 @@ Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
     vim.cmd.AerialToggle()
   end
 --- }}}
--- Plug 'augmentcode/augment.vim' {{{
+-- Plug 'augmentcode/augment.vim' (unused) {{{
   vim.g.augment_workspace_folders = {'~/projects/game/'}
   vim.g.augment_disable_tab_mapping = true
   insert["<M-y>"] = function()
@@ -202,7 +202,7 @@ Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
     vim.g.augment_disable_completions = not vim.g.augment_disable_completions
     vim.notify("augment completions:" .. (vim.g.augment_disable_completions and "no" or "yes"))
   end
-  Plug 'augmentcode/augment.vim'
+  -- Plug 'augmentcode/augment.vim'
 --}}}
 -- Plug "zbirenbaum/copilot.lua" (not in use) {{{
 Plug "zbirenbaum/copilot.lua"
@@ -1532,7 +1532,8 @@ end
 do
   local function make_move_fn(qf, ll)
     return function()
-      local isqf = #vim.fn.getloclist(0) == 0
+      -- local isqf = #vim.fn.getloclist(0) == 0
+      local isqf = vim.fn.getqflist({winid=true}).winid ~= 0
       local ok = pcall(isqf and qf or ll)
       if not ok then
         if isqf then
@@ -1604,7 +1605,10 @@ require'nvim-treesitter.configs'.setup {
   incremental_selection = {
     enable = true,
     keymaps = {
+      init_selection = false, -- set to `false` to disable one of the mappings
       node_incremental = "<cr>",
+      scope_incremental = false,
+      node_decremental = false,
     },
   },
 }
