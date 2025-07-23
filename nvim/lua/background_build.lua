@@ -175,8 +175,8 @@ local function run_job(job)
     local current_win = vim.api.nvim_get_current_win()
 
     -- if the cursor isn't in the window... scroll the window to follow the new text
-    if win and win ~= current_win then
-      vim.fn.win_execute(win, "normal G")
+    if win and win ~= current_win and vim.api.nvim_get_mode().mode ~= "t" then
+      vim.fn.win_execute(win, "silent normal G")
     end
 
     if job.config.stream then
