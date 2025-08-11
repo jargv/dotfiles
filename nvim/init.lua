@@ -1814,7 +1814,7 @@ function efmt(str)
 end
 
 -- typescript
-efmt "%f(%l%.%c): error TS%n:%m"
+--efmt "%f(%l%.%c): error TS%n:%m"
 
 -- c++
 -- asserts
@@ -1827,11 +1827,13 @@ efmt "%C %#%m"
 efmt "%Z#"
 
 -- golang
-efmt "%f:%l:%c: %#%m"
+--efmt "%f:%l:%c: %#%m"
 
 -- lua
 efmt "/usr/bin/lua: %f:%l: %m"
 efmt "lua: %f:%l: %m"
+efmt "Error: Syntax error: %f:%l: %m"
+efmt "Error: %f:%l: %m"
 efmt "%f:%l:%m"
 
 

@@ -100,4 +100,15 @@ return {
     print("{}")
   ]], {i(1)})),
   --}}}
+
+ -- class {{{1
+ s('class', fmta([[
+   local <> = setmetatable({__name = "<>"}, {
+     __call = function(<>, self)
+       <>
+       return setmetatable(self, <>)
+     end
+   })
+   <>.__index = <>
+ ]], {i(1),rep(1),rep(1), i(2), rep(1),rep(1),rep(1)})),
 }
