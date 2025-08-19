@@ -937,7 +937,6 @@ endif
     vnoremap R r<space>R
     vnoremap & :&<cr>
     nnoremap * :let @/ = '\<'.expand("<cword>").'\>'<CR>:set hlsearch<CR>:echo<CR>
-    "todo: make this work
     "vnoremap * :let @/ = '\<'.expand("<cword>").'\>'<CR>:set hlsearch<CR>:echo<CR>
 
   "control-move text{{{2
@@ -1230,7 +1229,7 @@ endif
       vnoremap al :<C-U>silent! normal! 0v$<CR>
       omap al :normal val<CR>
    "entire file (ie/ae) {{{2
-      "todo: is there a difference between il and al?
+      "is there a difference between il and al?
       vnoremap ie :<C-U>silent! normal ggVG<CR>
       omap ie :normal vie<CR>
       vnoremap ae :<C-U>silent! normal ggVG<CR>

@@ -88,7 +88,7 @@ target_link_libraries($1 glfw)
 # go to http://glad.dav1d.de/ and generate the src
 include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/include)
 target_link_libraries(${1:projectname} dl)
-# TODO: add to executable: ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/src/glad.c
+# add to executable: ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/src/glad.c
 endsnippet
 
 

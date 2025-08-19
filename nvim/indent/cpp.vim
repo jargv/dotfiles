@@ -1,4 +1,3 @@
-"todo: check out searchpair
 setlocal indentexpr=CppIndentCalc(v:lnum)
 setlocal indentkeys=o,O,*<Return>,<CR>,{,},:
 
@@ -14,7 +13,7 @@ func! CppIndentCalc(lnum)
    let lineAboveEnd = matchstr(codeAbove, '\S\s*$')[0]
    let codeHereStart = matchstr(codeHere, '^\s*\S')[-1:]
 
-   "todo: add comment handling as well
+   "add comment handling as well
    "
    if codeHereStart =~ '[\]});,>]' && lineAboveEnd !~ '[{(\[>]'
       let ind -= 1

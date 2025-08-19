@@ -458,7 +458,7 @@
 ;; erlang
 (add-hook 'erlang-mode-mook (lambda ()
   (setq evil-auto-indent nil)))
-;todo: move this into the hook
+; move this into the hook
 (map-leader "m" 'erlang-compile)
 
 (add-hook 'erlang-shell-mode-hook (lambda ()

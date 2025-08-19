@@ -14,9 +14,9 @@ module.exports = {
     showHamburgerMenu: true,
     showWindowControls: true,
   },
-  // TODO: - figure out how to automatically load plugins
-  //       - figure out mouse support
-  //       - figure out the font
+  // - figure out how to automatically load plugins
+  // - figure out mouse support
+  // - figure out the font
   plugins: ['hyperterm-oceanic-next'],
   localPlugins: [] //plugins in development
 };

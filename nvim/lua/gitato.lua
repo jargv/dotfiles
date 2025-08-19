@@ -1,16 +1,7 @@
 --[[
 TODOS:
   - Add a hotkey to open the viewer from a diff, using the current log line as rev
-  - Fix bug when status is longer than the window (rare)
   - Completion help when changing diff_branch
-  - hotkeys work with tig view
-  - replace tig with a custom, simpler log viewer.
-    - Hitting enter on a log line would change the ref that's diff'd against
-    - What about branches rendering? (Do I even care about these?)
-consider:
-  - key for refreshing status (r)
-  - clean up the viewer code by using win_execute function
-  - reload a buffer after "R" changes it
 ]]
 local current_dir = require("current_dir")
 local gitato = {}

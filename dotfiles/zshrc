@@ -107,7 +107,6 @@ alias yesgit='GIT_PROMPT=1 exec zsh'
 alias nogit='GIT_PROMPT=0 exec zsh'
 
 #{{{2color aliases
-#todo: make this work on mac and linux
 #alias ls='ls --color=auto'
 alias ls='ls -G'
 autoload -U colors && colors

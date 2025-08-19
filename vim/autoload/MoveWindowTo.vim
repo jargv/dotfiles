@@ -1,4 +1,3 @@
-"todo: pull this out into a plugin or something
 " move windows back and forth
 func! MoveWindowTo#PrevTab()
   "there is only one window

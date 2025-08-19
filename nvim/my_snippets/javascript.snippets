@@ -1,7 +1,3 @@
-snippet todo
-//TODO: $1
-endsnippet
-
 snippet test "add a jest test" !b
 describe("$1", () => {
   test("$2", () => {
@@ -187,75 +183,6 @@ endsnippet
 snippet rel "Remove event listener" !i
 removeEventListener('$1', ${2:handler});
 endsnippet
-snippet webpack "a good starting point for webpack" !b
-// webpack.config.js
-let path = require('path')
-module.exports = {
-  entry: [
-    // 'babel-polyfill',
-    './main'
-  ],
-  output: {
-    path: path.join(__dirname, '/build'),
-    filename: 'bundle.js'
-  },
-  module: {
-    /*
-    "loaders (babel)": [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        //todo: npm install webpack babel-{loader,core,polyfill} babel-preset-{es2015,stage-0} --save
-        loader: 'babel-loader',
-        query:{
-          presets: ['es2015', 'stage-0']
-          //todo: npm i babel-preset-react
-          //presets: ['es2015', 'stage-0', 'react']
-        }
-      },
-    ],
-    "loaders (typescript)": [
-      {
-        test: /\.tsx?$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/
-      }
-    ],
-    "loaders (css)": [
-      {
-        test: /\.css$/,
-        //todo: npm install {style,css}-loader --save
-        loader: "style-loader!css-loader?modules&localIdentName=[name]_[local]_[hash:base64:5]"
-        //loader: "style-loader!css-loader?modules&localIdentName=[name]_[local]_[hash:base64:5]!postcss-loader"
-        //todo: use the extract text plugin to bring css in as a separate file
-        //loader: ExtractTextPlugin.extract(
-        //  "style-loader",
-        //  "css-loader?modules&localIdentName=[name]_[local]_[hash:base64:5]!postcss-loader"
-        //)
-      }
-    ]
-    */
-  },
-  devtool: 'inline-source-map',
-  resolve: {
-    extensions: ['.webpack.js', '.ts', '.tsx', '.js', '.jsx'],
-    // alias: {
-    //   vue: 'vue/dist/vue.common.js'
-    // }
-  },
-  // cache: true,
-  devServer: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000/',
-        pathRewrite: {
-          '^/api': ''
-        }
-      }
-    }
-  }
-}
-endsnippet
 snippet v "element constructor" !w
 v('${1:div}', {$2}, [$3])$0
 endsnippet
@@ -276,13 +203,6 @@ snippet raf "requestAnimationFrame" !b
   requestAnimationFrame(frame);
 })();
 endsnippet
-snippet edc "export default class" !b
-export default class ${1:`!v expand('%:t:r')`}{
-  constructor(){
-    $0
-  }
-}
-endsnippet
 snippet div "div" !
 <div css={$1}>$0</div>
 endsnippet
@@ -290,7 +210,4 @@ snippet css "css" !b
 const $1 = css\`
   $0
 \`;
-endsnippet
-snippet af "Description" !b
-if ($1) {console.assert(false); return$2;}
 endsnippet

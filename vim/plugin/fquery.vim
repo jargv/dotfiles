@@ -1,6 +1,6 @@
-"todo: operator . which searches for suffixes
-"      commands (or support in results view?)
-"map <leader>o :call <SID>fquery()<cr>
+" operator . which searches for suffixes
+" commands (or support in results view?)
+" map <leader>o :call <SID>fquery()<cr>
 
 command! Fquery :call <SID>fquery()
 

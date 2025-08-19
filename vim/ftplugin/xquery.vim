@@ -23,8 +23,8 @@ setlocal shiftwidth=2
 setlocal noexpandtab
 setlocal smarttab
 
-"todo: consider putting ':' here as well so that namespaced functions are one
-"      word
+" consider putting ':' here as well so that namespaced functions are one
+" word
 "dashed words are still just single words
 set iskeyword+=-
 
@@ -82,7 +82,7 @@ func! CompleteXQY(findstart, base)
       " locate the start of the word
       let line = getline('.')
       let start = col('.') - 1
-      " todo: add 0-9 in this regex...
+      " add 0-9 in this regex...
       while start > 0 && line[start - 1] =~ '[-_:a-zA-Z]'
          let start -= 1
       endwhile

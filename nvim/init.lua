@@ -4,12 +4,6 @@ stuff to look into:
  - treesitter text objects
  - DAP setup, workflow, use
  - move to lazy.nvim for plugins (config next to plugin)
-
-TODO:
-  - Make ==== underline not pollute the clipboard (some register?)
-  - display git ignore status in status line
-  - fix issues with autocomplete and snippet keys being ambiguous
-  - make sizing not janky when changing log mode
 ]]
 
 -- setup {{{1
