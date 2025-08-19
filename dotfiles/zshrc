@@ -40,7 +40,15 @@ setopt appendhistory inc_append_history share_history hist_ignore_dups
 setopt histignorespace
 
 #vim {{{1
-alias vim='nvr --nostart'
+if [[ -n "$NVIM" ]]; then
+  vim() {
+    if command -v nvr &>/dev/null; then
+      nvr --nostart $@
+    else
+      nvim --server "$NVIM" --remote "$PWD/$@"
+    fi
+  }
+fi
 alias vimdiff='nvim -d'
 bindkey -v
 #don't stop the backspace at the insert point
@@ -210,15 +218,23 @@ function chpwd() {
   #ls -F -G
 
   # signal the cd to nvim
-  if [[ -n "$NVIM" && $(command -v nvr) ]]; then
-    nvr -c "lua shell_hook('$PWD')"
+  if [[ -n "$NVIM" ]]; then
+    if command -v nvr &>/dev/null; then
+      nvr -c "call ShellHook('$PWD')"
+    else
+      nvim --server "$NVIM" --remote-expr "ShellHook('$PWD')"
+    fi
   fi
 }
 
 function precmd() {
   # signal the command to nvim
-  if [[ -n "$NVIM" && $(command -v nvr) ]]; then
-    nvr -c "lua shell_hook()"
+  if [[ -n "$NVIM" ]]; then
+    if command -v nvr &>/dev/null; then
+      nvr -c "call ShellHook()"
+    else
+      nvim --server "$NVIM" --remote-expr "ShellHook()"
+    fi
   fi
 }
 

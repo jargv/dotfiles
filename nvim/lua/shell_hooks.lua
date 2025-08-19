@@ -1,15 +1,16 @@
 local shell_hooks = {}
 
 -- global shell_hook function
-_G.shell_hook = function(dir)
-  if dir ~= nil then
-    vim.o.statusline = vim.o.statusline
-    vim.b.current_shell_dir = dir
-  else
-    vim.defer_fn(function()
-      vim.cmd [[doautocmd User ShellCommandHappened]]
-    end, 0)
-  end
-end
+vim.cmd [[
+  function! ShellHook(...)
+    if a:0 == 1
+      let dir = a:1
+      let &statusline = &statusline
+      let b:current_shell_dir = dir
+    else
+      doautocmd User ShellCommandHappened
+    endif
+  endfunction
+]]
 
 return shell_hooks
