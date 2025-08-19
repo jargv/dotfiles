@@ -43,7 +43,8 @@ func! <sid>writingOff()
 endfunc
 
 " underline with ==== {{{1
-inoremap <C-o> <esc>yypVr=o
+inoremap <C-o> <esc>"yyy"ypVr=o
+
 " gather todos {{{1
 nnoremap <buffer> <leader>;g :s/^[\ -]*/### /<cr>:nohlsearch<cr>
 nnoremap <buffer> <leader>;G :let g:reg=@x<cr>:let @x=''<cr>:%g/^###/d X<cr>gg"xP:let @x = g:reg<cr>
