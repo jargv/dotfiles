@@ -1008,27 +1008,30 @@ leader.MA = function() build.attach_debugger_to_running_step("run") end
 -- Pomodoro {{{1
 local neodoro = require "neodoro"
 leader.xg = function()
-  neodoro.start_pomodoro()
+  neodoro.start()
 end
 leader.xs = function()
-  neodoro.stop_pomodoro()
-end
-
-leader.xk = function()
-  neodoro.increase_complete()
-end
-leader.xj = function()
-  neodoro.decrease_complete()
-end
-leader.xl = function()
-  neodoro.increase_estimate()
-end
-leader.xh = function()
-  neodoro.decrease_estimate()
+  neodoro.stop()
 end
 leader.xm = function()
   neodoro.move_task()
 end
+leader.xj = function()
+  neodoro.jump_to_task()
+end
+
+-- leader.xk = function()
+--   neodoro.increase_complete()
+-- end
+-- leader.xj = function()
+--   neodoro.decrease_complete()
+-- end
+-- leader.xl = function()
+--   neodoro.increase_estimate()
+-- end
+-- leader.xh = function()
+--   neodoro.decrease_estimate()
+-- end
 
 
 -- statusline setup {{{1

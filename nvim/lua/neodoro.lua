@@ -17,29 +17,10 @@ end
 local namespace_name = "neodoro"
 local namespace = vim.api.nvim_create_namespace(namespace_name)
 local pomo_seconds = 25 * 60
-local warning_seconds = 30
 
 local function trim_spaces(str)
   local first_non_space = str:find("%S")
   return str:sub(first_non_space)
-end
-
-local function finish()
-  local pos = vim.api.nvim_win_get_cursor(0)
-  local tab = vim.api.nvim_win_get_tabpage(0)
-  neodoro.pomo_timer:stop()
-  vim.cmd("-tabnew")
-  vim.t.tabname = tomato.." Pomodoro Done!"
-  vim.t.is_pomo_tab = true
-
-  local tmp_buf = vim.fn.bufnr("%")
-  vim.cmd("b "..neodoro.pomo_buf)
-  vim.cmd("silent bwipe! "..tmp_buf)
-
-  local scratch_buffer = vim.api.nvim_create_buf(false, true)
-  vim.cmd("vertical sbuffer" .. scratch_buffer)
-  vim.api.nvim_buf_set_lines(scratch_buffer, 0, -1, false, {tomato.." Pomodoro Done!",""})
-  vim.bo.bufhidden = "wipe"
 end
 
 local function get_status()
@@ -67,38 +48,30 @@ local function update()
   local elapsed = vim.fn.reltimefloat(vim.fn.reltime(neodoro.start_time))
   local remaining = pomo_seconds - elapsed
 
-  if remaining < -warning_seconds then
-    finish()
-    neodoro.mark_id = vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
-      id = neodoro.mark_id,
-      virt_text_pos = "eol",
-      sign_text = tomato,
-      virt_text = {
-        {tomato.." Pomodoro Done!", "Error"}
-      },
-    })
-    return
-  elseif remaining < 0 then
-    neodoro.mark_id = vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
-      id = neodoro.mark_id,
-      virt_text_pos = "eol",
-      sign_text = tomato,
-      virt_text = {
-        {tomato.." Pomodoro Done!", "Error"}
-      },
-    })
+  neodoro.mark_id = vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
+    id = neodoro.mark_id,
+    virt_text_pos = "eol",
+    sign_text = tomato,
+    virt_text = {
+      {get_status(), remaining > 0 and "String" or "Error"}
+    },
+  })
+end
 
-    neodoro.task = (math.floor(-remaining) % 2 == 0) and "POMODORO DONE!!!" or ""
-  else
-    neodoro.mark_id = vim.api.nvim_buf_set_extmark(neodoro.pomo_buf, namespace, line, 0, {
-      id = neodoro.mark_id,
-      virt_text_pos = "eol",
-      sign_text = tomato,
-      virt_text = {
-        {get_status(), "Error"}
-      },
-    })
+function m.jump_to_task()
+  if not neodoro.pomo_buf then
+    print "no current task"
+    return
   end
+  local current_marks = vim.api.nvim_buf_get_extmarks(neodoro.pomo_buf, namespace, 0, -1, {})
+  if #current_marks == 0 then
+    return
+  end
+  local pomo_mark = current_marks[1]
+  local line = pomo_mark[2]
+  vim.cmd(string.format([[
+    :vertical sbuffer! +%d %s
+  ]], line+1, neodoro.pomo_buf))
 end
 
 function m.statusline()
@@ -122,10 +95,10 @@ local function process_task(task)
   return task
 end
 
-function m.stop_pomodoro()
+function m.stop()
   local namespace = vim.api.nvim_create_namespace(namespace_name)
   if neodoro.pomo_buf then
-    vim.api.nvim_buf_clear_namespace(neodoro.pomo_buf, namespace, 1, -1)
+    vim.api.nvim_buf_clear_namespace(neodoro.pomo_buf, namespace, 0, -1)
   end
   if neodoro.pomo_timer then
    neodoro.pomo_timer:stop()
@@ -133,10 +106,10 @@ function m.stop_pomodoro()
   neodoro = {}
 end
 
-function m.start_pomodoro()
-  m.stop_pomodoro()
+function m.start()
+  m.stop()
 
-  neodoro.pomo_buf = vim.fn.bufnr('%')
+  neodoro.pomo_buf = vim.fn.bufnr()
 
   local pos = vim.fn.getcurpos('.')
   local line = pos[2] - 1
@@ -180,39 +153,39 @@ function m.move_task()
     virt_text_pos = "eol",
     sign_text = tomato,
     virt_text = {
-      {tomato.." Moving...", "Error"}
+      {tomato.." Moving...", "String"}
     },
   })
 end
 
-function m.increase_estimate()
-  local line = vim.fn.getline('.')
-  local new_line = line .. " " .. estimate
-  vim.fn.setline('.', new_line)
-end
+-- function m.increase_estimate()
+--   local line = vim.fn.getline('.')
+--   local new_line = line .. " " .. estimate
+--   vim.fn.setline('.', new_line)
+-- end
 
-function m.decrease_estimate()
-  local line = vim.fn.getline('.')
-  local new_line = line:gsub(estimate.."%s*", "", 1)
-  vim.fn.setline('.', new_line)
-end
+-- function m.decrease_estimate()
+--   local line = vim.fn.getline('.')
+--   local new_line = line:gsub(estimate.."%s*", "", 1)
+--   vim.fn.setline('.', new_line)
+-- end
 
-function m.increase_complete()
-  local line = vim.fn.getline('.')
-  local new_line = line:gsub(estimate, complete, 1)
-  if new_line == line then
-    new_line = line .. " " .. miss
-  end
-  vim.fn.setline('.', new_line)
-end
+-- function m.increase_complete()
+--   local line = vim.fn.getline('.')
+--   local new_line = line:gsub(estimate, complete, 1)
+--   if new_line == line then
+--     new_line = line .. " " .. miss
+--   end
+--   vim.fn.setline('.', new_line)
+-- end
 
-function m.decrease_complete()
-  local line = vim.fn.getline('.')
-  local new_line = line:reverse():gsub(miss:reverse(), estimate:reverse(), 1):reverse()
-  if new_line == line then
-    new_line = line:reverse():gsub(complete:reverse(), estimate:reverse(), 1):reverse()
-  end
-  vim.fn.setline('.', new_line)
-end
+-- function m.decrease_complete()
+--   local line = vim.fn.getline('.')
+--   local new_line = line:reverse():gsub(miss:reverse(), estimate:reverse(), 1):reverse()
+--   if new_line == line then
+--     new_line = line:reverse():gsub(complete:reverse(), estimate:reverse(), 1):reverse()
+--   end
+--   vim.fn.setline('.', new_line)
+-- end
 
 return m
