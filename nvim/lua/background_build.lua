@@ -186,9 +186,15 @@ local function run_job(job)
 
   local starting_buf = job.buf
   local id = vim.api.nvim_win_call(output_window, function()
+    if job.config.before_cmd then
+      vim.fn.jobstart(job.config.before_cmd, {term = false})
+    end
     return vim.fn.jobstart(job.config.cmd, {
       cwd = job.config.dir,
       on_exit = function(_, exit_code, _)
+        if job.config.after_cmd then
+          vim.fn.jobstart(job.config.after_cmd, {term = false})
+        end
         if job.buf ~= starting_buf then
           return -- there's been a new version of the job created since this callback was created!
         end
