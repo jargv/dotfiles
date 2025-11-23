@@ -1655,99 +1655,95 @@ normal["<cr>"] = function()
   pcall(vim.cmd.lnext)
 end
 
-if lsp_configured == nil then
-  local lspconfig = require "lspconfig"
-  local util = require "lspconfig/util"
-  local navic = require "nvim-navic"
+local util = require "lspconfig/util"
+local navic = require "nvim-navic"
 
-  local capabilities = require'cmp_nvim_lsp'.default_capabilities(
-    vim.lsp.protocol.make_client_capabilities()
-  )
+local capabilities = require'cmp_nvim_lsp'.default_capabilities(
+  vim.lsp.protocol.make_client_capabilities()
+)
 
-  lspconfig.clangd.setup{
-    capabilities = capabilities,
-    cmd = {"clangd", "--experimental-modules-support"},
-    on_attach = function(client, buffnr)
-      navic.attach(client, buffnr)
-    end
-  }
+vim.lsp.config("*", {
+  capabilities = capabilities,
+})
 
-  -- lspconfig.tsserver.setup{
-  --   capabilities = capabilities,
-  --   filetypes = {"typescript", "typescriptreact", "typescript.tsx" }
-  -- }
+vim.lsp.config("clangd", {
+  cmd = {"clangd", "--experimental-modules-support"},
+  filetypes = {"cpp", "c"},
+  on_attach = function(client, buffnr)
+    navic.attach(client, buffnr)
+  end
+})
 
-  lspconfig.gopls.setup{
-    capabilities = capabilities,
-    cmd = {"gopls", "serve"},
-    filetypes = {"go", "gomod"},
-    root_dir = util.root_pattern("go.work", "go.mod", ".git"),
-    settings = {
-      gopls = {
-        analyses = {
-          unusedparams = true,
-        },
-        staticcheck = true,
-      },
-    },
-  }
+-- lspconfig.tsserver.setup{
+--   capabilities = capabilities,
+--   filetypes = {"typescript", "typescriptreact", "typescript.tsx" }
+-- }
 
-  lspconfig.lua_ls.setup {
-    capabilities = capabilities,
-    on_init = function(client)
-      local path = client.workspace_folders[1].name
-      if not vim.loop.fs_stat(path..'/.luarc.json') and not vim.loop.fs_stat(path..'/.luarc.jsonc') then
-        client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
-          Lua = {
-            runtime = {
-              -- Tell the language server which version of Lua you're using
-              -- (most likely LuaJIT in the case of Neovim)
-              version = 'LuaJIT'
-            },
-            -- Make the server aware of Neovim runtime files
-            workspace = {
-              checkThirdParty = false,
-              library = {
-                vim.env.VIMRUNTIME
-                -- "${3rd}/luv/library"
-                -- "${3rd}/busted/library",
-              }
-              -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
-              -- library = vim.api.nvim_get_runtime_file("", true)
+-- lspconfig.gopls.setup{
+--   capabilities = capabilities,
+--   cmd = {"gopls", "serve"},
+--   filetypes = {"go", "gomod"},
+--   root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+--   settings = {
+--     gopls = {
+--       analyses = {
+--         unusedparams = true,
+--       },
+--       staticcheck = true,
+--     },
+--   },
+-- }
+
+vim.lsp.config("lua_ls", {
+  filetypes = {"lua"},
+  on_init = function(client)
+    local path = client.workspace_folders[1].name
+    if not vim.loop.fs_stat(path..'/.luarc.json') and not vim.loop.fs_stat(path..'/.luarc.jsonc') then
+      client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
+        Lua = {
+          runtime = {
+            -- Tell the language server which version of Lua you're using
+            -- (most likely LuaJIT in the case of Neovim)
+            version = 'LuaJIT'
+          },
+          -- Make the server aware of Neovim runtime files
+          workspace = {
+            checkThirdParty = false,
+            library = {
+              vim.env.VIMRUNTIME
+              -- "${3rd}/luv/library"
+              -- "${3rd}/busted/library",
             }
+            -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
+            -- library = vim.api.nvim_get_runtime_file("", true)
           }
-        })
+        }
+      })
 
-        client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
-      end
-      return true
+      client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
     end
-  }
+    return true
+  end
+})
 
-  -- lspconfig.bashls.setup {
-  --   capabilities = capabilities,
-  -- }
+vim.lsp.enable({'clangd', 'lua_ls', 'buf_ls'})
 
-  lspconfig.buf_ls.setup{
-    capabilities = capabilities,
-  }
+-- lspconfig.bashls.setup {
+--   capabilities = capabilities,
+-- }
 
-  lspconfig.flow.setup{
-    capabilities = capabilities,
-  }
+-- lspconfig.flow.setup{
+--   capabilities = capabilities,
+-- }
 
-  lspconfig.pyright.setup{}
+-- lspconfig.pyright.setup{}
 
-  vim.diagnostic.config({
-    signs = false,
-    virtual_text = true,
-    virtual_lines = false,
-    underline = true
-  })
-
-  lsp_configured = true
-end
-
+vim.diagnostic.config({
+  signs = false,
+  virtual_text = true,
+  virtual_lines = false,
+  underline = true
+})
 
 -- nvim-cmp {{{1
 local cmp = require 'cmp'
