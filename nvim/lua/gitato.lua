@@ -45,9 +45,19 @@ gitato.move_log_cursor = function(amount)
   on_move_log_cursor(amount)
 end
 
+local on_do_log_search = function(_) end
+gitato.do_log_search = function(term)
+  on_do_log_search(term)
+end
+
 local on_toggle_diff_log = function() end
 gitato.toggle_diff_log = function()
   on_toggle_diff_log()
+end
+
+function gitato.is_diff_open()
+  return current_diff_buffer ~= nil
+    and vim.api.nvim_buf_is_valid(current_diff_buffer)
 end
 
 function gitato.diff_off()
@@ -64,6 +74,7 @@ function gitato.diff_off()
   current_diff_log_buffer = nil
   on_toggle_diff_log = function() end
   on_move_log_cursor = function(_) end
+  on_do_log_search = function(_) end
 end
 
 function gitato.get_repo_root(dir)
@@ -112,10 +123,17 @@ function gitato.get_repo_root(dir)
   return repo_root
 end
 
-function gitato.toggle_diff_against_git_ref(ref)
-  if current_diff_buffer ~= nil then
+function gitato.toggle_diff_against_git_ref(ref, ensure_state)
+  local is_open = current_diff_buffer ~= nil
+    and vim.api.nvim_buf_is_valid(current_diff_buffer)
+
+  if is_open == ensure_state then
+    return
+  end
+
+  if is_open then
     gitato.diff_off()
-    if ref == nil then
+    if ref == nil or ensure_state == false then
       return
     end
   end
@@ -255,6 +273,49 @@ function gitato.toggle_diff_against_git_ref(ref)
       return
     end
     update_log_cursor(log_cursor_line + amount)
+  end
+
+  on_do_log_search = function(term)
+    if current_diff_buffer == nil
+    or not vim.api.nvim_buf_is_valid(current_diff_buffer)
+    then
+      return
+    end
+
+    if term == nil or term == "" then
+      print("No search term provided")
+      return
+    end
+
+    -- Run git log with -S flag to find commits containing the term
+    local search_results = vim.fn.systemlist(
+      ('cd %s && git log -S"%s" --follow --oneline %s'):format(git_root, term, file)
+    )
+    local err = vim.api.nvim_get_vvar("shell_error")
+    if err ~= 0 then
+      print("Error searching git log: " .. table.concat(search_results, "\n"))
+      return
+    end
+
+    if #search_results == 0 then
+      print("No commits found containing: " .. term)
+      return
+    end
+
+    -- Find the first matching commit in our log_contents
+    for i, log_line in ipairs(log_contents) do
+      local commit_hash = vim.fn.split(log_line, " ")[1]
+      for _, search_line in ipairs(search_results) do
+        local search_hash = vim.fn.split(search_line, " ")[1]
+        if commit_hash == search_hash then
+          print("Found at: " .. log_line)
+          update_log_cursor(i + 1) -- +1 because HEAD is at line 1
+          return
+        end
+      end
+    end
+
+    print("No matching commits found in current history")
   end
 
   on_toggle_diff_log = function()

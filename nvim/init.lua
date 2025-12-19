@@ -14,7 +14,6 @@ local isLinux = uname == "Linux\n"
 local isMac = uname == "Darwin\n"
 
 local mapping = require("mapping")
-
 local leader = mapping.withPrefix("<leader>")
 local normal = mapping.inMode("n")
 local insert = mapping.inMode("i")
@@ -279,29 +278,29 @@ Plug 'jose-elias-alvarez/null-ls.nvim'
 table.insert(plugin_setup_funcs, function()
   require("null-ls").setup()
 end)
--- Plug 'MunifTanjim/eslint.nvim' {{{2
-Plug 'MunifTanjim/eslint.nvim'
-table.insert(plugin_setup_funcs, function()
-  require("eslint").setup({
-    bin = 'eslint_d', -- or `eslint_d`
-    code_actions = {
-      enable = true,
-      apply_on_save = {
-        enable = true,
-        types = { "directive", "problem", "suggestion", "layout" },
-      },
-      disable_rule_comment = {
-        enable = true,
-        location = "separate_line", -- or `same_line`
-      },
-    },
-    diagnostics = {
-      enable = true,
-      report_unused_disable_directives = false,
-      run_on = "type", -- or `save`
-    },
-  })
-end)
+-- Plug 'MunifTanjim/eslint.nvim' (unused) {{{2
+-- Plug 'MunifTanjim/eslint.nvim'
+-- table.insert(plugin_setup_funcs, function()
+--   require("eslint").setup({
+--     bin = 'eslint_d', -- or `eslint_d`
+--     code_actions = {
+--       enable = true,
+--       apply_on_save = {
+--         enable = true,
+--         types = { "directive", "problem", "suggestion", "layout" },
+--       },
+--       disable_rule_comment = {
+--         enable = true,
+--         location = "separate_line", -- or `same_line`
+--       },
+--     },
+--     diagnostics = {
+--       enable = true,
+--       report_unused_disable_directives = false,
+--       run_on = "type", -- or `save`
+--     },
+--   })
+-- end)
 
 -- Plug 'nvim-telescope/telescope.nvim' {{{2
 Plug('nvim-telescope/telescope.nvim')
@@ -963,6 +962,17 @@ end
 
 leader.da = function()
   gitato.toggle_diff_against_git_ref(vim.fn.input(">", default_upstream()))
+end
+
+leader['d/'] = function()
+  gitato.toggle_diff_against_git_ref(nil, true) -- ensure diff is open
+  local default = vim.fn.getreg('/')
+  local term = vim.fn.input("git/", default)
+  if term == "" then
+    return
+  end
+  vim.fn.setreg('/', term)
+  gitato.do_log_search(term)
 end
 
 leader.gb = ":Gitsigns blame_line<cr>"
@@ -1639,6 +1649,13 @@ leader.y = function()
   end
 end
 
+-- yank file location (path:line) to clipboard
+leader.l = function()
+  local loc = vim.fn.fnamemodify(vim.fn.expand("%:p"), ":.") .. ":" .. vim.fn.line(".")
+  vim.fn.setreg("+", loc)
+  vim.notify("Copied: " .. loc)
+end
+
 normal.gD = function() vim.lsp.buf.declaration() end
 normal.gi = function() vim.lsp.buf.implementation() end
 normal.gu = function() vim.lsp.buf.references() end
@@ -1664,6 +1681,7 @@ local capabilities = require'cmp_nvim_lsp'.default_capabilities(
 
 vim.lsp.config("*", {
   capabilities = capabilities,
+  root_markers = { '.git/', 'build/' },
 })
 
 vim.lsp.config("clangd", {

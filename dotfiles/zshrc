@@ -32,8 +32,8 @@ fi
 #   [[ -s $(brew --prefix)/etc/autojump.sh ]] && . $(brew --prefix)/etc/autojump.sh
 # fi
 
-# simple jump - vendored alternative {{{1
-source ~/config/dotfiles/simple-jump.sh
+# simple jump script {{{1
+source ~/config/bin/simple-jump.sh
 
 #{{{1 history
 HISTFILE=~/.histfile
