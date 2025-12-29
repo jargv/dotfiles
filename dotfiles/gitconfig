@@ -35,6 +35,7 @@
   autosetuprebase = always
 [push]
   default = simple
+	followTags = true
 [rerere]
   enabled = true
   autoupdate = true
@@ -81,3 +82,5 @@
 [pull]
   #ff = only
 	rebase = true
+[fetch]
+	pruneTags = true
