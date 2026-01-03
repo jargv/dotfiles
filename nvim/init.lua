@@ -1011,8 +1011,10 @@ leader.Mq = build.clear_config
 leader.Mc = build.stop_all
 leader.Mr = function() build.toggle_step_by_name("run") end
 leader.Mt = function() build.toggle_step_by_name("test") end
-leader.Md = build.debug_run_step
-leader.MD = function() build.debug_run_step(true) end
+leader.Ml = function() build.toggle_step_by_name("logs") end
+leader.Md = function() build.debug_step("run") end
+leader.MT = function() build.debug_step("test") end
+leader.MD = function() build.debug_step("run", true) end
 leader.MA = function() build.attach_debugger_to_running_step("run") end
 
 -- Pomodoro {{{1
