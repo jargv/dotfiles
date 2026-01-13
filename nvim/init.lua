@@ -1418,10 +1418,6 @@ vim.cmd [[
         normal Vgq
     endfunc
 
-  "incr/decr then save{{{2
-    noremap  :w<CR>
-    noremap  :w<CR>
-
   "get the styles under the cursor {{{2
     map <leader>S :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
             \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
@@ -1536,6 +1532,312 @@ leader.s = function()
   vim.cmd.vsplit(("~/config/nvim/my_snippets/%s.snippets"):format(filetype))
 end
 
+-- smart increment/decrement {{{2
+normal["<C-A>"], normal["<C-X>"], normal["<C-Z>"] = (function()
+  local function find_number_bounds(line, col)
+    local chars = vim.split(line, '')
+
+    -- Check if we're on a digit
+    if not chars[col] or not chars[col]:match('%d') then
+      return nil
+    end
+
+    -- Find start (including optional '-')
+    local start_pos = col
+    while start_pos > 1 do
+      local c = chars[start_pos - 1]
+      if c:match('[%d.]') then
+        start_pos = start_pos - 1
+      elseif c == '-' and chars[start_pos]:match('%d') then
+        start_pos = start_pos - 1
+        break
+      else
+        break
+      end
+    end
+
+    -- Find end
+    local end_pos = col
+    while end_pos < #chars do
+      local c = chars[end_pos + 1]
+      if c and c:match('[%d.]') then
+        end_pos = end_pos + 1
+      else
+        break
+      end
+    end
+
+    return start_pos, end_pos
+  end
+
+  local function calculate_place_value(num_str, cursor_offset)
+    -- cursor_offset is position within the number string (1-indexed)
+    local decimal_pos = num_str:find('%.')
+
+    if not decimal_pos then
+      -- Integer: cursor at position 2 of "123" is tens place (10^1)
+      local digits_to_right = #num_str - cursor_offset
+      return 10 ^ digits_to_right
+    else
+      if cursor_offset < decimal_pos then
+        -- Before decimal
+        local digits_to_right = decimal_pos - cursor_offset - 1
+        return 10 ^ digits_to_right
+      else
+        -- After decimal (cursor_offset > decimal_pos because decimal itself doesn't count)
+        local digits_after_decimal = cursor_offset - decimal_pos
+        return 10 ^ (-digits_after_decimal)
+      end
+    end
+  end
+
+  local function smart_incr()
+    local line = vim.fn.getline('.')
+    local col = vim.fn.col('.')
+    local chars = vim.split(line, '')
+
+    -- If on decimal point, move to first digit after it
+    if chars[col] == '.' then
+      if chars[col + 1] and chars[col + 1]:match('%d') then
+        col = col + 1
+      else
+        -- No digit after decimal, add one and operate there
+        table.insert(chars, col + 1, '0')
+        line = table.concat(chars)
+        vim.fn.setline('.', line)
+        col = col + 1
+      end
+    end
+
+    local start_pos, end_pos = find_number_bounds(line, col)
+    if not start_pos then return end
+
+    local chars = vim.split(line, '')
+    local num_str = table.concat(chars, '', start_pos, end_pos)
+    local num = tonumber(num_str)
+
+    -- Track if original had negative sign
+    local had_negative = chars[start_pos] == '-'
+    local num_str_unsigned = had_negative and num_str:sub(2) or num_str
+
+    -- Count decimal places in original
+    local decimal_places = 0
+    local decimal_pos = num_str_unsigned:find('%.')
+    if decimal_pos then
+      decimal_places = #num_str_unsigned - decimal_pos
+    end
+
+    -- Calculate cursor position within the number (skip '-' if present)
+    local cursor_in_num = col - start_pos + 1
+    if had_negative then
+      cursor_in_num = cursor_in_num - 1
+    end
+
+    local place_value = calculate_place_value(num_str_unsigned, cursor_in_num)
+    local new_num = num + place_value
+
+    -- Format with same precision
+    local new_str
+    if decimal_places > 0 then
+      new_str = string.format('%.' .. decimal_places .. 'f', new_num)
+    else
+      new_str = tostring(math.floor(new_num))
+    end
+
+    -- Replace the number
+    local before = table.concat(chars, '', 1, start_pos - 1)
+    local after = table.concat(chars, '', end_pos + 1, #chars)
+    local new_line = before .. new_str .. after
+
+    vim.fn.setline('.', new_line)
+
+    -- Calculate cursor position: find same place value in new number
+    local new_decimal_pos = new_str:find('%.')
+    local new_has_negative = new_str:sub(1,1) == '-'
+    local new_col
+
+    if decimal_pos then
+      -- Cursor was X positions after decimal
+      local positions_after_decimal = cursor_in_num - decimal_pos
+      new_col = #before + (new_decimal_pos or 0) + positions_after_decimal
+      -- new_decimal_pos already accounts for negative sign, no adjustment needed
+    else
+      -- Cursor was X positions from the right
+      local positions_from_right = #num_str_unsigned - cursor_in_num
+      local new_str_unsigned = new_has_negative and new_str:sub(2) or new_str
+      new_col = #before + #new_str_unsigned - positions_from_right
+      -- Add 1 for negative sign in integer case
+      if new_has_negative then
+        new_col = new_col + 1
+      end
+    end
+
+    vim.fn.cursor(vim.fn.line('.'), new_col)
+    vim.cmd('silent write')
+  end
+
+  local function smart_decr()
+    local line = vim.fn.getline('.')
+    local col = vim.fn.col('.')
+    local chars = vim.split(line, '')
+
+    -- If on decimal point, move to first digit after it
+    if chars[col] == '.' then
+      if chars[col + 1] and chars[col + 1]:match('%d') then
+        col = col + 1
+      else
+        -- No digit after decimal, add one and operate there
+        table.insert(chars, col + 1, '0')
+        line = table.concat(chars)
+        vim.fn.setline('.', line)
+        col = col + 1
+      end
+    end
+
+    local start_pos, end_pos = find_number_bounds(line, col)
+    if not start_pos then return end
+
+    local chars = vim.split(line, '')
+    local num_str = table.concat(chars, '', start_pos, end_pos)
+    local num = tonumber(num_str)
+
+    -- Track if original had negative sign
+    local had_negative = chars[start_pos] == '-'
+    local num_str_unsigned = had_negative and num_str:sub(2) or num_str
+
+    -- Count decimal places in original
+    local decimal_places = 0
+    local decimal_pos = num_str_unsigned:find('%.')
+    if decimal_pos then
+      decimal_places = #num_str_unsigned - decimal_pos
+    end
+
+    -- Calculate cursor position within the number (skip '-' if present)
+    local cursor_in_num = col - start_pos + 1
+    if had_negative then
+      cursor_in_num = cursor_in_num - 1
+    end
+
+    local place_value = calculate_place_value(num_str_unsigned, cursor_in_num)
+    local new_num = num - place_value
+
+    -- Format with same precision
+    local new_str
+    if decimal_places > 0 then
+      new_str = string.format('%.' .. decimal_places .. 'f', new_num)
+    else
+      new_str = tostring(math.floor(new_num))
+    end
+
+    -- Replace the number
+    local before = table.concat(chars, '', 1, start_pos - 1)
+    local after = table.concat(chars, '', end_pos + 1, #chars)
+    local new_line = before .. new_str .. after
+
+    vim.fn.setline('.', new_line)
+
+    -- Calculate cursor position: find same place value in new number
+    local new_decimal_pos = new_str:find('%.')
+    local new_has_negative = new_str:sub(1,1) == '-'
+    local new_col
+
+    if decimal_pos then
+      -- Cursor was X positions after decimal
+      local positions_after_decimal = cursor_in_num - decimal_pos
+      new_col = #before + (new_decimal_pos or 0) + positions_after_decimal
+      -- new_decimal_pos already accounts for negative sign, no adjustment needed
+    else
+      -- Cursor was X positions from the right
+      local positions_from_right = #num_str_unsigned - cursor_in_num
+      local new_str_unsigned = new_has_negative and new_str:sub(2) or new_str
+      new_col = #before + #new_str_unsigned - positions_from_right
+      -- Add 1 for negative sign in integer case
+      if new_has_negative then
+        new_col = new_col + 1
+      end
+    end
+
+    vim.fn.cursor(vim.fn.line('.'), new_col)
+    vim.cmd('silent write')
+  end
+
+  local function smart_precision()
+    local line = vim.fn.getline('.')
+    local col = vim.fn.col('.')
+    local chars = vim.split(line, '')
+
+    -- If on decimal point, move to first digit after it
+    if chars[col] == '.' then
+      if chars[col + 1] and chars[col + 1]:match('%d') then
+        vim.fn.cursor(vim.fn.line('.'), col + 1)
+      else
+        -- No digit after decimal, add one
+        table.insert(chars, col + 1, '0')
+        vim.fn.setline('.', table.concat(chars))
+        vim.fn.cursor(vim.fn.line('.'), col + 1)
+        vim.cmd('silent write')
+      end
+      return
+    end
+
+    -- Check if we're on a digit
+    if not chars[col] or not chars[col]:match('%d') then
+      return
+    end
+
+    -- Check the next position
+    local next_pos = col + 1
+    local next_char = chars[next_pos]
+
+    if next_char and next_char:match('%d') then
+      -- Next char is a digit, just move there
+      vim.fn.cursor(vim.fn.line('.'), next_pos)
+    elseif next_char == '.' then
+      -- Next char is decimal, skip to the digit after it
+      local after_decimal = next_pos + 1
+      if chars[after_decimal] and chars[after_decimal]:match('%d') then
+        vim.fn.cursor(vim.fn.line('.'), after_decimal)
+      else
+        -- No digit after decimal, add one
+        table.insert(chars, after_decimal, '0')
+        local new_line = table.concat(chars)
+        vim.fn.setline('.', new_line)
+        vim.fn.cursor(vim.fn.line('.'), after_decimal)
+      end
+    else
+      -- At the end of the number - check if we already have a decimal
+      local has_decimal = false
+      local check_pos = col
+      while check_pos >= 1 do
+        if chars[check_pos] == '.' then
+          has_decimal = true
+          break
+        elseif not chars[check_pos]:match('%d') then
+          break
+        end
+        check_pos = check_pos - 1
+      end
+
+      if has_decimal then
+        -- Just add a 0
+        table.insert(chars, next_pos, '0')
+        local new_line = table.concat(chars)
+        vim.fn.setline('.', new_line)
+        vim.fn.cursor(vim.fn.line('.'), next_pos)
+      else
+        -- Add .0
+        table.insert(chars, next_pos, '.')
+        table.insert(chars, next_pos + 1, '0')
+        local new_line = table.concat(chars)
+        vim.fn.setline('.', new_line)
+        vim.fn.cursor(vim.fn.line('.'), next_pos + 1)
+      end
+    end
+
+    vim.cmd('silent write')
+  end
+  return smart_incr, smart_decr, smart_precision
+end)()
 
 -- next and previous location/error {{{2
 do

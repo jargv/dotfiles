@@ -24,7 +24,10 @@ local viewer_help = {
 }
 
 local unsupported_diff_extensions = {
-  ".aseprite", ".png", ".spl", ".wav", ".mp3", ".spv", ".aup3", ".aup3-wal", ".ogg", ".meta", ".dev_save"
+  ".aseprite", ".png", ".spl", ".wav",
+  ".mp3", ".spv", ".aup3", ".aup3-wal",
+  ".ogg", ".meta", ".dev_save", ".blend",
+  ".glb"
 }
 
 local function file_diff_not_supported(name)
