@@ -26,14 +26,16 @@ fi
 # fi
 
 #autojump {{{1
-# if [[ $(uname) == "Linux" ]]; then
-#   [[ -f /usr/share/autojump/autojump.zsh ]] && . /usr/share/autojump/autojump.zsh
-# else
-#   [[ -s $(brew --prefix)/etc/autojump.sh ]] && . $(brew --prefix)/etc/autojump.sh
-# fi
+if [[ $(uname) == "Linux" ]]; then
+  [[ -f /usr/share/autojump/autojump.zsh ]] && . /usr/share/autojump/autojump.zsh
+else
+  [[ -s $(brew --prefix)/etc/autojump.sh ]] && . $(brew --prefix)/etc/autojump.sh
+fi
 
 # simple jump script {{{1
-source ~/config/bin/simple-jump.sh
+# TODO: try to do this again, but it can't be zsh functions or it won't work when
+#       called from vim
+# source ~/config/bin/simple-jump.sh
 
 #{{{1 history
 HISTFILE=~/.histfile
@@ -45,6 +47,9 @@ setopt histignorespace
 #vim {{{1
 if [[ -n "$NVIM" ]]; then
   vim() {
+    # use nvr if it's installed, otherwise a fallback
+    # Note: the fallback isn't great and causes some
+    # flickering, which is why nvr still has a place
     if command -v nvr &>/dev/null; then
       nvr --nostart $@
     else
