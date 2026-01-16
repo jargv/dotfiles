@@ -639,6 +639,7 @@ end
 
 
 -- prototype settings {{{1
+vim.o.shell = "/bin/zsh"
 vim.o.signcolumn = "yes:1"
 local sign_bg = "#293136"
 for key, val in pairs({
@@ -1972,8 +1973,13 @@ leader.rf = function()
 end
 
 normal["<cr>"] = function()
-  pcall(vim.lsp.buf.code_action, {apply = true})
-  pcall(vim.cmd.lnext)
+  local line = vim.fn.line('.') - 1
+  local diagnostics = vim.diagnostic.get(0, {lnum = line})
+  if #diagnostics > 0 then
+    vim.lsp.buf.code_action({apply = true})
+  else
+    vim.diagnostic.goto_next({float = false})
+  end
 end
 
 local util = require "lspconfig/util"
