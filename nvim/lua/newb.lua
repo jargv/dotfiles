@@ -77,9 +77,11 @@ local function autojump_prompt(_, chdir)
   end
 
   local output = vim.fn.systemlist("autojump "..autojump_input)
-
-  if #output ~= 0 then
+  local error = vim.api.nvim_get_vvar("shell_error")
+  if error == 0 and #output ~= 0 then
     chdir(output[1])
+  else
+    vim.print("error: \n".. table.concat(output, "\n"))
   end
 end
 
