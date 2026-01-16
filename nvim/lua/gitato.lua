@@ -387,8 +387,12 @@ function gitato.commit(repo_root, post_commit, amend)
     ("cd %s && git commit -v -v --dry-run"):format(repo_root)
   )
   if 0 ~= vim.api.nvim_get_vvar("shell_error") then
-    print("error getting git status... anything comitted?")
-    return
+    if not amend then
+      print("error getting git status... anything comitted?")
+      return
+    end
+    -- for amend, we can proceed without staged changes (just editing commit message)
+    git_status = {}
   end
 
   -- prepare a new buffer for the commit message
