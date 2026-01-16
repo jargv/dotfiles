@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: ca
-# key: ca
-# --
-
-console.assert($1, "$1");
