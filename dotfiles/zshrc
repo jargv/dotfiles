@@ -32,6 +32,13 @@ else
   echo "zoxide not installed. Install with: sudo pacman -S zoxide"
 fi
 
+#direnv {{{1
+if command -v direnv &>/dev/null; then
+  eval "$(direnv hook zsh)"
+else
+  echo "direnv not installed. Install with: sudo pacman -S direnv"
+fi
+
 #{{{1 history
 HISTFILE=~/.histfile
 HISTSIZE=1000
@@ -62,10 +69,6 @@ export KEYTIMEOUT=1
 KEYTIMEOUT=1
 
 #}}}
-
-#{{{1 clang
-export CC=clang
-export CXX=clang++
 
 #{{{1 keybindings
 #bindkey  push-line-or-edit
@@ -209,10 +212,6 @@ kill_gradle() {
 }
 export kill_gradle=kill_gradle
 
-#script-added setup {{{1
-
-export AWS_SDK_LOAD_CONFIG=true
-
 # fd/fzf integration {{{1
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -245,7 +244,4 @@ function precmd() {
   fi
 }
 
-# steam sdk {{{1
-export STEAM_SDK=~/steam/sdk/
-
-# crap appended to my zshrc {{{1
+# script-added setup / crap appended to my zshrc {{{1
