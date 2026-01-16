@@ -1,9 +1,0 @@
-#!/usr/bin/env sh
-
-os=`uname -a`
-
-if [[ "$os" == *Darwin* ]]; then
-  osx_ff_refresh
-else
-  linux_ff_refresh
-fi

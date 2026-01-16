@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-os=`uname -a`
-
-if [[ "$os" == *Darwin* ]]; then
-  osx_chrome_refresh $@
-else
-  linux_chrome_refresh $@
-fi
