@@ -20,7 +20,8 @@ local viewer_help = {
   "## u - git 'update'",
   "## p - git pushup",
   "## P - git pushupforce",
-  "## q - quit"
+  "## r - refresh",
+  "## q - quit",
 }
 
 local unsupported_diff_extensions = {
@@ -669,6 +670,7 @@ function gitato.open_viewer(diff_branch)
 
   -- set up some keymaps
   keymap('q', ':tabclose!<cr>')
+  keymap('r', '', get_and_draw_status)
   keymap('<cr>', 'll')
   keymap('gn', 'llgnhh')
   keymap('gp', 'llgphh')
