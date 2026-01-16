@@ -318,6 +318,11 @@ table.insert(plugin_setup_funcs, function()
         -- the default case_mode is "smart_case"
       },
     },
+    pickers = {
+      find_files = {
+        find_command = { "fd", "--type", "f", "--strip-cwd-prefix" },
+      },
+    },
     defaults = {
       mappings = {
         i = {
@@ -570,9 +575,9 @@ vim.cmd [[
   endfunc
   nnoremap gn :call GitAdjacentChange(1)<cr>
   nnoremap gp :call GitAdjacentChange(0)<cr>
-  nnoremap <nowait> gr :Gitsigns reset_hunk<cr>
-  nnoremap gs :Gitsigns stage_hunk<cr>
-  nnoremap gS :Gitsigns undo_stage_hunk<cr>
+  nnoremap <nowait> gr <cmd>Gitsigns reset_hunk<cr><cmd>doautocmd User ShellCommandHappened<cr>
+  nnoremap gs <cmd>Gitsigns stage_hunk<cr><cmd>doautocmd User ShellCommandHappened<cr>
+  nnoremap gS <cmd>Gitsigns undo_stage_hunk<cr><cmd>doautocmd User ShellCommandHappened<cr>
   onoremap ih :<C-U>Gitsigns select_hunk<cr>
   xnoremap ih :<C-U>Gitsigns select_hunk<cr>
 ]]
