@@ -1,63 +1,21 @@
 #!/usr/bin/env bash
+set -euo pipefail
+set -m #job control
 
-window_name=$1
-shift 1
+starting_window=$(xdotool getactivewindow)
+echo $starting_window
 
-for exe in xdotool wmctrl tmux; do
-  if ! command -v $exe >/dev/null; then
-    echo "executable for $exe is missing"
-    exit
+${@} &
+app_pid=$!
+
+sleep 0.3
+
+wmctrl -l -p | awk -e '{print $1,$3}' | while read wid pid; do
+  if [[ "$pid" == "$app_pid" ]]; then
+    echo "found pid $pid $wid $starting_window"
+    wmctrl -i -r $wid -b add,above
+    wmctrl -i -a $starting_window
   fi
-done
+done;
 
-getFocus(){
-  echo $(xdotool getwindowfocus getwindowname 2>/dev/null)
-}
-
-getTmuxWindowNumber(){
-  echo $(tmux display-message -p "#I")
-}
-
-getTmuxPaneNumber(){
-  echo $(tmux display-message -p "#{pane_index}")
-}
-
-parent=$(getFocus)
-echo "window_name: $window_name"
-echo "parent: $parent"
-
-tmux_window=$(getTmuxWindowNumber)
-echo "tmux_window: $tmux_window"
-
-tmux_pane=$(getTmuxPaneNumber)
-echo "tmux_pane: $tmux_pane"
-
-adjust_based_on_focus(){
-  case "$(getFocus):$(getTmuxWindowNumber):$(getTmuxPaneNumber)" in
-    $parent:$tmux_window:$tmux_pane)
-      wmctrl -i -r $1 -b remove,above
-      wmctrl -i -r $1 -b add,below
-      ;;
-    $parent:$tmux_window:*)
-      wmctrl -i -r $1 -b remove,below
-      wmctrl -i -r $1 -b add,above
-      ;;
-    $window_name:*)
-      wmctrl -i -r $1 -b remove,above
-      wmctrl -i -r $1 -b remove,below
-      ;;
-    *)
-      wmctrl -i -r $1 -b remove,above
-      wmctrl -i -r $1 -b add,below
-      ;;
-  esac
-}
-
-while true; do
-  wmctrl -l -p | awk -e '{print $1,$5}' | while read wid name; do
-    if [[ "$name" == "$window_name" ]]; then
-      adjust_based_on_focus $wid
-    fi
-  done
-  sleep 0.3
-done
+wait $app_pid
