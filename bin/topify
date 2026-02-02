@@ -14,7 +14,7 @@ wmctrl -l -p | awk -e '{print $1,$3}' | while read wid pid; do
   if [[ "$pid" == "$app_pid" ]]; then
     echo "found pid $pid $wid $starting_window"
     wmctrl -i -r $wid -b add,above
-    wmctrl -i -a $starting_window
+    # wmctrl -i -a $starting_window
   fi
 done;
 
