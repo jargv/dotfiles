@@ -7,6 +7,7 @@ TODO:
 
 local fmtjson = require("fmtjson")
 local fmtelapsed = require("fmtelapsed")
+local gitato = require 'gitato'
 
 local starting_points = {
   cpp = {ext = {"cpp", "hpp", "cxx"}, cmd = "cmake --build build", run = "build/exe"},
@@ -25,21 +26,22 @@ local function validateBuildConfig(config)
 
   local jobs_by_name = {}
   for _,job in pairs(config.jobs) do
-    -- ensure requried fields are available
-    if type(job.dir) ~= "string" then
-      error "job.dir is required"
-    elseif type(job.cmd) ~= "string" then
+    -- ensure required fields are available
+    if type(job.cmd) ~= "string" then
       error "job.cmd is required"
     end
 
     -- trim the trailing '/' on dir
-    if job.dir:sub(-1,-1) == '/' then
-      job.dir = job.dir:sub(1,-2)
+    if job.dir and job.dir:sub(-1,-1) ~= '/' then
+      job.dir = job.dir .. "/"
     end
 
     -- derive a name if none is given
     if job.name == nil then
-      job.name = '['..job.dir..'] '..job.cmd
+      job.name = table.concat {
+        job.dir and '['..job.dir ..'] ' or "",
+        job.cmd
+      }
     end
 
     jobs_by_name[job.name] = job
@@ -189,8 +191,19 @@ local function run_job(job)
     if job.config.before_cmd then
       vim.fn.jobstart(job.config.before_cmd, {term = false})
     end
+
+    local cwd = job.config.dir
+    if cwd == nil then
+      cwd = gitato.get_repo_root()
+    end
+
+    -- resolve to the repo root
+    if cwd:sub(1,1) ~= '/' then
+      cwd = gitato.get_repo_root() .. cwd
+    end
+
     return vim.fn.jobstart(job.config.cmd, {
-      cwd = job.config.dir,
+      cwd = cwd,
       on_exit = function(_, exit_code, _)
         if job.config.after_cmd then
           vim.fn.jobstart(job.config.after_cmd, {term = false})
@@ -230,7 +243,7 @@ local function run_job(job)
   vim.cmd [[ doautocmd User BackgroundBuildJobStatusChanged ]]
 end
 
-local function wire_up_job_autocmd(job, jobGroup)
+local function wire_up_job_autocmd(job, job_group)
   local pattern = job.config.pattern
 
   -- pattern might also be built from the ext field
@@ -241,8 +254,13 @@ local function wire_up_job_autocmd(job, jobGroup)
     end
 
     pattern = {}
+    local dir = job.config.dir or gitato.get_repo_root()
+    if not dir then
+      error(string.format("no valid dir for job '%s'", job.config.name))
+    end
+
     for _, ext in ipairs(exts) do
-      table.insert(pattern, job.config.dir .. "/*" .. ext)
+      table.insert(pattern, dir .. "*" .. ext)
     end
   end
 
@@ -254,7 +272,7 @@ local function wire_up_job_autocmd(job, jobGroup)
   -- wire up
   vim.api.nvim_create_autocmd("BufWritePost", {
     pattern = pattern,
-    group = jobGroup,
+    group = job_group,
     callback = function() run_job(job) end
   })
 end
@@ -322,13 +340,13 @@ local function process_job_pipeline(jobs)
 end
 
 local function setup_build_jobs(config, oldJobs)
-  local jobGroup = vim.api.nvim_create_augroup("background_build.job.autogroup", {clear = true})
+  local job_group = vim.api.nvim_create_augroup("background_build.job.autogroup", {clear = true})
 
   -- collect current valid buffers so they can be moved to new jobs by name
-  local jobBuffersByName = {}
+  local job_buffers_by_name = {}
   for _,job in ipairs(oldJobs) do
     if job.buf ~= nil and vim.api.nvim_buf_is_valid(job.buf) then
-      jobBuffersByName[job.config.name] = job.buf
+      job_buffers_by_name[job.config.name] = job.buf
       job.buf = nil
     end
   end
@@ -339,27 +357,29 @@ local function setup_build_jobs(config, oldJobs)
   end
 
   -- set up the new job objects
-  local newJobs = {}
-  for _,jobConfig in ipairs(config.jobs) do
-    if jobConfig.skip then
+  local new_jobs = {}
+  for _,job_config in ipairs(config.jobs) do
+    if job_config.skip then
       goto continue
     end
     local job = {
       id = nil,
-      buf = jobBuffersByName[jobConfig.name],
+      buf = job_buffers_by_name[job_config.name],
       exit_code = nil,
-      config = jobConfig,
+      config = job_config,
     }
-    jobBuffersByName[jobConfig.name] = nil
+
+    -- removed from the list of buffers so it's not cleaned up below
+    job_buffers_by_name[job_config.name] = nil
     if config.build_on_save ~= false then
-      wire_up_job_autocmd(job, jobGroup)
+      wire_up_job_autocmd(job, job_group)
     end
-    table.insert(newJobs, job)
+    table.insert(new_jobs, job)
     ::continue::
   end
 
   -- clean up any buffers that weren't reused
-  for _,buf in pairs(jobBuffersByName) do
+  for _,buf in pairs(job_buffers_by_name) do
     if vim.api.nvim_buf_is_valid(buf) then
       vim.api.nvim_buf_delete(buf, {force=true})
     end
@@ -367,15 +387,15 @@ local function setup_build_jobs(config, oldJobs)
 
   vim.api.nvim_create_autocmd("User", {
     pattern = "BackgroundBuildJobStatusChanged",
-    group = jobGroup,
+    group = job_group,
     callback = function ()
       vim.defer_fn(function()
-        process_job_pipeline(newJobs)
+        process_job_pipeline(new_jobs)
       end, 0)
     end
   })
 
-  return newJobs
+  return new_jobs
 end
 
 local api = {}
@@ -389,9 +409,9 @@ if build_jobs == nil then
 end
 
 function api.edit_config()
-  edit_build_config(build_config, function(newConfig)
-    build_config = newConfig
-    build_jobs = setup_build_jobs(newConfig, build_jobs)
+  edit_build_config(build_config, function(new_config)
+    build_config = new_config
+    build_jobs = setup_build_jobs(new_config, build_jobs)
   end)
 end
 
@@ -660,7 +680,7 @@ function api.debug_step(step_name, break_first)
     break_option = ('-ex \\"break %s:%d\\"'):format(fname, line)
   end
 
-  vim.cmd("tabnew term://"..step_job.dir.."///usr/bin/gdb --tui "..break_option.." --args ".. cmd)
+  vim.cmd("tabnew term://"..step_job.dir.."//usr/bin/gdb --tui "..break_option.." --args ".. cmd)
 end
 
 function api.attach_debugger_to_running_step(step_name)
@@ -685,7 +705,7 @@ function api.attach_debugger_to_running_step(step_name)
     output = {parent_pid}
   end
   local pid = output[1]
-  cmd = "tabnew term://"..job.config.dir.."///usr/bin/gdb --tui -p ".. pid .. " " .. cmd
+  cmd = "tabnew term://"..job.config.dir.."//usr/bin/gdb --tui -p ".. pid .. " " .. cmd
   print(cmd)
   vim.cmd(cmd)
 end
