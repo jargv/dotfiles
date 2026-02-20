@@ -1,10 +1,150 @@
 #!/bin/bash
 
 # Script to create git worktrees in ~/projects/worktrees with structured naming
-# Usage: create-worktree [description]
-# Example: create-worktree "rework sound effects"
+# Usage: git work [description]  - create new worktree
+#        git work                - select existing worktree with fzf
+#        git work --abort        - abandon current worktree without merging
+# Example: git work "rework sound effects"
 
 set -e
+
+WORKTREES_DIR="$HOME/projects/worktrees"
+
+# Function to find kitty socket and window id by cwd
+# Returns "socket:window_id" or empty string
+kitty_find_window_by_cwd() {
+    local cwd="$1"
+    if command -v jq &>/dev/null; then
+        for sock in /tmp/kitty-*; do
+            if [ -S "$sock" ]; then
+                local window_id=$(kitty @ --to unix:$sock ls 2>/dev/null | jq -r --arg c "$cwd" '.[].tabs[].windows[] | select(.cwd == $c) | .id' | head -1)
+                if [[ -n "$window_id" ]]; then
+                    echo "$sock:$window_id"
+                    return
+                fi
+            fi
+        done
+    fi
+}
+
+# Function to launch kitty with nvim in a worktree
+launch_worktree() {
+    local path="$1"
+    local name="$2"
+    if command -v kitty &>/dev/null; then
+        # Check if window already exists, focus it instead
+        local result=$(kitty_find_window_by_cwd "$path")
+        if [[ -n "$result" ]]; then
+            local sock="${result%%:*}"
+            local window_id="${result##*:}"
+            kitty @ --to unix:$sock focus-window --match "id:${window_id}" 2>/dev/null
+            echo "Focused existing kitty window"
+        else
+            kitty --directory "$path" --title "$name" nvim -c "cd $path" -c "terminal" &>/dev/null &
+            disown
+            echo "Launched kitty with nvim in worktree"
+        fi
+    else
+        echo -n "$path" | clip
+        echo "Worktree path copied to clipboard!"
+    fi
+}
+
+# Handle --abort flag
+if [ "$1" = "--abort" ]; then
+    CURRENT_PATH=$(pwd)
+    if [[ ! "$CURRENT_PATH" =~ ^$HOME/projects/worktrees/ ]]; then
+        echo "Error: --abort must be run from within a worktree directory"
+        exit 1
+    fi
+
+    WORKTREE_PATH=$(pwd)
+    CURRENT_BRANCH=$(git branch --show-current)
+    SOURCE_REPO=$(git worktree list | head -1 | awk '{print $1}')
+
+    echo "Aborting worktree: $WORKTREE_PATH"
+    echo "Branch: $CURRENT_BRANCH"
+    read -p "Are you sure you want to delete this worktree and branch? [y/N] " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        cd "$SOURCE_REPO"
+        git worktree remove --force "$WORKTREE_PATH"
+        git branch -D "$CURRENT_BRANCH"
+        echo "Worktree and branch deleted"
+
+        if [[ -n "$KITTY_PID" ]]; then
+            kitty @ --to unix:/tmp/kitty-$KITTY_PID close-window
+        fi
+    else
+        echo "Aborted"
+    fi
+    exit 0
+fi
+
+# If no args, try to select existing worktree with fzf
+if [ $# -eq 0 ]; then
+    if [ -d "$WORKTREES_DIR" ] && [ "$(ls -A "$WORKTREES_DIR" 2>/dev/null)" ]; then
+        if command -v fzf &>/dev/null; then
+            PREVIEW_CMD='
+                dir=$HOME/projects/worktrees/{}
+                name={}
+                cyan="\033[36m"; red="\033[31m"; green="\033[32m"; yellow="\033[33m"; magenta="\033[35m"; reset="\033[0m"
+
+                # Build output
+                output=""
+
+                # Check if kitty window is open for this worktree (check all kitty sockets)
+                found_open=false
+                for sock in /tmp/kitty-*; do
+                    if [ -S "$sock" ]; then
+                        if kitty @ --to unix:$sock ls 2>/dev/null | grep -q "\"cwd\": \"$dir\""; then
+                            found_open=true
+                            break
+                        fi
+                    fi
+                done
+                if $found_open; then
+                    output+="${magenta}● OPEN${reset}\n\n"
+                fi
+
+                branch=$(git -C "$dir" branch --show-current 2>/dev/null)
+                output+="Branch: ${cyan}${branch}${reset}\n\n"
+                # Dirty status
+                if [ -n "$(git -C "$dir" status --porcelain 2>/dev/null)" ]; then
+                    output+="Status: ${red}DIRTY (uncommitted changes)${reset}\n\n"
+                else
+                    output+="Status: ${green}clean${reset}\n\n"
+                fi
+                # Ahead/behind
+                main="main"
+                git -C "$dir" show-ref --verify --quiet refs/heads/main || main="master"
+                counts=$(git -C "$dir" rev-list --left-right --count "$main"..."$branch" 2>/dev/null)
+                behind=$(echo "$counts" | cut -f1)
+                ahead=$(echo "$counts" | cut -f2)
+                output+="↓ ${yellow}${behind}${reset} behind  ↑ ${yellow}${ahead}${reset} ahead of $main\n\n"
+                # Last commit
+                output+="Last commit:\n"
+                output+="  $(git -C "$dir" log -1 --format="%C(yellow)%h%C(reset) %s (%C(cyan)%cr%C(reset))" 2>/dev/null)\n"
+
+                # Pad to bottom using actual preview height
+                content_lines=10
+                padding=$((FZF_PREVIEW_LINES - content_lines))
+                for ((i=0; i<padding; i++)); do echo; done
+                echo -e "$output"
+            '
+            SELECTED=$(ls -1 "$WORKTREES_DIR" | fzf --prompt="Select worktree (or ESC for new): " --preview "$PREVIEW_CMD" --preview-window=right:50% || true)
+            if [ -n "$SELECTED" ]; then
+                launch_worktree "$WORKTREES_DIR/$SELECTED" "$SELECTED"
+                exit 0
+            fi
+        fi
+    fi
+    # No selection or no worktrees - prompt for new description
+    echo "Enter a short description for this worktree:"
+    read -r DESCRIPTION
+else
+    DESCRIPTION="$*"
+fi
 
 # Check if we're in a git repository
 if ! git rev-parse --git-dir > /dev/null 2>&1; then
@@ -14,14 +154,6 @@ fi
 
 # Get the repository name (current directory name)
 REPO_NAME=$(basename "$(pwd)")
-
-# Get description from argument or prompt user
-if [ $# -eq 0 ]; then
-    echo "Enter a short description for this worktree:"
-    read -r DESCRIPTION
-else
-    DESCRIPTION="$*"
-fi
 
 # Convert description to directory-safe format (lowercase, spaces to underscores)
 SAFE_DESCRIPTION=$(echo "$DESCRIPTION" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/_/g' | sed 's/__*/_/g' | sed 's/^_\|_$//g')
@@ -71,6 +203,4 @@ echo "Worktree created successfully!"
 echo "Path: $WORKTREE_PATH"
 echo "Branch: $NEW_BRANCH"
 
-# Copy the worktree path to clipboard
-echo -n "$WORKTREE_PATH" | clip
-echo "Worktree path copied to clipboard!"
+launch_worktree "$WORKTREE_PATH" "$WORKTREE_NAME"

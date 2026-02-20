@@ -172,6 +172,11 @@ echo "Deleting branch: $CURRENT_BRANCH"
 git branch -d "$CURRENT_BRANCH"
 echo "Deleted branch hash: $BRANCH_HASH"
 
-# Copy the worktree path to clipboard
-echo -n "$SOURCE_REPO" | clip
-echo "Source repo path copied to clipboard!"
+# Close kitty window, or fallback to clipboard
+if [[ -n "$KITTY_PID" ]]; then
+    echo "Closing kitty window..."
+    kitty @ --to unix:/tmp/kitty-$KITTY_PID close-window
+else
+    echo -n "$SOURCE_REPO" | clip
+    echo "Source repo path copied to clipboard!"
+fi

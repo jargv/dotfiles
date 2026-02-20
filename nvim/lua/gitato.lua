@@ -103,11 +103,11 @@ function gitato.get_repo_root(dir)
       goto continue
     end
 
-    print("dir => ", dir)
+    -- print("dir => ", dir)
     local result = vim.fn.systemlist("cd "..dir.." && git rev-parse --show-toplevel")
-    print("result => ", result)
+    -- print("result => ", result)
     local error = vim.api.nvim_get_vvar("shell_error")
-    print("error => ", error)
+    -- print("error => ", error)
     if error == 0 and #result ~= 0 then
       repo_root = result[1]
       break
