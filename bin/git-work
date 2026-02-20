@@ -40,7 +40,7 @@ launch_worktree() {
             kitty @ --to unix:$sock focus-window --match "id:${window_id}" 2>/dev/null
             echo "Focused existing kitty window"
         else
-            kitty --directory "$path" --title "$name" nvim -c "cd $path" -c "terminal" &>/dev/null &
+            kitty --directory "$path" --title "$name" nvim -c "cd $path" &>/dev/null &
             disown
             echo "Launched kitty with nvim in worktree"
         fi
@@ -49,6 +49,15 @@ launch_worktree() {
         echo "Worktree path copied to clipboard!"
     fi
 }
+
+# Reject unknown flags
+if [[ "$1" == --* && "$1" != "--abort" ]]; then
+    echo "Error: Unknown flag '$1'"
+    echo "Usage: git work [description]  - create new worktree"
+    echo "       git work                - select existing worktree with fzf"
+    echo "       git work --abort        - abandon current worktree without merging"
+    exit 1
+fi
 
 # Handle --abort flag
 if [ "$1" = "--abort" ]; then
@@ -87,7 +96,6 @@ if [ $# -eq 0 ]; then
         if command -v fzf &>/dev/null; then
             PREVIEW_CMD='
                 dir=$HOME/projects/worktrees/{}
-                name={}
                 cyan="\033[36m"; red="\033[31m"; green="\033[32m"; yellow="\033[33m"; magenta="\033[35m"; reset="\033[0m"
 
                 # Build output
