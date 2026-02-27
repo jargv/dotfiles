@@ -2,13 +2,10 @@
 
 stuff to look into:
  - treesitter text objects
- - DAP setup, workflow, use
- - move to lazy.nvim for plugins (config next to plugin)
 ]]
 
 -- setup {{{1
 vim.g.mapleader = ' '
---vim.opt.shortmess:append({I = true}) -- don't do intro message at startup
 local uname = vim.fn.system('uname')
 local isLinux = uname == "Linux\n"
 local isMac = uname == "Darwin\n"
@@ -163,7 +160,6 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'will133/vim-dirdiff'
-Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
@@ -337,10 +333,8 @@ end)
 
 -- Plug 'williamboman/mason.nvim' {{{2
 Plug 'williamboman/mason.nvim'
-Plug 'williamboman/mason-lspconfig.nvim'
 table.insert(plugin_setup_funcs, function()
   require"mason".setup()
-  require"mason-lspconfig".setup()
 end)
 
 -- Plug 'SmiteshP/nvim-navic' {{{2
@@ -1987,7 +1981,6 @@ normal["<cr>"] = function()
   end
 end
 
-local util = require "lspconfig/util"
 local navic = require "nvim-navic"
 
 local capabilities = require'cmp_nvim_lsp'.default_capabilities(
@@ -2006,11 +1999,6 @@ vim.lsp.config("clangd", {
     navic.attach(client, buffnr)
   end
 })
-
--- lspconfig.tsserver.setup{
---   capabilities = capabilities,
---   filetypes = {"typescript", "typescriptreact", "typescript.tsx" }
--- }
 
 vim.lsp.config("gopls", {
   cmd = {"gopls"},
@@ -2079,16 +2067,6 @@ vim.lsp.config("lua_ls", {
 })
 
 vim.lsp.enable({'clangd', 'lua_ls', 'buf_ls', 'gopls'})
-
--- lspconfig.bashls.setup {
---   capabilities = capabilities,
--- }
-
--- lspconfig.flow.setup{
---   capabilities = capabilities,
--- }
-
--- lspconfig.pyright.setup{}
 
 vim.diagnostic.config({
   signs = false,
