@@ -66,7 +66,7 @@ vim.g.ycm_rust_src_path = '~/.multirust/toolchains/stable-x86_64-unknown-linux-g
 -- Plug 'jargv/vim-go-error-folds'
 -- Plug 'fatih/vim-go'
 vim.g.go_fmt_command = "goimports"
-vim.g.go_fmt_command = "gofmt"
+-- vim.g.go_fmt_command = "gofmt"
 vim.g.go_fmt_fail_silently = 1
 vim.g.go_def_mapping_enabled = 0
 
@@ -428,7 +428,7 @@ vim.g.ale_fixers = {
 vim.g.ale_linters_explicit = 1
 vim.g.ale_fix_on_save = 1
 vim.g.ale_completion_autoimport = 1
-Plug 'dense-analysis/ale'
+-- Plug 'dense-analysis/ale'
 
 -- Plug 'junegunn/fzf' (unused) {{{2
 -- vim.g.fzf_buffers_jump = 1
@@ -2012,20 +2012,39 @@ vim.lsp.config("clangd", {
 --   filetypes = {"typescript", "typescriptreact", "typescript.tsx" }
 -- }
 
--- lspconfig.gopls.setup{
---   capabilities = capabilities,
---   cmd = {"gopls", "serve"},
---   filetypes = {"go", "gomod"},
---   root_dir = util.root_pattern("go.work", "go.mod", ".git"),
---   settings = {
---     gopls = {
---       analyses = {
---         unusedparams = true,
---       },
---       staticcheck = true,
---     },
---   },
--- }
+vim.lsp.config("gopls", {
+  cmd = {"gopls"},
+  filetypes = {"go", "gomod"},
+  root_markers = {"go.work", "go.mod", ".git"},
+  settings = {
+    gopls = {
+      analyses = {
+        unusedparams = true,
+      },
+      staticcheck = true,
+    },
+  },
+})
+
+-- Go: format and organize imports on save
+local go_augroup = vim.api.nvim_create_augroup("GoFormat", { clear = true })
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = go_augroup,
+  pattern = "*.go",
+  callback = function()
+    local params = vim.lsp.util.make_range_params()
+    params.context = { only = { "source.organizeImports" } }
+    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 1000)
+    for _, res in pairs(result or {}) do
+      for _, action in pairs(res.result or {}) do
+        if action.edit then
+          vim.lsp.util.apply_workspace_edit(action.edit, "utf-8")
+        end
+      end
+    end
+    vim.lsp.buf.format({ async = false })
+  end,
+})
 
 vim.lsp.config("lua_ls", {
   filetypes = {"lua"},
@@ -2059,7 +2078,7 @@ vim.lsp.config("lua_ls", {
   end
 })
 
-vim.lsp.enable({'clangd', 'lua_ls', 'buf_ls'})
+vim.lsp.enable({'clangd', 'lua_ls', 'buf_ls', 'gopls'})
 
 -- lspconfig.bashls.setup {
 --   capabilities = capabilities,

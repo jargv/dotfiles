@@ -13,7 +13,7 @@ local starting_points = {
   cpp = {ext = {"cpp", "hpp", "cxx"}, cmd = "cmake --build build", run = "build/exe"},
   hpp = {ext = {"cpp", "hpp", "cxx"}, cmd = "cmake --build build", run = "build/exe"},
   cxx = {ext = {"cpp", "hpp", "cxx"}, cmd = "cmake --build build", run = "build/exe"},
-  go = {cmd = "go build", run = "ls"},
+  go = {ext = {"go"}, cmd = "go build", run = "ls"},
   ts = {cmd = "yarn run build"},
 }
 
