@@ -2165,7 +2165,6 @@ efmt "%f:%l:%m"
 
 -- starting buffer {{{1
 if vim.api.nvim_buf_get_name(0) == "" then
-  vim.cmd.cd('~/projects')
   newb.create()()
   -- vim.cmd.e("term://~/projects///bin/zsh")
 end

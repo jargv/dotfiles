@@ -7,10 +7,10 @@ set -e
 
 # Check if we're in the worktrees directory or one of its descendants
 CURRENT_PATH=$(pwd)
-if [[ ! "$CURRENT_PATH" =~ ^$HOME/projects/worktrees/ ]]; then
+if [[ ! "$CURRENT_PATH" =~ ^$HOME/worktrees/ ]]; then
     echo "Error: This command must be run from within a worktree directory"
     echo "Current path: $CURRENT_PATH"
-    echo "Expected to be in: $HOME/projects/worktrees/"
+    echo "Expected to be in: $HOME/worktrees/"
     exit 1
 fi
 

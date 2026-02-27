@@ -51,7 +51,7 @@ return {
 
   -- l {{{1
   s('l', fmta([[
-    std::print("<>: <>\n", <>);
+    LOG("<>: <>", <>);
   ]], {
     rep(1),
     f(function (args)
@@ -69,7 +69,7 @@ return {
 
   -- log {{{1
   s('log', fmta([[
-    std::print("<>\n");
+    LOG("<>");
   ]], {i(1)})),
   -- req {{{1
   s('req', fmt([[

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to create git worktrees in ~/projects/worktrees with structured naming
+# Script to create git worktrees in ~/worktrees with structured naming
 # Usage: git work [description]  - create new worktree
 #        git work                - select existing worktree with fzf
 #        git work --abort        - abandon current worktree without merging
@@ -8,7 +8,7 @@
 
 set -e
 
-WORKTREES_DIR="$HOME/projects/worktrees"
+WORKTREES_DIR="$HOME/worktrees"
 
 # Function to find kitty socket and window id by cwd
 # Returns "socket:window_id" or empty string
@@ -40,7 +40,7 @@ launch_worktree() {
             kitty @ --to unix:$sock focus-window --match "id:${window_id}" 2>/dev/null
             echo "Focused existing kitty window"
         else
-            kitty --directory "$path" --title "$name" nvim -c "cd $path" &>/dev/null &
+            kitty --directory "$path" --title "$name" nvim --cmd "cd $path" -c "cd $path" &>/dev/null &
             disown
             echo "Launched kitty with nvim in worktree"
         fi
@@ -62,7 +62,7 @@ fi
 # Handle --abort flag
 if [ "$1" = "--abort" ]; then
     CURRENT_PATH=$(pwd)
-    if [[ ! "$CURRENT_PATH" =~ ^$HOME/projects/worktrees/ ]]; then
+    if [[ ! "$CURRENT_PATH" =~ ^$HOME/worktrees/ ]]; then
         echo "Error: --abort must be run from within a worktree directory"
         exit 1
     fi
@@ -95,7 +95,7 @@ if [ $# -eq 0 ]; then
     if [ -d "$WORKTREES_DIR" ] && [ "$(ls -A "$WORKTREES_DIR" 2>/dev/null)" ]; then
         if command -v fzf &>/dev/null; then
             PREVIEW_CMD='
-                dir=$HOME/projects/worktrees/{}
+                dir=$HOME/worktrees/{}
                 cyan="\033[36m"; red="\033[31m"; green="\033[32m"; yellow="\033[33m"; magenta="\033[35m"; reset="\033[0m"
 
                 # Build output
@@ -168,10 +168,10 @@ SAFE_DESCRIPTION=$(echo "$DESCRIPTION" | tr '[:upper:]' '[:lower:]' | sed 's/[^a
 
 # Create worktree directory name
 WORKTREE_NAME="${REPO_NAME}_${SAFE_DESCRIPTION}"
-WORKTREE_PATH="$HOME/projects/worktrees/$WORKTREE_NAME"
+WORKTREE_PATH="$HOME/worktrees/$WORKTREE_NAME"
 
 # Create worktrees directory if it doesn't exist
-mkdir -p "$HOME/projects/worktrees"
+mkdir -p "$HOME/worktrees"
 
 # Check if worktree already exists
 if [ -d "$WORKTREE_PATH" ]; then
