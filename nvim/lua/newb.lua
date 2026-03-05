@@ -5,6 +5,7 @@
 local current_dir = require "current_dir"
 local telescope = require "telescope.builtin"
 local gitato = require "gitato"
+local background_build = require "background_build"
 
 local newb = {}
 
@@ -102,6 +103,17 @@ local function pstree(dir)
   vim.cmd(("e term://%s///usr/bin/pstree -p %s"):format(dir, pid))
 end
 
+local function setup_make(dir, chdir)
+  if vim.fn.filereadable(vim.fn.expand("./build.json")) == 0 then
+    vim.print("error: no build.json file found")
+    return
+  end
+  vim.cmd.e("build.json")
+  background_build.add_from_current_file()
+  background_build.toggle_open_all_output_buffers(true)
+  background_build.setup()
+end
+
 local new_buffer_options = {
   {key=".", cmd=":e term://$dir///bin/zsh",    desc="terminal"},
   {key="d", cmd=":Oil $dir",                   desc="directory"},
@@ -118,6 +130,7 @@ local new_buffer_options = {
   {key="_", cmd=return_to_start_dir,           desc="cd starting directory"},
   {key=",", cmd=sync_dir,                      desc="sync dir"},
   {key="p", cmd=pstree,                        desc="show process tree"},
+  {key="m", cmd=setup_make,                    desc="setup build.json"},
   {key="B", cmd=":e term://$dir///usr/bin/btop", desc="run btop command"},
   {key="C", cmd=":e term://$dir///bin/claude", desc="run claude command"},
   {key="q", cmd=":q!",                         desc="quit"},

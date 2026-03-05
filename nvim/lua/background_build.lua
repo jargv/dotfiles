@@ -435,7 +435,9 @@ function api.load_errors()
   local errors_found = false
   for _, job_to_show in ipairs(jobs_to_show) do
     local starting_dir = vim.fn.getcwd()
-    vim.cmd.cd(job_to_show.config.dir)
+    if job_to_show.config.dir ~= nil then
+      vim.cmd.cd(job_to_show.config.dir)
+    end
     vim.cmd.cclose()
     vim.cmd("silent cbuffer " .. job_to_show.buf)
     vim.cmd.cwindow()
@@ -589,6 +591,20 @@ function api.add_from_current_file()
   })
 
   api.edit_config()
+end
+
+function api.setup()
+  if build_config.setup == nil then
+    return
+  end
+
+  local dir = build_config.setup.dir
+  if vim.fn.isdirectory(dir) == 1 then
+    vim.print("already set up!")
+    return
+  end
+
+  vim.cmd(("split term://%s"):format(build_config.setup.cmd))
 end
 
 function api.statusline()

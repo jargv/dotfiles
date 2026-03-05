@@ -1012,6 +1012,7 @@ leader.Mc = build.stop_all
 leader.Mr = function() build.toggle_step_by_name("run") end
 leader.Mt = function() build.toggle_step_by_name("test") end
 leader.Ml = function() build.toggle_step_by_name("logs") end
+leader.Ms = function() build.setup() end
 leader.Md = function() build.debug_step("run") end
 leader.MT = function() build.debug_step("test") end
 leader.MD = function() build.debug_step("run", true) end
@@ -2150,7 +2151,7 @@ efmt "%C %#%m"
 efmt "%Z#"
 
 -- golang
---efmt "%f:%l:%c: %#%m"
+efmt "%f:%l:%c: %m"
 
 -- lua
 efmt "/usr/bin/lua: %f:%l: %m"
