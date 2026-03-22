@@ -420,8 +420,8 @@ function api.load_errors()
   for _,job in pairs(build_jobs) do
     local failed = job.exit_code ~= nil and job.exit_code ~= 0
     local stream_available = job.config.stream and job.stream_available
-    local is_build_job = job.config.name == "build"
-    local should_open = job.buf and (failed or stream_available or is_build_job)
+    local produces_errors = job.config.errors ~= false and not job.config.stream
+    local should_open = job.buf and (failed or stream_available or produces_errors)
     if should_open then
       table.insert(jobs_to_show, job)
     end
