@@ -2067,7 +2067,7 @@ vim.lsp.config("lua_ls", {
   end
 })
 
-vim.lsp.enable({'clangd', 'lua_ls', 'buf_ls', 'gopls'})
+vim.lsp.enable({'clangd', 'lua_ls', 'gopls'})
 
 vim.diagnostic.config({
   signs = false,
