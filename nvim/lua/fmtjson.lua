@@ -16,11 +16,13 @@ local function stringify_into_table(val, indent, parts)
       table.insert(parts, indent .. "]")
     else
       table.insert(parts, "{\n")
-      for key, subval in pairs(val) do
-        local is_last = next(val, key) == nil
+      local keys = {}
+      for key in pairs(val) do table.insert(keys, key) end
+      table.sort(keys, function(a, b) return tostring(a) < tostring(b) end)
+      for i, key in ipairs(keys) do
         table.insert(parts, subindent .. '"' .. tostring(key) .. '": ')
-        stringify_into_table(subval, subindent, parts)
-        if is_last then
+        stringify_into_table(val[key], subindent, parts)
+        if i == #keys then
           table.insert(parts, "\n")
         else
           table.insert(parts, ",\n")
