@@ -1972,15 +1972,54 @@ leader.rf = function()
   vim.lsp.util.rename(fname, new_fname)
 end
 
-normal["<cr>"] = function()
-  local line = vim.fn.line('.') - 1
-  local diagnostics = vim.diagnostic.get(0, {lnum = line})
-  if #diagnostics > 0 then
+normal["<cr>"] = (function()
+  local last_tried_line = nil
+  local function apply_code_action()
     vim.lsp.buf.code_action({apply = true})
-  else
+  end
+
+  local function apply_code_action_if_diagnostics()
+    local diagnostics = vim.diagnostic.get(0, {lnum = line})
+    if #diagnostics > 0 then
+      apply_code_action()
+      return true
+    end
+    return false
+  end
+
+  local function code_actions_available()
+    local params = vim.lsp.util.make_range_params()
+    params.context = {
+      triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Invoked,
+      diagnostics = vim.lsp.diagnostic.get_line_diagnostics(),
+    }
+
+    local results = vim.lsp.buf_request_sync(0, 'textDocument/codeAction', params, 300)
+    local valid_code_actions = false
+    for _, result in pairs(results) do
+      if result and result.result and #result.result > 0 and result.result[1].title then
+        valid_code_actions = true
+        break
+      end
+    end
+
+    return valid_code_actions
+  end
+
+  return function()
+    local line = vim.fn.line('.') - 1
+    --- See if there are any code actions available to apply ---
+    --- apply the code actions, if there are any
+    if code_actions_available() then
+      apply_code_action()
+      return
+    end
+
+    --- if there were no code actions, just jump to the next
     vim.diagnostic.goto_next({float = false})
   end
-end
+
+end)()
 
 local navic = require "nvim-navic"
 
