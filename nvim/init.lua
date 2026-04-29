@@ -166,7 +166,7 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
-Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
+Plug('nvim-treesitter/nvim-treesitter', {branch = 'main', ['do'] = ':TSUpdate'})
 
 -- Plug 'stevearc/aerial.nvim' {{{
   Plug 'stevearc/aerial.nvim'
@@ -270,10 +270,10 @@ table.insert(plugin_setup_funcs, function()
 end)
 
 -- Plug 'jose-elias-alvarez/null-ls.nvim' {{{2
-Plug 'jose-elias-alvarez/null-ls.nvim'
-table.insert(plugin_setup_funcs, function()
-  require("null-ls").setup()
-end)
+-- Plug 'jose-elias-alvarez/null-ls.nvim'
+-- table.insert(plugin_setup_funcs, function()
+--   require("null-ls").setup()
+-- end)
 -- Plug 'MunifTanjim/eslint.nvim' (unused) {{{2
 -- Plug 'MunifTanjim/eslint.nvim'
 -- table.insert(plugin_setup_funcs, function()
@@ -1884,46 +1884,16 @@ vim.cmd [[
 ]]
 
 -- treesitter {{{1
-require'nvim-treesitter.configs'.setup {
-  -- A list of parser names, or "all"
-  ensure_installed = { "c", "cpp", "lua", "go", "typescript", "vimdoc"},
-
-  -- Install parsers synchronously (only applied to `ensure_installed`)
-  sync_install = false,
-
-  -- don't install automatically
-  auto_install = false,
-
-  -- List of parsers to ignore installing (for "all")
-  ignore_install = {},
-
-  highlight = {
-    -- `false` will disable the whole extension
-    enable = true,
-
-    -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
-    -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
-    -- the name of the parser)
-    -- list of language that will be disabled
-    disable = {},
-
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = false,
-  },
-
-  incremental_selection = {
-    enable = true,
-    keymaps = {
-      init_selection = false, -- set to `false` to disable one of the mappings
-      node_incremental = "<cr>",
-      scope_incremental = false,
-      node_decremental = false,
-    },
-  },
-}
+require('nvim-treesitter').setup{}
+if vim.fn.executable("tree-sitter") ~= 0 then
+  require('nvim-treesitter').install{"c", "cpp", "lua", "go", "typescript", "vimdoc"}
+else
+  vim.defer_fn(function()
+    vim.api.nvim_echo({
+      {"warning: tree-sitter is not installed!", "ErrorMsg"}
+    }, true, {})
+  end, 300)
+end
 
 -- lsp config {{{1
 vim.api.nvim_create_user_command("LspKillAll", function()
@@ -1988,26 +1958,31 @@ normal["<cr>"] = (function()
   end
 
   local function code_actions_available()
-    local params = vim.lsp.util.make_range_params()
-    params.context = {
-      triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Invoked,
-      diagnostics = vim.lsp.diagnostic.get_line_diagnostics(),
-    }
-
-    local results = vim.lsp.buf_request_sync(0, 'textDocument/codeAction', params, 300)
-    local valid_code_actions = false
-    for _, result in pairs(results) do
-      if result and result.result and #result.result > 0 and result.result[1].title then
-        valid_code_actions = true
-        break
+    local win = vim.api.nvim_get_current_win()
+    local lnum = vim.fn.line('.') - 1
+    local results = vim.lsp.buf_request_sync(0, 'textDocument/codeAction', function(client)
+      local params = vim.lsp.util.make_range_params(win, client.offset_encoding)
+      params.context = {
+        triggerKind = vim.lsp.protocol.CodeActionTriggerKind.Invoked,
+        diagnostics = vim.tbl_map(
+          function(d) return d.user_data.lsp end,
+          vim.tbl_filter(
+            function(d) return d.user_data and d.user_data.lsp end,
+            vim.diagnostic.get(0, { lnum = lnum })
+          )
+        ),
+      }
+      return params
+    end, 300)
+    for _, result in pairs(results or {}) do
+      if result.result and #result.result > 0 then
+        return true
       end
     end
-
-    return valid_code_actions
+    return false
   end
 
   return function()
-    local line = vim.fn.line('.') - 1
     --- See if there are any code actions available to apply ---
     --- apply the code actions, if there are any
     if code_actions_available() then
@@ -2018,7 +1993,6 @@ normal["<cr>"] = (function()
     --- if there were no code actions, just jump to the next
     vim.diagnostic.goto_next({float = false})
   end
-
 end)()
 
 local navic = require "nvim-navic"
