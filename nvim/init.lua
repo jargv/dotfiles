@@ -160,12 +160,6 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'will133/vim-dirdiff'
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 Plug('nvim-treesitter/nvim-treesitter', {branch = 'main', ['do'] = ':TSUpdate'})
 
 -- Plug 'stevearc/aerial.nvim' {{{
@@ -595,7 +589,29 @@ for _,fn in ipairs(plugin_setup_funcs) do
   fn()
 end
 -- }}}
+-- autocompletion (builtin) {{{
+vim.opt.completeopt = {'menu','menuone','noselect','popup'}
+vim.o.autocomplete = false -- don't spam the window on every key
 
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("lsp_completion", { clear = true }),
+  callback = function(args)
+    local client_id = args.data.client_id
+    if not client_id then
+      return
+    end
+
+    local client = vim.lsp.get_client_by_id(client_id)
+    if client and client:supports_method("textDocument/completion") then
+      -- Enable native LSP completion for this client + buffer
+      client.server_capabilities.completionProvider.triggerCharacters = {
+        '.', ':', '>'
+      }
+      vim.lsp.completion.enable(true, client_id, args.buf, {autotrigger = true})
+    end
+  end,
+})
+--}}}
 -- color settings {{{1
 vim.opt.termguicolors = true
 vim.opt.ttyfast = true
@@ -818,7 +834,6 @@ vim.opt.switchbuf = "useopen,usetab"
 vim.opt.undofile = true
 vim.opt.hidden = true
 vim.opt.history = 10000
-vim.opt.completeopt = "menuone,noinsert,noselect"
 vim.opt.infercase = true
 vim.opt.mouse = "a"
 vim.opt.mousemodel="extend"
@@ -1465,7 +1480,6 @@ vim.api.nvim_set_keymap('i', '<cr>', '', {
 })
 
 ;(function()
-  local cmp = require "cmp"
   local luasnip = require "luasnip"
   vim.api.nvim_set_keymap('i', '<tab>', '', {
     silent = true,
@@ -1480,7 +1494,7 @@ vim.api.nvim_set_keymap('i', '<cr>', '', {
       local column = vim.fn.getpos('.')[3]
       local lineBeforeCursor = vim.fn.getline('.'):sub(0,column-1)
       if lineBeforeCursor:match('%S') then
-        cmp.complete()
+        vim.lsp.completion.get()
         return
       end
 
@@ -1997,9 +2011,6 @@ end)()
 
 local navic = require "nvim-navic"
 
-local capabilities = require'cmp_nvim_lsp'.default_capabilities(
-  vim.lsp.protocol.make_client_capabilities()
-)
 
 vim.lsp.config("*", {
   capabilities = capabilities,
@@ -2089,59 +2100,6 @@ vim.diagnostic.config({
   underline = true
 })
 
--- nvim-cmp {{{1
-local cmp = require 'cmp'
-cmp.setup({
-  completeopt = 'menu,menuone,noinsert,noselect',
-  snippet = {
-    expand = function(args)
-      require('luasnip').lsp_expand(args.body)
-    end,
-  },
-  window = {
-    completion = cmp.config.window.bordered(),
-    documentation = cmp.config.window.bordered(),
-  },
-  mapping = cmp.mapping.preset.insert({
-    ['<C-u>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-d>'] = cmp.mapping.scroll_docs(4),
-    ['<C-n>'] = cmp.mapping.select_next_item(),
-    ['<C-p>'] = cmp.mapping.select_prev_item(),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-CR>'] = cmp.mapping.confirm({ select = false }),
-  }),
-  sources = cmp.config.sources({
-    {
-      name = 'nvim_lsp',
-      entry_filter = function(entry, ctx)
-        return entry:get_kind() ~= cmp.lsp.CompletionItemKind.Text and entry:get_kind() ~= cmp.lsp.CompletionItemKind.Snippet
-      end
-    },
-    { name = 'nvim_lsp_signature_help' },
-    { name = 'buffer' },
-    { name = 'path' },
-  }, {
-    { name = 'snippet', max_item_count = 0 },
-  })
-})
-
--- `/` cmdline setup.
-cmp.setup.cmdline('/', {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = {
-    { name = 'buffer' }
-  }
-})
-
--- `:` cmdline setup.
-cmp.setup.cmdline(':', {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = cmp.config.sources({
-    { name = 'path' }
-  }, {
-    { name = 'cmdline' }
-  })
-})
 
 -- error formats {{{1
 vim.opt.errorformat = {}
