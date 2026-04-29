@@ -591,6 +591,7 @@ end
 -- }}}
 -- autocompletion (builtin) {{{
 vim.opt.completeopt = {'menu','menuone','noselect','popup'}
+vim.o.pumborder = 'rounded'
 vim.o.autocomplete = false -- don't spam the window on every key
 
 vim.api.nvim_create_autocmd("LspAttach", {
