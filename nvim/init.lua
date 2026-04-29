@@ -18,50 +18,20 @@ local visual = mapping.inMode("x")
 local terminal = mapping.inMode("t")
 
 -- plugins {{{1
--- bootstrap setup {{{2
-local plugDir = vim.fn.expand "~/config/nvim/plug"
-local function checkPluginSetup()
-  local plugUrl = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-  local plugFile = plugDir .. "/plug/autoload/plug.vim"
-
-  -- already installed?
-  if 1 == vim.fn.isdirectory(plugDir) then
-    return false
-  end
-
-  print "performing initial plugin setup..."
-
-  -- bootstrap by downloading
-  local result = vim.fn.system {
-    "curl", "-fLo", plugFile, "--create-dirs", plugUrl
-  }
-  local err = vim.api.nvim_get_vvar("shell_error")
-  if err ~= 0 or #result == 0 then
-    print "error downloading plug, no plugins will be installed"
-    return false
-  end
-
-  return true
-end
-
 -- regular setup {{{2
+local plugins_to_install = {}
+local function Plug(path, setup_function, install_function)
+  table.insert(plugins_to_install, {
+    path = path,
+    url = string.format("https://github.com/%s", path),
+    setup_function = setup_function,
+    install_function = install_function,
+  })
+end
 vim.cmd [[filetype off]]
-local initial_plugin_setup_is_required = checkPluginSetup()
-vim.opt.runtimepath:append(plugDir.."/plug")
-vim.call("plug#begin", '~/config/nvim/plug')
-local plugin_setup_funcs = {}
-local Plug = vim.fn['plug#']
 
 -- Language-specifig plugins {{{2
--- rust {{{3
--- Plug 'rust-lang/rust.vim'
--- Plug 'racer-rust/vim-racer'
-vim.g.racer_experimental_completer = 1
-vim.g.ycm_rust_src_path = '~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
-
 -- go {{{3
--- Plug 'jargv/vim-go-error-folds'
--- Plug 'fatih/vim-go'
 vim.g.go_fmt_command = "goimports"
 -- vim.g.go_fmt_command = "gofmt"
 vim.g.go_fmt_fail_silently = 1
@@ -91,60 +61,15 @@ vim.g.go_snippet_engine = ""
 --I don't want the templates
 vim.g.go_template_autocreate = 0
 
--- "Scope guru to the whole gopath
--- vim.g.go_guru_scope = [""]
-
-
--- javascript/typescript {{{3
--- Plug 'ternjs/tern_for_vim'
--- Plug 'jxnblk/vim-mdx-js'
--- Plug 'pangloss/vim-javascript'
--- Plug 'mxw/vim-jsx'
--- Plug 'jelera/vim-javascript-syntax'
--- vim.g.jsx_ext_required = 0
--- Plug 'leafgarland/typescript-vim'
--- Plug 'peitalin/vim-jsx-typescript'
--- Plug 'MaxMellon/vim-jsx-pretty'
--- html {{{3
-Plug 'othree/html5.vim'
-
--- purescript {{{3
--- Plug 'raichoo/purescript-vim'
-
--- css {{{3
-Plug 'JulesWang/css.vim'
-
--- html {{{3
--- Plug 'mattn/emmet-vim'
--- toml {{{3
-Plug 'cespare/vim-toml'
--- docker {{{3
--- Plug 'ekalinin/Dockerfile.vim'
-
-
--- lua {{{3
--- Plug 'SpaceVim/vim-swig'
-
--- zig {{{3
-Plug 'ziglang/zig.vim'
-vim.g.zig_fmt_autosave = 0
-
--- java {{{3
-Plug 'mfussenegger/nvim-jdtls'
-
 -- glsl {{{3
 Plug 'tikhomirov/vim-glsl'
 
--- bqn {{{3
-Plug('mlochbaum/BQN', {rtp = 'editors/vim'})
 -- colorschemes {{{2
 -- Plug 'flazz/vim-colorschemes'
 Plug 'arcticicestudio/nord-vim'
 Plug 'sainnhe/everforest'
---Plug 'trevordmiller/nova-vim'
 Plug 'AlessandroYorba/Arcadia'
 Plug 'jnurmine/Zenburn'
-Plug('sonph/onehalf', { rtp = 'vim' })
 Plug 'ntk148v/vim-horizon'
 Plug 'navarasu/onedark.nvim'
 -- }}}
@@ -160,11 +85,10 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'will133/vim-dirdiff'
-Plug('nvim-treesitter/nvim-treesitter', {branch = 'main', ['do'] = ':TSUpdate'})
+Plug 'nvim-treesitter/nvim-treesitter'
 
 -- Plug 'stevearc/aerial.nvim' {{{
-  Plug 'stevearc/aerial.nvim'
-  table.insert(plugin_setup_funcs, function()
+  Plug('stevearc/aerial.nvim', function()
     require("aerial").setup{
       autojump = true,
       show_guides = true,
@@ -175,127 +99,12 @@ Plug('nvim-treesitter/nvim-treesitter', {branch = 'main', ['do'] = ':TSUpdate'})
     vim.cmd.AerialToggle()
   end
 --- }}}
--- Plug 'augmentcode/augment.vim' (unused) {{{
-  vim.g.augment_workspace_folders = {'~/projects/game/'}
-  vim.g.augment_disable_tab_mapping = true
-  insert["<M-y>"] = function()
-    vim.call("augment#Accept")
-  end
-  leader.au = function()
-    vim.g.augment_disable_completions = not vim.g.augment_disable_completions
-    vim.notify("augment completions:" .. (vim.g.augment_disable_completions and "no" or "yes"))
-  end
-  -- Plug 'augmentcode/augment.vim'
---}}}
--- Plug "zbirenbaum/copilot.lua" (not in use) {{{
-Plug "zbirenbaum/copilot.lua"
-leader.ac = function()
-  -- require('copilot').setup{
-  --   panel = {
-  --     enabled = true,
-  --     auto_refresh = false,
-  --     keymap = {
-  --       jump_prev = "[[",
-  --       jump_next = "]]",
-  --       accept = "<CR>",
-  --       refresh = "gr",
-  --       open = nil,
-  --     },
-  --     layout = {
-  --       position = "bottom", -- | top | left | right
-  --       ratio = 0.4
-  --     },
-  --   },
-  --   suggestion = {
-  --     enabled = true,
-  --     auto_trigger = true,
-  --     debounce = 75,
-  --     keymap = {
-  --       accept = "<M-i>",
-  --       accept_word = "<M-;>",
-  --       accept_line = "<M-y>",
-  --       next = "<M-u>",
-  --       prev = "<M-H>",
-  --       dismiss = "<C-y>",
-  --     },
-  --   },
-  --   filetypes = {
-  --     lua = true,
-  --     cpp = true,
-  --     yaml = false,
-  --     markdown = false,
-  --     help = false,
-  --     gitcommit = true,
-  --     gitrebase = false,
-  --     hgcommit = false,
-  --     svn = false,
-  --     cvs = false,
-  --     ["."] = false,
-  --   },
-  --   copilot_node_command = 'node', -- Node.js version must be > 18.x
-  --   server_opts_overrides = {},
-  -- }
-  -- leader.ac = function()
-  --   require("copilot.suggestion").toggle_auto_trigger()
-  --   vim.notify("copilot:" .. (vim.b.copilot_suggestion_auto_trigger and "yes" or "no"))
-  -- end
-end
-
- -- Plug 'mfussenegger/nvim-dap' {{{2
-Plug 'mfussenegger/nvim-dap'
-table.insert(plugin_setup_funcs, function()
-  -- TODO: get this working once gdb 14 is easily available
-  do return end
-  local dap = require('dap')
-
-  dap.adapters.gdb = {
-    type "executable",
-    command = "gdb",
-    args = {"-i", "dap"}
-  }
-
-  dap.configurations.gdb = {
-    name = "Attach to process",
-    type = 'gdb',
-    request = 'attach',
-    pid = require('dap.utils').pick_process,
-    args = {},
-  }
-end)
-
--- Plug 'jose-elias-alvarez/null-ls.nvim' {{{2
--- Plug 'jose-elias-alvarez/null-ls.nvim'
--- table.insert(plugin_setup_funcs, function()
---   require("null-ls").setup()
--- end)
--- Plug 'MunifTanjim/eslint.nvim' (unused) {{{2
--- Plug 'MunifTanjim/eslint.nvim'
--- table.insert(plugin_setup_funcs, function()
---   require("eslint").setup({
---     bin = 'eslint_d', -- or `eslint_d`
---     code_actions = {
---       enable = true,
---       apply_on_save = {
---         enable = true,
---         types = { "directive", "problem", "suggestion", "layout" },
---       },
---       disable_rule_comment = {
---         enable = true,
---         location = "separate_line", -- or `same_line`
---       },
---     },
---     diagnostics = {
---       enable = true,
---       report_unused_disable_directives = false,
---       run_on = "type", -- or `save`
---     },
---   })
--- end)
-
+-- Plug 'mfussenegger/nvim-dap' {{{2
 -- Plug 'nvim-telescope/telescope.nvim' {{{2
-Plug('nvim-telescope/telescope.nvim')
-Plug('nvim-telescope/telescope-fzf-native.nvim', {['do'] = 'make'})
-table.insert(plugin_setup_funcs, function()
+Plug('nvim-telescope/telescope-fzf-native.nvim', nil, function(ev)
+  vim.system({ 'make' }, { cwd = ev.data.path })
+end)
+Plug('nvim-telescope/telescope.nvim', function()
   local telescope = require "telescope"
   local action = require "telescope.actions"
   telescope.setup {
@@ -326,31 +135,31 @@ table.insert(plugin_setup_funcs, function()
 end)
 
 -- Plug 'williamboman/mason.nvim' {{{2
-Plug 'williamboman/mason.nvim'
-table.insert(plugin_setup_funcs, function()
+Plug('williamboman/mason.nvim', function()
   require"mason".setup()
 end)
 
 -- Plug 'SmiteshP/nvim-navic' {{{2
-Plug 'SmiteshP/nvim-navic'
-vim.g.winbarShown = 0
-leader.vp = function()
-  vim.g.winbarShown = not vim.g.winbarShown
-  if vim.g.winbarShown then
-    vim.opt.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
-  else
-    vim.opt.winbar = ""
+Plug('SmiteshP/nvim-navic', function()
+  vim.g.winbarShown = 0
+  leader.vp = function()
+    vim.g.winbarShown = not vim.g.winbarShown
+    if vim.g.winbarShown then
+      vim.opt.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
+    else
+      vim.opt.winbar = ""
+    end
   end
-end
-leader.vf = function()
-  vim.g.winbarShown = not vim.g.winbarShown
-  if vim.g.winbarShown then
-    vim.opt.winbar = "%=%f%="
-  else
-    vim.opt.winbar = ""
+
+  leader.vf = function()
+    vim.g.winbarShown = not vim.g.winbarShown
+    if vim.g.winbarShown then
+      vim.opt.winbar = "%=%f%="
+    else
+      vim.opt.winbar = ""
+    end
   end
-end
-table.insert(plugin_setup_funcs, function()
+
   require"nvim-navic".setup {
     icons = {
       File          = "",
@@ -399,36 +208,8 @@ vim.cmd [[
   vmap <leader>gl :call CopyGitLink(1)<CR>
 ]]
 
-
-
-
--- Plug 'dense-analysis/ale' {{{2
-vim.g.ale_fixers = {
-  javascript = {'prettier'},
-  typescript = {'prettier'},
-  javascriptreact = {'prettier'},
-  css  = {'prettier'},
-  go  = {'goimports'},
-  -- c = {'clang-format'},
-  -- cpp = {'clang-format'},
-}
-
-vim.g.ale_linters_explicit = 1
-vim.g.ale_fix_on_save = 1
-vim.g.ale_completion_autoimport = 1
--- Plug 'dense-analysis/ale'
-
--- Plug 'junegunn/fzf' (unused) {{{2
--- vim.g.fzf_buffers_jump = 1
--- Plug 'junegunn/fzf'
--- Plug 'junegunn/fzf.vim'
-
--- Plug 'tpope/vim-vinegar' (unused, using oil instead) {{{2
--- Plug 'tpope/vim-vinegar'
-
 -- Plug 'stevearc/oil.nvim' {{{2
-Plug 'stevearc/oil.nvim'
-table.insert(plugin_setup_funcs, function()
+Plug('stevearc/oil.nvim', function()
   vim.keymap.set("n", "-", require("oil").open, { desc = "Open parent directory" })
   require("oil").setup({
     -- Id is automatically added at the beginning, and name at the end
@@ -493,8 +274,7 @@ table.insert(plugin_setup_funcs, function()
 end)
 
 -- Plug "L3MON4D3/LuaSnip" {{{2
-Plug("L3MON4D3/LuaSnip", {tag = 'v2.*', ['do'] = 'make install_jsregexp'})
-table.insert(plugin_setup_funcs, function()
+Plug("L3MON4D3/LuaSnip", function()
   local luasnip = require "luasnip"
   luasnip.config.set_config{
     history = false,
@@ -502,92 +282,115 @@ table.insert(plugin_setup_funcs, function()
     --autosnippets = true
   }
   require("luasnip.loaders.from_lua").load({paths = "./snippets"})
-
-  -- vim.api.nvim_create_autocmd('ModeChanged', {
-  --   group = vim.api.nvim_create_augroup('UnlinkSnippetOnModeChange', {clear = true}),
-  --   pattern = {'s:n', 'i:*'},
-  --   desc = 'Forget the current snippet when leaving the insert mode',
-  --   callback = function(evt)
-  --     -- if  luasnip.session
-  --     -- and luasnip.session.current_nodes[evt.buf]
-  --     -- and not luasnip.session.jump_active
-  --     -- then
-  --     --   luasnip.unlink_current()
-  --     -- end
-  --   end,
-  -- })
 end)
 
--- Plug  'SirVer/UltiSnips' (unused) {{{2
--- Plug 'SirVer/UltiSnips'
--- vim.g.UltiSnipsExpandTrigger=""
--- vim.g.UltiSnipsJumpForwardTrigger=""
--- vim.g.UltiSnipsJumpBackwardTrigger=""
-
--- vim.g.UltiSnipsEditSplit = 'vertical'
--- vim.g.UltiSnipsSnippetsDir = '~/config/nvim/my_snippets'
-
--- vim.g.UltiSnipsSnippetDirectories = {"my_snippets"}
--- leader.s = ":UltiSnipsEdit<CR>"
-
 -- Plug 'phaazon/hop.nvim' {{{2
-Plug 'phaazon/hop.nvim'
-leader.f = ":HopChar1<cr>"
-leader.F = ":HopChar1MW<cr>"
-table.insert(plugin_setup_funcs, function()
+Plug('phaazon/hop.nvim', function()
+  leader.f = ":HopChar1<cr>"
+  leader.F = ":HopChar1MW<cr>"
   require('hop').setup()
 end)
 
 -- Plug 'lewis6991/gitsigns.nvim' {{{2
-Plug 'lewis6991/gitsigns.nvim'
-
-vim.cmd [[
-  func! GitAdjacentChange(next)
-    if &diff
-      if a:next
-        normal ]c
-        normal zz
+Plug('lewis6991/gitsigns.nvim', function()
+  vim.cmd [[
+    func! GitAdjacentChange(next)
+      if &diff
+        if a:next
+          normal ]c
+          normal zz
+        else
+          normal [c
+          normal zz
+        endif
       else
-        normal [c
-        normal zz
+        if a:next
+          lua require('gitsigns').next_hunk()
+          normal zz
+        else
+          lua require('gitsigns').prev_hunk()
+          normal zz
+        endif
       endif
-    else
-      if a:next
-        lua require('gitsigns').next_hunk()
-        normal zz
-      else
-        lua require('gitsigns').prev_hunk()
-        normal zz
-      endif
-    endif
-  endfunc
-  nnoremap gn :call GitAdjacentChange(1)<cr>
-  nnoremap gp :call GitAdjacentChange(0)<cr>
-  nnoremap <nowait> gr <cmd>Gitsigns reset_hunk<cr><cmd>doautocmd User ShellCommandHappened<cr>
-  nnoremap gs <cmd>Gitsigns stage_hunk<cr><cmd>doautocmd User ShellCommandHappened<cr>
-  nnoremap gS <cmd>Gitsigns undo_stage_hunk<cr><cmd>doautocmd User ShellCommandHappened<cr>
-  onoremap ih :<C-U>Gitsigns select_hunk<cr>
-  xnoremap ih :<C-U>Gitsigns select_hunk<cr>
-]]
-table.insert(plugin_setup_funcs, function()
+    endfunc
+    nnoremap gn :call GitAdjacentChange(1)<cr>
+    nnoremap gp :call GitAdjacentChange(0)<cr>
+    nnoremap <nowait> gr <cmd>Gitsigns reset_hunk<cr><cmd>doautocmd User ShellCommandHappened<cr>
+    nnoremap gs <cmd>Gitsigns stage_hunk<cr><cmd>doautocmd User ShellCommandHappened<cr>
+    nnoremap gS <cmd>Gitsigns undo_stage_hunk<cr><cmd>doautocmd User ShellCommandHappened<cr>
+    onoremap ih :<C-U>Gitsigns select_hunk<cr>
+    xnoremap ih :<C-U>Gitsigns select_hunk<cr>
+  ]]
   require('gitsigns').setup()
 end)
 --}}}
 
 -- finalize plugin setup {{{2
-vim.call("plug#end")
+function install_or_update(update)
+  local install_functions = {}
+  for _, p in ipairs(plugins_to_install) do
+    if p.install_function then
+      install_functions[p.url] = p.install_function
+    end
+  end
+
+  vim.api.nvim_create_autocmd('PackChanged', {
+    group = vim.api.nvim_create_augroup("pack_change", { clear = true }),
+    callback = function(ev)
+      if ev.data.kind == 'install' or ev.data.kind == 'update' then
+        local install_func = install_functions[ev.data.spec.src]
+        if install_func then
+          install_func(ev)
+        end
+      end
+    end
+  })
+
+  -- grab a single table of all the plugins to install
+  local plugins = {}
+  for _, p in ipairs(plugins_to_install) do
+    table.insert(plugins, p.url)
+  end
+
+  if update then
+    vim.pack.update(plugins)
+  else
+    vim.pack.add(plugins)
+  end
+
+  -- run the setup functions for the plugins
+  for _, p in ipairs(plugins_to_install) do
+    if p.setup_function then
+      p.setup_function() end
+  end
+end
+
+install_or_update(false)
+
+vim.api.nvim_create_user_command("PluginsUpdate", function()
+  install_or_update(true)
+end, {force = true})
+
+vim.api.nvim_create_user_command("PluginsInstall", function()
+  install_or_update(false)
+end, {force = true})
+
+vim.api.nvim_create_user_command("PluginsClear", function()
+  local plugins = {}
+  for _, p in ipairs(plugins_to_install) do
+    pcall(function()
+      vim.pack.del(p.url, {force=true})
+    end)
+  end
+end, {force = true})
+
+-- If hooks need to run on install, run this before `vim.pack.add()`
+-- To act on install from lockfile, run before very first `vim.pack.add()`
+
 -- my config should override EVERYTHING
 vim.opt.runtimepath:remove "~/config/nvim" --remove first, added to the end
 vim.opt.runtimepath:append "~/config/nvim"
 
-if initial_plugin_setup_is_required then
-  vim.cmd [[ PlugInstall! ]]
-end
-
--- run the config funcs
-for _,fn in ipairs(plugin_setup_funcs) do
-  fn()
-end
 -- }}}
 -- autocompletion (builtin) {{{
 vim.opt.completeopt = {'menu','menuone','noselect','popup'}

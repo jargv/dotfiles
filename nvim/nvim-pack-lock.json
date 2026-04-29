@@ -1,0 +1,124 @@
+{
+  "plugins": {
+    "Arcadia": {
+      "rev": "453bd06641956bd1b6e08b73d4a9462a2190de3f",
+      "src": "https://github.com/AlessandroYorba/Arcadia"
+    },
+    "LuaSnip": {
+      "rev": "a62e1083a3cfe8b6b206e7d3d33a51091df25357",
+      "src": "https://github.com/L3MON4D3/LuaSnip"
+    },
+    "Zenburn": {
+      "rev": "35fffad3d8fa79d7f3ff0ea7a472a3b62444979b",
+      "src": "https://github.com/jnurmine/Zenburn"
+    },
+    "aerial.nvim": {
+      "rev": "645d108a5242ec7b378cbe643eb6d04d4223f034",
+      "src": "https://github.com/stevearc/aerial.nvim"
+    },
+    "delimitMate": {
+      "rev": "becbd2d353a2366171852387288ebb4b33a02487",
+      "src": "https://github.com/Raimondi/delimitMate"
+    },
+    "everforest": {
+      "rev": "aeef62ee97872d2557d25904d160ec93a4a355f8",
+      "src": "https://github.com/sainnhe/everforest"
+    },
+    "gitlink-vim": {
+      "rev": "e682eddbd32b2c8c43f01ade5e5cbf4344f3a319",
+      "src": "https://github.com/mazubieta/gitlink-vim"
+    },
+    "gitsigns.nvim": {
+      "rev": "6d808f99bd63303646794406e270bd553ad7792e",
+      "src": "https://github.com/lewis6991/gitsigns.nvim"
+    },
+    "goyo.vim": {
+      "rev": "9c72fdf2d202914318581f9f0dd09fd102f8504d",
+      "src": "https://github.com/junegunn/goyo.vim"
+    },
+    "hop.nvim": {
+      "rev": "1a1eceafe54b5081eae4cb91c723abd1d450f34b",
+      "src": "https://github.com/phaazon/hop.nvim"
+    },
+    "limelight.vim": {
+      "rev": "617064e84e896f6f36b5e559f8e6486d632f68ed",
+      "src": "https://github.com/junegunn/limelight.vim"
+    },
+    "mason.nvim": {
+      "rev": "cb8445f8ce85d957416c106b780efd51c6298f89",
+      "src": "https://github.com/williamboman/mason.nvim"
+    },
+    "nord-vim": {
+      "rev": "f13f5dfbb784deddbc1d8195f34dfd9ec73e2295",
+      "src": "https://github.com/arcticicestudio/nord-vim"
+    },
+    "nvim-navic": {
+      "rev": "f5eba192f39b453675d115351808bd51276d9de5",
+      "src": "https://github.com/SmiteshP/nvim-navic"
+    },
+    "nvim-treesitter": {
+      "rev": "4916d6592ede8c07973490d9322f187e07dfefac",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter"
+    },
+    "oil.nvim": {
+      "rev": "0fcc83805ad11cf714a949c98c605ed717e0b83e",
+      "src": "https://github.com/stevearc/oil.nvim"
+    },
+    "onedark.nvim": {
+      "rev": "df4792accde9db0043121f32628bcf8e645d9aea",
+      "src": "https://github.com/navarasu/onedark.nvim"
+    },
+    "onehalf": {
+      "rev": "75eb2e97acd74660779fed8380989ee7891eec56",
+      "src": "https://github.com/sonph/onehalf"
+    },
+    "plenary.nvim": {
+      "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
+      "src": "https://github.com/nvim-lua/plenary.nvim"
+    },
+    "telescope-fzf-native.nvim": {
+      "rev": "6fea601bd2b694c6f2ae08a6c6fab14930c60e2c",
+      "src": "https://github.com/nvim-telescope/telescope-fzf-native.nvim"
+    },
+    "telescope.nvim": {
+      "rev": "506338434fec5ad19cb1f8d45bf92d66c4917393",
+      "src": "https://github.com/nvim-telescope/telescope.nvim"
+    },
+    "vim-argumentative": {
+      "rev": "63a5f7deb675c38126de626f4c00e000902462fe",
+      "src": "https://github.com/PeterRincker/vim-argumentative"
+    },
+    "vim-commentary": {
+      "rev": "64a654ef4a20db1727938338310209b6a63f60c9",
+      "src": "https://github.com/tpope/vim-commentary"
+    },
+    "vim-dirdiff": {
+      "rev": "84bc8999fde4b3c2d8b228b560278ab30c7ea4c9",
+      "src": "https://github.com/will133/vim-dirdiff"
+    },
+    "vim-glsl": {
+      "rev": "40dd0b143ef93f3930a8a409f60c1bb85e28b727",
+      "src": "https://github.com/tikhomirov/vim-glsl"
+    },
+    "vim-horizon": {
+      "rev": "32baaaca1337a0df287216b0775404fe913eaecd",
+      "src": "https://github.com/ntk148v/vim-horizon"
+    },
+    "vim-obsession": {
+      "rev": "ed9dfc7c2cc917ace8b24f4f9f80a91e05614b63",
+      "src": "https://github.com/tpope/vim-obsession"
+    },
+    "vim-pencil": {
+      "rev": "6d70438a8886eaf933c38a7a43a61adb0a7815ed",
+      "src": "https://github.com/reedes/vim-pencil"
+    },
+    "vim-surround": {
+      "rev": "3d188ed2113431cf8dac77be61b842acb64433d9",
+      "src": "https://github.com/tpope/vim-surround"
+    },
+    "vim-toml": {
+      "rev": "da051b7c23bad3c52d18886203c594739780ec09",
+      "src": "https://github.com/cespare/vim-toml"
+    }
+  }
+}
