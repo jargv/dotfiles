@@ -9,8 +9,8 @@ local group = "gitato.autogroup"
 local extra_width_in_main_view = 6
 local viewer_help = {
   "## keys",
-  "## <space> - Add the file",
-  "## a - Add all files",
+  "## a - Add the file",
+  "## A - Add all files",
   "## R - Restore the file (checkout)",
   "## d - delete the file",
   "## b - change the diff branch",
@@ -683,6 +683,8 @@ function gitato.open_viewer(diff_branch)
     end
     toggle_file_with_status_staged(file, status)
     get_and_draw_status()
+    local cursor = vim.api.nvim_win_get_cursor(0)
+    vim.api.nvim_win_set_cursor(0, {cursor[1] + 1, cursor[2]})
   end)
   keymap('R', '', function()
     local status, file = get_status_and_file_from_current_line()
@@ -753,6 +755,14 @@ function gitato.open_viewer(diff_branch)
     get_and_draw_status()
   end)
   keymap('a', '', function()
+    local status, file = get_status_and_file_from_current_line()
+    if file == nil then
+      return
+    end
+    toggle_file_with_status_staged(file, status)
+    get_and_draw_status()
+  end)
+  keymap('A', '', function()
     -- stage all that are unstaged
     local none_were_staged = true
     gitato.status_foreach(diff_branch, function(status, file)

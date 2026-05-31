@@ -1,6 +1,5 @@
 --[[
 TODO:
- - Variables in the strings with ${} syntax
  - Mark a job as not producing errors so it can be skipped
    when checking for errors (like the asset pipeline)
 ]]
@@ -8,6 +7,53 @@ TODO:
 local fmtjson = require("fmtjson")
 local fmtelapsed = require("fmtelapsed")
 local gitato = require 'gitato'
+
+-- Variable interpolation.
+--
+-- The config may define a top-level "vars" object of key/value pairs. Any
+-- string field anywhere else in the config can reference those vars with
+-- ${name} syntax, e.g. "build/${target}/${app}". Interpolation happens on
+-- demand (never as a one-time rewrite of the config) so the raw, un-expanded
+-- config can still be edited and written back to disk. Variable values are
+-- used literally -- they are not themselves interpolated.
+
+-- Interpolate ${name} references in `str` using build_config.vars. When a
+-- referenced variable is undefined, on_missing(name) is called and its result
+-- substituted; if no on_missing handler is given, an error is raised.
+local function interpolate(str, on_missing)
+  local vars = build_config.vars or {}
+  return (str:gsub("%${([%w_]+)}", function(name)
+    local val = vars[name]
+    if val ~= nil then
+      return tostring(val)
+    end
+    if on_missing then
+      return on_missing(name)
+    end
+    error(("undefined config variable '${%s}'"):format(name))
+  end))
+end
+
+-- Recursively interpolate every string within `value` (a string, or a table of
+-- strings/tables). Returns a fresh value; the original is left untouched.
+local function deep_interpolate(value, on_missing)
+  if type(value) == "string" then
+    return interpolate(value, on_missing)
+  elseif type(value) == "table" then
+    local out = {}
+    for k, v in pairs(value) do
+      out[k] = deep_interpolate(v, on_missing)
+    end
+    return out
+  end
+  return value
+end
+
+-- Get tbl[key] with any ${vars} interpolated. Strings and nested tables of
+-- strings are expanded; other values are returned as-is.
+local function get_field(tbl, key, on_missing)
+  return deep_interpolate(tbl[key], on_missing)
+end
 
 local starting_points = {
   cpp = {ext = {"cpp", "hpp", "cxx"}, cmd = "cmake --build build", run = "build/exe"},
@@ -76,7 +122,7 @@ local function edit_build_config(config, callback)
   vim.bo.filetype = "json"
   vim.bo.bufhidden = "wipe"
 
-  local content = fmtjson(config)
+  local content = fmtjson(config, {"vars"})
   local lines = vim.fn.split(content, "\n")
 
   vim.api.nvim_create_autocmd("BufWritePost", {
@@ -129,7 +175,7 @@ local function stop_job(job)
   vim.api.nvim_buf_set_var(new_buf, "BackgroundBuildBuffer", true)
   if window then
     vim.api.nvim_win_set_buf(window, new_buf)
-    vim.wo[window].winbar = "%#StatusLine#%=%9*"..job.config.name.."%=%#StatusLine#"
+    vim.wo[window].winbar = "%#StatusLine#%=%9*"..get_field(job.config, "name").."%=%#StatusLine#"
   end
 
   local oldbuf = job.buf
@@ -188,11 +234,12 @@ local function run_job(job)
 
   local starting_buf = job.buf
   local id = vim.api.nvim_win_call(output_window, function()
-    if job.config.before_cmd then
-      vim.fn.jobstart(job.config.before_cmd, {term = false})
+    local before_cmd = get_field(job.config, "before_cmd")
+    if before_cmd then
+      vim.fn.jobstart(before_cmd, {term = false})
     end
 
-    local cwd = job.config.dir
+    local cwd = get_field(job.config, "dir")
     if cwd == nil then
       cwd = gitato.get_repo_root()
     end
@@ -202,11 +249,19 @@ local function run_job(job)
       cwd = gitato.get_repo_root() .. cwd
     end
 
-    return vim.fn.jobstart(job.config.cmd, {
+    -- interpolate ${vars}; on an undefined variable replace the whole command
+    -- with a notice so the problem surfaces in the job's output buffer
+    local ok, cmd = pcall(interpolate, job.config.cmd)
+    if not ok then
+      cmd = "echo " .. vim.fn.shellescape(cmd)
+    end
+
+    return vim.fn.jobstart(cmd, {
       cwd = cwd,
       on_exit = function(_, exit_code, _)
-        if job.config.after_cmd then
-          vim.fn.jobstart(job.config.after_cmd, {term = false})
+        local after_cmd = get_field(job.config, "after_cmd")
+        if after_cmd then
+          vim.fn.jobstart(after_cmd, {term = false})
         end
         if job.buf ~= starting_buf then
           return -- there's been a new version of the job created since this callback was created!
@@ -244,7 +299,7 @@ local function run_job(job)
 end
 
 local function wire_up_job_autocmd(job, job_group)
-  local pattern = job.config.pattern
+  local pattern = get_field(job.config, "pattern")
 
   -- pattern might also be built from the ext field
   if pattern == nil and job.config.ext ~= nil then
@@ -254,7 +309,7 @@ local function wire_up_job_autocmd(job, job_group)
     end
 
     pattern = {}
-    local dir = job.config.dir or gitato.get_repo_root()
+    local dir = get_field(job.config, "dir") or gitato.get_repo_root()
     if not dir then
       error(string.format("no valid dir for job '%s'", job.config.name))
     end
@@ -435,8 +490,9 @@ function api.load_errors()
   local errors_found = false
   for _, job_to_show in ipairs(jobs_to_show) do
     local starting_dir = vim.fn.getcwd()
-    if job_to_show.config.dir ~= nil then
-      vim.cmd.cd(job_to_show.config.dir)
+    local job_dir = get_field(job_to_show.config, "dir")
+    if job_dir ~= nil then
+      vim.cmd.cd(job_dir)
     end
     vim.cmd.cclose()
     vim.cmd("silent cbuffer " .. job_to_show.buf)
@@ -522,7 +578,7 @@ function api.toggle_open_all_output_buffers(stacked)
       normal G
       setlocal nonumber
     ]]):format(dir, vertical, job.buf))
-    vim.wo.winbar = "%#StatusLine#%=%9*"..job.config.name.."%=%#StatusLine#"
+    vim.wo.winbar = "%#StatusLine#%=%9*"..get_field(job.config, "name").."%=%#StatusLine#"
 
     if stacked then
       vertical = ""
@@ -563,8 +619,8 @@ function api.add_from_current_file()
     local script = table.concat(buf_lines)
     local new_config = vim.fn.json_decode(script)
     validateBuildConfig(new_config)
-    build_jobs = setup_build_jobs(new_config, build_jobs)
     build_config = new_config
+    build_jobs = setup_build_jobs(new_config, build_jobs)
     print "loaded as build config"
     return
   end
@@ -598,47 +654,48 @@ function api.setup()
     return
   end
 
-  local dir = build_config.setup.dir
+  local dir = get_field(build_config.setup, "dir")
   if vim.fn.isdirectory(dir) == 1 then
     vim.print("already set up!")
     return
   end
 
-  vim.cmd(("split term://%s"):format(build_config.setup.cmd))
+  vim.cmd(("split term://%s"):format(get_field(build_config.setup, "cmd")))
 end
 
 function api.statusline()
   local parts = {}
   table.insert(parts, "%5* | ")
   for _,job in pairs(build_jobs) do
+    local name = get_field(job.config, "name")
     if job.config.stream then
       if job.exit_code then
         -- stream jobs should never stop
         table.insert(parts, "%4*")
-        table.insert(parts, job.config.name..": stream stopped" .. job.exit_code)
+        table.insert(parts, name..": stream stopped" .. job.exit_code)
       elseif job.id == nil then
         table.insert(parts, "%1*")
-        table.insert(parts, job.config.name..": stream not started")
+        table.insert(parts, name..": stream not started")
       elseif job.stream_available then
         table.insert(parts, "%6*")
-        table.insert(parts, job.config.name..": stream available")
+        table.insert(parts, name..": stream available")
       else
         table.insert(parts, "%3*")
-        table.insert(parts, job.config.name..": stream pending")
+        table.insert(parts, name..": stream pending")
       end
     elseif job.start_time == nil then
       table.insert(parts, "%1*")
-      table.insert(parts, job.config.name..": not started")
+      table.insert(parts, name..": not started")
     elseif job.exit_code == nil then
       local elapsed = vim.fn.localtime() - job.start_time
       table.insert(parts, "%2*")
-      table.insert(parts, job.config.name..": "..fmtelapsed(elapsed))
+      table.insert(parts, name..": "..fmtelapsed(elapsed))
     elseif job.exit_code == 0 then
       table.insert(parts, "%3*")
-      table.insert(parts, job.config.name..": success")
+      table.insert(parts, name..": success")
     else
       table.insert(parts, "%4*")
-      table.insert(parts, job.config.name..": failed")
+      table.insert(parts, name..": failed")
     end
     table.insert(parts, "%5* | ")
   end
@@ -686,7 +743,7 @@ function api.debug_step(step_name, break_first)
     return
   end
 
-  local cmd = step_job.cmd
+  local cmd = get_field(step_job, "cmd")
   cmd = cmd:gsub("%d?>.*$", "") -- strip off any redirection, it breaks gdb tui
 
   local break_option = ""
@@ -696,7 +753,7 @@ function api.debug_step(step_name, break_first)
     break_option = ('-ex \\"break %s:%d\\"'):format(fname, line)
   end
 
-  vim.cmd("tabnew term://"..step_job.dir.."//usr/bin/gdb --tui "..break_option.." --args ".. cmd)
+  vim.cmd("tabnew term://"..get_field(step_job, "dir").."//usr/bin/gdb --tui "..break_option.." --args ".. cmd)
 end
 
 function api.attach_debugger_to_running_step(step_name)
@@ -711,7 +768,7 @@ function api.attach_debugger_to_running_step(step_name)
     return
   end
 
-  local cmd = job.config.cmd
+  local cmd = get_field(job.config, "cmd")
   cmd = cmd:gsub("%d?>.*$", "") -- strip off any redirection, it breaks gdb tui
 
   -- this only gets us the parent pid because the job is running in a shell
@@ -721,7 +778,7 @@ function api.attach_debugger_to_running_step(step_name)
     output = {parent_pid}
   end
   local pid = output[1]
-  cmd = "tabnew term://"..job.config.dir.."//usr/bin/gdb --tui -p ".. pid .. " " .. cmd
+  cmd = "tabnew term://"..get_field(job.config, "dir").."//usr/bin/gdb --tui -p ".. pid .. " " .. cmd
   print(cmd)
   vim.cmd(cmd)
 end
