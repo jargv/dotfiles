@@ -40,6 +40,9 @@ local function proj_root(dir, chdir)
     return
   end
   git_root = vim.fn.fnamemodify(git_root, ":~")
+  if git_root:sub(-1,-1) == '/' then
+    git_root = git_root:sub(1,-2)
+  end
   chdir(git_root)
 end
 
