@@ -352,10 +352,9 @@ function install_or_update(update)
     table.insert(plugins, p.url)
   end
 
+  vim.pack.add(plugins)
   if update then
-    vim.pack.update(plugins)
-  else
-    vim.pack.add(plugins)
+    vim.pack.update()
   end
 
   -- run the setup functions for the plugins
@@ -1307,6 +1306,16 @@ vim.api.nvim_set_keymap('i', '<cr>', '', {
     end
   })
 
+  -- manually trigger LSP completion. Terminals send Ctrl-Space as <C-@>/<Nul>, so map both
+  for _, key in ipairs({ '<C-Space>', '<C-@>' }) do
+    vim.api.nvim_set_keymap('i', key, '', {
+      silent = true,
+      callback = function()
+        vim.lsp.completion.get()
+      end
+    })
+  end
+
   vim.api.nvim_set_keymap('i', '<C-j>', '', {
     silent = true,
     callback = function()
@@ -1704,7 +1713,10 @@ vim.cmd [[
 -- treesitter {{{1
 require('nvim-treesitter').setup{}
 if vim.fn.executable("tree-sitter") ~= 0 then
-  require('nvim-treesitter').install{"c", "cpp", "lua", "go", "typescript", "vimdoc"}
+  require('nvim-treesitter').install{
+    "c", "cpp", "lua", "go", "typescript", "vimdoc", "templ",
+    "html", "css", "javascript", "json", "bash", "markdown"
+  }
 else
   vim.defer_fn(function()
     vim.api.nvim_echo({
@@ -1712,6 +1724,23 @@ else
     }, true, {})
   end, 300)
 end
+
+-- Use tree-sitter highlighting for any filetype that has an installed parser
+-- (nvim-treesitter main branch doesn't auto-enable it). Filetypes without a
+-- parser fall back to the built-in vim syntax files.
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("ts_highlight", { clear = true }),
+  callback = function(args)
+    local lang = vim.treesitter.language.get_lang(vim.bo[args.buf].filetype)
+    if not lang then return end
+    -- language.add returns true only when a parser is actually available
+    -- (it returns nil rather than erroring otherwise); pcall guards a throw.
+    local ok, loaded = pcall(vim.treesitter.language.add, lang)
+    if ok and loaded then
+      vim.treesitter.start(args.buf, lang)
+    end
+  end,
+})
 
 -- lsp config {{{1
 vim.api.nvim_create_user_command("LspKillAll", function()
@@ -1863,6 +1892,22 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
+vim.lsp.config("templ", {
+  cmd = {"templ", "lsp"},
+  filetypes = {"templ"},
+  root_markers = {"go.work", "go.mod", ".git"},
+})
+
+-- templ: format on save (handled by the templ LSP)
+local templ_augroup = vim.api.nvim_create_augroup("TemplFormat", { clear = true })
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = templ_augroup,
+  pattern = "*.templ",
+  callback = function()
+    vim.lsp.buf.format({ async = false })
+  end,
+})
+
 vim.lsp.config("lua_ls", {
   filetypes = {"lua"},
   on_init = function(client)
@@ -1895,7 +1940,7 @@ vim.lsp.config("lua_ls", {
   end
 })
 
-vim.lsp.enable({'clangd', 'lua_ls', 'gopls'})
+vim.lsp.enable({'clangd', 'lua_ls', 'gopls', 'templ'})
 
 vim.diagnostic.config({
   signs = false,

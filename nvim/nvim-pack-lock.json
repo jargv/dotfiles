@@ -5,15 +5,15 @@
       "src": "https://github.com/AlessandroYorba/Arcadia"
     },
     "LuaSnip": {
-      "rev": "a62e1083a3cfe8b6b206e7d3d33a51091df25357",
+      "rev": "0abc8f390b278c3b4aabc4c004ac8a088b65cf24",
       "src": "https://github.com/L3MON4D3/LuaSnip"
     },
     "Zenburn": {
-      "rev": "35fffad3d8fa79d7f3ff0ea7a472a3b62444979b",
+      "rev": "9d7988abf0d2654f837fcd288145afd5f316b70c",
       "src": "https://github.com/jnurmine/Zenburn"
     },
     "aerial.nvim": {
-      "rev": "645d108a5242ec7b378cbe643eb6d04d4223f034",
+      "rev": "585db11015abccf673dc5bd6502714d5655554be",
       "src": "https://github.com/stevearc/aerial.nvim"
     },
     "delimitMate": {
@@ -29,7 +29,7 @@
       "src": "https://github.com/mazubieta/gitlink-vim"
     },
     "gitsigns.nvim": {
-      "rev": "6d808f99bd63303646794406e270bd553ad7792e",
+      "rev": "dd3f588bacbeb041be6facf1742e42097f62165d",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "goyo.vim": {
@@ -45,7 +45,7 @@
       "src": "https://github.com/junegunn/limelight.vim"
     },
     "mason.nvim": {
-      "rev": "cb8445f8ce85d957416c106b780efd51c6298f89",
+      "rev": "16ba83bfc8a25f52bb545134f5bee082b195c460",
       "src": "https://github.com/williamboman/mason.nvim"
     },
     "nord-vim": {
@@ -61,7 +61,7 @@
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "oil.nvim": {
-      "rev": "0fcc83805ad11cf714a949c98c605ed717e0b83e",
+      "rev": "b91ee5a77a6a9605d9c1aaf4fda74b66082c8297",
       "src": "https://github.com/stevearc/oil.nvim"
     },
     "onedark.nvim": {
@@ -77,11 +77,11 @@
       "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "telescope-fzf-native.nvim": {
-      "rev": "6fea601bd2b694c6f2ae08a6c6fab14930c60e2c",
+      "rev": "b25b749b9db64d375d782094e2b9dce53ad53a40",
       "src": "https://github.com/nvim-telescope/telescope-fzf-native.nvim"
     },
     "telescope.nvim": {
-      "rev": "506338434fec5ad19cb1f8d45bf92d66c4917393",
+      "rev": "7d324792b7943e4aa16ad007212e6acc6f9fe335",
       "src": "https://github.com/nvim-telescope/telescope.nvim"
     },
     "vim-argumentative": {
