@@ -1744,7 +1744,19 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- lsp config {{{1
 vim.api.nvim_create_user_command("LspKillAll", function()
-  vim.lsp.stop_client(vim.lsp.get_active_clients())
+  for _, client in ipairs(vim.lsp.get_clients()) do
+    client:stop(true)
+  end
+end, {force = true})
+
+-- Restart the LSP clients attached to the current buffer (re-reads .luarc.json
+-- and other init-time settings). Force-stops so re-attach is deterministic.
+vim.api.nvim_create_user_command("LspRestart", function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+    client:stop(true)
+  end
+  vim.defer_fn(function() vim.cmd("edit") end, 200)
 end, {force = true})
 
 normal.gd = function()
@@ -1909,35 +1921,34 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 vim.lsp.config("lua_ls", {
+  cmd = {"lua-language-server"},
   filetypes = {"lua"},
-  on_init = function(client)
-    local path = client.workspace_folders[1].name
-    if not vim.loop.fs_stat(path..'/.luarc.json') and not vim.loop.fs_stat(path..'/.luarc.jsonc') then
-      client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
-        Lua = {
-          runtime = {
-            -- Tell the language server which version of Lua you're using
-            -- (most likely LuaJIT in the case of Neovim)
-            version = 'LuaJIT'
-          },
-          -- Make the server aware of Neovim runtime files
-          workspace = {
-            checkThirdParty = false,
-            library = {
-              vim.env.VIMRUNTIME
-              -- "${3rd}/luv/library"
-              -- "${3rd}/busted/library",
-            }
-            -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
-            -- library = vim.api.nvim_get_runtime_file("", true)
-          }
-        }
-      })
-
-      client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
-    end
-    return true
-  end
+  root_markers = {".luarc.json", ".luarc.jsonc", ".git"},
+  -- Baseline settings so editing config works regardless of which root lua_ls
+  -- anchors on. A project-local .luarc.json is merged on top of these.
+  settings = {
+    Lua = {
+      runtime = {
+        -- Neovim uses LuaJIT
+        version = 'LuaJIT',
+      },
+      -- Recognize `vim` and friends as globals
+      diagnostics = {
+        globals = { 'vim' },
+      },
+      -- Make the server aware of Neovim runtime files
+      workspace = {
+        checkThirdParty = false,
+        library = {
+          vim.env.VIMRUNTIME,
+          -- "${3rd}/luv/library",
+          -- "${3rd}/busted/library",
+        },
+        -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
+        -- library = vim.api.nvim_get_runtime_file("", true)
+      },
+    },
+  },
 })
 
 vim.lsp.enable({'clangd', 'lua_ls', 'gopls', 'templ'})
@@ -2001,7 +2012,7 @@ if statusline_timer ~= nil then
   statusline_timer:stop()
 end
 
-statusline_timer = vim.loop.new_timer();
+statusline_timer = vim.uv.new_timer();
 statusline_timer:start(100, 100, function()
   -- schedule a function to be run on the main thread
   vim.defer_fn(function()
