@@ -1,5 +1,5 @@
-#export TERM=screen-256color
-export TERM=xterm
+# Let the terminal set its own TERM (kitty/alacritty advertise richer
+# capabilities than plain xterm); tmux forces screen-256color internally.
 
 if [[ -f ~/.zshlocal ]]; then
   source ~/.zshlocal
@@ -41,8 +41,8 @@ fi
 
 #{{{1 history
 HISTFILE=~/.histfile
-HISTSIZE=1000
-SAVEHIST=1000
+HISTSIZE=100000
+SAVEHIST=200000
 setopt appendhistory inc_append_history share_history hist_ignore_dups
 setopt histignorespace
 
@@ -124,9 +124,8 @@ alias -s sh=sh
 alias -s pdf=chrome
 #}}}
 #{{{2 docker aliases
-alias dm docker-machine
-alias dc docker-compose
-alias d docker
+alias dc=docker-compose
+alias d=docker
 #}}}
 
 

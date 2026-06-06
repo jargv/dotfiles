@@ -284,11 +284,14 @@ Plug("L3MON4D3/LuaSnip", function()
   require("luasnip.loaders.from_lua").load({paths = "./snippets"})
 end)
 
--- Plug 'phaazon/hop.nvim' {{{2
-Plug('phaazon/hop.nvim', function()
-  leader.f = ":HopChar1<cr>"
-  leader.F = ":HopChar1MW<cr>"
-  require('hop').setup()
+-- Plug 'folke/flash.nvim' {{{2
+Plug('folke/flash.nvim', function()
+  local flash = require('flash')
+  flash.setup()
+  -- <leader>f jumps within the current window, <leader>F across all windows
+  -- (mirrors hop's HopChar1 vs HopChar1MW split this replaced).
+  leader.f = function() flash.jump({ search = { multi_window = false } }) end
+  leader.F = function() flash.jump({ search = { multi_window = true } }) end
 end)
 
 -- Plug 'lewis6991/gitsigns.nvim' {{{2
@@ -1951,7 +1954,15 @@ vim.lsp.config("lua_ls", {
   },
 })
 
-vim.lsp.enable({'clangd', 'lua_ls', 'gopls', 'templ'})
+-- bash-language-server runs shellcheck automatically when it's on $PATH.
+-- Install with `:MasonInstall bash-language-server` (and `shellcheck`).
+vim.lsp.config("bashls", {
+  cmd = {"bash-language-server", "start"},
+  filetypes = {"sh", "bash"},
+  root_markers = {".git"},
+})
+
+vim.lsp.enable({'clangd', 'lua_ls', 'gopls', 'templ', 'bashls'})
 
 vim.diagnostic.config({
   signs = false,
