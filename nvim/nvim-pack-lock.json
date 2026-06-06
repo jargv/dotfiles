@@ -24,6 +24,10 @@
       "rev": "aeef62ee97872d2557d25904d160ec93a4a355f8",
       "src": "https://github.com/sainnhe/everforest"
     },
+    "flash.nvim": {
+      "rev": "fcea7ff883235d9024dc41e638f164a450c14ca2",
+      "src": "https://github.com/folke/flash.nvim"
+    },
     "gitlink-vim": {
       "rev": "e682eddbd32b2c8c43f01ade5e5cbf4344f3a319",
       "src": "https://github.com/mazubieta/gitlink-vim"

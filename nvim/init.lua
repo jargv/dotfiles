@@ -287,7 +287,34 @@ end)
 -- Plug 'folke/flash.nvim' {{{2
 Plug('folke/flash.nvim', function()
   local flash = require('flash')
-  flash.setup()
+  flash.setup({
+    label = {
+      uppercase = false,   -- quieter, lowercase labels
+      style = "overlay",   -- replace the char (no text shift).
+                           -- other options: "eol" | "inline" | "right_align"
+      rainbow = { enabled = false }, -- set true to color labels by distance
+    },
+    highlight = {
+      backdrop = true,     -- dim non-matches. Set false if it feels heavy.
+      matches = true,      -- highlight all matches, not just the labels
+    },
+  })
+
+  -- Colors tuned for everforest (hard). Tweak guibg/guifg to taste.
+  -- Reapplied on ColorScheme because plugin setup runs before the scheme
+  -- loads, and loading a scheme clears these.
+  local function flash_highlights()
+    vim.api.nvim_set_hl(0, "FlashBackdrop", { fg = "#56635f" })                            -- muted grey
+    vim.api.nvim_set_hl(0, "FlashMatch",    { fg = "#d3c6aa", bg = "#3a4248" })            -- fg on dim bg
+    vim.api.nvim_set_hl(0, "FlashCurrent",  { fg = "#2b3339", bg = "#dbbc7f", bold = true }) -- yellow
+    vim.api.nvim_set_hl(0, "FlashLabel",    { fg = "#2b3339", bg = "#e67e80", bold = true }) -- red
+  end
+  flash_highlights()
+  vim.api.nvim_create_autocmd("ColorScheme", {
+    group = vim.api.nvim_create_augroup("flash_highlights", { clear = true }),
+    callback = flash_highlights,
+  })
+
   -- <leader>f jumps within the current window, <leader>F across all windows
   -- (mirrors hop's HopChar1 vs HopChar1MW split this replaced).
   leader.f = function() flash.jump({ search = { multi_window = false } }) end
