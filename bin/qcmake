@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+# qcmake - a queueing wrapper around cmake.
+#
+# It behaves exactly like cmake, except that a `cmake --build` is serialized
+# behind a machine-wide lock so a swarm of parallel builds can't thrash the
+# whole machine. Every other cmake operation (configure, --install, -E,
+# --version, queries, ...) is delegated straight through with no lock.
+#
+# Guarantees for `--build`:
+#   - At most one qcmake build runs on the machine at a time.
+#   - A high-priority build jumps ahead of any *queued* low-priority builds. It
+#     waits behind at most the single build already in progress (a running
+#     compile can't be preempted without killing it).
+#   - Crash-safe: flock releases automatically when the holder dies, so there
+#     are no stale locks to clean up.
+#
+# Priority is high or low. Override with QCMAKE_PRIORITY=high|low; otherwise it
+# defaults to low under an automated agent (CLAUDECODE / AI_AGENT set in the
+# environment) and high for an interactive shell.
+#
+# Lock location: $QCMAKE_LOCK_DIR (default /tmp/qcmake-build-lock).
+set -euo pipefail
+
+# --- delegate non-build invocations straight to cmake ------------------------
+needs_lock=0
+for arg in "$@"; do
+  if [ "$arg" = "--build" ]; then
+    needs_lock=1
+    break
+  fi
+done
+
+if [ "$needs_lock" -eq 0 ]; then
+  exec cmake "$@"
+fi
+
+# --- lock setup --------------------------------------------------------------
+LOCK_DIR="${QCMAKE_LOCK_DIR:-/tmp/qcmake-build-lock}"
+mkdir -p "$LOCK_DIR"
+
+R="$LOCK_DIR/resource.lock"   # build mutex, held for the duration of the build
+N="$LOCK_DIR/next.lock"       # entry gate: a high-priority waiter holds it while
+                              #   queued, blocking low-priority builds from entering
+L="$LOCK_DIR/low.lock"        # throttle: at most one low-priority build waits on N
+
+# --- decide priority ---------------------------------------------------------
+priority="${QCMAKE_PRIORITY:-}"
+if [ -z "$priority" ]; then
+  if [ -n "${CLAUDECODE:-}" ] || [ -n "${AI_AGENT:-}" ]; then
+    priority=low
+  else
+    priority=high
+  fi
+fi
+
+# --- open lock file descriptors (locks live as long as these stay open) ------
+exec 200>"$R"
+exec 201>"$N"
+exec 202>"$L"
+
+notice() { printf '[qcmake] %s\n' "$1" >&2; }
+
+# --- acquire using the three-lock priority scheme ----------------------------
+if [ "$priority" = high ]; then
+  flock 201                       # take the gate (blocks new low-priority builds)
+  if ! flock -n 200; then
+    notice "build in progress; waiting (priority=high, ahead of low-priority builds)..."
+    flock 200                     # wait only for the running build to finish
+  fi
+  flock -u 201                    # release the gate; we hold the build lock
+else
+  flock 202                       # only one low-priority build queues at a time
+  if ! flock -n 201; then
+    notice "yielding to a higher-priority build; waiting..."
+    flock 201                     # blocks while a high-priority build holds the gate
+  fi
+  if ! flock -n 200; then
+    notice "build in progress; waiting our turn (priority=low)..."
+    flock 200
+  fi
+  flock -u 201                    # leave the gate
+  flock -u 202                    # let the next low-priority build queue
+fi
+
+# --- run the build holding the resource lock (fd 200) ------------------------
+set +e
+cmake "$@"
+status=$?
+set -e
+
+exit "$status"
