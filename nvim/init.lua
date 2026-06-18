@@ -284,6 +284,13 @@ Plug("L3MON4D3/LuaSnip", function()
   require("luasnip.loaders.from_lua").load({paths = "./lua_snippets"})
   -- plaintext SnipMate-format snippets (author new snippets here, auto-reloads on save)
   require("luasnip.loaders.from_snipmate").load({paths = "./snippets"})
+
+  -- Route native LSP completion's snippet expansion through LuaSnip so call
+  -- snippets (func(args) placeholders) use the same engine and <tab> jump keys
+  -- as my own snippets.
+  vim.snippet.expand = function(body)
+    luasnip.lsp_expand(body)
+  end
 end)
 
 -- Plug 'phaazon/hop.nvim' {{{2
@@ -1253,6 +1260,12 @@ vim.api.nvim_set_keymap('i', '<cr>', '', {
   noremap = true,
   nowait = true,
   callback = function()
+    -- confirm the highlighted completion item (this is what triggers native
+    -- LSP snippet expansion via CompleteDone)
+    if vim.fn.pumvisible() == 1 then
+      return '<C-y>'
+    end
+
     local is_lua = vim.bo.filetype == "lua"
     local is_cpp = vim.bo.filetype == "cpp"
 
@@ -1294,6 +1307,12 @@ vim.api.nvim_set_keymap('i', '<cr>', '', {
         if did_jump then
           return
         end
+      end
+
+      -- jump through placeholders of native LSP (vim.snippet) call snippets
+      if vim.snippet.active({ direction = 1 }) then
+        vim.snippet.jump(1)
+        return
       end
 
       local column = vim.fn.getpos('.')[3]
@@ -1343,9 +1362,16 @@ vim.api.nvim_set_keymap('i', '<cr>', '', {
     noremap = true,
     silent = true,
     callback = function()
-      if luasnip.jumpable() then
-        local seq = vim.api.nvim_replace_termcodes("<esc>a<tab>", true, false, true)
-        vim.api.nvim_feedkeys(seq, 'm', false)
+      -- jump forward through snippet placeholders (LuaSnip enters the right
+      -- mode at the next stop, so no <esc>a<tab> round-trip needed)
+      if luasnip.locally_jumpable(1) then
+        luasnip.jump(1)
+        return
+      end
+
+      -- same, for native LSP (vim.snippet) call snippets
+      if vim.snippet.active({ direction = 1 }) then
+        vim.snippet.jump(1)
         return
       end
 
@@ -1359,8 +1385,7 @@ end)()
 leader.s = function()
   local filetype = vim.bo.filetype
   -- with splitright the last-opened ends up rightmost/focused: the new SnipMate file
-  vim.cmd.vsplit(("~/config/nvim/my_snippets/%s.snippets"):format(filetype))  -- old UltiSnips (migration source)
-  vim.cmd.vsplit(("~/config/nvim/lua_snippets/%s.lua"):format(filetype))      -- LuaSnip lua
+  vim.cmd.vsplit(("~/config/nvim/lua_snippets/%s.lua"):format(filetype))      -- LuaSnip lua (raw-power snippets)
   vim.cmd.vsplit(("~/config/nvim/snippets/%s.snippets"):format(filetype))     -- new SnipMate (author here)
 end
 
@@ -1861,6 +1886,12 @@ end)()
 local navic = require "nvim-navic"
 
 
+-- Advertise snippet support so servers can offer call snippets (func(args) with
+-- placeholders). Noisy snippet types (e.g. lua_ls keyword snippets) are disabled
+-- per-server below.
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
 vim.lsp.config("*", {
   capabilities = capabilities,
   root_markers = { '.git/', 'build/' },
@@ -1939,6 +1970,10 @@ vim.lsp.config("lua_ls", {
       -- Recognize `vim` and friends as globals
       diagnostics = {
         globals = { 'vim' },
+      },
+      completion = {
+        keywordSnippet = "Disable",
+        callSnippet = "Replace",
       },
       -- Make the server aware of Neovim runtime files
       workspace = {
