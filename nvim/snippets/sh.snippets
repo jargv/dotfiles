@@ -1,0 +1,8 @@
+# Shell snippets. Literal $ in the body is escaped as \$ so it isn't read as a tabstop.
+snippet script bash script skeleton
+	#!/usr/bin/env bash
+	set -euo pipefail
+	pushd "\$(dirname "\$0")"
+	$0
+	popd
+# vim:ft=snippets

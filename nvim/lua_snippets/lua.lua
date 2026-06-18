@@ -1,5 +1,6 @@
 return {
-  -- snippet {{{1
+  -- snip {{{1
+  -- dynamic codegen for lua-format snippets (counts {} to emit i(n) args): needs lua.
   s("snip",fmta("-- <> {{{1\ns('<>', fmt([[\n  <>\n]], {<>})),", {
     rep(1), i(1), i(2),
     f(function(args)
@@ -18,6 +19,7 @@ return {
   })),
 
   -- require {{{1
+  -- functionNode derives the local name from the last dotted module component: needs lua.
   s('req', fmt([[
     local {} = require '{}'
   ]], {
@@ -29,6 +31,7 @@ return {
   })),
 
   -- fn {{{1
+  -- dynamicNode picks the function form based on the current line / name: needs lua.
   s('fn', {
     d(1, function()
       local line = vim.fn.getline('.')
@@ -58,6 +61,7 @@ return {
   }),
 
   -- for {{{1
+  -- choiceNode with nested tabstops (pairs/ipairs/numeric): needs lua.
   s('for', fmt([[
     for {} do
       {}
@@ -71,14 +75,8 @@ return {
     i(2),
   })),
 
-  -- if {{{1
-  s('if', fmt([[
-    if {} then
-      {}
-    end
-  ]], {i(1), i(2)})),
-  --}}}
   -- l {{{1
+  -- functionNode expands comma-separated args into tostring(...) .. ',' .. ...: needs lua.
   s('l', fmt([[
   print("{}:" .. {})
   ]], {
@@ -95,20 +93,5 @@ return {
     end, {1})
   })),
 
-  -- log {{{1
-  s('log', fmt([[
-    print("{}")
-  ]], {i(1)})),
   --}}}
-
- -- class {{{1
- s('class', fmta([[
-   local <> = setmetatable({__name = "<>"}, {
-     __call = function(<>, self)
-       <>
-       return setmetatable(self, <>)
-     end
-   })
-   <>.__index = <>
- ]], {i(1),rep(1),rep(1), i(2), rep(1),rep(1),rep(1)})),
 }

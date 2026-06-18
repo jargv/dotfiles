@@ -1,0 +1,61 @@
+# CMake snippets. All convert cleanly ($1 mirrors), so lua_snippets/cmake.lua is gone.
+snippet new new CMakeLists.txt project
+	cmake_minimum_required (VERSION 3.28 FATAL_ERROR)
+	project (${1:proj} VERSION 0.0 LANGUAGES CXX)
+
+	set(CMAKE_CXX_STANDARD 20)
+	set(CMAKE_CXX_SCAN_FOR_MODULES YES)
+	set(CMAKE_CXX_STANDARD_REQUIRED ON)
+	set(CMAKE_CXX_EXTENSIONS OFF)
+
+	# executable
+	add_executable($1)
+
+	target_sources($1
+	PRIVATE
+	  main.cpp
+	)
+
+	target_sources($1
+	PRIVATE
+	FILE_SET CXX_MODULES
+	FILES
+	  helper.cxx
+	)
+
+	target_compile_options($1
+	PRIVATE
+	  -Wall -Wextra -Wuninitialized -Werror
+	  -Wno-unused-parameter -Wno-unused-function -Wno-unused-variable
+	  -ftemplate-backtrace-limit=0
+	)
+snippet if if/endif block
+	if($1)
+	  $2
+	endif()
+snippet opt option guarded by add_compile_definitions
+	option($1)
+	if("\${$1}")
+	  add_compile_definitions($1)
+	endif()
+snippet exe add_executable with module sources
+	add_executable($1)
+	target_sources($1
+	PRIVATE
+	  main.cpp
+	)
+	target_sources($1
+	PRIVATE
+	FILE_SET CXX_MODULES
+	FILES
+	  helper.cxx
+	)
+snippet lib add_library with module sources
+	add_library($1)
+	target_sources($1
+	PRIVATE
+	FILE_SET CXX_MODULES
+	FILES
+	  $1.cxx
+	)
+# vim:ft=snippets

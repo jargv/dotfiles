@@ -1,3 +1,15 @@
+# Lua snippets. Dynamic/choice ones (snip, req, fn, for, l) stay in lua_snippets/lua.lua.
 snippet if conditional
   if $1 then
   end
+snippet log print line
+  print("$1")
+snippet class metatable-based class
+  local $1 = setmetatable({__name = "$1"}, {
+    __call = function($1, self)
+      $2
+      return setmetatable(self, $1)
+    end
+  })
+  $1.__index = $1
+# vim:ft=snippets

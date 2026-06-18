@@ -1,12 +1,6 @@
 return {
-  -- if {{{1
-  s("if", fmta([[
-    if (<>) {
-      <>
-    }
-  ]], {i(1, "true"), i(0)})),
-
   -- for {{{1
+  -- choiceNode with nested tabstops + mirrored loop var: needs lua.
   s("for", fmta([[
     for (<>){
       <>
@@ -20,36 +14,8 @@ return {
     i(0)
   })),
 
-  -- while {{{1
-  s('while', fmta([[
-    while (<>) {
-      <>
-    }
-  ]], {i(1), i(0)})),
-  -- fn {{{1
-  s('fn', fmta([[
-    auto <> = [<>](<>){
-      <>
-    };
-  ]], {
-    i(1),
-    i(3),
-    i(2),
-    i(0),
-  })),
-
-  -- lm {{{1
-  s('lm', fmta([[
-    [<>](<>){
-      <>
-    }
-  ]], {
-    i(2),
-    i(1),
-    i(0),
-  })),
-
   -- l {{{1
+  -- functionNode counts comma-separated args to build the "{} {} ..." format: needs lua.
   s('l', fmta([[
     LOG("<>: <>", <>);
   ]], {
@@ -66,15 +32,6 @@ return {
     end, {1}),
     i(1),
   })),
-
-  -- log {{{1
-  s('log', fmta([[
-    LOG("<>");
-  ]], {i(1)})),
-  -- req {{{1
-  s('req', fmt([[
-    REQUIRE({});
-  ]], {i(1, "false")})),
 
   --}}}
 }
