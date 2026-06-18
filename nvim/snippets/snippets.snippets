@@ -1,0 +1,10 @@
+# Snippets for writing snippets — SnipMate format, loaded by LuaSnip from nvim/snippets/.
+# Expand `snip`, or `asnip` for an auto-expanding one; tab through trigger -> description -> body.
+snippet snip snippet definition
+	snippet ${1:trigger} ${2:description}
+		${3:body}
+# auto-expanding variant (fires as soon as the trigger is typed, no key needed)
+snippet asnip autosnippet definition
+	autosnippet ${1:trigger} ${2:description}
+		${3:body}
+# vim:ft=snippets
