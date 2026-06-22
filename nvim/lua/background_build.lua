@@ -122,7 +122,7 @@ local function edit_build_config(config, callback)
   vim.bo.filetype = "json"
   vim.bo.bufhidden = "wipe"
 
-  local content = fmtjson(config, {"vars"})
+  local content = fmtjson(config, {"name", "vars"})
   local lines = vim.fn.split(content, "\n")
 
   vim.api.nvim_create_autocmd("BufWritePost", {

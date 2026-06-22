@@ -15,6 +15,8 @@ func! <SID>opEquals(op)
   return "= ".result." ".a:op
 endfunc
 
+inoremap @@ ---@
+
 inoreab <buffer> != ~=
 
 nnoremap <leader>;a :call AssertToIf()<cr>
@@ -79,4 +81,3 @@ func! s:trim(code)
   let parts = matchlist(a:code, '\v^\s*(.{-})\s*$')
   return parts[1]
 endfunc
-
