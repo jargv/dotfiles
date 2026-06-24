@@ -632,6 +632,7 @@ elseif isMac then
 end
 
 --other
+require 'filetypes' -- filetype detection (migrated from ftdetect/*.vim)
 vim.g.filetype_pt = "prolog"
 vim.opt.scrolloff = 3
 vim.opt.fileignorecase = false
@@ -988,7 +989,7 @@ local function reloadConfig()
   local ft_parts = vim.fn.split(vim.bo.filetype, "\\.")
   vim.cmd "tabe ~/config/nvim/init.lua"
   if #ft_parts ~= 0 then
-    vim.cmd("vsplit ~/config/nvim/ftplugin/"..ft_parts[1]..".vim")
+    vim.cmd("vsplit ~/config/nvim/ftplugin/"..ft_parts[1]..".lua")
   end
 end
 
@@ -1753,6 +1754,7 @@ else
     }, true, {})
   end, 300)
 end
+vim.treesitter.language.register('markdown', { 'journal' })
 
 -- Use tree-sitter highlighting for any filetype that has an installed parser
 -- (nvim-treesitter main branch doesn't auto-enable it). Filetypes without a

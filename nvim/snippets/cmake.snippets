@@ -58,4 +58,11 @@ snippet lib add_library with module sources
 	FILES
 	  $1.cxx
 	)
-# vim:ft=snippets
+snippet l log a variable
+  message("$1: " ${$1})
+
+snippet for foreach loop
+  foreach($1 IN LISTS $2)
+    $0
+  endforeach()
+
