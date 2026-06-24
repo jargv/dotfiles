@@ -732,8 +732,8 @@ leader.H = "<C-W>H"
 leader.J = "<C-W>H"
 leader.K = "<C-W>K"
 leader.L = "<C-W>L"
-leader.tj = ":call MoveWindowTo#NextTab()<cr>"
-leader.tk = ":call MoveWindowTo#PrevTab()<cr>"
+leader.tj = ":lua require('movewindowto').next_tab()<cr>"
+leader.tk = ":lua require('movewindowto').prev_tab()<cr>"
 
 
 -- move between tabs
