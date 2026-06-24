@@ -460,6 +460,7 @@ function gitato.open_viewer(diff_branch)
   local main_buf_width = 0
   local main_buf_height = 0
   local current_view_window = nil
+  local current_view_deleted = nil
   local viewing_log = false
 
   local function draw_status(status)
@@ -537,6 +538,7 @@ function gitato.open_viewer(diff_branch)
     end
     viewing_log = false
     current_view_window = nil
+    current_view_deleted = nil
   end
 
   local function view_diff_for_current_file()
@@ -559,8 +561,48 @@ function gitato.open_viewer(diff_branch)
       end
     end
 
-    -- no diff on deleted files
+    -- for deleted files, just show the old contents in a single read-only
+    -- window. A full all-lines-removed diff isn't useful, and opening the
+    -- on-disk path would recreate the deleted file.
     if status == " D" or status == "D " then
+      -- already showing this deleted file? don't recreate the window
+      if current_view_deleted == file
+      and current_view_window ~= nil
+      and vim.api.nvim_win_is_valid(current_view_window) then
+        return
+      end
+
+      close_view_window()
+
+      local ref = diff_branch or "HEAD"
+      local name_at_ref = vim.fn.systemlist(
+        ("cd %s && ~/config/bin/git-nameatrev %s %s"):format(git_repo_root, file, ref)
+      )[1]
+      if vim.api.nvim_get_vvar("shell_error") ~= 0 or name_at_ref == nil then
+        name_at_ref = file
+      end
+
+      local contents = vim.fn.systemlist(
+        ("cd %s && git show %s:%s"):format(git_repo_root, ref, name_at_ref)
+      )
+
+      local total_width = vim.api.nvim_win_get_width(0)
+      local diff_window_width = total_width - main_buf_width
+      vim.cmd(diff_window_width.."vnew")
+      local buf = vim.api.nvim_get_current_buf()
+      vim.bo.buftype = "nofile"
+      vim.bo.bufhidden = "wipe"
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, contents)
+      vim.bo.modifiable = false
+      vim.bo.modified = false
+      -- syntax highlight based on the (deleted) file's name
+      vim.bo.filetype = vim.filetype.match({ filename = file }) or ""
+      vim.cmd("normal ggM")
+      vim.wo.winfixwidth = true
+      current_view_window = vim.fn.win_getid(vim.fn.winnr())
+      current_view_deleted = file
+      -- hand focus back to the status pane (like the other view paths)
+      vim.api.nvim_set_current_win(main_window)
       return
     end
 
