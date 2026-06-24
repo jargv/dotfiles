@@ -309,7 +309,15 @@ local function wire_up_job_autocmd(job, job_group)
     end
 
     pattern = {}
-    local dir = get_field(job.config, "dir") or gitato.get_repo_root()
+    local dir = get_field(job.config, "dir")
+    if dir == nil then
+      dir = gitato.get_repo_root()
+    elseif dir:sub(1, 1) ~= '/' then
+      -- Autocmd patterns are matched against the file's absolute path, so a
+      -- relative job dir (e.g. "./") must be resolved to the repo root or the
+      -- pattern never matches and the job won't run on save.
+      dir = gitato.get_repo_root() .. dir:gsub("^%./", "")
+    end
     if not dir then
       error(string.format("no valid dir for job '%s'", job.config.name))
     end
@@ -426,7 +434,7 @@ local function setup_build_jobs(config, oldJobs)
 
     -- removed from the list of buffers so it's not cleaned up below
     job_buffers_by_name[job_config.name] = nil
-    if config.build_on_save ~= false then
+    if config.build_on_save ~= false and job_config.run_on_save ~= false then
       wire_up_job_autocmd(job, job_group)
     end
     table.insert(new_jobs, job)
