@@ -2,6 +2,11 @@
 
 local fn = vim.fn
 
+local mapping = require("mapping")
+local normal = mapping.buffer("n")
+local visual = mapping.buffer("x")
+local allmodes = mapping.buffer("")
+
 -- tag wrapping {{{1
 -- Runs through a :<C-u> mapping so visual mode is left and the `< / `> marks
 -- are set before the function runs (mirrors the original `vnoremap :call`).
@@ -18,7 +23,7 @@ local function wrap_tag()
   fn.setpos(".", pos)
 end
 _G.__html_wrap_tag = wrap_tag
-vim.keymap.set("x", "<Leader>;w", ":<C-u>lua _G.__html_wrap_tag()<CR>", { buffer = true })
+visual["<Leader>;w"] = ":<C-u>lua _G.__html_wrap_tag()<CR>"
 
 -- change element name {{{1
 local function change_tag()
@@ -26,7 +31,7 @@ local function change_tag()
   -- \27 = <Esc>, \15 = <C-o> (jump back); literal `^l` reposition between tags
   return "f>h%lciw" .. new .. "\27\15^lciw" .. new .. "\27"
 end
-vim.keymap.set("n", "<Leader>;t", change_tag, { buffer = true, expr = true, remap = true })
+normal["<Leader>;t"] = { change_tag, expr = true, remap = true }
 
 -- dont do the underlines and bolds for links and strongs, etc. in html {{{1
 vim.g.html_no_rendering = 1
@@ -46,7 +51,7 @@ local function split_attrs()
 
   vim.o.gdefault = def
 end
-vim.keymap.set("", "<leader>;k", split_attrs, { buffer = true, remap = true })
+allmodes["<leader>;k"] = { split_attrs, remap = true }
 
 -- alignment and closing errors {{{1
 local function find_alignment_errors()
@@ -96,4 +101,4 @@ local function find_alignment_errors()
     vim.cmd("normal zz")
   end
 end
-vim.keymap.set("", "<leader>;a", find_alignment_errors, { buffer = true, remap = true })
+allmodes["<leader>;a"] = { find_alignment_errors, remap = true }

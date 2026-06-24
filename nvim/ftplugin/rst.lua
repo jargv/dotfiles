@@ -1,1 +1,4 @@
-vim.keymap.set("", "<Leader>m", ":silent !restview % <CR> <C-C>", { buffer = true, remap = true })
+local mapping = require("mapping")
+local allmodes = mapping.buffer("")
+
+allmodes["<Leader>m"] = { ":silent !restview % <CR> <C-C>", remap = true }

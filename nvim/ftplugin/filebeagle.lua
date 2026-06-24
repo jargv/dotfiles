@@ -1,2 +1,5 @@
-vim.keymap.set("n", "u", "-", { buffer = true, remap = true })
-vim.keymap.set("n", "e", ':exec ":!vidir ".FileBeagleStatusLineCurrentDirInfo() <cr><cr>R', { buffer = true, remap = true })
+local mapping = require("mapping")
+local normal = mapping.buffer("n")
+
+normal.u = { "-", remap = true }
+normal.e = { ':exec ":!vidir ".FileBeagleStatusLineCurrentDirInfo() <cr><cr>R', remap = true }

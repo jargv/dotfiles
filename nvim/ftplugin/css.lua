@@ -1,8 +1,13 @@
 -- Options {{{1
 vim.opt.iskeyword:append("-,@-@")
 
+local mapping = require("mapping")
+local normal = mapping.buffer("n")
+local insert = mapping.buffer("i")
+local allmodes = mapping.buffer("")
+
 -- mappings {{{1
-vim.keymap.set("", "<F3>", ':exec "e ".expand("%:r").".js"<cr>', { buffer = true, remap = true })
+allmodes["<F3>"] = { ':exec "e ".expand("%:r").".js"<cr>', remap = true }
 
 local function shift_tab()
   if vim.fn.pumvisible() ~= 0 then
@@ -11,10 +16,10 @@ local function shift_tab()
     return "<S-Tab>"
   end
 end
-vim.keymap.set("i", "<S-TAB>", shift_tab, { buffer = true, expr = true })
+insert["<S-TAB>"] = { shift_tab, expr = true }
 
 -- near-noop kept from the original (literal @ -> @)
-vim.keymap.set("i", "@", "@", { buffer = true })
+insert["@"] = "@"
 
 local function semicolon()
   if vim.fn.match(vim.fn.getline("."), ":") ~= -1 then
@@ -23,12 +28,12 @@ local function semicolon()
     return ": "
   end
 end
-vim.keymap.set("i", ";", semicolon, { buffer = true, expr = true })
+insert[";"] = { semicolon, expr = true }
 
 local function space()
   return " "
 end
-vim.keymap.set("i", "<Space>", space, { buffer = true, expr = true })
+insert["<Space>"] = { space, expr = true }
 
 -- change from inline {{{1
 local function outline_css()
@@ -58,4 +63,4 @@ local function outline_css()
     s/\v^(\s*)(\l*)(\u)(\l*):/\1\2-\l\3\4:/e
   ]==])
 end
-vim.keymap.set("n", "<F4>", outline_css, { buffer = true })
+normal["<F4>"] = outline_css

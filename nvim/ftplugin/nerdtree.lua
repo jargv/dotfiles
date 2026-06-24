@@ -1,2 +1,5 @@
-vim.keymap.set("n", "<esc>", ":NERDTreeClose<CR>", { buffer = true })
-vim.keymap.set("n", "<leader>q", ":NERDTreeClose<CR>", { buffer = true })
+local mapping = require("mapping")
+local normal = mapping.buffer("n")
+
+normal["<esc>"] = ":NERDTreeClose<CR>"
+normal["<leader>q"] = ":NERDTreeClose<CR>"

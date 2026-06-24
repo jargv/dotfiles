@@ -1,3 +1,7 @@
+local mapping = require("mapping")
+local normalGlobal = mapping.inMode("n")
+local insertGlobal = mapping.inMode("i")
+
 vim.opt_local.foldmethod = "marker"
 
 -- `op=` shortcuts {{{1
@@ -20,7 +24,7 @@ for lhs, op in pairs({ ["+="] = "+", ["-="] = "-", ["/="] = "/", ["*="] = "*", [
 end
 
 -- misc {{{1
-vim.keymap.set("i", "@@", "---@") -- global in the original (no <buffer>)
+insertGlobal["@@"] = "---@"
 
 vim.cmd([[inoreabbrev <buffer> != ~=]])
 
@@ -74,4 +78,4 @@ local function assert_to_if()
   vim.fn.append(".", { lines[2], lines[3] })
 end
 
-vim.keymap.set("n", "<leader>;a", assert_to_if) -- global in the original (no <buffer>)
+normalGlobal["<leader>;a"] = assert_to_if

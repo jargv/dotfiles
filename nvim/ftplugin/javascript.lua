@@ -1,4 +1,9 @@
-vim.keymap.set("i", ".", ".", { buffer = true })
+local mapping = require("mapping")
+local normal = mapping.buffer("n")
+local insert = mapping.buffer("i")
+local visual = mapping.buffer("x")
+
+insert["."] = "."
 
 -- formatting / linting {{{1
 vim.opt_local.indentexpr = ""
@@ -30,17 +35,17 @@ local function flip_header_type()
   end
   vim.cmd("echo")
 end
-vim.keymap.set("n", "<Leader>;t", flip_header_type, { buffer = true })
+normal["<Leader>;t"] = flip_header_type
 
 -- <Leader>;w: wrap a block in { {{{1
-vim.keymap.set("x", "<Leader>;w", ">'>o}'<O {hi", { buffer = true })
+visual["<Leader>;w"] = ">'>o}'<O {hi"
 
 -- <Leader>;u: unwrap a block {{{1
-vim.keymap.set("n", "<Leader>;u", "m'vi{<'>jdd'<kdd`'k", { buffer = true })
+normal["<Leader>;u"] = "m'vi{<'>jdd'<kdd`'k"
 
 -- <Leader>;e: extract variable {{{1
 local function extract_variable()
   local name = vim.fn.input("name: ")
   return "c" .. name .. "<Esc>Ovar " .. name .. " = <Esc>p`]a;<Esc>"
 end
-vim.keymap.set("x", "<Leader>;e", extract_variable, { buffer = true, expr = true })
+visual["<Leader>;e"] = { extract_variable, expr = true }

@@ -1,3 +1,8 @@
+local mapping = require("mapping")
+local normal = mapping.buffer("n")
+local allmodes = mapping.buffer("")
+local insertGlobal = mapping.inMode("i")
+
 -- distraction-free writing {{{1
 vim.b.writing = 0
 
@@ -41,20 +46,20 @@ local function toggle_writing()
   end
 end
 
-vim.keymap.set("", "<leader>;;", toggle_writing, { buffer = true })
+allmodes["<leader>;;"] = toggle_writing
 
 -- underline with ==== {{{1
-vim.keymap.set("i", "<C-o>", '<esc>"yyy"ypVr=o')
+insertGlobal["<C-o>"] = '<esc>"yyy"ypVr=o'
 
 -- gather todos {{{1
-vim.keymap.set("n", "<leader>;g", [[:s/^[\ -]*/### /<cr>:nohlsearch<cr>]], { buffer = true })
-vim.keymap.set("n", "<leader>;G", [[:let g:reg=@x<cr>:let @x=''<cr>:%g/^###/d X<cr>gg"xP:let @x = g:reg<cr>]], { buffer = true })
+normal["<leader>;g"] = [[:s/^[\ -]*/### /<cr>:nohlsearch<cr>]]
+normal["<leader>;G"] = [[:let g:reg=@x<cr>:let @x=''<cr>:%g/^###/d X<cr>gg"xP:let @x = g:reg<cr>]]
 
 -- outline folding {{{1
 vim.opt.debug = "msg"
 vim.opt.foldmethod = "marker"
 
-vim.keymap.set("n", "<leader>;f", [[:set foldmethod=expr<cr>:echo "folding in outline mode"<cr>]], { buffer = true })
+normal["<leader>;f"] = [[:set foldmethod=expr<cr>:echo "folding in outline mode"<cr>]]
 vim.opt_local.foldexpr = "v:lua.TextOutlineFold(v:lnum)"
 
 function _G.TextOutlineFold(lnum)

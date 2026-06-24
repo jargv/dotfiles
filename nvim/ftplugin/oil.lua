@@ -1,3 +1,6 @@
-vim.keymap.set("n", "<leader><leader>", ":w<cr>", { buffer = true })
-vim.keymap.set("n", "%", "o", { buffer = true })
-vim.keymap.set("n", "q", ":q!<cr>", { buffer = true })
+local mapping = require("mapping")
+local normal = mapping.buffer("n")
+
+normal["<leader><leader>"] = ":w<cr>"
+normal["%"] = "o"
+normal.q = ":q!<cr>"

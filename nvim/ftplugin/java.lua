@@ -13,6 +13,9 @@ local config = {
 }
 require("jdtls").start_or_attach(config)
 
-vim.keymap.set("n", "<A-i>", function()
+local mapping = require("mapping")
+local normalGlobal = mapping.inMode("n")
+
+normalGlobal["<A-i>"] = function()
   require("jdtls").organize_imports()
-end)
+end

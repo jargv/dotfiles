@@ -1,17 +1,21 @@
 -- settings {{{1
 vim.opt_local.list = false
 
-vim.keymap.set("i", ".", ".", { buffer = true })
+local mapping = require("mapping")
+local normal = mapping.buffer("n")
+local insert = mapping.buffer("i")
+
+insert["."] = "."
 
 -- <leader>;j = join_vars {{{1
-vim.keymap.set("n", "<leader>;j", function()
+normal["<leader>;j"] = function()
   require("edit_helpers").join_vars()
-end, { buffer = true })
+end
 
 -- <leader>;k = split_args {{{1
-vim.keymap.set("n", "<leader>;k", function()
+normal["<leader>;k"] = function()
   require("edit_helpers").split_args(true)
-end, { buffer = true })
+end
 
 -- NOTE: dropped during migration --
 --   the :GoInfo/:GoDoc/:GoDocBrowser/:GoLint/:GoRename/:GoMetaLinter/:GoImports/

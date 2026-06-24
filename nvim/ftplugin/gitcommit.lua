@@ -1,2 +1,5 @@
+local mapping = require("mapping")
+local normal = mapping.buffer("n")
+
 vim.opt.spell = true
-vim.keymap.set("n", "<Leader>g", ":q!<CR>", { buffer = true, remap = true })
+normal["<Leader>g"] = { ":q!<CR>", remap = true }

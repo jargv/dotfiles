@@ -1,15 +1,18 @@
 -- settings {{{1
 vim.opt_local.list = false
 
+local mapping = require("mapping")
+local normal = mapping.buffer("n")
+
 -- <leader>;j = join_vars {{{1
-vim.keymap.set("n", "<leader>;j", function()
+normal["<leader>;j"] = function()
   require("edit_helpers").join_vars()
-end, { buffer = true })
+end
 
 -- <leader>;k = split_args {{{1
-vim.keymap.set("n", "<leader>;k", function()
+normal["<leader>;k"] = function()
   require("edit_helpers").split_args(true)
-end, { buffer = true })
+end
 
 -- NOTE: dropped during migration -- all referenced things that are not defined
 -- anywhere in this config:

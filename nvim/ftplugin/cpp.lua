@@ -1,11 +1,14 @@
 local eh = require("edit_helpers")
+local mapping = require("mapping")
+local normal = mapping.buffer("n")
+local visual = mapping.buffer("x")
 
 -- better c++11 syntax support {{{1
 vim.g.c_no_curly_error = 1
 vim.g.c_no_bracket_error = 1
 
 -- swap header and source {{{1
-vim.keymap.set("n", "<leader>;h", ":e %:p:s,.hpp$,.X123X,:s,.cpp$,.hpp,:s,.X123X$,.cpp,<CR>", { buffer = true })
+normal["<leader>;h"] = ":e %:p:s,.hpp$,.X123X,:s,.cpp$,.hpp,:s,.X123X$,.cpp,<CR>"
 
 -- general settings {{{1
 vim.opt.wildignore = "*.o"
@@ -75,17 +78,17 @@ local function move_out_of_header()
   -- restore the original position
   fn.setpos(".", pos)
 end
-vim.keymap.set("n", "<leader>;t", move_out_of_header, { buffer = true })
+normal["<leader>;t"] = move_out_of_header
 
 -- remove std:: {{{1
-vim.keymap.set("n", "<leader>;s", ":%s/std:://<cr>", { buffer = true })
+normal["<leader>;s"] = ":%s/std:://<cr>"
 
 -- wrap block in lambda {{{1
-vim.keymap.set("n", "<leader>;b", ":normal i[]()l%a();", { buffer = true })
+normal["<leader>;b"] = ":normal i[]()l%a();"
 
 -- folding {{{1
 vim.opt_local.foldnestmax = 20
-vim.keymap.set("n", "<leader>;f", ":set foldmethod=syntax<cr>", { buffer = true })
+normal["<leader>;f"] = ":set foldmethod=syntax<cr>"
 
 -- convert lua to C++ {{{1
 local function transpile(l1, l2)
@@ -125,16 +128,16 @@ local function transpile(l1, l2)
   end
   vim.fn.setpos(".", pos)
 end
-vim.keymap.set("n", "<leader>;L", function() transpile(vim.fn.line("."), vim.fn.line(".")) end, { buffer = true })
-vim.keymap.set("x", "<leader>;l", function()
+normal["<leader>;L"] = function() transpile(vim.fn.line("."), vim.fn.line(".")) end
+visual["<leader>;l"] = function()
   local l1, l2 = vim.fn.line("v"), vim.fn.line(".")
   if l1 > l2 then l1, l2 = l2, l1 end
   transpile(l1, l2)
-end, { buffer = true })
-vim.keymap.set("n", "<leader>;l", function() transpile(1, vim.fn.line("$")) end, { buffer = true })
+end
+normal["<leader>;l"] = function() transpile(1, vim.fn.line("$")) end
 
 -- <leader>;k = SplitArgs() (cpp variant: no trailing comma on last arg) {{{1
-vim.keymap.set("n", "<leader>;k", function() eh.split_args(false) end, { buffer = true })
+normal["<leader>;k"] = function() eh.split_args(false) end
 
 -- original used the invalid `noreab <local> assert check` (<local> isn't real
 -- abbrev syntax -- almost certainly meant <buffer>)

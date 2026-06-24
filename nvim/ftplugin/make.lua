@@ -1,1 +1,4 @@
-vim.keymap.set("i", "$", "$()F$la", { buffer = true })
+local mapping = require("mapping")
+local insert = mapping.buffer("i")
+
+insert["$"] = "$()F$la"

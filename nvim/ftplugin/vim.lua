@@ -1,3 +1,6 @@
+local mapping = require("mapping")
+local normal = mapping.buffer("n")
+
 vim.opt_local.tabstop = 2
 vim.opt_local.foldmethod = "marker"
 vim.opt.textwidth = 0
@@ -9,4 +12,4 @@ local function join()
   vim.fn.setpos(".", pos)
 end
 
-vim.keymap.set("n", "<Leader>;j", join, { buffer = true })
+normal["<Leader>;j"] = join
