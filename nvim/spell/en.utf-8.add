@@ -6,8 +6,6 @@ instantiation
 JS
 CommonJS
 TypeScript
-LensCore's
-uberscripts
 rollup
 js
 config
@@ -18,8 +16,6 @@ ES5
 ES2015
 TODO
 onboarding
-reddit
-atlassian
 prometheus
 rampup
 InfluxDB
@@ -34,7 +30,6 @@ reclaimables
 bindable
 respawn
 phsx
-Rexburg
 collider
 colliders
 Perf
