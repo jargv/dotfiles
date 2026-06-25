@@ -20,5 +20,14 @@ for dotfile in dotfiles/* ; do
   fi
 done;
 
+# Claude Code has no XDG split: ~/.claude mixes config with live state
+# (credentials, history, sessions). It also ignores ~/.config, so we keep the
+# config dirs outside dotfiles/ (so the loop above doesn't mirror them to
+# ~/.config/claude) and symlink them straight into ~/.claude, leaving state be.
+mkdir -p $HOME/.claude
+for sub in commands skills; do
+  ln -snf $dir/claude/$sub $HOME/.claude/$sub
+done
+
 echo config installed
 # echo "don't forget tpm ~/config/setup/tpm.sh"
