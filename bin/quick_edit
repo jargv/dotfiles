@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# quick_edit — pop open a fixed-size kitty terminal running nvim on a file.
+#
+# The terminal size matches grove's HQ window (see ~/projects/grove,
+# terminal/kitty.go's Launch): 56 columns wide x 40 rows tall, with the
+# window size pinned (not remembered or resized to content).
+#
+# Usage: quick_edit <filename> [extra nvim args...]
+
+set -euo pipefail
+
+if [[ $# -lt 1 ]]; then
+    echo "usage: quick_edit <filename> [nvim args...]" >&2
+    exit 1
+fi
+
+file=$1
+shift
+
+# Auto-close: once the file is written, quit nvim (which closes the kitty
+# window, since nvim is the terminal's command). Scoped to this buffer so it
+# only triggers on the file we opened.
+autoclose='autocmd BufWritePost <buffer> quitall'
+
+# Detach from the calling shell so the terminal outlives it.
+setsid kitty \
+    -o remember_window_size=no \
+    -o initial_window_width=56c \
+    -o initial_window_height=40c \
+    --title "quick_edit:$(basename -- "$file")" \
+    nvim -c "$autoclose" "$file" "$@" \
+    >/dev/null 2>&1 &
+
+disown
