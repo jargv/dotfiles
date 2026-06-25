@@ -316,7 +316,11 @@ local function wire_up_job_autocmd(job, job_group)
       -- Autocmd patterns are matched against the file's absolute path, so a
       -- relative job dir (e.g. "./") must be resolved to the repo root or the
       -- pattern never matches and the job won't run on save.
-      dir = gitato.get_repo_root() .. dir:gsub("^%./", "")
+      local git_dir = gitato.get_repo_root()
+      if not git_dir then
+        error(string.format("relative path outside of git repo for job: '%s'", job.config.name))
+      end
+      dir = git_dir .. dir:gsub("^%./", "")
     end
     if not dir then
       error(string.format("no valid dir for job '%s'", job.config.name))
