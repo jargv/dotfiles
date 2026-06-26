@@ -2,4 +2,4 @@
 
 git ls-tree --full-tree --name-only -r HEAD | grep -v vendor | grep -v jpg | grep -v wav | grep -v aup3 | grep -v ogg | grep -v json | while read file; do
   wc -l $file 2>/dev/null
-done | awk -f ~/config/bin/stats-aggregate.awk
+done | awk -f ~/config/bin/lc.awk

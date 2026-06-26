@@ -5,6 +5,8 @@ function getExtension(str){
   n = split(str, parts, ".")
   if (n == 1){
     return "<NO EXTENSION>"
+  } else if (n > 2 && parts[n-1] == "test") {
+    return parts[n-1] "." parts[n]
   } else {
     return parts[n]
   }
@@ -20,10 +22,10 @@ $2 ~ "CMakeLists.txt" {
   by_type["cmake"] += $1
 }
 
-$2 ~ "test" {
-  by_type[getExtension($2)] -= $1
-  by_type["TEST"] += $1
-}
+# $2 ~ "test" {
+#   by_type[getExtension($2)] -= $1
+#   by_type["TEST"] += $1
+# }
 
 END {
 
