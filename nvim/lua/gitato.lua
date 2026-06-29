@@ -40,6 +40,14 @@ local function file_diff_not_supported(name)
   return false
 end
 
+-- True for a file that no longer exists on disk. Handles both the
+-- `git status -sb` form (" D" / "D ") and the `git diff --name-status`
+-- form ("D" possibly followed by a tab), which the status parser captures
+-- as a 2-char status.
+local function status_indicates_deleted(status)
+  return status ~= nil and status:find("D") ~= nil
+end
+
 local not_a_repo_error_msg = "ERROR: Is this a git repo?"
 
 local current_diff_buffer = nil
@@ -564,7 +572,7 @@ function gitato.open_viewer(diff_branch)
     -- for deleted files, just show the old contents in a single read-only
     -- window. A full all-lines-removed diff isn't useful, and opening the
     -- on-disk path would recreate the deleted file.
-    if status == " D" or status == "D " then
+    if status_indicates_deleted(status) then
       -- already showing this deleted file? don't recreate the window
       if current_view_deleted == file
       and current_view_window ~= nil
@@ -585,6 +593,11 @@ function gitato.open_viewer(diff_branch)
       local contents = vim.fn.systemlist(
         ("cd %s && git show %s:%s"):format(git_repo_root, ref, name_at_ref)
       )
+      -- If we can't recover the old contents (e.g. the file never existed at
+      -- this ref), show nothing rather than dumping a git error into the buffer.
+      if vim.api.nvim_get_vvar("shell_error") ~= 0 then
+        contents = {}
+      end
 
       local total_width = vim.api.nvim_win_get_width(0)
       local diff_window_width = total_width - main_buf_width
