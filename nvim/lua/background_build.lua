@@ -242,11 +242,9 @@ local function run_job(job)
     local cwd = get_field(job.config, "dir")
     if cwd == nil then
       cwd = gitato.get_repo_root()
-    end
-
-    -- resolve to the repo root
-    if cwd:sub(1,1) ~= '/' then
-      cwd = gitato.get_repo_root() .. cwd
+    elseif cwd:sub(1,1) ~= '/' then
+      -- resolve relative dirs against the repo root
+      cwd = (gitato.get_repo_root() or "") .. cwd
     end
 
     -- interpolate ${vars}; on an undefined variable replace the whole command
@@ -254,6 +252,15 @@ local function run_job(job)
     local ok, cmd = pcall(interpolate, job.config.cmd)
     if not ok then
       cmd = "echo " .. vim.fn.shellescape(cmd)
+    end
+
+    -- if the working directory is missing, jobstart raises a hard error (E475)
+    -- which, since run_job fires from BufWritePost, would blow up on every
+    -- save. Surface a notice in the job's output buffer instead and run it from
+    -- a directory that exists.
+    if not cwd or vim.fn.isdirectory(cwd) == 0 then
+      cmd = "echo " .. vim.fn.shellescape(("build directory does not exist: %s"):format(cwd or "<none>"))
+      cwd = gitato.get_repo_root() or vim.fn.getcwd()
     end
 
     return vim.fn.jobstart(cmd, {
@@ -503,7 +510,7 @@ function api.load_errors()
   for _, job_to_show in ipairs(jobs_to_show) do
     local starting_dir = vim.fn.getcwd()
     local job_dir = get_field(job_to_show.config, "dir")
-    if job_dir ~= nil then
+    if job_dir ~= nil and vim.fn.isdirectory(job_dir) == 1 then
       vim.cmd.cd(job_dir)
     end
     vim.cmd.cclose()
