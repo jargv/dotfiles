@@ -348,6 +348,13 @@ function gitato.toggle_diff_against_git_ref(ref, ensure_state)
 end
 
 local function parse_status_line(line)
+  -- rename/copy lines carry two paths in the "old -> new" form ("R099 old ->
+  -- new" from diff --name-status after normalization in get_status, or
+  -- "R  old -> new" from status -sb). The new path is the file on disk.
+  local status, old_file, file = string.match(line, "^(%S+)%s+(.-) %-> (.*)$")
+  if status ~= nil then
+    return status, file, old_file
+  end
   local status, file = string.match(line, "^(..)%s*(%S*)$")
   return status, file
 end
@@ -367,11 +374,25 @@ local function git_cmd(c, root)
 end
 
 function gitato.get_status(diff_branch, repo_root)
-  if diff_branch ~= nil then
-    return git_cmd(("diff --name-status %s"):format(diff_branch), repo_root)
+  if diff_branch == nil then
+    return git_cmd("status -sb", repo_root)
   end
 
-  return git_cmd("status -sb", repo_root)
+  local lines = git_cmd(("diff --name-status %s"):format(diff_branch), repo_root)
+  if lines == nil then
+    return nil
+  end
+
+  -- rename/copy lines come back as "R099<tab>old<tab>new"; reshape them into
+  -- the "old -> new" form `git status -sb` uses, so the display is readable
+  -- and parse_status_line sees one canonical format
+  for i, line in ipairs(lines) do
+    local status, old_file, file = string.match(line, "^([RC]%d*)\t(.-)\t(.*)$")
+    if status ~= nil then
+      lines[i] = ("%s %s -> %s"):format(status, old_file, file)
+    end
+  end
+  return lines
 end
 
 

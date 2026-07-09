@@ -138,7 +138,3 @@ normal["<leader>;l"] = function() transpile(1, vim.fn.line("$")) end
 
 -- <leader>;k = SplitArgs() (cpp variant: no trailing comma on last arg) {{{1
 normal["<leader>;k"] = function() eh.split_args(false) end
-
--- original used the invalid `noreab <local> assert check` (<local> isn't real
--- abbrev syntax -- almost certainly meant <buffer>)
-vim.cmd("inoreabbrev <buffer> assert check")
