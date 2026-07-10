@@ -62,6 +62,11 @@ gitato.do_log_search = function(term)
   on_do_log_search(term)
 end
 
+local on_jump_log_to_blame = function() end
+gitato.jump_log_to_blame = function()
+  on_jump_log_to_blame()
+end
+
 local on_toggle_diff_log = function() end
 gitato.toggle_diff_log = function()
   on_toggle_diff_log()
@@ -87,6 +92,7 @@ function gitato.diff_off()
   on_toggle_diff_log = function() end
   on_move_log_cursor = function(_) end
   on_do_log_search = function(_) end
+  on_jump_log_to_blame = function() end
 end
 
 function gitato.get_repo_root(dir)
@@ -328,6 +334,42 @@ function gitato.toggle_diff_against_git_ref(ref, ensure_state)
     end
 
     print("No matching commits found in current history")
+  end
+
+  on_jump_log_to_blame = function()
+    if current_diff_buffer == nil
+    or not vim.api.nvim_buf_is_valid(current_diff_buffer)
+    then
+      return
+    end
+
+    local line = vim.fn.line('.')
+    local blame_output = vim.fn.systemlist(
+      ('cd %s && git blame --porcelain -L %d,%d -- %s'):format(git_root, line, line, file)
+    )
+    local err = vim.api.nvim_get_vvar("shell_error")
+    if err ~= 0 or #blame_output == 0 then
+      print("Error blaming line: " .. table.concat(blame_output, "\n"))
+      return
+    end
+
+    local blame_hash = vim.fn.split(blame_output[1], " ")[1]
+    if blame_hash:match("^0+$") ~= nil then
+      print("Line is not committed yet")
+      return
+    end
+
+    -- Find the blame commit in our log_contents
+    for i, log_line in ipairs(log_contents) do
+      local commit_hash = vim.fn.split(log_line, " ")[1]
+      if blame_hash:sub(1, #commit_hash) == commit_hash then
+        print("Blame: " .. log_line)
+        update_log_cursor(i + 1) -- +1 because HEAD is at line 1
+        return
+      end
+    end
+
+    print("Blame commit not in this file's history: " .. blame_hash)
   end
 
   on_toggle_diff_log = function()

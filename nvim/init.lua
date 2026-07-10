@@ -792,6 +792,11 @@ leader.da = function()
   gitato.toggle_diff_against_git_ref(vim.fn.input(">", default_upstream()))
 end
 
+leader.db = function()
+  gitato.toggle_diff_against_git_ref(nil, true) -- ensure diff is open
+  gitato.jump_log_to_blame()
+end
+
 leader['d/'] = function()
   gitato.toggle_diff_against_git_ref(nil, true) -- ensure diff is open
   local default = vim.fn.getreg('/')
