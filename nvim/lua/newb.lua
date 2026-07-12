@@ -135,7 +135,7 @@ local new_buffer_options = {
   {key="p", cmd=pstree,                        desc="show process tree"},
   {key="m", cmd=setup_make,                    desc="setup build.json"},
   {key="B", cmd=":e term://$dir///usr/bin/btop", desc="run btop command"},
-  {key="C", cmd=":e term://$dir//claude", desc="run claude command"},
+  {key="a", cmd=":e term://$dir//agent", desc="run agent command"},
   {key="q", cmd=":q!",                         desc="quit"},
 }
 

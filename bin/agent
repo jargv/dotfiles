@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Pick an agent with fzf and run it, forwarding any arguments.
+set -euo pipefail
+
+agents=(claude pi)
+
+choice=$(printf '%s\n' "${agents[@]}" | fzf --prompt='agent> ' --height=~10 --reverse) || exit 1
+
+exec "$choice" "$@"
