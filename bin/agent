@@ -4,6 +4,8 @@ set -euo pipefail
 
 agents=(claude pi)
 
-choice=$(printf '%s\n' "${agents[@]}" | fzf --prompt='agent> ' --height=~10 --reverse) || exit 1
+choice=$(printf '%s\n' "${agents[@]}" | fzf --prompt='agent> ' --height=~10 --reverse \
+  --bind 'c:become(echo claude)' \
+  --bind 'p:become(echo pi)') || exit 1
 
 exec "$choice" "$@"
