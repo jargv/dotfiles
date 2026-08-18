@@ -20,13 +20,18 @@ for dotfile in dotfiles/* ; do
   fi
 done;
 
-# Claude Code has no XDG split: ~/.claude mixes config with live state
-# (credentials, history, sessions). It also ignores ~/.config, so we keep the
-# config dirs outside dotfiles/ (so the loop above doesn't mirror them to
-# ~/.config/claude) and symlink them straight into ~/.claude, leaving state be.
+# Claude Code Setup
 mkdir -p $HOME/.claude
 for sub in commands skills; do
   ln -snf $dir/claude/$sub $HOME/.claude/$sub
+done
+
+# PI setup
+mkdir -p $HOME/.pi/agent
+rm -rf $HOME/.pi/agent/extensions
+ln -snf $dir/pi/agent/extensions $HOME/.pi/agent/extensions
+for resource in keybindings.json; do
+  ln -snf $dir/pi/agent/$resource $HOME/.pi/agent/$resource
 done
 
 echo config installed
