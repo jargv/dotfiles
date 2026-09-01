@@ -1997,6 +1997,12 @@ vim.lsp.config("lua_ls", {
   },
 })
 
+-- HACK: add gopath to the vim path
+local goBin = vim.fs.joinpath(vim.env.GOPATH or vim.fs.joinpath(vim.env.HOME, "go"), "bin")
+if not vim.list_contains(vim.split(vim.env.PATH or "", ":", { plain = true }), goBin) then
+  vim.env.PATH = goBin .. ":" .. (vim.env.PATH or "")
+end
+
 -- bash-language-server runs shellcheck automatically when it's on $PATH.
 -- Install with `:MasonInstall bash-language-server` (and `shellcheck`).
 vim.lsp.config("bashls", {
@@ -2005,7 +2011,13 @@ vim.lsp.config("bashls", {
   root_markers = {".git"},
 })
 
-vim.lsp.enable({'clangd', 'lua_ls', 'gopls', 'templ', 'bashls'})
+vim.lsp.config("todent", {
+  cmd = {"todent", "lsp"},
+  filetypes = {"todent"},
+  root_markers = {".git"},
+})
+
+vim.lsp.enable({'clangd', 'lua_ls', 'gopls', 'templ', 'bashls', 'todent'})
 
 vim.diagnostic.config({
   signs = false,

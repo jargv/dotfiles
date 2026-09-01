@@ -17,11 +17,16 @@ vim.filetype.add {
     ts = "typescript",
     tsx = "typescript",
     txt = "text",
+    todent = "todent",
     -- c / cpp
     c = "c",
     h = "c",
     cpp = "cpp",
     hpp = "cpp",
+  },
+  -- Treat this exact basename as Todent rather than todo.txt format.
+  filename = {
+    ["todo.txt"] = "todent",
   },
   pattern = {
     [".*/journal/.*%.md"] = "journal.markdown",
