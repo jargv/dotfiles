@@ -1,17 +1,5 @@
-export PATH=$PATH:~/bin
-export PATH=$PATH:~/config/bin
-export PATH=$PATH:~/.local/bin
-
-export PATH=/usr/local/bin:$PATH
-export PATH=/usr/local/sbin:$PATH
-export PATH=/opt/local/bin:/opt/local/sbin:$PATH
-
-# js paths
-
-export PATH=~/.npm-global/bin:$PATH
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-#export VOLTA_HOME="$HOME/.volta"
-#export PATH="$VOLTA_HOME/bin:$PATH"
+# PATH is shared with Bash.
+. "$HOME/.config/shell/path.sh"
 
 
 # local env file
@@ -19,12 +7,7 @@ if [[ -f ~/.zshenv.local ]]; then
   . ~/.zshenv.local
 fi
 
-# go paths
-export GOPATH=~/go
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-
 # rust paths
-export PATH=~/.cargo/bin:$PATH
 export RUST_SRC_PATH=$( [[ -x $(which rustc) ]] && echo "$(rustc --print sysroot)/lib/rustlib/src/rust/src");
 if [[ -f "$HOME/.cargo/env" ]]; then
   . "$HOME/.cargo/env"
@@ -37,15 +20,6 @@ export EDITOR="nvim"
 if [[ -x /usr/libexec/java_home ]]; then
   #export JAVA_HOME=`/usr/libexec/java_home`
 fi
-
-# zig paths
-export PATH=$PATH:~/bin/zig
-
-# python paths
-export PATH=$PATH:~/Library/Python/3.8/bin
-
-# brew paths
-export PATH=/opt/homebrew/bin:$PATH
 
 # fzf setup
 fzf_keybindings=/usr/share/fzf/key-bindings.zsh
