@@ -1,4 +1,4 @@
--- Filetype detection, migrated from ftdetect/*.vim
+-- Filetype detection
 -- See :help vim.filetype.add
 
 vim.filetype.add {
@@ -11,6 +11,7 @@ vim.filetype.add {
     glsl = "glsl",
     go = "go",
     gradle = "groovy",
+    mjs = "javascript",
     scala = "scala",
     sls = "yaml",
     ts = "typescript",
