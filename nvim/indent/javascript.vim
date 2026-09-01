@@ -1,5 +1,3 @@
-source ~/config/vim/indent/html.vim
-
 setlocal indentexpr=JonboyJSIndent(v:lnum)
 setlocal indentkeys=o,O,*<Return>,<CR>,{,}
 
