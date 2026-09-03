@@ -2050,12 +2050,15 @@ efmt "%Z#"
 -- golang
 efmt "%f:%l:%c: %m"
 
+-- astro
+efmt "%f:%l:%c - error ts(%n): %m"
+
 -- lua
 efmt "/usr/bin/lua: %f:%l: %m"
 efmt "lua: %f:%l: %m"
 efmt "Error: Syntax error: %f:%l: %m"
 efmt "Error: %f:%l: %m"
-efmt "%f:%l:%m"
+-- efmt "%f:%l:%m" -- NOTE: deactivated because it was picking up timestamps
 
 
 -- starting buffer {{{1
