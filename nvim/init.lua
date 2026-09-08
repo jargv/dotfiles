@@ -1499,10 +1499,12 @@ normal["<C-A>"], normal["<C-X>"], normal["<C-Z>"] = (function()
     local place_value = calculate_place_value(num_str_unsigned, cursor_in_num)
     local new_num = num + place_value
 
-    -- Format with same precision
+    -- Format with the same precision. Keep a bare decimal point in literals
+    -- such as 3.f; the trailing f is outside the number bounds and remains.
     local new_str
-    if decimal_places > 0 then
+    if decimal_pos then
       new_str = string.format('%.' .. decimal_places .. 'f', new_num)
+      if decimal_places == 0 then new_str = new_str .. '.' end
     else
       new_str = tostring(math.floor(new_num))
     end
@@ -1586,8 +1588,9 @@ normal["<C-A>"], normal["<C-X>"], normal["<C-Z>"] = (function()
 
     -- Format with same precision
     local new_str
-    if decimal_places > 0 then
+    if decimal_pos then
       new_str = string.format('%.' .. decimal_places .. 'f', new_num)
+      if decimal_places == 0 then new_str = new_str .. '.' end
     else
       new_str = tostring(math.floor(new_num))
     end
@@ -2037,6 +2040,10 @@ end
 -- typescript
 --efmt "%f(%l%.%c): error TS%n:%m"
 
+-- Generic
+efmt "%f:%l:%c: %m" -- note: the space prevents matching on a timestamp
+efmt "%f:%l: %m" -- note: the space prevents matching on a timestamp
+
 -- c++
 -- asserts
 efmt "%[%^:]%#: %f:%l: %m"
@@ -2058,7 +2065,6 @@ efmt "/usr/bin/lua: %f:%l: %m"
 efmt "lua: %f:%l: %m"
 efmt "Error: Syntax error: %f:%l: %m"
 efmt "Error: %f:%l: %m"
--- efmt "%f:%l:%m" -- NOTE: deactivated because it was picking up timestamps
 
 
 -- starting buffer {{{1
