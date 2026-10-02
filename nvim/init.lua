@@ -1968,7 +1968,17 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 vim.lsp.config("lua_ls", {
   cmd = {"lua-language-server"},
   filetypes = {"lua"},
-  root_markers = {".luarc.json", ".luarc.jsonc", ".git"},
+  -- Skip scratch/preview buffers: with no file name, vim.fs.root falls back to
+  -- cwd, finds .git, and starts a repo-root server with the LuaJIT baseline.
+  root_dir = function(bufnr, on_dir)
+    if vim.bo[bufnr].buftype ~= "" or vim.api.nvim_buf_get_name(bufnr) == "" then
+      return
+    end
+    local root = vim.fs.root(bufnr, {".luarc.json", ".luarc.jsonc", ".git"})
+    if root then
+      on_dir(root)
+    end
+  end,
   -- Baseline settings so editing config works regardless of which root lua_ls
   -- anchors on. A project-local .luarc.json is merged on top of these.
   settings = {
