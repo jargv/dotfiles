@@ -398,6 +398,7 @@ end, {force = true})
 -- my config should override EVERYTHING
 vim.opt.runtimepath:remove "~/config/nvim" --remove first, added to the end
 vim.opt.runtimepath:append "~/config/nvim"
+vim.opt.runtimepath:append("/home/j/projects/kk/editors/nvim")
 
 -- }}}
 -- autocompletion (builtin) {{{
