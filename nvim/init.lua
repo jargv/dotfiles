@@ -467,6 +467,35 @@ end
 
 
 -- prototype settings {{{1
+leader.A = function()
+  local file = vim.fn.expand("%:p")
+  if file == "" then
+    vim.notify("Cannot dispatch an unnamed buffer", vim.log.levels.ERROR)
+    return
+  end
+
+  local line_number = vim.fn.line(".")
+  local line = vim.api.nvim_get_current_line()
+  local indent, body = line:match("^(%s*)(.*)$")
+
+  if not body:match("^%-?%s*%[dispatched%]") then
+    local task = body:match("^%-%s+(.*)$")
+    if task then
+      body = "- [dispatched] " .. task
+    else
+      body = "[dispatched] " .. body
+    end
+    vim.api.nvim_set_current_line(indent .. body)
+  end
+
+  vim.cmd.write()
+
+  vim.fn.jobstart(
+    {"grove", "--go", file .. ":" .. line_number},
+    {detach = true}
+  )
+end
+--
 vim.o.shell = "/bin/zsh"
 vim.o.signcolumn = "yes:1"
 local sign_bg = "#293136"

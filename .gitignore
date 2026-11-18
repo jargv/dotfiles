@@ -24,3 +24,5 @@ ergodox/log
 ergodox/*.bin
 ergodox/*.kll
 .luarc.json
+
+claude/skills/synced/
